@@ -12,6 +12,8 @@ import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
+import de.switajski.priebes.flexibleorders.reference.Status;
+import javax.persistence.Enumerated;
 
 @RooJavaBean
 @RooToString
@@ -47,4 +49,10 @@ public abstract class Item {
      */
     @Min(0L)
     private BigDecimal priceNet;
+
+    /**
+     */
+    @NotNull
+    @Enumerated
+    private Status status;
 }

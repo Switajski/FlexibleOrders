@@ -31,4 +31,12 @@ privileged aspect Customer_Roo_JavaBean {
         this.name2 = name2;
     }
     
+    public String Customer.getStreet() {
+        return this.street;
+    }
+    
+    public void Customer.setStreet(String street) {
+        this.street = street;
+    }
+    
 }

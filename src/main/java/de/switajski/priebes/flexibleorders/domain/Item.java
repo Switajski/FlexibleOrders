@@ -55,4 +55,9 @@ public abstract class Item {
     @NotNull
     @Enumerated
     private Status status;
+
+    /**
+     */
+    @NotNull
+    private String productName;
 }

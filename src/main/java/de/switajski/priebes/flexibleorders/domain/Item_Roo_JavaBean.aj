@@ -60,4 +60,12 @@ privileged aspect Item_Roo_JavaBean {
         this.status = status;
     }
     
+    public String Item.getProductName() {
+        return this.productName;
+    }
+    
+    public void Item.setProductName(String productName) {
+        this.productName = productName;
+    }
+    
 }

@@ -37,6 +37,7 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
         setActive(obj, index);
         setDescription(obj, index);
         setImage(obj, index);
+        setImageGalery(obj, index);
         setIntro(obj, index);
         setName(obj, index);
         setProductNumber(obj, index);
@@ -58,6 +59,11 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     public void ProductDataOnDemand.setImage(Product obj, int index) {
         String image = "image_" + index;
         obj.setImage(image);
+    }
+    
+    public void ProductDataOnDemand.setImageGalery(Product obj, int index) {
+        String imageGalery = "imageGalery_" + index;
+        obj.setImageGalery(imageGalery);
     }
     
     public void ProductDataOnDemand.setIntro(Product obj, int index) {

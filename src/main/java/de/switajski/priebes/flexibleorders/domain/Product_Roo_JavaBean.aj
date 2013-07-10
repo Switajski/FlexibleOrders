@@ -72,4 +72,12 @@ privileged aspect Product_Roo_JavaBean {
         this.image = image;
     }
     
+    public String Product.getImageGalery() {
+        return this.imageGalery;
+    }
+    
+    public void Product.setImageGalery(String imageGalery) {
+        this.imageGalery = imageGalery;
+    }
+    
 }

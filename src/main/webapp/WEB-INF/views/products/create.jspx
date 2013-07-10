@@ -11,6 +11,7 @@
         <field:input field="intro" id="c_de_switajski_priebes_flexibleorders_domain_Product_intro" z="nV22DCR4qnJEfPe8hFBnbVg4sqs="/>
         <field:input field="description" id="c_de_switajski_priebes_flexibleorders_domain_Product_description" z="5rarNyjp6cNa/A1zOJPzgEeWGvA="/>
         <field:input field="image" id="c_de_switajski_priebes_flexibleorders_domain_Product_image" z="rCcmNfcYvR2U1lJXoIumxESlLaE="/>
+        <field:input field="imageGalery" id="c_de_switajski_priebes_flexibleorders_domain_Product_imageGalery" z="YAmcaGrn+hb+MqAs66+NiBz51cE="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_Product" render="${not empty dependencies}" z="JDfbAszxUeE6TwRsNXNmjGbSd7M="/>
 </div>

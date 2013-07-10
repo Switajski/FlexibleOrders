@@ -32,4 +32,9 @@ public class Customer {
      */
     @NotNull
     private String city;
+
+    /**
+     */
+    @NotNull
+    private int postalCode;
 }

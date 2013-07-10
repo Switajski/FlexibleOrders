@@ -47,4 +47,12 @@ privileged aspect Customer_Roo_JavaBean {
         this.city = city;
     }
     
+    public int Customer.getPostalCode() {
+        return this.postalCode;
+    }
+    
+    public void Customer.setPostalCode(int postalCode) {
+        this.postalCode = postalCode;
+    }
+    
 }

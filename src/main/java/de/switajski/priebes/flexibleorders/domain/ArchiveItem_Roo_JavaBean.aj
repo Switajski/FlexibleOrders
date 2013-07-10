@@ -4,6 +4,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.reference.Country;
 import java.util.Date;
 
 privileged aspect ArchiveItem_Roo_JavaBean {
@@ -62,6 +63,14 @@ privileged aspect ArchiveItem_Roo_JavaBean {
     
     public void ArchiveItem.setShippingPostalCode(int shippingPostalCode) {
         this.shippingPostalCode = shippingPostalCode;
+    }
+    
+    public Country ArchiveItem.getShippingCountry() {
+        return this.shippingCountry;
+    }
+    
+    public void ArchiveItem.setShippingCountry(Country shippingCountry) {
+        this.shippingCountry = shippingCountry;
     }
     
 }

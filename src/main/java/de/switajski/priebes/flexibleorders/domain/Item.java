@@ -35,4 +35,9 @@ public abstract class Item {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date created = new Date();
+
+    /**
+     */
+    @NotNull
+    private int quantity;
 }

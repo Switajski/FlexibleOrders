@@ -34,4 +34,12 @@ privileged aspect Item_Roo_JavaBean {
         this.created = created;
     }
     
+    public int Item.getQuantity() {
+        return this.quantity;
+    }
+    
+    public void Item.setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    
 }

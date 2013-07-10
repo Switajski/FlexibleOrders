@@ -40,4 +40,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.shippingName2 = shippingName2;
     }
     
+    public String ArchiveItem.getShippingStreet() {
+        return this.shippingStreet;
+    }
+    
+    public void ArchiveItem.setShippingStreet(String shippingStreet) {
+        this.shippingStreet = shippingStreet;
+    }
+    
 }

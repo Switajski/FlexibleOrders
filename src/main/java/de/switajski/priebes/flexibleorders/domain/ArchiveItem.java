@@ -32,4 +32,9 @@ public class ArchiveItem extends Item {
     /**
      */
     private String shippingName2;
+
+    /**
+     */
+    @NotNull
+    private String shippingStreet;
 }

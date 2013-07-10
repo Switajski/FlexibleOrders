@@ -31,4 +31,12 @@ privileged aspect Category_Roo_JavaBean {
         this.description = description;
     }
     
+    public String Category.getImage() {
+        return this.image;
+    }
+    
+    public void Category.setImage(String image) {
+        this.image = image;
+    }
+    
 }

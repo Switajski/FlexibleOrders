@@ -6,6 +6,7 @@ package de.switajski.priebes.flexibleorders.web;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductService;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.web.ProductController;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -25,6 +26,9 @@ privileged aspect ProductController_Roo_Controller {
     
     @Autowired
     ProductService ProductController.productService;
+    
+    @Autowired
+    CategoryRepository ProductController.categoryRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String ProductController.create(@Valid Product product, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -93,6 +97,7 @@ privileged aspect ProductController_Roo_Controller {
     
     void ProductController.populateEditForm(Model uiModel, Product product) {
         uiModel.addAttribute("product", product);
+        uiModel.addAttribute("categorys", categoryRepository.findAll());
         uiModel.addAttribute("producttypes", Arrays.asList(ProductType.values()));
     }
     

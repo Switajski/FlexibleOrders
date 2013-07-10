@@ -3,6 +3,7 @@
 
 package de.switajski.priebes.flexibleorders.domain;
 
+import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
@@ -78,6 +79,14 @@ privileged aspect Product_Roo_JavaBean {
     
     public void Product.setImageGalery(String imageGalery) {
         this.imageGalery = imageGalery;
+    }
+    
+    public Category Product.getCategory() {
+        return this.category;
+    }
+    
+    public void Product.setCategory(Category category) {
+        this.category = category;
     }
     
 }

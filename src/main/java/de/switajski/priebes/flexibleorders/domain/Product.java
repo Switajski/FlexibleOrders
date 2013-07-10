@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 
 @RooJavaBean
 @RooToString
@@ -53,4 +54,9 @@ public class Product {
     /**
      */
     private String imageGalery;
+
+    /**
+     */
+    @ManyToOne
+    private Category category;
 }

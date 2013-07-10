@@ -21,7 +21,6 @@ public class OrderItem extends Item {
 
     /**
      */
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;

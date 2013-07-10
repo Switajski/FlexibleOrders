@@ -125,8 +125,12 @@ web mvc all --package de.switajski.priebes.flexibleorders.web
 perform eclipse
 
 
-
+field string --fieldName intro --class ~.domain.Product
+field string --fieldName description
+field string --fieldName image
+field string --fieldName imageGalery
 entity jpa --class ~.domain.Category --activeRecord false --testAutomatically
+repository jpa --interface ~.repository.CategoryRepository  --entity ~.domain.Category
 field string --fieldName name --notNull --unique --class ~.domain.Category
 field string --fieldName intro --class ~.domain.Category
 field string --fieldName description
@@ -134,8 +138,4 @@ field string --fieldName image
 field string --fieldName imageGalery
 field number --fieldName sortOrder --type int
 field boolean --fieldName activated --notNull
-
-field string --fieldName intro --class ~.domain.Product
-field string --fieldName description
-field string --fieldName image
-field string --fieldName imageGalery
+service type --interface ~.repository.CategoryRepository --class ~.domain.Category

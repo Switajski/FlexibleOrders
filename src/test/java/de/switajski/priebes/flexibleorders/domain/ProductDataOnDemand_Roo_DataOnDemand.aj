@@ -3,6 +3,7 @@
 
 package de.switajski.priebes.flexibleorders.domain;
 
+import de.switajski.priebes.flexibleorders.domain.CategoryDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ProductService;
@@ -25,6 +26,9 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     private Random ProductDataOnDemand.rnd = new SecureRandom();
     
     private List<Product> ProductDataOnDemand.data;
+    
+    @Autowired
+    CategoryDataOnDemand ProductDataOnDemand.categoryDataOnDemand;
     
     @Autowired
     ProductService ProductDataOnDemand.productService;

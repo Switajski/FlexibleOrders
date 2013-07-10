@@ -100,4 +100,12 @@ privileged aspect Item_Roo_JavaBean {
         this.accountNumber = accountNumber;
     }
     
+    public Long Item.getOrderNumber() {
+        return this.orderNumber;
+    }
+    
+    public void Item.setOrderNumber(Long orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+    
 }

@@ -77,4 +77,9 @@ public abstract class Item {
     /**
      */
     private Long accountNumber;
+
+    /**
+     */
+    @NotNull
+    private Long orderNumber;
 }

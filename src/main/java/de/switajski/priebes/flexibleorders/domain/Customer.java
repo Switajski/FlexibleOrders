@@ -6,6 +6,10 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import javax.persistence.Enumerated;
+import java.util.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @RooJavaBean
 @RooToString
@@ -45,4 +49,12 @@ public class Customer {
     @NotNull
     @Enumerated
     private Country country;
+
+    /**
+     */
+    @NotNull
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    private Date created = new Date();
 }

@@ -5,6 +5,7 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.reference.Country;
+import java.util.Date;
 
 privileged aspect Customer_Roo_JavaBean {
     
@@ -62,6 +63,14 @@ privileged aspect Customer_Roo_JavaBean {
     
     public void Customer.setCountry(Country country) {
         this.country = country;
+    }
+    
+    public Date Customer.getCreated() {
+        return this.created;
+    }
+    
+    public void Customer.setCreated(Date created) {
+        this.created = created;
     }
     
 }

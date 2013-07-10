@@ -26,4 +26,9 @@ public class InvoiceItem extends Item {
      */
     @NotNull
     private String invoiceCity;
+
+    /**
+     */
+    @NotNull
+    private int invoicePostalCode;
 }

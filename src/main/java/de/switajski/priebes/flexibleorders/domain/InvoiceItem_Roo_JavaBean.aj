@@ -39,4 +39,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.invoiceCity = invoiceCity;
     }
     
+    public int InvoiceItem.getInvoicePostalCode() {
+        return this.invoicePostalCode;
+    }
+    
+    public void InvoiceItem.setInvoicePostalCode(int invoicePostalCode) {
+        this.invoicePostalCode = invoicePostalCode;
+    }
+    
 }

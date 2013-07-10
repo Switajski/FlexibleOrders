@@ -40,6 +40,7 @@ privileged aspect CustomerDataOnDemand_Roo_DataOnDemand {
         setCity(obj, index);
         setCountry(obj, index);
         setCreated(obj, index);
+        setEmail(obj, index);
         setName1(obj, index);
         setName2(obj, index);
         setPostalCode(obj, index);
@@ -61,6 +62,11 @@ privileged aspect CustomerDataOnDemand_Roo_DataOnDemand {
     public void CustomerDataOnDemand.setCreated(Customer obj, int index) {
         Date created = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreated(created);
+    }
+    
+    public void CustomerDataOnDemand.setEmail(Customer obj, int index) {
+        String email = "foo" + index + "@bar.com";
+        obj.setEmail(email);
     }
     
     public void CustomerDataOnDemand.setName1(Customer obj, int index) {

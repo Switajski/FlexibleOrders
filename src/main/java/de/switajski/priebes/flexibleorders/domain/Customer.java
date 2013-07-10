@@ -57,4 +57,10 @@ public class Customer {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date created = new Date();
+
+    /**
+     */
+    @NotNull
+    @Column(unique = true)
+    private String email;
 }

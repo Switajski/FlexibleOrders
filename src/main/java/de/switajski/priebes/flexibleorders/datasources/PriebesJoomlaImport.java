@@ -2,13 +2,18 @@ package de.switajski.priebes.flexibleorders.datasources;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sun.awt.color.CMM.CSAccessor;
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.CustomerService;
+import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 
 public class PriebesJoomlaImport {
 
@@ -18,11 +23,17 @@ public class PriebesJoomlaImport {
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/bestellsystemv2?"
 			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
 
+	private static final String PRIEBES_DB = "priebesJoomlaDb";
+
 	Connection connection;
 	private Category rootCategory;
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	CustomerRepository customerRepository;
+	
 	
 	public PriebesJoomlaImport() {
 		try {
@@ -65,9 +76,69 @@ public class PriebesJoomlaImport {
 		return false;
 	}
 
-	public void importCustomers() {
-		// TODO Auto-generated method stub
+	public void importCustomers() throws SQLException {
+		Statement stmt = (Statement) connection.createStatement(
+				 ResultSet.TYPE_SCROLL_INSENSITIVE,
+				 ResultSet.CONCUR_READ_ONLY);
 		
+		ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
+				+".jos_k2store_address left join priebesJoomlaDb.jos_users on jos_k2store_address.user_id=jos_users.id");
+		
+		while (rs.next()) {
+			// retrieve and print the values for the current row
+			int id = rs.getInt("id");
+			int user_id = rs.getInt("user_id");
+			String email = rs.getString("email");
+			if (email==null || !existsCustomer(email)) continue;
+			String first_name = rs.getString("first_name");
+			String last_name = rs.getString("last_name");
+			String password = rs.getString("password");
+
+			String address_1 = rs.getString("address_1");
+			address_1 += " " +rs.getString("address_2");
+			String city = rs.getString("city");
+			String zip = rs.getString("zip".trim());
+			String phone_1 = rs.getString("phone_1");
+			
+			System.out.println("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
+			
+			/*Kunde kunde = new Kunde();
+			kunde.setAnrede(Anrede.HERR);
+			kunde.setBenutzerkonto(true);
+			kunde.setEmail(email);
+			kunde.setKundenart(Kundenart.HAENDLER);
+			kunde.setNachname(last_name);
+			kunde.setPassword(password);
+			kunde.setVorname(first_name);
+			kunde.setErstelltDatum(new Date());
+			kunde.setKundennummer(user_id);
+			kunde.persist();
+			
+			Adresse adresse = new Adresse();
+			adresse.setErstelltDatum(new Date());
+			adresse.setKunde(kunde);
+			adresse.setLand(Land.DEUTSCHLAND);
+			adresse.setPerson(first_name + " "+last_name);
+			adresse.setPlz(Integer.parseInt(zip.trim()));
+			adresse.setStadt(city);
+			adresse.setStrasse(address_1);
+			adresse.persist();
+			
+			kunde.setLieferadresse(adresse);
+			kunde.setRechnungsadresse(adresse);
+			kunde.merge();
+			*/
+		}
+//		stmt.close();
+
+
+		
+	}
+
+	private boolean existsCustomer(String email) {
+//		customerRepository.findCustomerByEmail(email);
+//		return.findKundesByEmailLike(email).getResultList().isEmpty();
+		return false;
 	}
 
 	public void importProducts() {

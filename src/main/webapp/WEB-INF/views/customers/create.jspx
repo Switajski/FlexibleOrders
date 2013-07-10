@@ -10,6 +10,7 @@
         <field:input field="city" id="c_de_switajski_priebes_flexibleorders_domain_Customer_city" required="true" z="Y/978dRj/ZJcpu+Za8KNo3+/Lr8="/>
         <field:input field="postalCode" id="c_de_switajski_priebes_flexibleorders_domain_Customer_postalCode" required="true" z="uaFyhS9iCXmuzI3wWL4dnPOTJjo="/>
         <field:select field="country" id="c_de_switajski_priebes_flexibleorders_domain_Customer_country" items="${countrys}" path="countrys" required="true" z="aGS18dZmUzsePScvKvt/VkcnzlY="/>
+        <field:input field="email" id="c_de_switajski_priebes_flexibleorders_domain_Customer_email" required="true" validationMessageCode="field_invalid_email" z="DRVbGzB/eeLCU9Loxa03f/AeFjM="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_Customer" render="${not empty dependencies}" z="Jq+BLmlXjrd38Rzo7pAm293ZovI="/>
 </div>

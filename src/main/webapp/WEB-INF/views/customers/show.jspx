@@ -10,5 +10,6 @@
         <field:display field="city" id="s_de_switajski_priebes_flexibleorders_domain_Customer_city" object="${customer}" z="bnJvL+3DYCiKWWbY1ONbeLBF87E="/>
         <field:display field="postalCode" id="s_de_switajski_priebes_flexibleorders_domain_Customer_postalCode" object="${customer}" z="9Nd4ei72N/vqmrudp9YFNKWr/Lg="/>
         <field:display field="country" id="s_de_switajski_priebes_flexibleorders_domain_Customer_country" object="${customer}" z="OkywDu1H5CpoxxfmCLaz4sYXL18="/>
+        <field:display field="email" id="s_de_switajski_priebes_flexibleorders_domain_Customer_email" object="${customer}" z="bBSe3cTsI3S7qU5pVZjNmFVS1V4="/>
     </page:show>
 </div>

@@ -47,4 +47,12 @@ privileged aspect Category_Roo_JavaBean {
         this.imageGalery = imageGalery;
     }
     
+    public int Category.getSortOrder() {
+        return this.sortOrder;
+    }
+    
+    public void Category.setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+    
 }

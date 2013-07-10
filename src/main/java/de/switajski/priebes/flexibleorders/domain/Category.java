@@ -31,4 +31,8 @@ public class Category {
     /**
      */
     private String imageGalery;
+
+    /**
+     */
+    private int sortOrder;
 }

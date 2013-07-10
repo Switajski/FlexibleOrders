@@ -34,6 +34,7 @@ privileged aspect CategoryDataOnDemand_Roo_DataOnDemand {
         setImageGalery(obj, index);
         setIntro(obj, index);
         setName(obj, index);
+        setSortOrder(obj, index);
         return obj;
     }
     
@@ -60,6 +61,11 @@ privileged aspect CategoryDataOnDemand_Roo_DataOnDemand {
     public void CategoryDataOnDemand.setName(Category obj, int index) {
         String name = "name_" + index;
         obj.setName(name);
+    }
+    
+    public void CategoryDataOnDemand.setSortOrder(Category obj, int index) {
+        int sortOrder = index;
+        obj.setSortOrder(sortOrder);
     }
     
     public Category CategoryDataOnDemand.getSpecificCategory(int index) {

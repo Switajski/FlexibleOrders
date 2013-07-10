@@ -9,6 +9,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 import javax.validation.constraints.NotNull;
 
 import de.switajski.priebes.flexibleorders.reference.Country;
+import de.switajski.priebes.flexibleorders.reference.Status;
 
 import javax.persistence.Enumerated;
 
@@ -59,8 +60,12 @@ public class ShippingItem extends Item {
      * @param transmitToSupplier
      */
     public ShippingItem(OrderItem orderItem, Boolean transmitToSupplier) {
+    	if (transmitToSupplier) throw new UnsupportedOperationException("Implement me!");
+    	
     	historize(orderItem);
+    	setTransmitToSupplier(transmitToSupplier);
 		setCreated(new Date());
+		setStatus(Status.CONFIRMED);
 		Customer customer = orderItem.getCustomer();
 		
 		//TODO: Create @Embedded class shippingAddress

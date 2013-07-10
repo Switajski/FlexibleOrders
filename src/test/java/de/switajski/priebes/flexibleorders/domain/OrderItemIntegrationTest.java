@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,6 +16,7 @@ public class OrderItemIntegrationTest {
 	@Autowired
 	ShippingItemRepository shippingItemRepository;
 	
+	
 	@Transactional
 	@Test
 	public void shouldConfirm(){
@@ -25,10 +25,9 @@ public class OrderItemIntegrationTest {
 		OrderItem orderItem = dod.getSpecificOrderItem(12);
 		ShippingItem shippingItem = orderItem.confirm(toSupplier);
 		shippingItemRepository.saveAndFlush(shippingItem);
-		
+				
 		List<ShippingItem> sis = shippingItemRepository.findByOrderNumber(shippingItem.getOrderNumber());
 		
-		assertNotNull(sis);
-		
+		assertTrue(!sis.isEmpty());
 	}
 }

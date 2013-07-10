@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import de.switajski.priebes.flexibleorders.reference.Status;
+
 @RooJavaBean
 @RooToString
 @RooJpaEntity
@@ -36,6 +38,7 @@ public class OrderItem extends Item {
      */
 	public ShippingItem confirm(boolean toSupplier) {
 		ShippingItem si = new ShippingItem(this, toSupplier);
+		this.setStatus(Status.CONFIRMED);
 		return si;
 	}
 }

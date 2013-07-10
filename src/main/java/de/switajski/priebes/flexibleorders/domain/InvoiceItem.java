@@ -3,6 +3,8 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.validation.constraints.NotNull;
+import de.switajski.priebes.flexibleorders.reference.Country;
+import javax.persistence.Enumerated;
 
 @RooJavaBean
 @RooToString
@@ -31,4 +33,10 @@ public class InvoiceItem extends Item {
      */
     @NotNull
     private int invoicePostalCode;
+
+    /**
+     */
+    @NotNull
+    @Enumerated
+    private Country invoiceCountry;
 }

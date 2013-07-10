@@ -4,6 +4,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.reference.Country;
 
 privileged aspect InvoiceItem_Roo_JavaBean {
     
@@ -45,6 +46,14 @@ privileged aspect InvoiceItem_Roo_JavaBean {
     
     public void InvoiceItem.setInvoicePostalCode(int invoicePostalCode) {
         this.invoicePostalCode = invoicePostalCode;
+    }
+    
+    public Country InvoiceItem.getInvoiceCountry() {
+        return this.invoiceCountry;
+    }
+    
+    public void InvoiceItem.setInvoiceCountry(Country invoiceCountry) {
+        this.invoiceCountry = invoiceCountry;
     }
     
 }

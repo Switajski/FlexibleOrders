@@ -7,4 +7,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaEntity
 public class InvoiceItem extends Item {
+
+    /**
+     */
+    private String invoiceName1;
 }

@@ -29,8 +29,14 @@ privileged aspect CategoryDataOnDemand_Roo_DataOnDemand {
     
     public Category CategoryDataOnDemand.getNewTransientCategory(int index) {
         Category obj = new Category();
+        setIntro(obj, index);
         setName(obj, index);
         return obj;
+    }
+    
+    public void CategoryDataOnDemand.setIntro(Category obj, int index) {
+        String intro = "intro_" + index;
+        obj.setIntro(intro);
     }
     
     public void CategoryDataOnDemand.setName(Category obj, int index) {

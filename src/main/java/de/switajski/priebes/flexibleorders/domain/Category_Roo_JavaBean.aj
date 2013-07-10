@@ -15,4 +15,12 @@ privileged aspect Category_Roo_JavaBean {
         this.name = name;
     }
     
+    public String Category.getIntro() {
+        return this.intro;
+    }
+    
+    public void Category.setIntro(String intro) {
+        this.intro = intro;
+    }
+    
 }

@@ -15,4 +15,8 @@ public class Category {
     @NotNull
     @Column(unique = true)
     private String name;
+
+    /**
+     */
+    private String intro;
 }

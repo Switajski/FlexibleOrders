@@ -17,4 +17,8 @@ public class Customer {
     /**
      */
     private String name1;
+
+    /**
+     */
+    private String name2;
 }

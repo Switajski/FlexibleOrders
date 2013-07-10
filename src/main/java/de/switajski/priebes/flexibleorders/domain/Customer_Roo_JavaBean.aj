@@ -23,4 +23,12 @@ privileged aspect Customer_Roo_JavaBean {
         this.name1 = name1;
     }
     
+    public String Customer.getName2() {
+        return this.name2;
+    }
+    
+    public void Customer.setName2(String name2) {
+        this.name2 = name2;
+    }
+    
 }

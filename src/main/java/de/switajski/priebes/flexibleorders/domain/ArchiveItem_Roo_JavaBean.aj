@@ -16,4 +16,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.expectedDelivery = expectedDelivery;
     }
     
+    public Boolean ArchiveItem.getAnNaeherei() {
+        return this.anNaeherei;
+    }
+    
+    public void ArchiveItem.setAnNaeherei(Boolean anNaeherei) {
+        this.anNaeherei = anNaeherei;
+    }
+    
 }

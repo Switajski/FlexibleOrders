@@ -19,4 +19,9 @@ public class ArchiveItem extends Item {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;
+
+    /**
+     */
+    @NotNull
+    private Boolean anNaeherei;
 }

@@ -47,4 +47,12 @@ privileged aspect ShippingItem_Roo_JavaBean {
         this.shippingCity = shippingCity;
     }
     
+    public int ShippingItem.getShippingPostalCode() {
+        return this.shippingPostalCode;
+    }
+    
+    public void ShippingItem.setShippingPostalCode(int shippingPostalCode) {
+        this.shippingPostalCode = shippingPostalCode;
+    }
+    
 }

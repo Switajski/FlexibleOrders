@@ -31,4 +31,9 @@ public class ShippingItem extends Item {
      */
     @NotNull
     private String shippingCity;
+
+    /**
+     */
+    @NotNull
+    private int shippingPostalCode;
 }

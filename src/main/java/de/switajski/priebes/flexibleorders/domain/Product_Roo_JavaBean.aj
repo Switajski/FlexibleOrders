@@ -4,6 +4,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 privileged aspect Product_Roo_JavaBean {
     
@@ -13,6 +14,14 @@ privileged aspect Product_Roo_JavaBean {
     
     public void Product.setProductNumber(Long productNumber) {
         this.productNumber = productNumber;
+    }
+    
+    public ProductType Product.getProductType() {
+        return this.productType;
+    }
+    
+    public void Product.setProductType(ProductType productType) {
+        this.productType = productType;
     }
     
 }

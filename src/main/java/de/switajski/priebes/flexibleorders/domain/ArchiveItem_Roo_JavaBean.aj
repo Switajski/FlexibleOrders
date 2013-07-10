@@ -56,4 +56,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.shippingCity = shippingCity;
     }
     
+    public int ArchiveItem.getShippingPostalCode() {
+        return this.shippingPostalCode;
+    }
+    
+    public void ArchiveItem.setShippingPostalCode(int shippingPostalCode) {
+        this.shippingPostalCode = shippingPostalCode;
+    }
+    
 }

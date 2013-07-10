@@ -42,4 +42,9 @@ public class ArchiveItem extends Item {
      */
     @NotNull
     private String shippingCity;
+
+    /**
+     */
+    @NotNull
+    private int shippingPostalCode;
 }

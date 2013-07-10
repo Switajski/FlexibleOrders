@@ -23,4 +23,9 @@ public class Product {
     @NotNull
     @Enumerated
     private ProductType productType;
+
+    /**
+     */
+    @NotNull
+    private String name;
 }

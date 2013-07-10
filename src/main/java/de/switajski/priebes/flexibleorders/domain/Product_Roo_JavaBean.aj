@@ -24,4 +24,12 @@ privileged aspect Product_Roo_JavaBean {
         this.productType = productType;
     }
     
+    public String Product.getName() {
+        return this.name;
+    }
+    
+    public void Product.setName(String name) {
+        this.name = name;
+    }
+    
 }

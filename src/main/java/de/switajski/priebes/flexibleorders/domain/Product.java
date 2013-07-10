@@ -37,4 +37,8 @@ public class Product {
     /**
      */
     private Long sortOrder;
+
+    /**
+     */
+    private String intro;
 }

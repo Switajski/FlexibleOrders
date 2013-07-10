@@ -8,5 +8,6 @@
         <field:display field="name" id="s_de_switajski_priebes_flexibleorders_domain_Product_name" object="${product}" z="JUjUrNybEekK4v4cahhQQCqJP3E="/>
         <field:display field="active" id="s_de_switajski_priebes_flexibleorders_domain_Product_active" object="${product}" z="bXuu16NWjy7EhU1+RG6HJOm2fkE="/>
         <field:display field="sortOrder" id="s_de_switajski_priebes_flexibleorders_domain_Product_sortOrder" object="${product}" z="k6XAy6H1XxIsHJ3F8it4fHJmogE="/>
+        <field:display field="intro" id="s_de_switajski_priebes_flexibleorders_domain_Product_intro" object="${product}" z="tdRtJmrTGc08awh3GyjzW/fKABw="/>
     </page:show>
 </div>

@@ -35,6 +35,7 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     public Product ProductDataOnDemand.getNewTransientProduct(int index) {
         Product obj = new Product();
         setActive(obj, index);
+        setIntro(obj, index);
         setName(obj, index);
         setProductNumber(obj, index);
         setProductType(obj, index);
@@ -45,6 +46,11 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     public void ProductDataOnDemand.setActive(Product obj, int index) {
         Boolean active = Boolean.TRUE;
         obj.setActive(active);
+    }
+    
+    public void ProductDataOnDemand.setIntro(Product obj, int index) {
+        String intro = "intro_" + index;
+        obj.setIntro(intro);
     }
     
     public void ProductDataOnDemand.setName(Product obj, int index) {

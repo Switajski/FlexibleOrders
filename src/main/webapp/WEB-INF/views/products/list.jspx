@@ -9,6 +9,7 @@
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_Product_name" property="name" z="bptBDGRn+inoejOUbA1RZ8bAZsE="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_Product_active" property="active" z="X7EngP5VRCSm/wkyiQSkXj+kweo="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_Product_sortOrder" property="sortOrder" z="l/iK3pPP2GzDh9VbI07Rsk6eBtY="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_Product_intro" property="intro" z="6gabcxNc6p4YTeDkL2Q73eqRXz0="/>
         </table:table>
     </page:list>
 </div>

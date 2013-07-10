@@ -48,4 +48,12 @@ privileged aspect Product_Roo_JavaBean {
         this.sortOrder = sortOrder;
     }
     
+    public String Product.getIntro() {
+        return this.intro;
+    }
+    
+    public void Product.setIntro(String intro) {
+        this.intro = intro;
+    }
+    
 }

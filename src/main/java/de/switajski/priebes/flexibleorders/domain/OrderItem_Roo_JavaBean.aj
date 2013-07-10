@@ -16,4 +16,12 @@ privileged aspect OrderItem_Roo_JavaBean {
         this.expectedDelivery = expectedDelivery;
     }
     
+    public int OrderItem.getOrderItemNumber() {
+        return this.orderItemNumber;
+    }
+    
+    public void OrderItem.setOrderItemNumber(int orderItemNumber) {
+        this.orderItemNumber = orderItemNumber;
+    }
+    
 }

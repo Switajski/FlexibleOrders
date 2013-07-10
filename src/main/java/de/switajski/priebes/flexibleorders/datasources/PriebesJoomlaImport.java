@@ -10,7 +10,6 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sun.awt.color.CMM.CSAccessor;
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.CustomerService;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
@@ -100,9 +99,9 @@ public class PriebesJoomlaImport {
 			String zip = rs.getString("zip".trim());
 			String phone_1 = rs.getString("phone_1");
 			
-			System.out.println("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
+			log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
 			
-			/*Kunde kunde = new Kunde();
+			/*Customer kunde = new Kunde();
 			kunde.setAnrede(Anrede.HERR);
 			kunde.setBenutzerkonto(true);
 			kunde.setEmail(email);
@@ -126,8 +125,8 @@ public class PriebesJoomlaImport {
 			
 			kunde.setLieferadresse(adresse);
 			kunde.setRechnungsadresse(adresse);
-			kunde.merge();
-			*/
+			kunde.merge();*/
+			
 		}
 //		stmt.close();
 

@@ -63,4 +63,8 @@ public class Customer {
     @NotNull
     @Column(unique = true)
     private String email;
+
+    /**
+     */
+    private String password;
 }

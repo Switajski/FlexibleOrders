@@ -43,6 +43,7 @@ privileged aspect CustomerDataOnDemand_Roo_DataOnDemand {
         setEmail(obj, index);
         setName1(obj, index);
         setName2(obj, index);
+        setPassword(obj, index);
         setPostalCode(obj, index);
         setShortName(obj, index);
         setStreet(obj, index);
@@ -77,6 +78,11 @@ privileged aspect CustomerDataOnDemand_Roo_DataOnDemand {
     public void CustomerDataOnDemand.setName2(Customer obj, int index) {
         String name2 = "name2_" + index;
         obj.setName2(name2);
+    }
+    
+    public void CustomerDataOnDemand.setPassword(Customer obj, int index) {
+        String password = "password_" + index;
+        obj.setPassword(password);
     }
     
     public void CustomerDataOnDemand.setPostalCode(Customer obj, int index) {

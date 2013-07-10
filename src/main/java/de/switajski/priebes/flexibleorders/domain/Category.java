@@ -27,4 +27,8 @@ public class Category {
     /**
      */
     private String image;
+
+    /**
+     */
+    private String imageGalery;
 }

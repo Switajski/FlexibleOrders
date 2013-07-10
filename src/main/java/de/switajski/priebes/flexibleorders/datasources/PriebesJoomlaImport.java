@@ -29,8 +29,6 @@ public class PriebesJoomlaImport {
 	Connection connection;
 	private Category rootCategory;
 	
-	@Autowired
-	CustomerService customerService;
 	
 	@Autowired
 	CustomerRepository customerRepository;

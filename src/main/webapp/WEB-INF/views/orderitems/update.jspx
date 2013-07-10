@@ -14,7 +14,7 @@
         <field:input field="invoiceNumber" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_invoiceNumber" validationMessageCode="field_invalid_integer" z="q8gs9eW/5tyUZLvYRoosYaDnfUY="/>
         <field:input field="accountNumber" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_accountNumber" validationMessageCode="field_invalid_integer" z="e31hcfnFNc5Bz/xTAFwsu8JeZds="/>
         <field:input field="orderNumber" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_orderNumber" required="true" validationMessageCode="field_invalid_integer" z="mgm4pHcVompa7lGhe5/dphQtio4="/>
-        <field:datetime dateTimePattern="${orderItem_expecteddelivery_date_format}" field="expectedDelivery" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_expectedDelivery" required="true" z="Kjn+EzwPQEqyHknHJPazy4RcGa0="/>
+        <field:datetime dateTimePattern="${orderItem_expecteddelivery_date_format}" field="expectedDelivery" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_expectedDelivery" z="M98KkcemuoEDwlziP0Mjh21p4mw="/>
         <field:input field="orderItemNumber" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_orderItemNumber" required="true" z="LmfDb1hA0p2ICOxStE/KOPi4tU0="/>
     </form:update>
 </div>

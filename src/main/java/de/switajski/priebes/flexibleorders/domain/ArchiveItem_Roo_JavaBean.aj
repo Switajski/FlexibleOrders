@@ -97,4 +97,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.invoiceStreet = invoiceStreet;
     }
     
+    public String ArchiveItem.getInvoiceCity() {
+        return this.invoiceCity;
+    }
+    
+    public void ArchiveItem.setInvoiceCity(String invoiceCity) {
+        this.invoiceCity = invoiceCity;
+    }
+    
 }

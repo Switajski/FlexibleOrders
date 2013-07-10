@@ -113,4 +113,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.invoicePostalCode = invoicePostalCode;
     }
     
+    public Country ArchiveItem.getInvoiceCountry() {
+        return this.invoiceCountry;
+    }
+    
+    public void ArchiveItem.setInvoiceCountry(Country invoiceCountry) {
+        this.invoiceCountry = invoiceCountry;
+    }
+    
 }

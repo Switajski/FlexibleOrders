@@ -78,4 +78,10 @@ public class ArchiveItem extends Item {
      */
     @NotNull
     private int invoicePostalCode;
+
+    /**
+     */
+    @NotNull
+    @Enumerated
+    private Country invoiceCountry;
 }

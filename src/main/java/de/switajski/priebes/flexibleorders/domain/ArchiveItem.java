@@ -63,4 +63,9 @@ public class ArchiveItem extends Item {
     /**
      */
     private String invoiceName2;
+
+    /**
+     */
+    @NotNull
+    private String invoiceStreet;
 }

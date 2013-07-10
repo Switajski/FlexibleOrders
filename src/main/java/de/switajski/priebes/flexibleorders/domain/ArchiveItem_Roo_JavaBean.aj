@@ -89,4 +89,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.invoiceName2 = invoiceName2;
     }
     
+    public String ArchiveItem.getInvoiceStreet() {
+        return this.invoiceStreet;
+    }
+    
+    public void ArchiveItem.setInvoiceStreet(String invoiceStreet) {
+        this.invoiceStreet = invoiceStreet;
+    }
+    
 }

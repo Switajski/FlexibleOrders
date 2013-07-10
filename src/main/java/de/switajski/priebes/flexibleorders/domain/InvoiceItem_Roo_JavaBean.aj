@@ -23,4 +23,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.invoiceName2 = invoiceName2;
     }
     
+    public String InvoiceItem.getInvoiceStreet() {
+        return this.invoiceStreet;
+    }
+    
+    public void InvoiceItem.setInvoiceStreet(String invoiceStreet) {
+        this.invoiceStreet = invoiceStreet;
+    }
+    
 }

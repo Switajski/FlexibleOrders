@@ -15,4 +15,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.invoiceName1 = invoiceName1;
     }
     
+    public String InvoiceItem.getInvoiceName2() {
+        return this.invoiceName2;
+    }
+    
+    public void InvoiceItem.setInvoiceName2(String invoiceName2) {
+        this.invoiceName2 = invoiceName2;
+    }
+    
 }

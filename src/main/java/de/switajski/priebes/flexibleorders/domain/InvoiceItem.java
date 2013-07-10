@@ -11,4 +11,8 @@ public class InvoiceItem extends Item {
     /**
      */
     private String invoiceName1;
+
+    /**
+     */
+    private String invoiceName2;
 }

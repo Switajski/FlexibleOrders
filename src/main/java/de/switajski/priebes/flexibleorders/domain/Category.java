@@ -35,4 +35,9 @@ public class Category {
     /**
      */
     private int sortOrder;
+
+    /**
+     */
+    @NotNull
+    private Boolean activated;
 }

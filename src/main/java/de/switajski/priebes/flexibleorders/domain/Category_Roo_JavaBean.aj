@@ -55,4 +55,12 @@ privileged aspect Category_Roo_JavaBean {
         this.sortOrder = sortOrder;
     }
     
+    public Boolean Category.getActivated() {
+        return this.activated;
+    }
+    
+    public void Category.setActivated(Boolean activated) {
+        this.activated = activated;
+    }
+    
 }

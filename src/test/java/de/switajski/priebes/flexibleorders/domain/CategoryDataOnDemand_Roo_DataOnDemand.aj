@@ -29,6 +29,7 @@ privileged aspect CategoryDataOnDemand_Roo_DataOnDemand {
     
     public Category CategoryDataOnDemand.getNewTransientCategory(int index) {
         Category obj = new Category();
+        setActivated(obj, index);
         setDescription(obj, index);
         setImage(obj, index);
         setImageGalery(obj, index);
@@ -36,6 +37,11 @@ privileged aspect CategoryDataOnDemand_Roo_DataOnDemand {
         setName(obj, index);
         setSortOrder(obj, index);
         return obj;
+    }
+    
+    public void CategoryDataOnDemand.setActivated(Category obj, int index) {
+        Boolean activated = Boolean.TRUE;
+        obj.setActivated(activated);
     }
     
     public void CategoryDataOnDemand.setDescription(Category obj, int index) {

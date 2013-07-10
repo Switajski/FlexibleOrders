@@ -76,4 +76,12 @@ privileged aspect Item_Roo_JavaBean {
         this.productNumber = productNumber;
     }
     
+    public Long Item.getOrderConfirmationNumber() {
+        return this.orderConfirmationNumber;
+    }
+    
+    public void Item.setOrderConfirmationNumber(Long orderConfirmationNumber) {
+        this.orderConfirmationNumber = orderConfirmationNumber;
+    }
+    
 }

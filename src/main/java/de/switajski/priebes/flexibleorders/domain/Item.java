@@ -65,4 +65,8 @@ public abstract class Item {
      */
     @NotNull
     private Long productNumber;
+
+    /**
+     */
+    private Long orderConfirmationNumber;
 }

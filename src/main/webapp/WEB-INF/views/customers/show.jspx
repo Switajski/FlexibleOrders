@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_de_switajski_priebes_flexibleorders_domain_Customer" object="${customer}" path="/customers" z="2iFPY5VYcgY1D5D71aqSFEtQ1tQ=">
+        <field:display field="shortName" id="s_de_switajski_priebes_flexibleorders_domain_Customer_shortName" object="${customer}" z="Uc1ClyYImH8SIJiNWJ6h+OqX3ng="/>
+        <field:display field="name1" id="s_de_switajski_priebes_flexibleorders_domain_Customer_name1" object="${customer}" z="0Bartp/ZBsFDsHHqGbt3Gxidd9A="/>
+        <field:display field="name2" id="s_de_switajski_priebes_flexibleorders_domain_Customer_name2" object="${customer}" z="uSrfLV74/joJ0urIOhwu+0zh5B8="/>
+        <field:display field="street" id="s_de_switajski_priebes_flexibleorders_domain_Customer_street" object="${customer}" z="SP/mtSskcPHuG45HrtzwYQzUPww="/>
+        <field:display field="city" id="s_de_switajski_priebes_flexibleorders_domain_Customer_city" object="${customer}" z="bnJvL+3DYCiKWWbY1ONbeLBF87E="/>
+        <field:display field="postalCode" id="s_de_switajski_priebes_flexibleorders_domain_Customer_postalCode" object="${customer}" z="9Nd4ei72N/vqmrudp9YFNKWr/Lg="/>
+        <field:display field="country" id="s_de_switajski_priebes_flexibleorders_domain_Customer_country" object="${customer}" z="OkywDu1H5CpoxxfmCLaz4sYXL18="/>
+    </page:show>
+</div>

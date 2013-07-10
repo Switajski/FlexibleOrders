@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="shippingitems/list">
+        <put-attribute name="body" value="/WEB-INF/views/shippingitems/list.jspx"/>
+    </definition>
+<definition extends="default" name="shippingitems/show">
+        <put-attribute name="body" value="/WEB-INF/views/shippingitems/show.jspx"/>
+    </definition>
+<definition extends="default" name="shippingitems/create">
+        <put-attribute name="body" value="/WEB-INF/views/shippingitems/create.jspx"/>
+    </definition>
+<definition extends="default" name="shippingitems/update">
+        <put-attribute name="body" value="/WEB-INF/views/shippingitems/update.jspx"/>
+    </definition>
+</tiles-definitions>

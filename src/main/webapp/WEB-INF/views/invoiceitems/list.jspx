@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_de_switajski_priebes_flexibleorders_domain_InvoiceItem" items="${invoiceitems}" z="astlmVp1nXy5Ef2eWjd4CIQxigA=">
+        <table:table data="${invoiceitems}" id="l_de_switajski_priebes_flexibleorders_domain_InvoiceItem" path="/invoiceitems" z="i625W0txDIRO+AmFBQvoJVFfjSY=">
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" property="product" z="at8GX1d7YeQGib0Kf+gjtZluTms="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" property="customer" z="sw/B7KBjTZ25AoOQ0tROHX3GW5A="/>
+            <table:column date="true" dateTimePattern="${invoiceItem_created_date_format}" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_created" property="created" z="0yM59ADf5iAt8OISZiCHStw/ZNc="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantity" property="quantity" z="SsCsCSGZQJl5Q50EppF9CMSMpCY="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_priceNet" property="priceNet" z="8qFlv6yqy9DfbmUgQvhbTOtdZnI="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" property="status" z="jdjoVIE7joYNqo9C/Wr2L1WleQ8="/>
+        </table:table>
+    </page:list>
+</div>

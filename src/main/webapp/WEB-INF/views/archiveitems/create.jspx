@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_de_switajski_priebes_flexibleorders_domain_ArchiveItem" modelAttribute="archiveItem" path="/archiveitems" render="${empty dependencies}" z="D3CIuNAnHFzTpZZ2uCmMv3yn95o=">
+        <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_product" itemValue="id" items="${products}" path="/products" required="true" z="aMprIMPAdd3+uaV5WAuReJY22Z0="/>
+        <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="owU4QJRzrawZ4AvIq4EQkR/3pz4="/>
+        <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_quantity" required="true" z="ypIzWAqTi/ZdZHd641VtPubATOM="/>
+        <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="42OYOBIqtwY55A/ZJ0I27kgG328="/>
+        <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_status" items="${statuses}" path="statuses" required="true" z="4b5FPGWUD09QaUHeH3EcnwVEIHo="/>
+        <field:input field="productName" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productName" required="true" z="SijF5WOjWAdw7QhmD3PF870iZxY="/>
+        <field:input field="productNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productNumber" required="true" validationMessageCode="field_invalid_integer" z="8iiKaK2Jlfmwjl6TNtkVjBiJ+us="/>
+        <field:input field="orderConfirmationNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_orderConfirmationNumber" validationMessageCode="field_invalid_integer" z="jIBHzIeFERdcW9PZcD349sRAr1s="/>
+        <field:input field="invoiceNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceNumber" validationMessageCode="field_invalid_integer" z="QGQyt+rHhEiz05argst4IHYXHk8="/>
+        <field:input field="accountNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_accountNumber" validationMessageCode="field_invalid_integer" z="Tk+YKhBloSpwVreyBb1y5pQ9EH4="/>
+        <field:input field="orderNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_orderNumber" required="true" validationMessageCode="field_invalid_integer" z="CL7Zm8uwFqwX7lpOPRics24d/Io="/>
+        <field:datetime dateTimePattern="${archiveItem_expecteddelivery_date_format}" field="expectedDelivery" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_expectedDelivery" required="true" z="xxzXaqyTyxrC8vQYKISM0c3DWNM="/>
+        <field:checkbox field="anNaeherei" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_anNaeherei" z="CF3n/Xf81WpNj+7NRN4wSpxSxRY="/>
+        <field:input field="shippingName1" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingName1" z="6qRrKR3czxsSbgrQScbQCFcCHiM="/>
+        <field:input field="shippingName2" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingName2" z="3VsWIFBxKOYnpx4LuDZoETRijyI="/>
+        <field:input field="shippingStreet" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingStreet" required="true" z="AEbPXZrgsRhblOF+y1zQ7gIFyEY="/>
+        <field:input field="shippingCity" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingCity" required="true" z="tbANJc3jkjNwPAVdiwaCbcNxHcM="/>
+        <field:input field="shippingPostalCode" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingPostalCode" required="true" z="yxomI0MPRs0yShFe0Dr/GUZyipU="/>
+        <field:select field="shippingCountry" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingCountry" items="${countrys}" path="countrys" required="true" z="JKGM3iCbjpHoOiyDS5OaS9GZBWM="/>
+        <field:input field="invoiceName1" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceName1" z="4/U9z3cG1AphdewuEyjVjSgq6wc="/>
+        <field:input field="invoiceName2" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceName2" z="xx+/lcVGwDPzl3kEmK0BEjSeY7A="/>
+        <field:input field="invoiceStreet" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceStreet" required="true" z="eIoBHL18IzNAY0RbLVkt3X7+h2I="/>
+        <field:input field="invoiceCity" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceCity" required="true" z="S3jLLWXAmMD8KJn7u//qFwqYK24="/>
+        <field:input field="invoicePostalCode" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoicePostalCode" required="true" z="bAx1EXlXBBUZTKjLK6OUieUHkK4="/>
+        <field:select field="invoiceCountry" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceCountry" items="${countrys}" path="countrys" required="true" z="Knb/YyJuUIryEcfobgOGk2ZIQOY="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_ArchiveItem" render="${not empty dependencies}" z="0O9c+In5VSNrZjIDXYXBMRMJdWU="/>
+</div>

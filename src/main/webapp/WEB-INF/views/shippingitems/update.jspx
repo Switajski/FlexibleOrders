@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_de_switajski_priebes_flexibleorders_domain_ShippingItem" modelAttribute="shippingItem" path="/shippingitems" versionField="Version" z="juK8kZqUX8i9UeV5pLstT8U65es=">
+        <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" itemValue="id" items="${products}" path="/products" required="true" z="FUSVEx8FjHQtfZe+jpbB99wKV3M="/>
+        <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="sqdoxjnIX5ebR/Ne7CiT+ijT+Wc="/>
+        <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantity" required="true" z="hT2/Dj0SGqmWZZnOCqjGOkl/lF0="/>
+        <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="RJ2mf8H2W30P4AvGi3oXxGzCfUI="/>
+        <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" items="${statuses}" path="statuses" required="true" z="E6F2D/UYC6sbcvud7u7zr6ex9to="/>
+        <field:input field="productName" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productName" required="true" z="Pc6KpvAV05G+FKJS/p6QpT2mu98="/>
+        <field:input field="productNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productNumber" required="true" validationMessageCode="field_invalid_integer" z="OeK6YWSFTi+3WCH3XquDwENKYHI="/>
+        <field:input field="orderConfirmationNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_orderConfirmationNumber" validationMessageCode="field_invalid_integer" z="QWPUmX3RkICVN7JbraS23jBtevk="/>
+        <field:input field="invoiceNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_invoiceNumber" validationMessageCode="field_invalid_integer" z="mB7rY69k3nkP108mojgkJL8nvf0="/>
+        <field:input field="accountNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_accountNumber" validationMessageCode="field_invalid_integer" z="51Sv6OvXPDCzByH4KvZOXrSoBXE="/>
+        <field:input field="orderNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_orderNumber" required="true" validationMessageCode="field_invalid_integer" z="1/O9yInhHNJbO2PLaLPv34ye8/4="/>
+        <field:checkbox field="transmitToSupplier" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_transmitToSupplier" z="JBliM4TeL5UF7HX6YhGbq1tUwnA="/>
+        <field:input field="shippingName1" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingName1" z="OprV3hyx3MuNJNDUK0QBZ1713Ac="/>
+        <field:input field="shippingName2" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingName2" z="H9vUjoG264CRVug2TcVD1HCOEh4="/>
+        <field:input field="shippingStreet" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingStreet" required="true" z="mn0u5z2Eum/5+ssxj2Wir5qzE5A="/>
+        <field:input field="shippingCity" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCity" required="true" z="KhxXFChQHX3b/aSvDl17NvU13BA="/>
+        <field:input field="shippingPostalCode" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingPostalCode" required="true" z="26Gwy9ZBMONmU4TrLYrRfHI0EW4="/>
+        <field:select field="shippingCountry" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCountry" items="${countrys}" path="countrys" required="true" z="YTZhrQPFxZzCgshGrOIah7YnnUg="/>
+    </form:update>
+</div>

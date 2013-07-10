@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_de_switajski_priebes_flexibleorders_domain_ArchiveItem" object="${archiveitem}" path="/archiveitems" z="gPakvGrSifBmRUPKL2JsGP9x9T4=">
+        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_product" object="${archiveitem}" z="/mRaX3UsIHCGf61ytEaPMUmKTaE="/>
+        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_customer" object="${archiveitem}" z="95JrGL1JCTwMZp0Pmb5UdrDRpeo="/>
+        <field:display field="quantity" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_quantity" object="${archiveitem}" z="9iifeTpSkD061hgMt+eNhNsL9Wo="/>
+        <field:display field="priceNet" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_priceNet" object="${archiveitem}" z="2pYij5vI44ptLbANHDqKOWb42EU="/>
+        <field:display field="status" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_status" object="${archiveitem}" z="2rJgfF1aFoh4/UwJfBPCET+HLrg="/>
+        <field:display field="productName" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productName" object="${archiveitem}" z="JtuXYjEL5P4eYdCtOuM8+pySIR0="/>
+        <field:display field="productNumber" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productNumber" object="${archiveitem}" z="WhC0P+JPfDLBhyPK89EPSVzEflE="/>
+        <field:display field="orderConfirmationNumber" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_orderConfirmationNumber" object="${archiveitem}" z="5G+/chV7Z1sME+dRq5xgi2kGzJI="/>
+        <field:display field="invoiceNumber" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceNumber" object="${archiveitem}" z="w1V4Dw4tlPbWHt6sFgJxaKBlv2Q="/>
+        <field:display field="accountNumber" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_accountNumber" object="${archiveitem}" z="dC13TUnup9DU2KZl5ju53xsa278="/>
+        <field:display field="orderNumber" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_orderNumber" object="${archiveitem}" z="/lDyRjxmb2RQthyAJJF/ZiQks80="/>
+        <field:display date="true" dateTimePattern="${archiveItem_expecteddelivery_date_format}" field="expectedDelivery" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_expectedDelivery" object="${archiveitem}" z="aDPFQP8hI+YCM1ccLc7kRD7od/4="/>
+        <field:display field="anNaeherei" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_anNaeherei" object="${archiveitem}" z="Z5nq/4tJ1sEsfQdEAIjGFZg5ypQ="/>
+        <field:display field="shippingName1" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingName1" object="${archiveitem}" z="Kvhu21+sxZ05Lk9ooo4MNJaHU4s="/>
+        <field:display field="shippingName2" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingName2" object="${archiveitem}" z="t1wkl0070xUm9ntbeM7JicxRcfM="/>
+        <field:display field="shippingStreet" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingStreet" object="${archiveitem}" z="AtD+VEeftUGsBDqYmP6ozpyT37Q="/>
+        <field:display field="shippingCity" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingCity" object="${archiveitem}" z="3Ex3qOp8WznHzjPcuEj6tKz2LlQ="/>
+        <field:display field="shippingPostalCode" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingPostalCode" object="${archiveitem}" z="xrf06TvbUGcBBnEEwzaS2rFpE54="/>
+        <field:display field="shippingCountry" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_shippingCountry" object="${archiveitem}" z="nXp+wApwDFYeCzXGYMRTZ0dGdkQ="/>
+        <field:display field="invoiceName1" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceName1" object="${archiveitem}" z="taQRH4yJ1lq3EjaSvaWkqAZWgE8="/>
+        <field:display field="invoiceName2" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceName2" object="${archiveitem}" z="ESA5OpZkx+GFGyvr2FQi9UWff/A="/>
+        <field:display field="invoiceStreet" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceStreet" object="${archiveitem}" z="Ho+4SqV0rvVyFb1Uu2owviCycis="/>
+        <field:display field="invoiceCity" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceCity" object="${archiveitem}" z="wcF2ZpC6j3k5L/p1gtTqOpZaNic="/>
+        <field:display field="invoicePostalCode" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoicePostalCode" object="${archiveitem}" z="IvROBoGGkFKbTa2PsN4U8LPgkLk="/>
+        <field:display field="invoiceCountry" id="s_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceCountry" object="${archiveitem}" z="qo7TvDn9sThg7AT0EpP/3plkgEc="/>
+    </page:show>
+</div>

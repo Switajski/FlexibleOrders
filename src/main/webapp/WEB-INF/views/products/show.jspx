@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_de_switajski_priebes_flexibleorders_domain_Product" object="${product}" path="/products" z="JWmKUm0D3MvPUtYksbogpJlKZ+c=">
+        <field:display field="productNumber" id="s_de_switajski_priebes_flexibleorders_domain_Product_productNumber" object="${product}" z="F1cQH3xpCwpuJO7h6ZHNGokSC8k="/>
+        <field:display field="productType" id="s_de_switajski_priebes_flexibleorders_domain_Product_productType" object="${product}" z="OqGPlH6Y++znsPRCe2v/mWXg2sU="/>
+        <field:display field="name" id="s_de_switajski_priebes_flexibleorders_domain_Product_name" object="${product}" z="JUjUrNybEekK4v4cahhQQCqJP3E="/>
+        <field:display field="active" id="s_de_switajski_priebes_flexibleorders_domain_Product_active" object="${product}" z="bXuu16NWjy7EhU1+RG6HJOm2fkE="/>
+        <field:display field="sortOrder" id="s_de_switajski_priebes_flexibleorders_domain_Product_sortOrder" object="${product}" z="k6XAy6H1XxIsHJ3F8it4fHJmogE="/>
+    </page:show>
+</div>

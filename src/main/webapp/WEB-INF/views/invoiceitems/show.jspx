@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_de_switajski_priebes_flexibleorders_domain_InvoiceItem" object="${invoiceitem}" path="/invoiceitems" z="Bh+vxbtQgsbGA8poDCxIXpBlzgA=">
+        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" object="${invoiceitem}" z="FjsQqpc8o7TsRuaKNcxgXmVbKzo="/>
+        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" object="${invoiceitem}" z="1zKFmytomUnltHVKi+ZZYw0vpCU="/>
+        <field:display field="quantity" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantity" object="${invoiceitem}" z="+UoTLfXXSlsEcdf1+sGPik0xdiY="/>
+        <field:display field="priceNet" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_priceNet" object="${invoiceitem}" z="thUyGLCT6yBo7na5EfcbssMZhWg="/>
+        <field:display field="status" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" object="${invoiceitem}" z="xzG1OuGbnLOmcKLbLhUh7gLcHbU="/>
+        <field:display field="productName" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productName" object="${invoiceitem}" z="A6CxzPCKaxiv3yK02GZpIwj6JDw="/>
+        <field:display field="productNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productNumber" object="${invoiceitem}" z="b9GHeaqFWt1OF8uA2sxGKZVcarY="/>
+        <field:display field="orderConfirmationNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_orderConfirmationNumber" object="${invoiceitem}" z="EWcZDaKiIlnVjtzt/Fj2FJiTN2A="/>
+        <field:display field="invoiceNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceNumber" object="${invoiceitem}" z="yfeEPPmHFDsRGAijgTNdTAcHFdk="/>
+        <field:display field="accountNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_accountNumber" object="${invoiceitem}" z="M1ZhvvidrnjGs29M+Nw+e77mPlQ="/>
+        <field:display field="orderNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_orderNumber" object="${invoiceitem}" z="T/kS9og9sbKq/cA2sEZeYdBvVU8="/>
+        <field:display field="invoiceName1" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceName1" object="${invoiceitem}" z="x24WOuHN7ae1BP6euBR5I0ykSwM="/>
+        <field:display field="invoiceName2" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceName2" object="${invoiceitem}" z="UKIbZTH1+Q40kMkBsMJRYTezVqs="/>
+        <field:display field="invoiceStreet" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceStreet" object="${invoiceitem}" z="b3HcQL1va+yXNDaYY4GPuhkQ/fo="/>
+        <field:display field="invoiceCity" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCity" object="${invoiceitem}" z="Sxe05BXcydu5zRWdIsVV4aP/SVI="/>
+        <field:display field="invoicePostalCode" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoicePostalCode" object="${invoiceitem}" z="9uLFNrwvxL+TtjUoi/h4MpHXdg4="/>
+        <field:display field="invoiceCountry" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCountry" object="${invoiceitem}" z="shwe2UXrR0MZVjoWoYBeKOw9Z9c="/>
+    </page:show>
+</div>

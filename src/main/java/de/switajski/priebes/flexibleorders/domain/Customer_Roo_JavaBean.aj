@@ -39,4 +39,12 @@ privileged aspect Customer_Roo_JavaBean {
         this.street = street;
     }
     
+    public String Customer.getCity() {
+        return this.city;
+    }
+    
+    public void Customer.setCity(String city) {
+        this.city = city;
+    }
+    
 }

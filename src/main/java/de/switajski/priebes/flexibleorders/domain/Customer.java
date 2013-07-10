@@ -27,4 +27,9 @@ public class Customer {
      */
     @NotNull
     private String street;
+
+    /**
+     */
+    @NotNull
+    private String city;
 }

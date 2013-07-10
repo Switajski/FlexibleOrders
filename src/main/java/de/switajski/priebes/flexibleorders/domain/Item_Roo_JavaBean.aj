@@ -3,6 +3,7 @@
 
 package de.switajski.priebes.flexibleorders.domain;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.domain.Product;
 
@@ -14,6 +15,14 @@ privileged aspect Item_Roo_JavaBean {
     
     public void Item.setProduct(Product product) {
         this.product = product;
+    }
+    
+    public Customer Item.getCustomer() {
+        return this.customer;
+    }
+    
+    public void Item.setCustomer(Customer customer) {
+        this.customer = customer;
     }
     
 }

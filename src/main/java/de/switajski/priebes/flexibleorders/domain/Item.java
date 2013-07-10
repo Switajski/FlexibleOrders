@@ -4,6 +4,7 @@ import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.persistence.ManyToOne;
 
 @RooJavaBean
 @RooToString
@@ -15,4 +16,10 @@ public abstract class Item {
     @NotNull
     @OneToOne
     private Product product;
+
+    /**
+     */
+    @NotNull
+    @ManyToOne
+    private Customer customer;
 }

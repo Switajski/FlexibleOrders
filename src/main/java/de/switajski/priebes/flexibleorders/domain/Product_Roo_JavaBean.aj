@@ -40,4 +40,12 @@ privileged aspect Product_Roo_JavaBean {
         this.active = active;
     }
     
+    public Long Product.getSortOrder() {
+        return this.sortOrder;
+    }
+    
+    public void Product.setSortOrder(Long sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+    
 }

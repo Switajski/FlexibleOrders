@@ -33,4 +33,8 @@ public class Product {
      */
     @NotNull
     private Boolean active;
+
+    /**
+     */
+    private Long sortOrder;
 }

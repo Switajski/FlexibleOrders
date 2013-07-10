@@ -105,4 +105,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.invoiceCity = invoiceCity;
     }
     
+    public int ArchiveItem.getInvoicePostalCode() {
+        return this.invoicePostalCode;
+    }
+    
+    public void ArchiveItem.setInvoicePostalCode(int invoicePostalCode) {
+        this.invoicePostalCode = invoicePostalCode;
+    }
+    
 }

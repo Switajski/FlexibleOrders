@@ -4,6 +4,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.reference.Country;
 
 privileged aspect ShippingItem_Roo_JavaBean {
     
@@ -53,6 +54,14 @@ privileged aspect ShippingItem_Roo_JavaBean {
     
     public void ShippingItem.setShippingPostalCode(int shippingPostalCode) {
         this.shippingPostalCode = shippingPostalCode;
+    }
+    
+    public Country ShippingItem.getShippingCountry() {
+        return this.shippingCountry;
+    }
+    
+    public void ShippingItem.setShippingCountry(Country shippingCountry) {
+        this.shippingCountry = shippingCountry;
     }
     
 }

@@ -92,4 +92,12 @@ privileged aspect Item_Roo_JavaBean {
         this.invoiceNumber = invoiceNumber;
     }
     
+    public Long Item.getAccountNumber() {
+        return this.accountNumber;
+    }
+    
+    public void Item.setAccountNumber(Long accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+    
 }

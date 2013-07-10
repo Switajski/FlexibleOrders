@@ -73,4 +73,8 @@ public abstract class Item {
     /**
      */
     private Long invoiceNumber;
+
+    /**
+     */
+    private Long accountNumber;
 }

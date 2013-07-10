@@ -21,4 +21,9 @@ public class ShippingItem extends Item {
     /**
      */
     private String shippingName2;
+
+    /**
+     */
+    @NotNull
+    private String shippingStreet;
 }

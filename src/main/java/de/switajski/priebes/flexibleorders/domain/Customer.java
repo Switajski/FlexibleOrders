@@ -13,4 +13,8 @@ public class Customer {
      */
     @Column(unique = true)
     private String shortName;
+
+    /**
+     */
+    private String name1;
 }

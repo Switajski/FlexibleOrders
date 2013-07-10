@@ -15,4 +15,12 @@ privileged aspect Customer_Roo_JavaBean {
         this.shortName = shortName;
     }
     
+    public String Customer.getName1() {
+        return this.name1;
+    }
+    
+    public void Customer.setName1(String name1) {
+        this.name1 = name1;
+    }
+    
 }

@@ -41,4 +41,8 @@ public class Product {
     /**
      */
     private String intro;
+
+    /**
+     */
+    private String description;
 }

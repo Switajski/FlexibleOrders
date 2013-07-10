@@ -56,4 +56,12 @@ privileged aspect Product_Roo_JavaBean {
         this.intro = intro;
     }
     
+    public String Product.getDescription() {
+        return this.description;
+    }
+    
+    public void Product.setDescription(String description) {
+        this.description = description;
+    }
+    
 }

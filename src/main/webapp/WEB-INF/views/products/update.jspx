@@ -9,5 +9,6 @@
         <field:checkbox field="active" id="c_de_switajski_priebes_flexibleorders_domain_Product_active" z="MSFGiHJAA1FG5wErrbS37vfXtlo="/>
         <field:input field="sortOrder" id="c_de_switajski_priebes_flexibleorders_domain_Product_sortOrder" validationMessageCode="field_invalid_integer" z="6EP36obYaZ2bEBg/Zz959bN43ko="/>
         <field:input field="intro" id="c_de_switajski_priebes_flexibleorders_domain_Product_intro" z="nV22DCR4qnJEfPe8hFBnbVg4sqs="/>
+        <field:input field="description" id="c_de_switajski_priebes_flexibleorders_domain_Product_description" z="5rarNyjp6cNa/A1zOJPzgEeWGvA="/>
     </form:update>
 </div>

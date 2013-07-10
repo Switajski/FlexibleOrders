@@ -84,4 +84,12 @@ privileged aspect Item_Roo_JavaBean {
         this.orderConfirmationNumber = orderConfirmationNumber;
     }
     
+    public Long Item.getInvoiceNumber() {
+        return this.invoiceNumber;
+    }
+    
+    public void Item.setInvoiceNumber(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+    
 }

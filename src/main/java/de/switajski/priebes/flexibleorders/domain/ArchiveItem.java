@@ -24,4 +24,8 @@ public class ArchiveItem extends Item {
      */
     @NotNull
     private Boolean anNaeherei;
+
+    /**
+     */
+    private String shippingName1;
 }

@@ -24,4 +24,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.anNaeherei = anNaeherei;
     }
     
+    public String ArchiveItem.getShippingName1() {
+        return this.shippingName1;
+    }
+    
+    public void ArchiveItem.setShippingName1(String shippingName1) {
+        this.shippingName1 = shippingName1;
+    }
+    
 }

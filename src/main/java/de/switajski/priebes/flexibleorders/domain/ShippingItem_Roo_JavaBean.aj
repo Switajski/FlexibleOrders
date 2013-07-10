@@ -23,4 +23,12 @@ privileged aspect ShippingItem_Roo_JavaBean {
         this.shippingName1 = shippingName1;
     }
     
+    public String ShippingItem.getShippingName2() {
+        return this.shippingName2;
+    }
+    
+    public void ShippingItem.setShippingName2(String shippingName2) {
+        this.shippingName2 = shippingName2;
+    }
+    
 }

@@ -17,4 +17,8 @@ public class ShippingItem extends Item {
     /**
      */
     private String shippingName1;
+
+    /**
+     */
+    private String shippingName2;
 }

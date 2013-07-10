@@ -28,4 +28,8 @@ public class ArchiveItem extends Item {
     /**
      */
     private String shippingName1;
+
+    /**
+     */
+    private String shippingName2;
 }

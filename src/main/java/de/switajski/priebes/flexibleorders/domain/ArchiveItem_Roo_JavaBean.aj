@@ -32,4 +32,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.shippingName1 = shippingName1;
     }
     
+    public String ArchiveItem.getShippingName2() {
+        return this.shippingName2;
+    }
+    
+    public void ArchiveItem.setShippingName2(String shippingName2) {
+        this.shippingName2 = shippingName2;
+    }
+    
 }

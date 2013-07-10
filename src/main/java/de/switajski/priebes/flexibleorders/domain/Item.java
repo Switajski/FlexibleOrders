@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.math.BigDecimal;
+import javax.validation.constraints.Min;
 
 @RooJavaBean
 @RooToString
@@ -40,4 +42,9 @@ public abstract class Item {
      */
     @NotNull
     private int quantity;
+
+    /**
+     */
+    @Min(0L)
+    private BigDecimal priceNet;
 }

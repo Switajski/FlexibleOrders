@@ -6,6 +6,7 @@ package de.switajski.priebes.flexibleorders.domain;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import java.math.BigDecimal;
 import java.util.Date;
 
 privileged aspect Item_Roo_JavaBean {
@@ -40,6 +41,14 @@ privileged aspect Item_Roo_JavaBean {
     
     public void Item.setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+    
+    public BigDecimal Item.getPriceNet() {
+        return this.priceNet;
+    }
+    
+    public void Item.setPriceNet(BigDecimal priceNet) {
+        this.priceNet = priceNet;
     }
     
 }

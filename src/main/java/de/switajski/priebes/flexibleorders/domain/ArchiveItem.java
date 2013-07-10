@@ -37,4 +37,9 @@ public class ArchiveItem extends Item {
      */
     @NotNull
     private String shippingStreet;
+
+    /**
+     */
+    @NotNull
+    private String shippingCity;
 }

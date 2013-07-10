@@ -70,5 +70,5 @@ public class Customer {
 
     /**
      */
-    private Long phone;
+    private String phone;
 }

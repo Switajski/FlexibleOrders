@@ -87,7 +87,7 @@ privileged aspect CustomerDataOnDemand_Roo_DataOnDemand {
     }
     
     public void CustomerDataOnDemand.setPhone(Customer obj, int index) {
-        Long phone = new Integer(index).longValue();
+        String phone = "phone_" + index;
         obj.setPhone(phone);
     }
     

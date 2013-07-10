@@ -104,7 +104,8 @@ public class PriebesJoomlaImport {
 			log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
 			
 			Customer c = new Customer();
-			c.setEmail(email);			
+			c.setEmail(email);		
+			c.setPhone(phone_1);
 			c.setName2(first_name + " " + last_name);
 			c.setPassword(password);
 			c.setCreated(new Date());
@@ -116,8 +117,6 @@ public class PriebesJoomlaImport {
 			
 		}
 		stmt.close();
-
-
 		
 	}
 

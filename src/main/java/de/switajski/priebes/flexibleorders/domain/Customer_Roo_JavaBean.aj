@@ -89,11 +89,11 @@ privileged aspect Customer_Roo_JavaBean {
         this.password = password;
     }
     
-    public Long Customer.getPhone() {
+    public String Customer.getPhone() {
         return this.phone;
     }
     
-    public void Customer.setPhone(Long phone) {
+    public void Customer.setPhone(String phone) {
         this.phone = phone;
     }
     

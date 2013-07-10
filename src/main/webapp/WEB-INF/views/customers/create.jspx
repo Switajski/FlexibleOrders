@@ -12,7 +12,7 @@
         <field:select field="country" id="c_de_switajski_priebes_flexibleorders_domain_Customer_country" items="${countrys}" path="countrys" required="true" z="aGS18dZmUzsePScvKvt/VkcnzlY="/>
         <field:input field="email" id="c_de_switajski_priebes_flexibleorders_domain_Customer_email" required="true" validationMessageCode="field_invalid_email" z="DRVbGzB/eeLCU9Loxa03f/AeFjM="/>
         <field:input field="password" id="c_de_switajski_priebes_flexibleorders_domain_Customer_password" z="yec+utrgAmX+Vlr8pmAqI2kg6f0="/>
-        <field:input field="phone" id="c_de_switajski_priebes_flexibleorders_domain_Customer_phone" validationMessageCode="field_invalid_integer" z="U7x4JFYXFmepiyuCANWryWyBBSE="/>
+        <field:input field="phone" id="c_de_switajski_priebes_flexibleorders_domain_Customer_phone" z="TCj+DMX5amvxKGO2Gjj0rhjxNrM="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_Customer" render="${not empty dependencies}" z="Jq+BLmlXjrd38Rzo7pAm293ZovI="/>
 </div>

@@ -39,4 +39,12 @@ privileged aspect ShippingItem_Roo_JavaBean {
         this.shippingStreet = shippingStreet;
     }
     
+    public String ShippingItem.getShippingCity() {
+        return this.shippingCity;
+    }
+    
+    public void ShippingItem.setShippingCity(String shippingCity) {
+        this.shippingCity = shippingCity;
+    }
+    
 }

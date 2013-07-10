@@ -26,4 +26,9 @@ public class ShippingItem extends Item {
      */
     @NotNull
     private String shippingStreet;
+
+    /**
+     */
+    @NotNull
+    private String shippingCity;
 }

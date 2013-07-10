@@ -10,4 +10,8 @@ privileged aspect ShippingItem_Roo_Jpa_Entity {
     
     declare @type: ShippingItem: @Entity;
     
+    public ShippingItem.new() {
+        super();
+    }
+
 }

@@ -6,7 +6,6 @@ package de.switajski.priebes.flexibleorders.domain;
 import de.switajski.priebes.flexibleorders.domain.ShippingItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItemIntegrationTest;
 import de.switajski.priebes.flexibleorders.domain.ShippingItemService;
-import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
@@ -32,9 +31,6 @@ privileged aspect ShippingItemIntegrationTest_Roo_IntegrationTest {
     
     @Autowired
     ShippingItemService ShippingItemIntegrationTest.shippingItemService;
-    
-    @Autowired
-    ShippingItemRepository ShippingItemIntegrationTest.shippingItemRepository;
     
     @Test
     public void ShippingItemIntegrationTest.testCountAllShippingItems() {

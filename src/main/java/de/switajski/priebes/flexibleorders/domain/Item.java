@@ -82,4 +82,28 @@ public abstract class Item {
      */
     @NotNull
     private Long orderNumber;
+    
+    /**
+     * Data like productnumber can change over time. 
+     * In order to get time-specific data it is nessecary to historize it.
+     * 
+     * @param item from which data will be copied
+     */
+    public void historize(Item item){
+    	setAccountNumber(item.getAccountNumber());
+    	setCustomer(item.getCustomer());
+    	setInvoiceNumber(item.getInvoiceNumber());
+    	setOrderNumber(item.getOrderNumber());
+    	setAccountNumber(item.getAccountNumber());
+    	setOrderConfirmationNumber(item.getOrderConfirmationNumber());
+    	setPriceNet(item.getPriceNet());
+    	setProduct(item.getProduct());
+    	setProductName(item.getProductName());
+    	setProductNumber(item.getProductNumber());
+    	setQuantity(item.getQuantity());
+    }
+
+	public void setStatus(Status status) {
+        this.status = status;
+    }
 }

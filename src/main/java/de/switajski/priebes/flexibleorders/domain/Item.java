@@ -60,4 +60,9 @@ public abstract class Item {
      */
     @NotNull
     private String productName;
+
+    /**
+     */
+    @NotNull
+    private Long productNumber;
 }

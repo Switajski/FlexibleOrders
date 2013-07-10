@@ -68,4 +68,12 @@ privileged aspect Item_Roo_JavaBean {
         this.productName = productName;
     }
     
+    public Long Item.getProductNumber() {
+        return this.productNumber;
+    }
+    
+    public void Item.setProductNumber(Long productNumber) {
+        this.productNumber = productNumber;
+    }
+    
 }

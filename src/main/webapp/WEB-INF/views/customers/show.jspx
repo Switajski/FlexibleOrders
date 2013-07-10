@@ -12,5 +12,6 @@
         <field:display field="country" id="s_de_switajski_priebes_flexibleorders_domain_Customer_country" object="${customer}" z="OkywDu1H5CpoxxfmCLaz4sYXL18="/>
         <field:display field="email" id="s_de_switajski_priebes_flexibleorders_domain_Customer_email" object="${customer}" z="bBSe3cTsI3S7qU5pVZjNmFVS1V4="/>
         <field:display field="password" id="s_de_switajski_priebes_flexibleorders_domain_Customer_password" object="${customer}" z="l2rhZf0Gkm2yCCvfhVqT/BGjtXE="/>
+        <field:display field="phone" id="s_de_switajski_priebes_flexibleorders_domain_Customer_phone" object="${customer}" z="Q4AZCQRSNUE5dPqEVLMG01Xh7Rs="/>
     </page:show>
 </div>

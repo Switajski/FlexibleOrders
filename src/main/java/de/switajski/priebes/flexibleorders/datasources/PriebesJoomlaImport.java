@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.switajski.priebes.flexibleorders.domain.Category;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.CustomerService;
+import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 
 public class PriebesJoomlaImport {
@@ -101,34 +103,19 @@ public class PriebesJoomlaImport {
 			
 			log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
 			
-			/*Customer kunde = new Kunde();
-			kunde.setAnrede(Anrede.HERR);
-			kunde.setBenutzerkonto(true);
-			kunde.setEmail(email);
-			kunde.setKundenart(Kundenart.HAENDLER);
-			kunde.setNachname(last_name);
-			kunde.setPassword(password);
-			kunde.setVorname(first_name);
-			kunde.setErstelltDatum(new Date());
-			kunde.setKundennummer(user_id);
-			kunde.persist();
-			
-			Adresse adresse = new Adresse();
-			adresse.setErstelltDatum(new Date());
-			adresse.setKunde(kunde);
-			adresse.setLand(Land.DEUTSCHLAND);
-			adresse.setPerson(first_name + " "+last_name);
-			adresse.setPlz(Integer.parseInt(zip.trim()));
-			adresse.setStadt(city);
-			adresse.setStrasse(address_1);
-			adresse.persist();
-			
-			kunde.setLieferadresse(adresse);
-			kunde.setRechnungsadresse(adresse);
-			kunde.merge();*/
+			Customer c = new Customer();
+			c.setEmail(email);			
+			c.setName2(first_name + " " + last_name);
+			c.setPassword(password);
+			c.setCreated(new Date());
+			c.setCity(city);
+			c.setStreet(address_1);
+			c.setPostalCode(Integer.parseInt(zip.trim()));
+			c.setCountry(Country.GERMANY);
+			customerRepository.save(c);
 			
 		}
-//		stmt.close();
+		stmt.close();
 
 
 		

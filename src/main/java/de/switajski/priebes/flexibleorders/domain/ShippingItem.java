@@ -13,4 +13,8 @@ public class ShippingItem extends Item {
      */
     @NotNull
     private Boolean transmitToSupplier;
+
+    /**
+     */
+    private String shippingName1;
 }

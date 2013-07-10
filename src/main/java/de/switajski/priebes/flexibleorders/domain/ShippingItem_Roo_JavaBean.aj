@@ -15,4 +15,12 @@ privileged aspect ShippingItem_Roo_JavaBean {
         this.transmitToSupplier = transmitToSupplier;
     }
     
+    public String ShippingItem.getShippingName1() {
+        return this.shippingName1;
+    }
+    
+    public void ShippingItem.setShippingName1(String shippingName1) {
+        this.shippingName1 = shippingName1;
+    }
+    
 }

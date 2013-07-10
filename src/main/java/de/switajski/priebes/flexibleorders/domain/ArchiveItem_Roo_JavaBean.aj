@@ -73,4 +73,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.shippingCountry = shippingCountry;
     }
     
+    public String ArchiveItem.getInvoiceName1() {
+        return this.invoiceName1;
+    }
+    
+    public void ArchiveItem.setInvoiceName1(String invoiceName1) {
+        this.invoiceName1 = invoiceName1;
+    }
+    
 }

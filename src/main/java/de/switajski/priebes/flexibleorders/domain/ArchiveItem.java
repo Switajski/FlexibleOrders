@@ -55,4 +55,8 @@ public class ArchiveItem extends Item {
     @NotNull
     @Enumerated
     private Country shippingCountry;
+
+    /**
+     */
+    private String invoiceName1;
 }

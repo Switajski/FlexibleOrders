@@ -23,4 +23,12 @@ privileged aspect Category_Roo_JavaBean {
         this.intro = intro;
     }
     
+    public String Category.getDescription() {
+        return this.description;
+    }
+    
+    public void Category.setDescription(String description) {
+        this.description = description;
+    }
+    
 }

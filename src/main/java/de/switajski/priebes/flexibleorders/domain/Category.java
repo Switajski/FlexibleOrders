@@ -19,4 +19,8 @@ public class Category {
     /**
      */
     private String intro;
+
+    /**
+     */
+    private String description;
 }

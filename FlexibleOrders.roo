@@ -1,0 +1,125 @@
+// Spring Roo 1.2.4.RELEASE [rev 75337cf] log opened at 2013-07-09 14:30:40
+project --topLevelPackage de.switajski.priebes.flexibleOrders --projectName FlexibleOrders
+git setup
+jpa setup --provider HIBERNATE --database POSTGRES --userName postgres --password kyuss!)89 --databaseName leanorders
+
+enum type --class ~.reference.Status
+enum constant --name ORDERED
+enum constant --name CONFIRMED
+enum constant --name SHIPPED
+enum constant --name COMPLETED
+
+enum type --class ~.reference.ProductType
+enum constant --name SHIPPING
+enum constant --name CUSTOM
+enum constant --name PRODUCT
+
+enum type --class ~.reference.Country
+enum constant --name GERMANY
+enum constant --name SWITZERLAND
+enum constant --name AUSTRIA
+enum constant --name POLAND
+enum constant --name FRANCE
+enum constant --name ITALIA
+enum constant --name UNITED_KINGDOM
+enum constant --name IRELAND
+
+entity jpa --class ~.domain.Item --abstract --inheritanceType TABLE_PER_CLASS --activeRecord false
+entity jpa --class ~.domain.Product --activeRecord false --testAutomatically
+entity jpa --class ~.domain.Customer --activeRecord false --testAutomatically
+entity jpa --class ~.domain.InvoiceItem --extends ~.domain.Item --activeRecord false --testAutomatically 
+entity jpa --class ~.domain.OrderItem --extends ~.domain.Item --activeRecord false --testAutomatically
+entity jpa --class ~.domain.ShippingItem --extends ~.domain.Item --activeRecord false --testAutomatically
+entity jpa --class ~.domain.ArchiveItem --extends ~.domain.Item --activeRecord false --testAutomatically
+
+//Item
+field reference --fieldName product --type ~.domain.Product --notNull --cardinality ONE_TO_ONE --class ~.domain.Item
+field reference --fieldName customer --type ~.domain.Customer --class ~.domain.Item --notNull true 
+field date --fieldName created --type java.util.Date --notNull
+field number --fieldName quantity --notNull --type int --class ~.domain.Item
+field number --fieldName priceNet --type java.math.BigDecimal --min 0
+field enum --fieldName status --type ~.reference.Status --notNull --class ~.domain.Item
+field string --fieldName productName --notNull --class ~.domain.Item
+field number --fieldName productNumber --notNull --type Java.lang.long --class ~.domain.Item
+field number --fieldName orderConfirmationNumber --type Java.lang.long --class ~.domain.Item
+field number --fieldName invoiceNumber --type Java.lang.long --class ~.domain.Item
+field number --fieldName accountNumber --type Java.lang.long --class ~.domain.Item
+field number --fieldName orderNumber --type Java.lang.long --notNull --class ~.domain.Item
+
+//OrderItem
+field date --fieldName expectedDelivery --type java.util.Date --notNull --class ~.domain.OrderItem
+field number --fieldName orderItemNumber --type int --notNull
+
+//ShippingItem
+field boolean --fieldName transmitToSupplier --notNull --class ~.domain.ShippingItem
+field string --fieldName shippingName1 --class ~.domain.ShippingItem
+field string --fieldName shippingName2 --class ~.domain.ShippingItem
+field string --fieldName shippingStreet --notNull --class ~.domain.ShippingItem
+field string --fieldName shippingCity --notNull --class ~.domain.ShippingItem
+field number --fieldName shippingPostalCode --type int --notNull 
+field enum --fieldName shippingCountry --type ~.reference.Country --notNull
+
+//InvoiceItem
+field string --fieldName invoiceName1 --class ~.domain.InvoiceItem
+field string --fieldName invoiceName2 --class ~.domain.InvoiceItem
+field string --fieldName invoiceStreet --notNull --class ~.domain.InvoiceItem
+field string --fieldName invoiceCity --notNull --class ~.domain.InvoiceItem
+field number --fieldName invoicePostalCode --type int --notNull 
+field enum --fieldName invoiceCountry --type ~.reference.Country --notNull
+
+
+//ArchiveItem
+field date --fieldName expectedDelivery --type java.util.Date --notNull --class ~.domain.ArchiveItem
+
+field boolean --fieldName anNaeherei --notNull --class ~.domain.ArchiveItem
+field string --fieldName shippingName1 --class ~.domain.ArchiveItem
+field string --fieldName shippingName2 --class ~.domain.ArchiveItem
+field string --fieldName shippingStreet --notNull --class ~.domain.ArchiveItem
+field string --fieldName shippingCity --notNull --class ~.domain.ArchiveItem
+field number --fieldName shippingPostalCode --type int --notNull 
+field enum --fieldName shippingCountry --type ~.reference.Country --notNull
+
+field string --fieldName invoiceName1 --class ~.domain.ArchiveItem
+field string --fieldName invoiceName2 --class ~.domain.ArchiveItem
+field string --fieldName invoiceStreet --notNull --class ~.domain.ArchiveItem
+field string --fieldName invoiceCity --notNull --class ~.domain.ArchiveItem
+field number --fieldName invoicePostalCode --type int --notNull 
+field enum --fieldName invoiceCountry --type ~.reference.Country --notNull
+
+//Product
+field number --fieldName productNumber --notNull --unique --type Java.lang.long --class ~.domain.Product
+field enum --fieldName productType --notNull --type ~.reference.ProductType --class ~.domain.Product
+field string --fieldName name --notNull --class ~.domain.Product
+field boolean --fieldName active --notNull
+field number --fieldName sortOrder --type Java.lang.long --class ~.domain.Product
+
+//Customer
+field string --fieldName shortName --unique --class ~.domain.Customer
+field string --fieldName name1  --class ~.domain.Customer
+field string --fieldName name2  --class ~.domain.Customer
+field string --fieldName street --notNull
+field string --fieldName city --notNull
+field number --fieldName postalCode --type int --notNull 
+field enum --fieldName country --type ~.reference.Country --notNull
+field date --fieldName created --type java.util.Date --notNull
+
+repository jpa --interface ~.repository.ProductRepository  --entity ~.domain.Product
+repository jpa --interface ~.repository.CustomerRepository  --entity ~.domain.Customer
+repository jpa --interface ~.repository.InvoiceItemRepository  --entity ~.domain.InvoiceItem
+repository jpa --interface ~.repository.OrderItemRepository  --entity ~.domain.OrderItem
+repository jpa --interface ~.repository.ShippingItemRepository  --entity ~.domain.ShippingItem
+repository jpa --interface ~.repository.ArchiveItemRepository  --entity ~.domain.ArchiveItem
+
+service all --interfacePackage de.switajski.priebes.flexibleorders.domain
+
+email sender setup --hostServer priebes.eu
+
+
+web mvc setup
+web mvc language --code de
+web mvc language --code en
+security setup
+logging setup --level WARN
+
+web mvc all --package de.switajski.priebes.flexibleorders.web
+perform eclipse

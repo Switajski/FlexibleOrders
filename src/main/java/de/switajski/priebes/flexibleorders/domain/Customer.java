@@ -4,6 +4,8 @@ import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import de.switajski.priebes.flexibleorders.reference.Country;
+import javax.persistence.Enumerated;
 
 @RooJavaBean
 @RooToString
@@ -37,4 +39,10 @@ public class Customer {
      */
     @NotNull
     private int postalCode;
+
+    /**
+     */
+    @NotNull
+    @Enumerated
+    private Country country;
 }

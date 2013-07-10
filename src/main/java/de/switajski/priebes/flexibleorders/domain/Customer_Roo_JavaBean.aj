@@ -4,6 +4,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.reference.Country;
 
 privileged aspect Customer_Roo_JavaBean {
     
@@ -53,6 +54,14 @@ privileged aspect Customer_Roo_JavaBean {
     
     public void Customer.setPostalCode(int postalCode) {
         this.postalCode = postalCode;
+    }
+    
+    public Country Customer.getCountry() {
+        return this.country;
+    }
+    
+    public void Customer.setCountry(Country country) {
+        this.country = country;
     }
     
 }

@@ -28,4 +28,9 @@ public class Product {
      */
     @NotNull
     private String name;
+
+    /**
+     */
+    @NotNull
+    private Boolean active;
 }

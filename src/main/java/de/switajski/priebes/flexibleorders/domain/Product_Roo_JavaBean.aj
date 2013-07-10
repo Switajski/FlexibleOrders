@@ -32,4 +32,12 @@ privileged aspect Product_Roo_JavaBean {
         this.name = name;
     }
     
+    public Boolean Product.getActive() {
+        return this.active;
+    }
+    
+    public void Product.setActive(Boolean active) {
+        this.active = active;
+    }
+    
 }

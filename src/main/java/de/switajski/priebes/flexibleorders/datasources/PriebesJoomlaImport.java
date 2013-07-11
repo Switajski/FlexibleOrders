@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -119,9 +120,7 @@ public class PriebesJoomlaImport {
 	}
 
 	private boolean existsCustomer(String email) {
-//		customerRepository.findCustomerByEmail(email);
-//		return.findKundesByEmailLike(email).getResultList().isEmpty();
-		return false;
+		return !customerRepository.findByEmail(email).isEmpty();
 	}
 
 	public void importProducts() {

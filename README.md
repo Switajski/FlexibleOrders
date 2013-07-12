@@ -1,5 +1,5 @@
-FlexibleOrders (MIT License)
-============================
+FlexibleOrders
+==============
 
 FlexibleOrders is a web application for maintaining and printing orders, invoices, shipping info, etc.
 The intention of this pplication is the basic mapping of one process in java using (latest) state-of-the-art techniques.

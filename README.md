@@ -16,7 +16,7 @@ An order consists of order items. These items are passing though States (Status)
 3. ShippingItem.deliver -> `Status.SHIPPED`
 4. ArchiveItem.account -> `Status.COMPLETED`
 
-    One feature of this application is to provide the source code to any users so they can be free to modify this application for their own needs.
+    *One feature of this application is to provide the process easy modifiable to any (IT)-users so they can be free to modify this application for their own needs.*
 
 Process depicted
 ----------------

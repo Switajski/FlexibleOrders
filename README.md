@@ -2,7 +2,7 @@ FlexibleOrders
 ==============
 
 FlexibleOrders is a java web application for maintaining and printing orders, invoices, shipping info, etc.
-The intention of this pplication is the basic mapping of one process in java using (latest) state-of-the-art techniques.
+The intention of this application is the basic mapping of one process in java using (latest) state-of-the-art techniques.
 Used technologies are Spring, Hibernate and ExtJs as GUI. Core Elements are Spring-Data's "Repositories" and "Services".
 The domain model is depicted with POJOs.
 

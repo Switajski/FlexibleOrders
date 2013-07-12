@@ -11,13 +11,13 @@ The purchasing process
 ----------------------
 An order consists of order items. These items are passing though States (Status) as shown below:
 
-new order ->
+new OrderItem ->
 __1.__ `Status.ORDERED`
-item.confirm ->
+OrderConfirmationItem.confirm ->
 __2.__ `Status.CONFIRMED`
-item.deliver ->
+ShippingItem.deliver ->
 __3.__ `Status.SHIPPED`
-item.account ->
+ArchiveItem.account ->
 __4.__ `Status.COMPLETED`
 
 

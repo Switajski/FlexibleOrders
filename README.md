@@ -25,6 +25,7 @@ This report generation enables piecemeal delivering and flexibility in changing 
 
 License
 -------
+This application is using ExtJs. The licensing model of this application is bound to ExtJs open source license (GPL license v3 - http://www.sencha.com/products/extjs/license/)
 
     Copyright 2012 Markus Switajski
     

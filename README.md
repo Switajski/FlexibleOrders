@@ -1,7 +1,7 @@
 FlexibleOrders
 ==============
 
-FlexibleOrders is a web application for maintaining and printing orders, invoices, shipping info, etc.
+FlexibleOrders is a java web application for maintaining and printing orders, invoices, shipping info, etc.
 The intention of this pplication is the basic mapping of one process in java using (latest) state-of-the-art techniques.
 Used technologies are Spring, Hibernate and ExtJs as GUI. Core Elements are Spring-Data's "Repositories" and "Services".
 The domain model is depicted with POJOs.
@@ -11,14 +11,14 @@ The purchasing process
 ----------------------
 An order consists of order items. These items are passing though States (Status) as shown below:
 
-order ->
-__1.__ Status.ORDERED
-confirm ->
-__2.__ Status.CONFIRMED
-deliver ->
-__3.__ Status.SHIPPED
-account ->
-__4.__ Status.COMPLETED
+new order ->
+__1.__ `Status.ORDERED`
+item.confirm ->
+__2.__ `Status.CONFIRMED`
+item.deliver ->
+__3.__ `Status.SHIPPED`
+item.account ->
+__4.__ `Status.COMPLETED`
 
 
 Process depicted

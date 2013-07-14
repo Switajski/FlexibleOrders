@@ -26,12 +26,9 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	public static final String CAT_IMAGE_PATH="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/bestellsystemv2?"
 			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
-
 	private static final String PRIEBES_DB = "priebesJoomlaDb";
-
-	Connection connection;
+	private Connection connection;
 	private Category rootCategory;
-	
 	
 	@Autowired
 	CustomerRepository customerRepository;

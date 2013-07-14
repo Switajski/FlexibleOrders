@@ -106,4 +106,10 @@ public abstract class Item {
 	public void setStatus(Status status) {
         this.status = status;
     }
+
+	public void setProduct(Product product) {
+        this.product = product;
+        this.productNumber = product.getProductNumber();
+        this.productName = product.getName();
+    }
 }

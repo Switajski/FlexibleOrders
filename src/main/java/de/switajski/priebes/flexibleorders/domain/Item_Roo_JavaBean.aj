@@ -16,10 +16,6 @@ privileged aspect Item_Roo_JavaBean {
         return this.product;
     }
     
-    public void Item.setProduct(Product product) {
-        this.product = product;
-    }
-    
     public Customer Item.getCustomer() {
         return this.customer;
     }

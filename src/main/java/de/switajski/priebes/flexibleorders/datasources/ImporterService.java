@@ -5,7 +5,7 @@ public interface ImporterService {
 	
 	public void importCustomers();
 	
-	public void importOrders();
+	public void importOrderItems();
 	
 	public void importPrices();
 	

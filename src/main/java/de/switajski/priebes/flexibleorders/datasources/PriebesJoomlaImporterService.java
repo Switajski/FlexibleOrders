@@ -9,17 +9,19 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerService;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 
-public class PriebesJoomlaImport {
+@Service
+@Transactional
+public class PriebesJoomlaImporterService implements ImporterService {
 
-	private static Logger log = Logger.getLogger(PriebesJoomlaImport.class);
+	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
 	
 	public static final String CAT_IMAGE_PATH="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/bestellsystemv2?"
@@ -33,24 +35,23 @@ public class PriebesJoomlaImport {
 	
 	@Autowired
 	CustomerRepository customerRepository;
+
+
+	private Connection getConnection(){
+		if (this.connection==null)
+			connection = this.init();
+		return this.connection;
+			
+	}
 	
-	
-	public PriebesJoomlaImport() {
+	public Connection init() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			connection = (Connection) DriverManager
 					.getConnection(DATABASE_URL);
 			if (checkDuplicates())
 				throw new IllegalStateException("Cannot import as long as there are duplicates!");
-			else{
-				importCustomers();
-				importProducts();
-				importOrders();
-				importPrices();
-				setCategories();
-				closeConnection();		
-				log.debug("Import ready");
-			}
+			return connection;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +70,7 @@ public class PriebesJoomlaImport {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
+		return connection;
 	}
 
 	public boolean checkDuplicates() {
@@ -76,46 +78,54 @@ public class PriebesJoomlaImport {
 		return false;
 	}
 
-	public void importCustomers() throws SQLException {
-		Statement stmt = (Statement) connection.createStatement(
-				 ResultSet.TYPE_SCROLL_INSENSITIVE,
-				 ResultSet.CONCUR_READ_ONLY);
-		
-		ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
-				+".jos_k2store_address left join priebesJoomlaDb.jos_users on jos_k2store_address.user_id=jos_users.id");
-		
-		while (rs.next()) {
-			// retrieve and print the values for the current row
-			int id = rs.getInt("id");
-			int user_id = rs.getInt("user_id");
-			String email = rs.getString("email");
-			if (email==null || !existsCustomer(email)) continue;
-			String first_name = rs.getString("first_name");
-			String last_name = rs.getString("last_name");
-			String password = rs.getString("password");
-
-			String address_1 = rs.getString("address_1");
-			address_1 += " " +rs.getString("address_2");
-			String city = rs.getString("city");
-			String zip = rs.getString("zip".trim());
-			String phone_1 = rs.getString("phone_1");
+	@Transactional
+	public void importCustomers() {
+		Statement stmt;
+		connection = this.getConnection();
+		try {
+			stmt = (Statement) connection.createStatement(
+					 ResultSet.TYPE_SCROLL_INSENSITIVE,
+					 ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
+					+".jos_k2store_address left join priebesJoomlaDb.jos_users on jos_k2store_address.user_id=jos_users.id");
 			
-			log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
-			
-			Customer c = new Customer();
-			c.setEmail(email);		
-			c.setPhone(phone_1);
-			c.setName2(first_name + " " + last_name);
-			c.setPassword(password);
-			c.setCreated(new Date());
-			c.setCity(city);
-			c.setStreet(address_1);
-			c.setPostalCode(Integer.parseInt(zip.trim()));
-			c.setCountry(Country.GERMANY);
-			customerRepository.save(c);
-			
+			while (rs.next()) {
+				// retrieve and print the values for the current row
+				int id = rs.getInt("id");
+				int user_id = rs.getInt("user_id");
+				String email = rs.getString("email");
+				if (email==null || existsCustomer(email)) continue;
+				String first_name = rs.getString("first_name");
+				String last_name = rs.getString("last_name");
+				String password = rs.getString("password");
+				
+				String address_1 = rs.getString("address_1");
+				address_1 += " " +rs.getString("address_2");
+				String city = rs.getString("city");
+				String zip = rs.getString("zip".trim());
+				String phone_1 = rs.getString("phone_1");
+				
+				log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
+				
+				Customer c = new Customer();
+				c.setEmail(email);		
+				c.setPhone(phone_1);
+				c.setName2(first_name + " " + last_name);
+				c.setPassword(password);
+				c.setCreated(new Date());
+				c.setCity(city);
+				c.setStreet(address_1);
+				c.setPostalCode(Integer.parseInt(zip.trim()));
+				c.setCountry(Country.GERMANY);
+				customerRepository.save(c);
+				
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		stmt.close();
+		
 		
 	}
 

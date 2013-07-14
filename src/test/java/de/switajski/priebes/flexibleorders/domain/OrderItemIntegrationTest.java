@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.test.RooIntegrationTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.datasources.ImporterService;
+import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 
 @RooIntegrationTest(entity = OrderItem.class)
@@ -16,6 +18,11 @@ public class OrderItemIntegrationTest {
 	@Autowired
 	ShippingItemRepository shippingItemRepository;
 	
+	@Autowired
+	CustomerRepository customerRepository;
+	
+//	@Autowired
+//	ImporterService pji;
 	
 	@Transactional
 	@Test
@@ -25,9 +32,12 @@ public class OrderItemIntegrationTest {
 		OrderItem orderItem = dod.getSpecificOrderItem(12);
 		ShippingItem shippingItem = orderItem.confirm(toSupplier);
 		shippingItemRepository.saveAndFlush(shippingItem);
+		
+//		pji.importCustomers();
 				
 		List<ShippingItem> sis = shippingItemRepository.findByOrderNumber(shippingItem.getOrderNumber());
 		
 		assertTrue(!sis.isEmpty());
 	}
+	
 }

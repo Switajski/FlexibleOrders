@@ -10,4 +10,8 @@ privileged aspect ArchiveItem_Roo_Jpa_Entity {
     
     declare @type: ArchiveItem: @Entity;
     
+    public ArchiveItem.new() {
+        super();
+    }
+
 }

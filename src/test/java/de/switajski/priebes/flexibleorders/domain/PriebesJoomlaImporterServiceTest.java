@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.importer;
+package de.switajski.priebes.flexibleorders.domain;
 
 import static org.junit.Assert.assertFalse;
 
@@ -8,7 +8,7 @@ import org.springframework.roo.addon.test.RooIntegrationTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.datasources.ImporterService;
+import de.switajski.priebes.flexibleorders.domain.ImporterService;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -24,6 +24,7 @@ public class PriebesJoomlaImporterServiceTest {
 	
 	@Autowired CustomerRepository customerRepository;
 	@Autowired ProductRepository productRepository;
+	@Autowired OrderItemRepository orderItemRepository;
 	
 	@Rollback(false)
 	@Transactional

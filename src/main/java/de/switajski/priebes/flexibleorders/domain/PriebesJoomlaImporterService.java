@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.datasources;
+package de.switajski.priebes.flexibleorders.domain;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -15,14 +16,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.Category;
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.report.Order;
+import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
@@ -56,7 +54,8 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	@Autowired	OrderItemRepository orderItemRepository;
 	@Autowired	ShippingItemRepository shippingItemRepo;
 	@Autowired	InvoiceItemRepository invoiceRepo;
-
+	@Autowired 	ArchiveItemRepository archiveRepo;
+	
 	private Connection getConnection(){
 		if (this.connection==null)
 			connection = this.init();
@@ -177,7 +176,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				if (rs.getInt("published")==0) published = false;
 				String image = rs.getString("image");
 				
-				System.out.println("ROW = " + id + " " + name + " " + description + " " + parent);
+				log.debug("ROW = " + id + " " + name + " " + description + " " + parent);
 				
 				Category kat = new Category();
 				kat.setName(name);
@@ -225,11 +224,12 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				Date a_created = as.getDate("created");
 				long a_ordering = as.getLong("ordering");
 				long a_artikelnummer = as.getLong("artikelnummer");
-				if (a_artikelnummer==0 || (productRepository.findByProductNumber(a_artikelnummer)==null)) {
+				if (a_artikelnummer==0 || (productRepository.findByProductNumber(a_artikelnummer)!=null)) {
 					Random gen = new Random();
 					a_artikelnummer = gen.nextInt();
 					a_artikelnummer = Math.abs(a_artikelnummer);
 				}
+				else log.debug("originale Artikelnummer genommen:"+a_artikelnummer) ;
 				int a_catid = as.getInt("catid");
 
 				log.debug("ROW = " + a_id + " " + a_title + " " + a_gallery + " " + a_catid);
@@ -281,7 +281,11 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				while(orderItems.next()){
 					OrderItem oi = new OrderItem();
 					
-					oi.setOrderNumber(orders.getLong("order_id"));
+					Long orderNumber = orders.getLong("order_id");
+					oi.setOrderNumber(orderNumber);
+					List<OrderItem> orderItemList = orderItemRepository.findByOrderNumber(orderNumber);
+					if (orderItemList.isEmpty()) oi.setOrderItemNumber(1);
+					else oi.setOrderItemNumber(orderItemList.size()+1);
 					
 					String product_id = orderItems.getString("product_id");
 					String title = this.getSingleResult("select title from priebesJoomlaDb.jos_k2_items where id="+product_id, "title");
@@ -295,11 +299,34 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					if (customer==null) continue;
 					oi.setCustomer(customer);
 					
+					if (orderItems.getLong("rechnung_id") != 0l)
+					{oi.setAccountNumber(orderItems.getLong("rechnung_id"));
+					oi.setInvoiceNumber(orderItems.getLong("rechnung_id"));}
+					if (orderItems.getLong("ab_id") != 0l)
+					oi.setOrderConfirmationNumber(orderItems.getLong("ab_id"));
+					
 					oi.setQuantity(orderItems.getInt("orderitem_quantity"));
 					oi.setPriceNet(orderItems.getBigDecimal("orderitem_price"));
 					oi.setStatus(Status.COMPLETED);
 					
 					orderItemRepository.save(oi);
+					
+					if (oi.getOrderConfirmationNumber()!=null){
+						ShippingItem si = oi.confirm(false);
+						shippingItemRepo.save(si);
+						orderItemRepository.save(oi);
+						if (oi.getInvoiceNumber()!=null){
+							InvoiceItem ii = si.deliver();
+							invoiceRepo.save(ii);
+							orderItemRepository.save(oi);
+							if (oi.getAccountNumber()!=null){
+								ArchiveItem ai = ii.complete(si);
+								archiveRepo.save(ai);
+								invoiceRepo.save(ii);
+								orderItemRepository.save(oi);
+							}
+						}
+					}
 					
 				}
 				stmt2.close();			

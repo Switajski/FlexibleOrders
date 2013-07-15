@@ -18,7 +18,63 @@ import javax.persistence.Enumerated;
 @RooJpaEntity
 public class ShippingItem extends Item {
 
-    /**
+    public Boolean getTransmitToSupplier() {
+		return transmitToSupplier;
+	}
+
+	public void setTransmitToSupplier(Boolean transmitToSupplier) {
+		this.transmitToSupplier = transmitToSupplier;
+	}
+
+	public String getShippingName1() {
+		return shippingName1;
+	}
+
+	public void setShippingName1(String shippingName1) {
+		this.shippingName1 = shippingName1;
+	}
+
+	public String getShippingName2() {
+		return shippingName2;
+	}
+
+	public void setShippingName2(String shippingName2) {
+		this.shippingName2 = shippingName2;
+	}
+
+	public String getShippingStreet() {
+		return shippingStreet;
+	}
+
+	public void setShippingStreet(String shippingStreet) {
+		this.shippingStreet = shippingStreet;
+	}
+
+	public String getShippingCity() {
+		return shippingCity;
+	}
+
+	public void setShippingCity(String shippingCity) {
+		this.shippingCity = shippingCity;
+	}
+
+	public int getShippingPostalCode() {
+		return shippingPostalCode;
+	}
+
+	public void setShippingPostalCode(int shippingPostalCode) {
+		this.shippingPostalCode = shippingPostalCode;
+	}
+
+	public Country getShippingCountry() {
+		return shippingCountry;
+	}
+
+	public void setShippingCountry(Country shippingCountry) {
+		this.shippingCountry = shippingCountry;
+	}
+
+	/**
      */
     @NotNull
     private Boolean transmitToSupplier;
@@ -76,4 +132,11 @@ public class ShippingItem extends Item {
 		setShippingPostalCode(customer.getPostalCode());
 		setShippingStreet(customer.getStreet());
 	}
+
+	public InvoiceItem deliver() {
+		InvoiceItem ii = new InvoiceItem(this);
+		this.setStatus(Status.SHIPPED);
+		return ii;
+	}
+
 }

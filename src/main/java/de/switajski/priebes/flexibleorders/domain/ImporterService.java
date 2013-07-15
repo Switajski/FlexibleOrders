@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.datasources;
+package de.switajski.priebes.flexibleorders.domain;
 
 
 public interface ImporterService {

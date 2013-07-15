@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemService;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.report.Order;
 import flexjson.JSONSerializer;
 
 @Controller
@@ -49,12 +46,12 @@ public class OrderController {
             try {
     	        HttpHeaders headers = new HttpHeaders();
     	        headers.add("Content-Type", "application/json; charset=utf-8");
-    	        Pageable pageable = new PageRequest(2, 20);
-    	        Page<OrderItem> orders = orderItemService.findByOrderNumber(1336413278l, pageable);
+    	        Pageable pageable = new PageRequest(page-1, limit);
+    	        Page<String> orders = orderItemService.findByOrderNumberGrouped(pageable);
                 returnStatus = HttpStatus.OK;
     			response.setMessage("Alle Bestellungen erhalten.");
     			response.setSuccess(true);
-//    			response.setTotal(orderItemService.countOrders());
+    			response.setTotal(orderItemService.countAllOrders());
     			response.setData(orders);
     		} catch(Exception e) {
     			response.setMessage(e.getMessage());
@@ -67,5 +64,6 @@ public class OrderController {
 		// Return list of retrieved performance areas
         return new ResponseEntity<String>(returnString, returnStatus);
     }
+	
 	
 }

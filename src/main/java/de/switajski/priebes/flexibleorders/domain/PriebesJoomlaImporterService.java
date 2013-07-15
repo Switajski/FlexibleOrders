@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.domain;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,14 +11,12 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.reference.Status;
-import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
@@ -73,19 +70,15 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			return connection;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
@@ -142,7 +135,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			}
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -190,7 +182,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			}
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -249,7 +240,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			}
 			stmt2.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

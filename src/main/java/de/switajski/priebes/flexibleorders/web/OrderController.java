@@ -1,5 +1,8 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemService;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import flexjson.JSONSerializer;
@@ -24,7 +26,7 @@ public class OrderController {
 	@Autowired OrderItemService orderItemService;
 	
 	/**
-	 * Nach http://oajamfibia.wordpress.com/2011/06/25/spring-roo-controller-for-extjs4-data-store-with-pagination-sorting-filtering-and-server-side-validation/ implementiert
+	 * params for Extjs PageRequests http://oajamfibia.wordpress.com/2011/06/25/spring-roo-controller-for-extjs4-data-store-with-pagination-sorting-filtering-and-server-side-validation/ implementiert
 	 * @param page
 	 * @param start
 	 * @param limit
@@ -49,12 +51,16 @@ public class OrderController {
     	        Pageable pageable = new PageRequest(page-1, limit);
     	        Page<String> orders = orderItemService.findByOrderNumberGrouped(pageable);
                 returnStatus = HttpStatus.OK;
-    			response.setMessage("Alle Bestellungen erhalten.");
+    			response.setMessage("All orders retrived.");
     			response.setSuccess(true);
     			response.setTotal(orderItemService.countAllOrders());
     			response.setData(orders);
     		} catch(Exception e) {
-    			response.setMessage(e.getMessage());
+    			e.printStackTrace();
+    			
+    			StringWriter errors = new StringWriter();
+    			e.printStackTrace(new PrintWriter(errors));
+    			response.setMessage(errors.toString());
     			response.setSuccess(false);
     			response.setTotal(0L);
     		}

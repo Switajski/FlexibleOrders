@@ -1,0 +1,36 @@
+{
+    "type": "Ext.window.Window",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "height": 250,
+        "id": "BestellungWindow",
+        "width": 400,
+        "designer|userClassName": "BestellungWindow",
+        "closeAction": "hide",
+        "title": "Bestellung"
+    },
+    "designerId": "9dfa19c2-2434-40f6-a288-d3e12658714f",
+    "cn": [
+        {
+            "type": "Ext.form.Panel",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "dock": null,
+                "container|align": "stretch",
+                "width": 100,
+                "layout": "vbox",
+                "bodyPadding": 10,
+                "title": "Details"
+            },
+            "designerId": "de93f4c5-f8b3-4d0c-9208-50d2bf776bb9"
+        }
+    ]
+}

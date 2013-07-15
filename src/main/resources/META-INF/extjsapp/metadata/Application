@@ -1,0 +1,32 @@
+{
+    "type": "Ext.app.Application",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "models": [
+            "BestellungData",
+            "BestellpositionData",
+            "ArtikelData"
+        ],
+        "stores": [
+            "BestellpositionDataStore",
+            "BestellungDataStore",
+            "ArtikelDataStore"
+        ],
+        "views": [
+            "MainPanel",
+            "ErstelleBpWindow",
+            "ErstelleBestellungWindow",
+            "BestellungWindow"
+        ],
+        "autoCreateViewport": true,
+        "controllers": [
+            "MyController"
+        ],
+        "name": "MyApp"
+    },
+    "designerId": "application"
+}

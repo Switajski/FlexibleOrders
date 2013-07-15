@@ -1,0 +1,47 @@
+{
+    "type": "jsonstore",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "autoLoad": true,
+        "model": "ArtikelData",
+        "storeId": "ArtikelDataStore",
+        "designer|userClassName": "ArtikelDataStore",
+        "pageSize": 1000
+    },
+    "designerId": "bc7eec54-dbe9-4411-ad52-f9ffa6b97739",
+    "cn": [
+        {
+            "type": "Ext.data.proxy.Ajax",
+            "reference": {
+                "name": "proxy",
+                "type": "object"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "url": "/leanorders/artikels?raw",
+                "headers": [
+                    "{accept:\"application/json\"}"
+                ]
+            },
+            "designerId": "2ea77d53-7c72-4b13-80ef-aedfd259b56f",
+            "cn": [
+                {
+                    "type": "Ext.data.reader.Json",
+                    "reference": {
+                        "name": "reader",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "data"
+                    },
+                    "designerId": "befca2d5-1226-4029-afb8-404f0f24065e"
+                }
+            ]
+        }
+    ]
+}

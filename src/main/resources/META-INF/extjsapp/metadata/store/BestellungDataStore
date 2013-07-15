@@ -1,0 +1,50 @@
+{
+    "type": "jsonstore",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "autoLoad": true,
+        "model": "BestellungData",
+        "storeId": "BestellungDataStore",
+        "designer|userClassName": "BestellungDataStore",
+        "pageSize": 10
+    },
+    "designerId": "9c7a5ee7-26e1-47be-9c6e-0ae677bd2bfd",
+    "cn": [
+        {
+            "type": "Ext.data.proxy.Ajax",
+            "reference": {
+                "name": "proxy",
+                "type": "object"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "extraParams": [
+                    "{bestellnr: \"1336466523\"}"
+                ],
+                "url": "/leanorders/bestellungs",
+                "headers": [
+                    "{Accept:\"application/json\"}"
+                ]
+            },
+            "designerId": "edba56b1-e1fa-49d6-9c6e-59292e316ab7",
+            "cn": [
+                {
+                    "type": "Ext.data.reader.Json",
+                    "reference": {
+                        "name": "reader",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "data"
+                    },
+                    "designerId": "0a105b5d-f198-4856-b5cd-a48a0f4371d5"
+                }
+            ]
+        }
+    ]
+}

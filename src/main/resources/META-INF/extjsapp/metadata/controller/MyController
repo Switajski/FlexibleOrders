@@ -1,0 +1,134 @@
+{
+    "type": "Ext.app.Controller",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "id": "MyController",
+        "models": [
+            "BestellungData",
+            "BestellpositionData"
+        ],
+        "stores": [
+            "BestellungDataStore",
+            "BestellpositionDataStore"
+        ],
+        "views": [
+            "MainPanel",
+            "ErstelleBpWindow",
+            "BestellungWindow"
+        ],
+        "designer|userClassName": "MyController"
+    },
+    "designerId": "dacc6512-52c9-43dc-bb60-2dfb69c0e158",
+    "cn": [
+        {
+            "type": "basicfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "populateChildren",
+                "designer|params": [
+                    "grid",
+                    "record"
+                ],
+                "implHandler": [
+                    "var childrenGrid = Ext.ComponentQuery.query('#BestellpositionGrid');\r",
+                    "var bpStore = Ext.StoreMgr.lookup('BestellpositionDataStore');\t\r",
+                    "bpStore.proxy.extraParams.bestellnr = record.data.id;\r",
+                    "bpStore.reload();\r",
+                    "\r",
+                    "//Ext.get('bestellnr').setHTML(record.data.id.toString());\r",
+                    "// Falls Relationen bestehen läuft der Reload folgendermaßen:\r",
+                    "//childrenGrid.reconfigure(record.Children());\r",
+                    "\r",
+                    "// Children sind hier:\r",
+                    "//Ext.define('TestApp.model.ParentModel', {\r",
+                    "//    extend: 'Ext.data.Model',\r",
+                    "//    fields: [\r",
+                    "//        'id',\r",
+                    "//        'name'\r",
+                    "//    ],\r",
+                    "//    associations: [\r",
+                    "//        { type: 'hasMany', model: 'TestApp.model.ChildModel', name: 'Children' }\r",
+                    "//    ]\r",
+                    "//});"
+                ]
+            },
+            "designerId": "6d90dbed-5dce-4bfe-9807-c4bde3fa0c19"
+        },
+        {
+            "type": "fixedfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "init",
+                "designer|params": [
+                    "application"
+                ],
+                "implHandler": [
+                    "this.control({\r",
+                    "    '#BestellungGrid': {\r",
+                    "        itemclick: this.populateChildren,\r",
+                    "        itemdblclick: this.showBestellung\r",
+                    "    },\r",
+                    "    '#ErstelleBpButton': {\r",
+                    "        click: this.showBestellung\r",
+                    "    }\r",
+                    "    \r",
+                    "});\r",
+                    "this.getErstelleBpWindowView().create();\r",
+                    "this.getBestellungWindowView().create();"
+                ]
+            },
+            "designerId": "30ba4d65-f0ff-49bc-854f-825279f4bd9f"
+        },
+        {
+            "type": "basicfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "showBestellung",
+                "designer|params": [
+                    "grid",
+                    "record"
+                ],
+                "implHandler": [
+                    "console.log('function showBestellung(grid record)');\r",
+                    "this.populateChildren(grid, record);\r",
+                    "Ext.getCmp('BestellungWindow').show();"
+                ]
+            },
+            "designerId": "4f51650c-8a68-417b-861c-27477f2f7677"
+        },
+        {
+            "type": "basicfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "createBp",
+                "designer|params": [
+                    "bestellnr"
+                ],
+                "implHandler": [
+                    ""
+                ]
+            },
+            "designerId": "9e263795-d1bc-4d55-936b-1769cc329bdd"
+        }
+    ]
+}

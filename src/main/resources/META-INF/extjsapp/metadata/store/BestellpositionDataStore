@@ -1,0 +1,60 @@
+{
+    "type": "jsonstore",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "autoLoad": false,
+        "model": "BestellpositionData",
+        "storeId": "BestellpositionDataStore",
+        "designer|userClassName": "BestellpositionDataStore"
+    },
+    "designerId": "f8972e58-c690-400f-8c7b-67466e894614",
+    "cn": [
+        {
+            "type": "Ext.data.proxy.Ajax",
+            "reference": {
+                "name": "proxy",
+                "type": "object"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "api": null,
+                "extraParams": null,
+                "url": "/leanorders/bestellpositions?find=ByBestellung",
+                "headers": [
+                    "{Accept:\"application/json\"}"
+                ]
+            },
+            "designerId": "88ab301a-aa60-4928-9351-d962462062d7",
+            "cn": [
+                {
+                    "type": "Ext.data.reader.Json",
+                    "reference": {
+                        "name": "reader",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "data"
+                    },
+                    "designerId": "984f4cbf-813e-448b-95aa-aeec2f2de2ce"
+                },
+                {
+                    "type": "Ext.data.writer.Json",
+                    "reference": {
+                        "name": "writer",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "data"
+                    },
+                    "designerId": "28d95d1d-8768-45a0-9605-3eeabd29313b"
+                }
+            ]
+        }
+    ]
+}

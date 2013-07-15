@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemService;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.report.Order;
@@ -48,7 +50,7 @@ public class OrderController {
     	        HttpHeaders headers = new HttpHeaders();
     	        headers.add("Content-Type", "application/json; charset=utf-8");
     	        Pageable pageable = new PageRequest(2, 20);
-    	        List<Order> orders = orderItemService.findByOrderNumber(1336413278l, pageable);
+    	        Page<OrderItem> orders = orderItemService.findByOrderNumber(1336413278l, pageable);
                 returnStatus = HttpStatus.OK;
     			response.setMessage("Alle Bestellungen erhalten.");
     			response.setSuccess(true);

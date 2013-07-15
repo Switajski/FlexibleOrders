@@ -4,18 +4,19 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerService;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemService;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ProductService;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItemService;
+import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+import de.switajski.priebes.flexibleorders.service.OrderItemService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
+import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 import de.switajski.priebes.flexibleorders.web.ApplicationConversionServiceFactoryBean;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.convert.converter.Converter;

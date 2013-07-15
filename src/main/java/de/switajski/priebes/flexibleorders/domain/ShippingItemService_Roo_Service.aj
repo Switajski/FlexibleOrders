@@ -4,7 +4,8 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItemService;
+import de.switajski.priebes.flexibleorders.service.ShippingItemService;
+
 import java.util.List;
 
 privileged aspect ShippingItemService_Roo_Service {

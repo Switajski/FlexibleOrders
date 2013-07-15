@@ -4,9 +4,11 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItemServiceImpl;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
+import de.switajski.priebes.flexibleorders.service.ShippingItemServiceImpl;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -5,12 +5,15 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.InvoiceItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItemIntegrationTest;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+
 import java.util.Iterator;
 import java.util.List;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

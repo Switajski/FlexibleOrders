@@ -5,9 +5,10 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.CustomerDataOnDemand;
-import de.switajski.priebes.flexibleorders.domain.CustomerService;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,8 +17,10 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

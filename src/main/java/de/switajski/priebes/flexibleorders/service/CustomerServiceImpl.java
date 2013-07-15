@@ -1,7 +1,10 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.service;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

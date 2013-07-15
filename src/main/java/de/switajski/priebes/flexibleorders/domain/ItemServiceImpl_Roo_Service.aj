@@ -4,8 +4,10 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.ItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
+
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

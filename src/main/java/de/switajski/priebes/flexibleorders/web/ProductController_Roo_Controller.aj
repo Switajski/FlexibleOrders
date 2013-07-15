@@ -4,14 +4,17 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ProductService;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
+import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.web.ProductController;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

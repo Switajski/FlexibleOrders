@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.domain.Category;
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.reference.Status;

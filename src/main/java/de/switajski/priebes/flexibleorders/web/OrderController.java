@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItemService;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import flexjson.JSONSerializer;
 
 @Controller

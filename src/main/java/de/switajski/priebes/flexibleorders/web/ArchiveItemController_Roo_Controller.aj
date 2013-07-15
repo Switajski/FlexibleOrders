@@ -4,20 +4,23 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerService;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ProductService;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.web.ArchiveItemController;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

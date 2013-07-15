@@ -5,12 +5,15 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItemIntegrationTest;
-import de.switajski.priebes.flexibleorders.domain.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
+import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
+
 import java.util.Iterator;
 import java.util.List;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

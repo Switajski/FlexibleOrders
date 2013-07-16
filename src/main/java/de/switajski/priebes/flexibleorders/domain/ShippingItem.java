@@ -139,4 +139,9 @@ public class ShippingItem extends Item {
 		return ii;
 	}
 
+	@Override
+	public int compareTo(Item o) {
+		return 0;
+	}
+
 }

@@ -18,7 +18,7 @@ import javax.persistence.Enumerated;
 @RooJavaBean
 @RooToString
 @RooJpaEntity(inheritanceType = "TABLE_PER_CLASS")
-public abstract class Item {
+public abstract class Item implements Comparable<Item> {
 
     /**
      */
@@ -112,4 +112,5 @@ public abstract class Item {
         this.productNumber = product.getProductNumber();
         this.productName = product.getName();
     }
+	
 }

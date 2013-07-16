@@ -76,4 +76,10 @@ public class InvoiceItem extends Item {
     	this.setStatus(Status.COMPLETED);
     	return ai;
     }
+
+	@Override
+	public int compareTo(Item o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

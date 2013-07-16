@@ -122,4 +122,10 @@ public class ArchiveItem extends Item {
     @NotNull
     @Enumerated
     private Country invoiceCountry;
+
+	@Override
+	public int compareTo(Item o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

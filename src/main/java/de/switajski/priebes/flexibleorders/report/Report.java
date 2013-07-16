@@ -8,6 +8,7 @@ import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
 public class Report<T extends Item> {
@@ -110,8 +111,19 @@ public class Report<T extends Item> {
 	}
 
 	public BigDecimal getGrossAmount() {
-		BigDecimal grossAmount = getNetAmount();
-		return grossAmount.multiply(new BigDecimal(getTaxRate()).add(BigDecimal.ONE));
+		return getNetAmount().add(getTax());
+	}
+	
+	public BigDecimal getTax(){
+		BigDecimal productSumNet = BigDecimal.ZERO;
+		for (Item i:getItems())
+			if (i.getProduct().getProductType().equals(ProductType.PRODUCT))
+				productSumNet.add(
+						i.getPriceNet()
+						.multiply(
+								new BigDecimal(i.getQuantity()))
+								);
+		return productSumNet.multiply(new BigDecimal(getTaxRate()));
 	}
 
 	public double getTaxRate() {

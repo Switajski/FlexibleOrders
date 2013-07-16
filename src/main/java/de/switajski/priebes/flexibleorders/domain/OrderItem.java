@@ -42,4 +42,10 @@ public class OrderItem extends Item {
 		this.setStatus(Status.CONFIRMED);
 		return si;
 	}
+
+	@Override
+	public int compareTo(Item o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

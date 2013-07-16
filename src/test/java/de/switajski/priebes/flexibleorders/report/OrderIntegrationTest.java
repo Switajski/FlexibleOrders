@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -69,7 +70,8 @@ public class OrderIntegrationTest {
 		orderItems.add(merged);
 		
 		Order order = new Order(orderItems);
-		assertEquals(order.getOrderItems().size(), 2);
+		assertEquals(order.getItems().size(), 2);
 		
 	}
+	
 }

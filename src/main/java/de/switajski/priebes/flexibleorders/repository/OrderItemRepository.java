@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @Repository
@@ -19,17 +20,27 @@ public interface OrderItemRepository extends JpaSpecificationExecutor<OrderItem>
 	List<OrderItem> findByOrderNumber(Long orderNumber);
 
 	Page<OrderItem> findByOrderNumber(Long orderNumber, Pageable pageable);
+
+	Page<OrderItem> findByOrderItemNumber(Long orderItemNumber, Pageable pageable);
 	
 	/**
-	 * retrieve a paged list of orders
+	 * 
 	 * @param pageable
 	 * @return
 	 */
-	@Query("select oi.orderNumber from OrderItem oi group by oi.orderNumber")
-	Page<String> findByOrderNumberGrouped(Pageable pageable);
-
-	@Query("select COUNT(DISTINCT oi.orderNumber) from OrderItem oi")
+	@Query("select oi.orderNumber "
+			+ "from OrderItem oi "
+			+ "where oi.customer = ?1 "
+			+ "group by oi.orderNumber")
+	Page<Long> getAllOrderNumbers(Customer customer, Pageable pageable);
+	
+	@Query("select oi.orderNumber "
+			+ "from OrderItem oi "
+			+ "group by oi.orderNumber")
+	Page<Long> getAllOrderNumbers(Pageable pageable);
+	
+	@Query("select count(DISTINCT oi.orderNumber) "
+			+ "from OrderItem oi")
 	Long countAllOrders();
-
 
 }

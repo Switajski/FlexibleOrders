@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service;
 
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
@@ -16,21 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class OrderItemServiceImpl implements OrderItemService {
-
-	@Override
-	public List<OrderItem> findByOrderNumber(long orderNumber) {
-		return orderItemRepository.findByOrderNumber(orderNumber);
-	}
-
-	@Override
-	public Page<OrderItem> findByOrderNumber(long orderNumber, Pageable pageable) {
-		return orderItemRepository.findByOrderNumber(orderNumber, pageable);
-	}
-
-	@Override
-	public Page<String> findByOrderNumberGrouped(Pageable pageable) {
-		return orderItemRepository.findByOrderNumberGrouped(pageable);
-	}
 
 	@Autowired
     OrderItemRepository orderItemRepository;
@@ -64,8 +50,24 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
 	@Override
-	public Long countAllOrders() {
-		return orderItemRepository.countAllOrders();
+	public List<OrderItem> findByOrderNumber(Long orderNumber) {
+		return orderItemRepository.findByOrderNumber(orderNumber);
+	}
+
+	@Override
+	public Page<OrderItem> findByOrderNumber(Long orderNumber, Pageable pageable) {
+		return orderItemRepository.findByOrderNumber(orderNumber, pageable);
+	}
+
+	@Override
+	public Page<OrderItem> findByOrderItemNumber(Long orderItemNumber,
+			Pageable pageable) {
+		return orderItemRepository.findByOrderItemNumber(orderItemNumber, pageable);
+	}
+
+	@Override
+	public Page<OrderItem> findAll(Pageable pageable) {
+		return orderItemRepository.findAll(pageable);
 	}
 
 }

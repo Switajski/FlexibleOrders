@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
+import de.switajski.priebes.flexibleorders.service.OrderService;
 import flexjson.JSONSerializer;
 
 @Controller
@@ -24,6 +26,7 @@ import flexjson.JSONSerializer;
 public class OrderController {
 	
 	@Autowired OrderItemService orderItemService;
+	@Autowired OrderService orderService;
 	
 	/**
 	 * params for Extjs PageRequests http://oajamfibia.wordpress.com/2011/06/25/spring-roo-controller-for-extjs4-data-store-with-pagination-sorting-filtering-and-server-side-validation/ implementiert
@@ -49,11 +52,11 @@ public class OrderController {
     	        HttpHeaders headers = new HttpHeaders();
     	        headers.add("Content-Type", "application/json; charset=utf-8");
     	        Pageable pageable = new PageRequest(page-1, limit);
-    	        Page<String> orders = orderItemService.findByOrderNumberGrouped(pageable);
+    	        Page<OrderItem> orders = orderItemService.findByOrderItemNumber(1l, pageable);
                 returnStatus = HttpStatus.OK;
     			response.setMessage("All orders retrived.");
     			response.setSuccess(true);
-    			response.setTotal(orderItemService.countAllOrders());
+    			response.setTotal(orderService.countAll());
     			response.setData(orders);
     		} catch(Exception e) {
     			e.printStackTrace();

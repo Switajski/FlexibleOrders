@@ -12,11 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
 import flexjson.JSONSerializer;
@@ -24,6 +26,15 @@ import flexjson.JSONSerializer;
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
+	
+	@RequestMapping(value="{name}", method = RequestMethod.GET)
+	public @ResponseBody Order getShopInJSON() {
+ 
+		Order order = orderService.find(1336466523l);
+		
+		return order;
+ 
+	}
 	
 	@Autowired OrderItemService orderItemService;
 	@Autowired OrderService orderService;
@@ -37,7 +48,7 @@ public class OrderController {
 	 * @param filters
 	 * @return
 	 */
-	@RequestMapping(headers = "Accept=application/json")
+	/*@RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson(
     		@RequestParam(value = "page", required = false) Integer page,
@@ -72,7 +83,7 @@ public class OrderController {
 		String returnString = jsonser.serialize(response);
 		// Return list of retrieved performance areas
         return new ResponseEntity<String>(returnString, returnStatus);
-    }
+    }*/
 	
 	
 }

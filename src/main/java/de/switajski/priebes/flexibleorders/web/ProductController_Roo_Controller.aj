@@ -6,15 +6,12 @@ package de.switajski.priebes.flexibleorders.web;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.service.ProductService;
+import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.web.ProductController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +25,7 @@ import org.springframework.web.util.WebUtils;
 privileged aspect ProductController_Roo_Controller {
     
     @Autowired
-    ProductService ProductController.productService;
+    ProductRepository ProductController.productRepository;
     
     @Autowired
     CategoryRepository ProductController.categoryRepository;
@@ -40,7 +37,7 @@ privileged aspect ProductController_Roo_Controller {
             return "products/create";
         }
         uiModel.asMap().clear();
-        productService.saveProduct(product);
+        productRepository.save(product);
         return "redirect:/products/" + encodeUrlPathSegment(product.getId().toString(), httpServletRequest);
     }
     
@@ -52,7 +49,7 @@ privileged aspect ProductController_Roo_Controller {
     
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String ProductController.show(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("product", productService.findProduct(id));
+        uiModel.addAttribute("product", productRepository.findOne(id));
         uiModel.addAttribute("itemId", id);
         return "products/show";
     }
@@ -62,11 +59,11 @@ privileged aspect ProductController_Roo_Controller {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("products", productService.findProductEntries(firstResult, sizeNo));
-            float nrOfPages = (float) productService.countAllProducts() / sizeNo;
+            uiModel.addAttribute("products", productRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / sizeNo, sizeNo)).getContent());
+            float nrOfPages = (float) productRepository.count() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("products", productService.findAllProducts());
+            uiModel.addAttribute("products", productRepository.findAll());
         }
         return "products/list";
     }
@@ -78,20 +75,20 @@ privileged aspect ProductController_Roo_Controller {
             return "products/update";
         }
         uiModel.asMap().clear();
-        productService.updateProduct(product);
+        productRepository.save(product);
         return "redirect:/products/" + encodeUrlPathSegment(product.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String ProductController.updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, productService.findProduct(id));
+        populateEditForm(uiModel, productRepository.findOne(id));
         return "products/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String ProductController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        Product product = productService.findProduct(id);
-        productService.deleteProduct(product);
+        Product product = productRepository.findOne(id);
+        productRepository.delete(product);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

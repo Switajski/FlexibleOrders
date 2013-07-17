@@ -40,10 +40,10 @@ Ext.define('MyApp.store.BestellungDataStore', {
                     create: 'POST'
                 },
                 api:{
-                    read: '/leanorders/bestellungs',
-                    update: '/leanorders/bestellungs',
-                    destroy: '/leanorders/bestellungs',
-                    create: '/leanorders/bestellungs'
+                    read: '/FlexibleOrders/orders',
+                    update: '/FlexibleOrders/orders',
+                    destroy: '/FlexibleOrders/orders',
+                    create: '/FlexibleOrders/orders'
                 },
                 reader: {
                     type: 'json',

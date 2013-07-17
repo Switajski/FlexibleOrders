@@ -46,28 +46,23 @@ Ext.define('MyApp.view.MainPanel', {
                     columns: [
                         {
                             xtype: 'gridcolumn',
-                            dataIndex: 'id',
-                            text: 'Id'
+                            dataIndex: 'orderNumber',
+                            text: 'Bestellnr'
                         },
                         {
                             xtype: 'gridcolumn',
-                            dataIndex: 'kunde',
+                            dataIndex: 'customer',
                             text: 'Kunde'
                         },
                         {
+                        	xtype: 'gridcolumn',
+                        	dataIndex: 'created',
+                        	text: 'Bestelldatum'
+                        },
+                        {
                             xtype: 'gridcolumn',
-                            dataIndex: 'betragNetto',
+                            dataIndex: 'netAmount',
                             text: 'Betrag'
-                        },
-                        {
-                            xtype: 'gridcolumn',
-                            dataIndex: 'kundenhinweise',
-                            text: 'Kundenhinweise'
-                        },
-                        {
-                            xtype: 'gridcolumn',
-                            dataIndex: 'eigeneNotizen',
-                            text: 'EigeneNotizen'
                         },
                         {
                             xtype: 'gridcolumn',
@@ -76,8 +71,8 @@ Ext.define('MyApp.view.MainPanel', {
                         },
                         {
                             xtype: 'gridcolumn',
-                            dataIndex: 'bestelldatum',
-                            text: 'Bestelldatum'
+                            dataIndex: 'size',
+                            text: 'Positionen'
                         }
                     ],
                     dockedItems: [

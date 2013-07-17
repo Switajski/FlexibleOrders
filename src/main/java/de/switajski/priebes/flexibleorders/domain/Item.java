@@ -1,20 +1,34 @@
 package de.switajski.priebes.flexibleorders.domain;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.persistence.ManyToOne;
+
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
+
 import javax.validation.constraints.Min;
+
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
+
 import javax.persistence.Enumerated;
 
+@JsonAutoDetect
 @RooJavaBean
 @RooToString
 @RooJpaEntity(inheritanceType = "TABLE_PER_CLASS")
@@ -113,4 +127,13 @@ public abstract class Item implements Comparable<Item> {
         this.productName = product.getName();
     }
 	
+	@JsonSerialize(using=JsonDateSerializer.class)
+	public Date getCreated() {
+        return this.created;
+    }
+
+	@JsonDeserialize(using=JsonDateDeserializer.class)
+	public void setCreated(Date created) {
+        this.created = created;
+    }
 }

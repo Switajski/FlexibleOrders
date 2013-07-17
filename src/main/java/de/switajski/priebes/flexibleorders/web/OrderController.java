@@ -27,17 +27,30 @@ import flexjson.JSONSerializer;
 @RequestMapping("/orders")
 public class OrderController {
 	
-	@RequestMapping(value="{name}", method = RequestMethod.GET)
-	public @ResponseBody Order getShopInJSON() {
- 
-		Order order = orderService.find(1336466523l);
+	@Autowired OrderItemService orderItemService;
+	@Autowired OrderService orderService;
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public @ResponseBody JsonObjectResponse listAllInJson(
+			@RequestParam(value = "page", required = true) Integer page,
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = true) Integer limit,
+            @RequestParam(value = "sort", required = false) String sorts,
+            @RequestParam(value = "filter", required = false) String filters) {
+ 	
+		JsonObjectResponse response = new JsonObjectResponse();
+		Page<Order> orders = orderService.findAll(new PageRequest(page, limit));
+		response.setMessage("All orders retrived.");
+		response.setSuccess(true);
+		response.setTotal(orderService.countAll());
+		response.setData(orders.getContent());
 		
-		return order;
+		return response;
  
 	}
 	
-	@Autowired OrderItemService orderItemService;
-	@Autowired OrderService orderService;
+	
+	
 	
 	/**
 	 * params for Extjs PageRequests http://oajamfibia.wordpress.com/2011/06/25/spring-roo-controller-for-extjs4-data-store-with-pagination-sorting-filtering-and-server-side-validation/ implementiert

@@ -6,11 +6,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
+@JsonAutoDetect
 public class Report<T extends Item> {
 	private Customer customer;
 
@@ -81,21 +88,23 @@ public class Report<T extends Item> {
 	}
 
 	public Status getStatus() {
-		int size = countItems(); 
+		int size = size(); 
 		for (Status status:Status.values())
 			if (size == getItems(status).size())
 				return status;
 		return null;
 	}
 	
-	public int countItems(){
+	public int size(){
 		return getItems().size();
 	}
 
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getCreated() {
 		return created;
 	}
 
+	@JsonDeserialize(using=JsonDateDeserializer.class)
 	private void setCreated(Date created) {
 		this.created = created;
 	}

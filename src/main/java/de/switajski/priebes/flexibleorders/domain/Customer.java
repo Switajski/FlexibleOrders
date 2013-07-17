@@ -1,4 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -18,6 +20,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+@JsonAutoDetect
 @RooJavaBean
 @RooToString
 @RooJpaEntity
@@ -73,6 +76,7 @@ public class Customer {
 
     /**
      */
+    @JsonIgnore
     private String password;
 
     /**

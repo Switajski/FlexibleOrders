@@ -17,32 +17,30 @@ Ext.define('MyApp.model.BestellungData', {
     extend: 'Ext.data.Model',
 
     fields: [
+		{
+		    name: 'orderNumber'
+		},
         {
-            name: 'kunde'
+            name: 'customer'
         },
         {
-            name: 'kundenhinweise'
+            name: 'created'
         },
         {
-            name: 'eigeneNotizen'
+            name: 'netAmount'
         },
         {
-            name: 'status'
+            name: 'grossAmount'
         },
         {
-            name: 'bestelldatum'
+        	name: 'tax'
         },
         {
-        	name: 'betragNetto'
+        	name: 'status'
         },
         {
-        	name: 'betragBrutto'
-        },
-        {
-        	name: 'steuer'
-        },
-        {
-            name: 'id'
+        	name: 'size'
         }
+        
     ]
 });

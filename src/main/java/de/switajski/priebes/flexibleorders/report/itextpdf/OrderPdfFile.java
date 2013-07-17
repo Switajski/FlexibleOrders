@@ -32,7 +32,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class OrderPdfFile extends OrderPdfView {
 
 	public static final String RESULT
-    = "src/test/java/de/switajski/priebes/bestellsystem3/reports/BestellungPdfFileTest.pdf";
+    = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/OrderPdfFileTest.pdf";
 	
 	
 	protected PdfWriter newWriter(Document document, OutputStream os) throws DocumentException {

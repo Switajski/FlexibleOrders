@@ -155,7 +155,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 						p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
 						p.add(new Phrase(adresse.getPostalCode() + " " + adresse.getCity()));p.add(Chunk.NEWLINE);
 						p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-						p.add(new Phrase(adresse.getCountry().toString()));p.add(Chunk.NEWLINE);
+//						p.add(new Phrase(adresse.getCountry().toString()));p.add(Chunk.NEWLINE);
 					}
 					doc.add(p);
 					

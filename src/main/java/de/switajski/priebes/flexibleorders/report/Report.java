@@ -61,6 +61,7 @@ public class Report<T extends Item> {
 		Item item = items.get(0);
 		setCustomer(item.getCustomer());
 		setOrderNumber(item.getOrderNumber());
+		setCreated(item.getCreated());
 		
 		setItemsToHashMap(items);
 	}

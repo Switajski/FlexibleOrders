@@ -6,12 +6,17 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl extends JpaRepositoryReadService<Customer> implements CustomerService {
+
+	public CustomerServiceImpl(CustomerRepository jpaRepository) {
+		super(jpaRepository);
+	}
 
 	@Autowired
     CustomerRepository customerRepository;

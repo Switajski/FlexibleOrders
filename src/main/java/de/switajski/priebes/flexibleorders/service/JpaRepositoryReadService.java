@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public abstract class JpaRepositoryReadService<T> implements ReadService<T>{
+public abstract class JpaRepositoryReadService<T> implements EntityReadService<T>{
 	
 	@SuppressWarnings("rawtypes")
 	JpaRepository jpaRepository;

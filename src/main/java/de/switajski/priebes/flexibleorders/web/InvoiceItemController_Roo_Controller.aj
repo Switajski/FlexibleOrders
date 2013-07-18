@@ -8,19 +8,16 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.web.InvoiceItemController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -42,7 +39,7 @@ privileged aspect InvoiceItemController_Roo_Controller {
     CustomerService InvoiceItemController.customerService;
     
     @Autowired
-    ProductService InvoiceItemController.productService;
+    ProductRepository InvoiceItemController.productRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String InvoiceItemController.create(@Valid InvoiceItem invoiceItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -59,7 +56,7 @@ privileged aspect InvoiceItemController_Roo_Controller {
     public String InvoiceItemController.createForm(Model uiModel) {
         populateEditForm(uiModel, new InvoiceItem());
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (productService.countAllProducts() == 0) {
+        if (productRepository.count() == 0) {
             dependencies.add(new String[] { "product", "products" });
         }
         if (customerService.countAllCustomers() == 0) {
@@ -127,7 +124,7 @@ privileged aspect InvoiceItemController_Roo_Controller {
         uiModel.addAttribute("invoiceItem", invoiceItem);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("customers", customerService.findAllCustomers());
-        uiModel.addAttribute("products", productService.findAllProducts());
+        uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("countrys", Arrays.asList(Country.values()));
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }

@@ -15,55 +15,42 @@
 
 Ext.define('MyApp.model.BestellpositionData', {
     extend: 'Ext.data.Model',
-
+    /*uses: [
+        'MyApp.model.Kunde'
+    ],
+    hasOne: {
+        model: 'MyApp.model.Kunde'
+    }*/
     fields: [
         {
             name: 'id'
         },
         {
-            name: 'artikel',
+            name: 'productNumber',
             type: 'int'
         },
         {
-            //TODO: Testen, ob die Bestellung im JSON ohne Anführungszeichen kommt
-            name: 'bestellung',
+            name: 'orderNumber',
             type: 'int'
         },
         {
-            name: 'rechnung'
+            name: 'invoiceNumber'
         },
         {
-            name: 'auftragsbestaetigung'
+            name: 'orderConfirmationNumber'
         },
         {
-            name: 'menge',
+            name: 'quantity',
             type: 'int'
         },
         {
-            name: 'preisNetto'
+            name: 'priceNet'
         },
         {
             name: 'status'
         },
         {
-            name: 'geteilt',
-            type: 'boolean',
-            defaultValue: {
-                booleanValue: false
-            }
-        },
-        {
-            name: 'anNaeherei',
-            type: 'boolean',
-            defaultValue: {
-                booleanValue: false
-            }
-        },
-        {
-            name: 'auslieferungsdatum'
-        },
-        {
-            name: 'geplantAusliefdatum'
+            name: 'expectedDelivery'
         }
     ]
 });

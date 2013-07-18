@@ -20,22 +20,22 @@ Ext.define('MyApp.model.ArtikelData', {
 
     fields: [
         {
-            name: 'artikelnummer'
-        },
-        {
-            name: 'kurzbeschreibung'
-        },
-        {
-            name: 'gesperrt'
-        },
-        {
-            name: 'geloescht'
-        },
-        {
-            name: 'uebergeordneteKategorie'
+            name: 'productNumber'
         },
         {
             name: 'name'
+        },
+        {
+            name: 'productType'
+        },
+        {
+            name: 'description'
+        },
+        {
+            name: 'category'
+        },
+        {
+            name: 'active'
         }
     ]
 });

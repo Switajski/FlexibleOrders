@@ -1,19 +1,19 @@
 package de.switajski.priebes.flexibleorders.service;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+
 @Service
 @Transactional
-public class CustomerServiceImpl extends JpaRepositoryReadService<Customer> implements CustomerService {
+public class CustomerServiceImpl extends JpaRepositoryToServiceAdapter<Customer> implements CustomerService {
 
+	@Autowired
 	public CustomerServiceImpl(CustomerRepository jpaRepository) {
 		super(jpaRepository);
 	}
@@ -48,4 +48,5 @@ public class CustomerServiceImpl extends JpaRepositoryReadService<Customer> impl
 	public Customer updateCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
+
 }

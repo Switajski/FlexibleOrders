@@ -23,9 +23,9 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
     reload: function(activeBestellnr){
     	this.load({
             params: {
-                bestellnr: activeBestellnr
+                orderNumber: activeBestellnr
             },
-            url: '/leanorders/bestellpositions?find=ByBestellung'
+            url: '/FlexibleOrders/orderitems/json/'
         });
     },
     constructor: function(cfg) {
@@ -44,10 +44,10 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     create: 'POST'
                 },
                 api:{
-                    read: '/leanorders/bestellpositions',
-                    update: '/leanorders/bestellpositions',
-                    destroy: '/leanorders/bestellpositions',
-                    create: '/leanorders/bestellpositions'
+                    read: '/FlexibleOrders/orderitems/json',
+                    update: '/FlexibleOrders/orderitems/json',
+                    destroy: '/FlexibleOrders/orderitems/json',
+                    create: '/FlexibleOrders/orderitems/json'
                 },
                 headers: {
                     Accept: 'application/json'

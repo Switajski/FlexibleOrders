@@ -19,7 +19,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
     width: 400,
     layout: {
         align: 'stretch',
-        type: 'fit'
+        type: 'vbox'
     },
     closeAction: 'hide',
     title: 'Erstelle Bestellung',
@@ -39,6 +39,13 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
                     },
                     bodyPadding: 10,
                     items: [
+						{
+						    xtype: 'textfield',
+						    anchor: '100%',
+						    fieldLabel: 'Bestellnr',
+						    name:'orderNumber',
+						    valueField:'orderNumber'
+						},
                         {
                             xtype: 'combobox',
                             anchor:'100%',
@@ -46,30 +53,26 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
                             fieldLabel: 'Kunde',
                             allowBlank: false,
                             displayField: 'name',
-                            valueField: 'kundennummer',
+                            valueField: 'id',
                             enableRegEx: true,
                             forceSelection: true,
                             queryMode: 'local',
                             store: 'KundeDataStore',
                             tpl: Ext.create('Ext.XTemplate',
                                 '<tpl for=".">',
-                                '<div class="x-boundlist-item">{kundennummer} - {nachname}</div>',
+                                '<div class="x-boundlist-item">{id} - {shortName}</div>',
                                 '</tpl>'
                             ),
                             displayTpl: Ext.create('Ext.XTemplate',
                                 '<tpl for=".">',
-                                '{kundennummer} - {nachname}',
+                                '{id} - {shortName}',
                                 '</tpl>'
                             )
                         },
                         {
-                            xtype: 'textfield',
-                            anchor: '100%',
-                            fieldLabel: 'Notizen',
-                            name:'eigeneNotizen',
-                            valueField:'eigeneNotizen'
+                            xtype: 'BestellpositionGrid'
                         }
-                    ],
+                    ], //dockedItems
                     buttons: [{
                         text: 'Speichern',
                         formBind: true, //only enabled once the form is valid

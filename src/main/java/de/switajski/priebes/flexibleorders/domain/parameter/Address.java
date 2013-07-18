@@ -22,6 +22,12 @@ public class Address {
 			int postalCode, 
 			String city, 
 			Country country) {
+		setName1(name1);
+		setName2(name2);
+		setStreet(street);
+		setPostalCode(postalCode);
+		setCity(city);
+		setCountry(country);
 	}
 
     public String getName1() {

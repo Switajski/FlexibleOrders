@@ -7,13 +7,10 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.web.CustomerController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

@@ -6,7 +6,7 @@ import org.springframework.roo.addon.layers.service.RooService;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 
 @RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.Customer.class })
-public interface CustomerService {
+public interface CustomerService extends CrudServiceAdapter<Customer> {
 
 	public abstract long countAllCustomers();
 

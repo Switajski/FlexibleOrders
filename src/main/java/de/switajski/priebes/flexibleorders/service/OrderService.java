@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,15 +13,13 @@ import de.switajski.priebes.flexibleorders.report.Order;
  * @author Marek
  *
  */
-public interface OrderService {
+public interface OrderService extends CrudServiceAdapter<Order> {
 
-	Long countAll();
-	
 	Page<Long> getOrderNumbersByCustomer(Customer customer, Pageable pageable);
 	
 	Page<Order> findAll(Pageable pageable);
 	
-	Page<Order> findByCustomer(Customer customer);
+	List<Order> findByCustomer(Customer customer);
 	
 	Page<Order> findByCustomer(Customer customer, Pageable pageable);
 	

@@ -1,22 +1,27 @@
 package de.switajski.priebes.flexibleorders.service;
 
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
 
 @Service
 @Transactional
-public class OrderItemServiceImpl implements OrderItemService {
+public class OrderItemServiceImpl extends JpaRepositoryToServiceAdapter<OrderItem> implements OrderItemService {
+
+	@Autowired
+	public OrderItemServiceImpl(OrderItemRepository jpaRepository) {
+		super(jpaRepository);
+	}
 
 	@Autowired
     OrderItemRepository orderItemRepository;

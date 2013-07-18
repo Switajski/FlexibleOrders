@@ -23,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
 	OrderItemRepository orderItemRepository;
 	
 	@Override
-	public Long countAll() {
+	public long countAll() {
 		return orderItemRepository.countAllOrders();
 	}
 	
@@ -45,18 +45,6 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Page<Order> findByCustomer(Customer customer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Page<Order> findByCustomer(Customer customer, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Order find(Long orderNumber) {
 		return getOrder(orderNumber);
 	}
@@ -65,6 +53,49 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderItem> ois = orderItemRepository.findByOrderNumber(orderNumber);
 		Order order = new Order(ois);
 		return order;
+	}
+
+	@Override
+	public List<Order> findAll() {
+		ArrayList<Order> orders = new ArrayList<Order>();
+		for (Long orderNumber: orderItemRepository.getAllOrderNumbers())
+			orders.add(getOrder(orderNumber));
+		return orders;
+	}
+
+	@Override
+	public void save(Order t) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public void delete(Order t) {
+		throw new UnsupportedOperationException();
+		
+	}
+
+	@Override
+	public void update(Order t) {
+		throw new UnsupportedOperationException();
+		
+	}
+
+	@Override
+	public List<Order> findByCustomer(Customer customer) {
+		ArrayList<Order> orders = new ArrayList<Order>();
+		for (Long orderNumber: orderItemRepository.getAllOrderNumbers(customer))
+			orders.add(getOrder(orderNumber));
+		return orders;
+	}
+
+	@Override
+	public Page<Order> findByCustomer(Customer customer, Pageable pageable) {
+		ArrayList<Order> orders = new ArrayList<Order>();
+		Page<Long> orderNumbers = orderItemRepository.getAllOrderNumbers(customer, pageable);
+		for (Long orderNumber: orderNumbers)
+			orders.add(getOrder(orderNumber));
+		Page<Order> pages = new PageImpl<Order>(orders, pageable, orderNumbers.getSize());
+		return pages;
 	}
 
 }

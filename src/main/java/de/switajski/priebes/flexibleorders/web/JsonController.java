@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.service.EntityReadService;
+import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
 
 public abstract class JsonController<T> {
 
-	EntityReadService<T> entityReadService;
+	CrudServiceAdapter<T> crudServiceAdapter;
 
-	public JsonController(EntityReadService<T> readService) {
-		this.entityReadService = readService;
+	public JsonController(CrudServiceAdapter<T> crudServiceAdapter) {
+		this.crudServiceAdapter = crudServiceAdapter;
 	}
 	
 	@RequestMapping(value="/json", headers = "Accept=application/json")
-	public @ResponseBody JsonObjectResponse listAllEntitiesInJson(
+	public @ResponseBody JsonObjectResponse listAllPageable(
 			@RequestParam(value = "page", required = true) Integer page,
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
@@ -26,10 +26,10 @@ public abstract class JsonController<T> {
             @RequestParam(value = "filter", required = false) String filters) {
  	
 		JsonObjectResponse response = new JsonObjectResponse();
-		Page<T> entities =  entityReadService.findAll(new PageRequest(page-1, limit-1));
-		response.setMessage("All orders retrived.");
+		Page<T> entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit-1));
+		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
-		response.setTotal(entityReadService.countAll());
+		response.setTotal(crudServiceAdapter.countAll());
 		response.setData(entities.getContent());
 		
 		return response;

@@ -33,7 +33,8 @@ Ext.define('MyApp.controller.MyController', {
         'ErstelleBpWindow',
         'BestellungWindow',
         'ErstelleBestellungWindow',
-        'BpWindow'
+        'BpWindow',
+        'BestellpositionGridPanel'
     ],
     //TODO: Registrieren und Initialisiseren von Views an einer Stelle implementieren
     // Die view muss eine ID haben
@@ -105,7 +106,7 @@ Ext.define('MyApp.controller.MyController', {
         
         //Variablen laden
         var bestellung = selections[0];
-        this.activeBestellnr = bestellung.getData().id;
+        this.activeBestellnr = bestellung.getData().orderNumber;
         bpform = Ext.getCmp('ErstelleBpForm').getForm();
         
         //BpGrid und Controller aktualisieren
@@ -113,73 +114,52 @@ Ext.define('MyApp.controller.MyController', {
         this.getErstelleBpWindowView.bestellnr = this.activeBestellnr;
         Ext.StoreMgr.get('BestellpositionDataStore').reload(this.activeBestellnr);
         
-        // Buttons konfigurieren NICHTBESTEATIGT, AUFTRAGBESTAETIGT, GELIEFERT, BEZAHLT, STORNO;
+        // Buttons konfigurieren ORDERED, CONFIRMED, SHIPPED, COMPLETED;
         buttons = this.getButtons();
         switch (bestellung.getData().status){
-        case "NICHTBESTEATIGT":	
+        case "ORDERED":	
         	buttons.abBestellungButton.setDisabled(false);
         	buttons.bezahltBestellungButton.setDisabled(true);
         	buttons.deleteBestellung.setDisabled(false);
-        	buttons.deleteBp.setDisabled(false);
         	buttons.deleteBestellungButton.setDisabled(false);
-        	buttons.erstelleBpButton.setDisabled(false);
         	buttons.rechnungBestellungButton.setDisabled(true);
         	buttons.stornoBestellungButton.setDisabled(false);
         	buttons.bestellungPdfButton.setDisabled(false);
         	buttons.abPdfButton.setDisabled(true);
         	buttons.rechnungPdfButton.setDisabled(true);
         	break;
-        case "AUFTRAGBESTAETIGT":
+        case "CONFIRMED":
         	buttons.abBestellungButton.setDisabled(true);
         	buttons.bezahltBestellungButton.setDisabled(true);
         	buttons.deleteBestellung.setDisabled(true);
-        	buttons.deleteBp.setDisabled(true);
         	buttons.deleteBestellungButton.setDisabled(true);
-        	buttons.erstelleBpButton.setDisabled(true);
         	buttons.rechnungBestellungButton.setDisabled(false);
         	buttons.stornoBestellungButton.setDisabled(false);
         	buttons.bestellungPdfButton.setDisabled(false);
         	buttons.abPdfButton.setDisabled(false);
         	buttons.rechnungPdfButton.setDisabled(true);
         	break;
-        case "GELIEFERT":
+        case "SHIPPED":
         	buttons.abBestellungButton.setDisabled(true);
         	buttons.bezahltBestellungButton.setDisabled(false);
         	buttons.deleteBestellung.setDisabled(true);
-        	buttons.deleteBp.setDisabled(true);
         	buttons.deleteBestellungButton.setDisabled(true);
-        	buttons.erstelleBpButton.setDisabled(true);
         	buttons.rechnungBestellungButton.setDisabled(true);
         	buttons.stornoBestellungButton.setDisabled(false);
         	buttons.bestellungPdfButton.setDisabled(false);
         	buttons.abPdfButton.setDisabled(false);
         	buttons.rechnungPdfButton.setDisabled(false);
         	break;
-        case "BEZAHLT":
+        case "COMPLETED":
         	buttons.abBestellungButton.setDisabled(true);
         	buttons.bezahltBestellungButton.setDisabled(true);
         	buttons.deleteBestellung.setDisabled(true);
-        	buttons.deleteBp.setDisabled(true);
         	buttons.deleteBestellungButton.setDisabled(true);
-        	buttons.erstelleBpButton.setDisabled(true);
         	buttons.rechnungBestellungButton.setDisabled(true);
         	buttons.stornoBestellungButton.setDisabled(false);
         	buttons.bestellungPdfButton.setDisabled(false);
         	buttons.abPdfButton.setDisabled(false);
         	buttons.rechnungPdfButton.setDisabled(false);
-        	break;
-        case "STORNO":
-        	buttons.abBestellungButton.setDisabled(true);
-        	buttons.bezahltBestellungButton.setDisabled(true);
-        	buttons.deleteBestellung.setDisabled(true);
-        	buttons.deleteBp.setDisabled(true);
-        	buttons.deleteBestellungButton.setDisabled(true);
-        	buttons.erstelleBpButton.setDisabled(true);
-        	buttons.rechnungBestellungButton.setDisabled(true);
-        	buttons.stornoBestellungButton.setDisabled(true);
-        	buttons.bestellungPdfButton.setDisabled(false);
-        	buttons.abPdfButton.setDisabled(true);
-        	buttons.rechnungPdfButton.setDisabled(true);
         	break;
         }
     },
@@ -206,7 +186,7 @@ Ext.define('MyApp.controller.MyController', {
         if (this.debug) console.log('deleteBpDialog');
         var bestellung = this.getBpSelection();
 
-        if (bestellung.getData().status == 'NICHTBESTEATIGT')
+        if (bestellung.getData().status == 'ORDERED')
             Ext.MessageBox.confirm('Best&aumltigen', 'Bestellpostion sicher l&ouml;schen?', this.deleteBp);
         else Ext.MessageBox.alert('Hinweis','Bestellposition schon best&auml;tigt. Nur noch Storno ist m&ouml;glich.');
     },
@@ -215,7 +195,7 @@ Ext.define('MyApp.controller.MyController', {
     	if (this.debug) console.log('deleteBpDialog');
         var bestellung = this.getBestellungSelection();
 
-        if (bestellung.getData().status == 'NICHTBESTEATIGT')
+        if (bestellung.getData().status == 'ORDERED')
             Ext.MessageBox.confirm('Best&aumltigen', 'Bestellung sicher l&ouml;schen?', this.deleteBestellung);
         else Ext.MessageBox.alert('Hinweis','Bestellung schon best&auml;tigt. Nur noch Storno ist m&ouml;glich.');
     },
@@ -411,11 +391,11 @@ Ext.define('MyApp.controller.MyController', {
         bpDataStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
         bpDataStore.getProxy().setExtraParam({id:this.activeBestellpositionId});
 
-        deletebutton = Ext.getCmp('DeleteBpButton');
+        /*deletebutton = Ext.getCmp('DeleteBpButton');
         deletebutton.setDisabled(true);
 
-        if (selections[0].getData().status == 'NICHTBESTEATIGT')
-            deletebutton.setDisabled(false);
+        if (selections[0].getData().status == 'ORDERED')
+            deletebutton.setDisabled(false);*/
         
     },
 
@@ -425,15 +405,15 @@ Ext.define('MyApp.controller.MyController', {
     },
 
     showBestellundPdf: function(button, event, options){
-        var win=window.open('/leanorders/bestellungs/'+this.activeBestellnr+'.pdf', '_blank');
+        var win=window.open('/leanorders/orders/'+this.activeBestellnr+'.pdf', '_blank');
         win.focus();
     },
     showAbPdf: function(button, event, options){
-        var win=window.open('/leanorders/auftragsbestaetigungs/ByBestellung/'+this.activeBestellnr+'.pdf', '_blank');
+        var win=window.open('/leanorders/orderConfirmations/'+this.activeBestellnr+'.pdf', '_blank');
         win.focus();
     },
     showRechnungPdf: function(button, event, options){
-        var win=window.open('/leanorders/rechnungs/ByBestellung/'+this.activeBestellnr+'.pdf', '_blank');
+        var win=window.open('/leanorders/invoices/'+this.activeBestellnr+'.pdf', '_blank');
         win.focus();
     },
     sleep: function(milliseconds) {

@@ -7,19 +7,16 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.web.OrderItemController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -41,7 +38,7 @@ privileged aspect OrderItemController_Roo_Controller {
     CustomerService OrderItemController.customerService;
     
     @Autowired
-    ProductService OrderItemController.productService;
+    ProductRepository OrderItemController.productRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String OrderItemController.create(@Valid OrderItem orderItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -58,7 +55,7 @@ privileged aspect OrderItemController_Roo_Controller {
     public String OrderItemController.createForm(Model uiModel) {
         populateEditForm(uiModel, new OrderItem());
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (productService.countAllProducts() == 0) {
+        if (productRepository.count() == 0) {
             dependencies.add(new String[] { "product", "products" });
         }
         if (customerService.countAllCustomers() == 0) {
@@ -127,7 +124,7 @@ privileged aspect OrderItemController_Roo_Controller {
         uiModel.addAttribute("orderItem", orderItem);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("customers", customerService.findAllCustomers());
-        uiModel.addAttribute("products", productService.findAllProducts());
+        uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }
     

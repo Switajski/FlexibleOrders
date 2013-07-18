@@ -33,29 +33,35 @@ public class Customer {
 
     /**
      */
+    @JsonIgnore
     private String name1;
 
     /**
      */
+    @JsonIgnore
     private String name2;
 
     /**
      */
+    @JsonIgnore
     @NotNull
     private String street;
 
     /**
      */
+    @JsonIgnore
     @NotNull
     private String city;
 
     /**
      */
+    @JsonIgnore
     @NotNull
     private int postalCode;
 
     /**
      */
+    @JsonIgnore
     @NotNull
     @Enumerated
     private Country country;

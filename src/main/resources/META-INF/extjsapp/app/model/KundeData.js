@@ -20,52 +20,19 @@ Ext.define('MyApp.model.KundeData', {
 
     fields: [
         {
-            name: 'kundennummer'
-        },
-        {
-            name: 'anrede'
-        },
-        {
-            name: 'vorname'
-        },
-        {
-            name: 'nachname'
+            name: 'shortName'
         },
         {
             name: 'email'
         },
         {
-            name: 'telefon'
+            name: 'phone'
         },
         {
-            name: 'mobil'
+            name: 'shippingAddress'
         },
         {
-            name: 'firma'
-        },
-        {
-            name: 'benutzerkonto'
-        },
-        {
-            name: 'kundenart'
-        },
-        {
-            name: 'erstelltDatum'
-        },
-        {
-            name: 'bild'
-        },
-        {
-            name: 'eigeneHinweise'
-        },
-        {
-            name: 'rabattprozent'
-        },
-        {
-            name: 'rechnungsadresse'
-        },
-        {
-            name: 'lieferadresse'
+            name: 'invoiceAddress'
         }
-    ]
+     ]
 });

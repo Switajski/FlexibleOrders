@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 
-public class ProductServiceImpl extends JpaRepositoryReadService<Product> implements ProductService {
+public class ProductServiceImpl extends JpaRepositoryToServiceAdapter<Product> implements ProductService {
 
 	@Autowired
 	ProductServiceImpl(ProductRepository repository) {

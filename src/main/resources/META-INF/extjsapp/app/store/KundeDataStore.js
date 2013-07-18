@@ -30,7 +30,7 @@ Ext.define('MyApp.store.KundeDataStore', {
             pageSize: 1000,
             proxy: {
                 type: 'ajax',
-                url: '/leanorders/kundes?raw',
+                url: '/FlexibleOrders/customers/json',
                 headers: {
                     accept: 'application/json'
                 },

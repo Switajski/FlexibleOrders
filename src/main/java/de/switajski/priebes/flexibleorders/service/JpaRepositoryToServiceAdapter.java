@@ -6,13 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public abstract class JpaRepositoryReadService<T> implements EntityReadService<T>{
+public abstract class JpaRepositoryToServiceAdapter<T> implements CrudServiceAdapter<T>{
 	
-	@SuppressWarnings("rawtypes")
-	JpaRepository jpaRepository;
+	JpaRepository<T, Long> jpaRepository;
 	
 	
-	public JpaRepositoryReadService(@SuppressWarnings("rawtypes") JpaRepository jpaRepository) {
+	public JpaRepositoryToServiceAdapter(JpaRepository<T, Long> jpaRepository) {
 		this.jpaRepository = jpaRepository;
 	}
 	
@@ -20,18 +19,35 @@ public abstract class JpaRepositoryReadService<T> implements EntityReadService<T
 		return jpaRepository.count();
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
 	public T find(Long id) {
 		return (T) jpaRepository.findOne(id);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
 	public Page<T> findAll(Pageable pageable) {
 		return (Page<T>) jpaRepository.findAll(pageable);
 	}
-		
-	@SuppressWarnings("unchecked")
+	
+	@Override
 	public List<T> findAll() {
 		return jpaRepository.findAll();
+	}
+	
+	@Override
+	public void save(T t) {
+		jpaRepository.save(t);
+	}
+	
+	@Override
+	public void update(T t) {
+	//TODO: Testen!
+		jpaRepository.save(t);
+	}
+	
+	@Override
+	public void delete(T t) {
+		jpaRepository.delete(t);
+		
 	}
 }

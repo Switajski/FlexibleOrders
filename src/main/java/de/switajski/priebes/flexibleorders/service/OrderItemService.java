@@ -4,22 +4,18 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.roo.addon.layers.service.RooService;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.OrderItem.class })
-public interface OrderItemService {
+public interface OrderItemService extends CrudServiceAdapter<OrderItem>{
 
 	List<OrderItem> findByOrderNumber(Long orderNumber);
 
 	Page<OrderItem> findByOrderNumber(Long orderNumber, Pageable pageable);
 
 	Page<OrderItem> findByOrderItemNumber(Long orderItemNumber, Pageable pageable);
-	
-	Page<OrderItem> findAll(Pageable pageable);
 	
 	public abstract long countAllOrderItems();
 

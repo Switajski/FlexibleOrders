@@ -1,10 +1,16 @@
 package de.switajski.priebes.flexibleorders.web;
 import java.util.List;
 
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import flexjson.JSONSerializer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,36 +23,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/orderitems")
 @Controller
 @RooWebScaffold(path = "orderitems", formBackingObject = OrderItem.class)
-public class OrderItemController {
+public class OrderItemController extends JsonController<OrderItem>{
 
-	@RequestMapping(params = "find=ByBestellung", headers = "Accept=application/json")
-	@ResponseBody
-	public ResponseEntity<String> jsonFindBestellpositionsByBestellung(@RequestParam("bestellnr") String bestellnrString) {
-		HttpStatus returnStatus = HttpStatus.OK;
+	@Autowired
+	public OrderItemController(OrderItemService readService) {
+		super(readService);
+	}
+	
+	@RequestMapping(value="/json", params="orderNumber", headers = "Accept=application/json")
+	public @ResponseBody JsonObjectResponse listByOrderNumber(
+            @RequestParam(value = "orderNumber", required = true) Long orderNumber) {
 		JsonObjectResponse response = new JsonObjectResponse();
-
-		try {
-			long bestellnr =Long.parseLong(bestellnrString); 
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Content-Type", "application/json; charset=utf-8");
-			List<OrderItem> records = orderItemService.findByOrderNumber(bestellnr);
-			returnStatus = HttpStatus.OK;
-			response.setMessage("All entities retrieved.");
-			response.setSuccess(true);
-			response.setTotal(records.size());
-			response.setData(records);
-		} catch(Exception e) {
-			response.setMessage(e.getMessage());
-			response.setSuccess(false);
-			response.setTotal(0L);
-			e.printStackTrace();
-		}
-		//		BestellpositionTransformerSet ts = new BestellpositionTransformerSet();
-		JSONSerializer jsonser = new JSONSerializer();
-		String returnString = jsonser.serialize(response);
-		// Return list of retrieved performance areas
-		return new ResponseEntity<String>(returnString, returnStatus);
-	}	
-
+		List<OrderItem> entities =  orderItemService.findByOrderNumber(orderNumber);
+		response.setMessage("All order items retrieved.");
+		response.setSuccess(true);
+		response.setTotal(entities.size());
+		response.setData(entities);
+		
+		return response;
+	}
 
 }

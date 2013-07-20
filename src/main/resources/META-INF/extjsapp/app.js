@@ -33,7 +33,7 @@ Ext.application({
     ],
     views: [
         'MainPanel',
-        'ErstelleBpWindow',
+        'BpForm',
         'ErstelleBestellungWindow',
         'BestellungWindow'
     ],

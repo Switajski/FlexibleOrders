@@ -16,7 +16,7 @@
 Ext.define('MyApp.view.ErstelleBestellungWindow', {
     extend: 'Ext.window.Window',
     id: 'ErstelleBestellungWindow',
-    width: 400,
+    width: 720,
     layout: {
         align: 'stretch',
         type: 'vbox'
@@ -41,14 +41,14 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
                     items: [
 						{
 						    xtype: 'textfield',
-						    anchor: '100%',
+//						    anchor: '100%',
 						    fieldLabel: 'Bestellnr',
 						    name:'orderNumber',
 						    valueField:'orderNumber'
 						},
                         {
                             xtype: 'combobox',
-                            anchor:'100%',
+//                            anchor:'100%',
                             name:'kunde',
                             fieldLabel: 'Kunde',
                             allowBlank: false,
@@ -60,30 +60,48 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
                             store: 'KundeDataStore',
                             tpl: Ext.create('Ext.XTemplate',
                                 '<tpl for=".">',
-                                '<div class="x-boundlist-item">{id} - {shortName}</div>',
+                                '<div class="x-boundlist-item">{shortName}</div>',
                                 '</tpl>'
                             ),
                             displayTpl: Ext.create('Ext.XTemplate',
                                 '<tpl for=".">',
-                                '{id} - {shortName}',
+                                '{shortName}',
                                 '</tpl>'
                             )
                         },
                         {
-                            xtype: 'BestellpositionGrid'
+                            xtype: 'BestellpositionGrid',
+                            id: 'newOrderBpg',
+                            store: 'NewOrderBpds',
+                            listeners: {
+                                create: function(form, data){
+                                    store.insert(0, data);
+                                }
+                            }
                         }
-                    ], //dockedItems
+                    ],
+                    
                     buttons: [{
+                    	
                         text: 'Speichern',
                         formBind: true, //only enabled once the form is valid
                         disabled: true,
-                        id: 'SubmitBestellungButton'
+                        id: 'SubmitBestellungButton',
                     }]
                 }
             ]
         });
 
         me.callParent(arguments);
+    },
+    onAdd: function(){
+    	var form = this.getForm();
+    	
+    	if (form.isValid()) {
+    		this.fireEvent('create', this, form.getValues());
+    		form.reset();
+    	}
+    	
     }
 
 });

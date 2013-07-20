@@ -15,11 +15,6 @@
 
 Ext.define('MyApp.view.MainPanel', {
     extend: 'Ext.panel.Panel',
-
-    requires: [
-        'MyApp.view.ErstelleBpWindow'
-    ],
-
     frame: true,
     height: 500,
     width: 750,

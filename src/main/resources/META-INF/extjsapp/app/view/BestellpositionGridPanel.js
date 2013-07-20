@@ -6,22 +6,39 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	title: "Bestellpositionen",
 	requires: [
 	           'MyApp.model.ArtikelData',
-	           'MyApp.store.BestellpositionDataStore'
+	           'MyApp.store.BestellpositionDataStore',
+	           'Ext.grid.plugin.CellEditing',
+	           'Ext.form.field.Text',
+	           'Ext.toolbar.TextItem'
 	           ],
 	
-	 store: 'BestellpositionDataStore',
+	 //store: 'BestellpositionDataStore',
 	 initComponent: function() {
 	        var me = this;
+	        this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 
 	        Ext.applyIf(me, {
+	        	plugins: [this.editing],
+	        	tbar: [{
+		        	dock: 'top',
+		        	icon: 'images/add.png',
+		        	text: 'hinzuf&uuml;gen',
+		        	scope: this, 
+		        	handler: this.onAddClick
+		        }, {
+		        	itemId: 'delete',
+		        	icon: 'images/delete.png',
+		        	text: 'l&ouml;schen',
+		        	scope: this.onDeleteClick
+		        }], 
 	            columns: [
 	                {
 	                	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'product',
 	                   	 text: 'Artikel',
+	                   	 width: 150,
 	                   	 editor: {
 	                   		 id: 'ArtikelComboBox',
-	                   		 width: 150,
 	                   		 xtype: 'combobox',
 	                   		 //allowBlank: false,
 	                   		 displayField: 'name',
@@ -48,7 +65,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 text: 'Bestellung'
 	                },
 	                {
-	                   	 xtype: 'gridcolumn',
+	                	xtype: 'gridcolumn',
 	                   	 dataIndex: 'invoiceNumber',
 	                   	 width: 75,
 	                   	 text: 'Rechnung'
@@ -63,13 +80,19 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'quantity',
 	                   	 width: 50,
-	                   	 text: 'Menge'
+	                   	 text: 'Menge',
+	                   	 editor: {
+	                        xtype: 'numberfield',
+	                        allowBlank: false
+	                    }
+	                   	 
 	                },
 	                {
-	                   	 xtype: 'gridcolumn',
+	                   	 xtype: 'numbercolumn',
 	                   	 dataIndex: 'priceNet',
 	                   	 width: 75,
-	                   	 text: 'Preis Netto'
+	                   	 text: 'Preis Netto',
+	                   	 renderer: Ext.util.Format.euMoney
 	                 },
 	                    {
 	                  	 xtype: 'gridcolumn',
@@ -80,8 +103,8 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                 {
 	                 	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'expectedDelivery',
-	                   	 text: 'Gepl.',
-	                   	 width: 50,
+	                   	 text: 'Geplante Ausl.',
+	                   	 width: 100,
 	                   	 editor: {
 	                   		 xtype: 'datefield',
 	                   		 format: 'd/m/Y',
@@ -90,15 +113,41 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   		 minText: 'Datum liegt in der Vergangenheit'
 	               	 }
 	            }
-	           ]
+	           ],
 	        });
 			me.callParent(arguments);
-	}/*,
-                   plugins: [
-                       Ext.create('Ext.grid.plugin.RowEditing', {
-                           id: 'BpGridRowEditing',
-                          clicksToMoveEditor: 1,
-                           autoCancel: false
-                       })
-                   ]*/
+			
+	},
+	
+	onSync: function(){
+        this.store.sync();
+    },
+    
+    onSelectChange: function(selModel, selections){
+        this.down('#delete').setDisabled(selections.length === 0);
+    },
+	
+	onAddClick: function(){
+		var rec = new MyApp.model.BestellpositionData({
+			
+	        status: 'ORDERED'
+			
+		}), edit = this.editing;
+		this.store.insert(0,rec);
+		edit.startEditByPosition({
+			row:0,
+			column:0
+		});
+	},
+	onDeleteClick: function(){
+		var selection = this.getView().getSelectionModel().getSelection()[0];
+		if (selection) {
+			this.store.remove(selection);
+		}
+	},
+	getBestellnr: function(){
+		alert('hallo');
+	}
+	
+
 });

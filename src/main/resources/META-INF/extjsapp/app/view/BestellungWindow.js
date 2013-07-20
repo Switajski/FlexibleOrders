@@ -62,6 +62,7 @@ Ext.define('MyApp.view.BestellungWindow', {
                 	xtype:'BestellpositionGrid',
                 	flex:1,
                 	id: 'BestellpositionGridPanel',
+                	store: 'BestellpositionDataStore',
         	        dockedItems: [{
                         xtype: 'toolbar',
                         items: [{

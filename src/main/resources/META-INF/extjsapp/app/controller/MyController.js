@@ -26,11 +26,12 @@ Ext.define('MyApp.controller.MyController', {
     stores: [
         'BestellungDataStore',
         'BestellpositionDataStore',
-        'KundeDataStore'
+        'KundeDataStore',
+        'NewOrderBpds'
     ],
     views: [
         'MainPanel',
-        'ErstelleBpWindow',
+        'BpForm',
         'BestellungWindow',
         'ErstelleBestellungWindow',
         'BpWindow',
@@ -55,7 +56,7 @@ Ext.define('MyApp.controller.MyController', {
                 removed: this.syncBpGrid
             },
             '#ErstelleBpButton': {
-                click: this.loadErstelleBpWindow
+                click: this.loadBpForm
             },
             '#ErstelleBestellungButton': {
                 click: this.loadErstelleBestellungWindow
@@ -94,7 +95,7 @@ Ext.define('MyApp.controller.MyController', {
             	afterRequest: this.loadBps
             }*/
         });
-        this.getErstelleBpWindowView().create();
+        this.getBpFormView().create();
         this.getBestellungWindowView().create();
         this.getBpWindowView().create();
         this.getErstelleBestellungWindowView().create();
@@ -105,13 +106,13 @@ Ext.define('MyApp.controller.MyController', {
         if (selections.length == 0) return;
         
         //Variablen laden
-        var bestellung = selections[0];
+        /*var bestellung = selections[0];
         this.activeBestellnr = bestellung.getData().orderNumber;
         bpform = Ext.getCmp('ErstelleBpForm').getForm();
         
         //BpGrid und Controller aktualisieren
         bpform.findField('bestellung').setValue(this.activeBestellnr);
-        this.getErstelleBpWindowView.bestellnr = this.activeBestellnr;
+        this.getBpFormView.bestellnr = this.activeBestellnr;
         Ext.StoreMgr.get('BestellpositionDataStore').reload(this.activeBestellnr);
         
         // Buttons konfigurieren ORDERED, CONFIRMED, SHIPPED, COMPLETED;
@@ -161,7 +162,7 @@ Ext.define('MyApp.controller.MyController', {
         	buttons.abPdfButton.setDisabled(false);
         	buttons.rechnungPdfButton.setDisabled(false);
         	break;
-        }
+        }*/
     },
     getButtons: function(){   
     	var buttons = {
@@ -314,15 +315,14 @@ Ext.define('MyApp.controller.MyController', {
         form.getForm().loadRecord(record);
     },
 
-    loadErstelleBpWindow: function(btn, e, eOpts) {
-        // Für welche Bestellung soll
+    loadBpForm: function(btn, e, eOpts) {
         var bestellung = this.getBestellungSelection();
 
         var form = Ext.getCmp('ErstelleBpForm').getForm();
         try {
             form.findField('bestellung').setValue(bestellung.getId());
-            var erstelleBpWindow = Ext.getCmp('ErstelleBpWindow');
-            erstelleBpWindow.show();
+            var BpForm = Ext.getCmp('BpForm');
+            BpForm.show();
         }
         catch (e){
             Ext.Msg.alert('Hinweis', 'Bevor eine eine Bestellposition erstellt werden kann, muss eine Bestellung ausgew&auml;hlt sein </br> Fehlerdetails:'+ e.toString());
@@ -332,6 +332,7 @@ Ext.define('MyApp.controller.MyController', {
     loadErstelleBestellungWindow: function(btn, e, eOpts) {
         console.log('function createBestellung');
         var bestellungWindow = Ext.getCmp('ErstelleBestellungWindow');
+        store = Ext.data.StoreMgr.lookup('BestellpositionDataStore');
         bestellungWindow.show();
     },
 
@@ -354,7 +355,7 @@ Ext.define('MyApp.controller.MyController', {
             bpDataStore.sync();
             form.getForm().reset();
 
-            Ext.getCmp('ErstelleBpWindow').hide();
+            Ext.getCmp('BpForm').hide();
             this.sleep(500);
             bpDataStore.reload(this.activeBestellnr);
         }

@@ -14,13 +14,14 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 public class CustomerServiceImpl extends JpaRepositoryToServiceAdapter<Customer> implements CustomerService {
 
 	@Autowired
+	CustomerRepository customerRepository;
+
+	@Autowired
 	public CustomerServiceImpl(CustomerRepository jpaRepository) {
 		super(jpaRepository);
 	}
-
-	@Autowired
-    CustomerRepository customerRepository;
-
+	
+	//TODO: Delete all SpringRoo generated methods with *Customer*
 	public long countAllCustomers() {
         return customerRepository.count();
     }

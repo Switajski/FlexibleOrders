@@ -24,6 +24,7 @@ import javax.validation.constraints.Min;
 
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.JsonProductDeserializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
 import javax.persistence.Enumerated;
@@ -121,6 +122,7 @@ public abstract class Item implements Comparable<Item> {
         this.status = status;
     }
 
+	@JsonDeserialize(using=JsonProductDeserializer.class)
 	public void setProduct(Product product) {
         this.product = product;
         this.productNumber = product.getProductNumber();

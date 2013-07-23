@@ -16,7 +16,7 @@
 Ext.define('MyApp.model.ArtikelData', {
     extend: 'Ext.data.Model',
 
-    idProperty: 'artikelnummer',
+    idProperty: 'productNumber',
 
     fields: [
         {

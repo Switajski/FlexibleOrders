@@ -30,30 +30,39 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 		        	icon: 'images/delete.png',
 		        	text: 'l&ouml;schen',
 		        	scope: this.onDeleteClick
-		        }], 
+		        }],
+		        dockedItems:[{
+		        	xtype: 'toolbar',
+		        	dock:'bottom',
+		        	text:'sync',
+		        	scope: this
+		        }],
 	            columns: [
 	                {
 	                	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'product',
 	                   	 text: 'Artikel',
-	                   	 width: 150,
+	                   	 width: 200,
+//	                   	 name: 'productNumber',
 	                   	 editor: {
 	                   		 id: 'ArtikelComboBox',
 	                   		 xtype: 'combobox',
 	                   		 //allowBlank: false,
 	                   		 displayField: 'name',
+	                   		 valueField: 'productNumber',
 	                   		 enableRegEx: true,
+	                   		 allowBlank: false,
 	                   		 forceSelection: true,
 	                   		 queryMode: 'local',
 	                   		 store: 'ArtikelDataStore',
 	                   		 tpl: Ext.create('Ext.XTemplate',
 	                   				 '<tpl for=".">',
-	                   				 '<div class="x-boundlist-item">{artikelnummer} - {name}</div>',
+	                   				 '<div class="x-boundlist-item">{productNumber} - {name}</div>',
 	                   				 '</tpl>'
 	                   		 ),
 	                   		 displayTpl: Ext.create('Ext.XTemplate',
 	                   				 '<tpl for=".">',
-	                   				 '{artikelnummer} - {name}',
+	                   				 '{productNumber} - {name}',
 	                   				 '</tpl>'
 	                   		 )
 	                   	 }
@@ -83,7 +92,8 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 text: 'Menge',
 	                   	 editor: {
 	                        xtype: 'numberfield',
-	                        allowBlank: false
+	                        allowBlank: false,
+	                        minValue : 1	
 	                    }
 	                   	 
 	                },
@@ -92,7 +102,11 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 dataIndex: 'priceNet',
 	                   	 width: 75,
 	                   	 text: 'Preis Netto',
-	                   	 renderer: Ext.util.Format.euMoney
+	                   	 renderer: Ext.util.Format.euMoney,
+	                   	 editor: {
+	                        xtype: 'numberfield',
+	                        allowBlank: true
+	                    }
 	                 },
 	                    {
 	                  	 xtype: 'gridcolumn',
@@ -103,8 +117,9 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                 {
 	                 	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'expectedDelivery',
-	                   	 text: 'Geplante Ausl.',
-	                   	 width: 100,
+	                   	 text: 'Geplante Auslieferung',
+	                   	 width: 110,
+	                   	 format: 'd/m/Y',
 	                   	 editor: {
 	                   		 xtype: 'datefield',
 	                   		 format: 'd/m/Y',
@@ -128,16 +143,28 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
     },
 	
 	onAddClick: function(){
-		var rec = new MyApp.model.BestellpositionData({
-			
-	        status: 'ORDERED'
-			
-		}), edit = this.editing;
-		this.store.insert(0,rec);
-		edit.startEditByPosition({
-			row:0,
-			column:0
-		});
+		bestellnr = Ext.ComponentQuery.query('form[itemid="form"]')[0].getForm().getValues().orderNumber;
+		console.log('hierher!');
+		if (bestellnr == null || bestellnr==0 || bestellnr=="")
+		{
+			Ext.MessageBox.show({
+				title: 'Bestellnummer leer',
+				msg: 'Bitte eine Bestellnummer eingeben',
+				icon: Ext.MessageBox.ERROR,
+				buttons: Ext.Msg.OK
+			});
+		} 
+		else {
+			var rec = new MyApp.model.BestellpositionData({
+				status: 'ORDERED'
+			}), edit = this.editing;
+			rec.data.orderNumber = bestellnr;
+			this.store.insert(0,rec);
+			edit.startEditByPosition({
+				row:0,
+				column:0
+			});
+		}
 	},
 	onDeleteClick: function(){
 		var selection = this.getView().getSelectionModel().getSelection()[0];

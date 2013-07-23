@@ -14,43 +14,44 @@
  */
 
 Ext.define('MyApp.model.BestellpositionData', {
-    extend: 'Ext.data.Model',
-    /*uses: [
+	extend: 'Ext.data.Model',
+	/*uses: [
         'MyApp.model.Kunde'
     ],
     hasOne: {
         model: 'MyApp.model.Kunde'
     }*/
-    fields: [
-        {
-            name: 'id'
-        },
-        {
-            name: 'productNumber',
-            type: 'int'
-        },
-        {
-            name: 'orderNumber',
-            type: 'int'
-        },
-        {
-            name: 'invoiceNumber'
-        },
-        {
-            name: 'orderConfirmationNumber'
-        },
-        {
-            name: 'quantity',
-            type: 'int'
-        },
-        {
-            name: 'priceNet'
-        },
-        {
-            name: 'status'
-        },
-        {
-            name: 'expectedDelivery'
-        }
-    ]
+	fields: 
+		[
+		 {
+			 name: 'id'
+		 },
+		 {
+			 name: 'product',
+			 type: 'int'
+		 },
+		 {
+			 name: 'orderNumber',
+			 type: 'int'
+		 },
+		 {
+			 name: 'invoiceNumber'
+		 },
+		 {
+			 name: 'orderConfirmationNumber'
+		 },
+		 {
+			 name: 'quantity',
+			 type: 'int'
+		 },
+		 {
+			 name: 'priceNet'
+		 },
+		 {
+			 name: 'status'
+		 },
+		 {
+			 name: 'expectedDelivery'
+		 },
+		 ]
 });

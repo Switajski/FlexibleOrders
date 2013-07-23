@@ -70,9 +70,9 @@ Ext.define('MyApp.controller.MyController', {
             '#SubmitBpButton':{
                 click: this.addBp
             },
-            '#SubmitBestellungButton':{
+            /*'#SubmitBestellungButton':{
                 click: this.addBestellung
-            },
+            },*/
             '#AbBestellungButton':{
             	click: this.bestaetigeAuftragDialog
             },
@@ -361,7 +361,7 @@ Ext.define('MyApp.controller.MyController', {
         }
     },
 
-    addBestellung: function(btn,e,eOpts){
+    /*addBestellung: function(btn,e,eOpts){
         var form = Ext.getCmp('ErstelleBestellungForm');
         if (form.isValid()) {
             var bestellungDataStore = Ext.data.StoreManager.lookup('BestellungDataStore');
@@ -380,7 +380,7 @@ Ext.define('MyApp.controller.MyController', {
             bestellungWindow.hide();
             Ext.StoreManager.get('BestellungDataStore').reload();
         }
-    },
+    },*/
 
     changeBpSelection: function(grid, selections){
         if (selections.length == 0){

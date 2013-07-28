@@ -9,7 +9,7 @@
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantity" property="quantity" z="SsCsCSGZQJl5Q50EppF9CMSMpCY="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_priceNet" property="priceNet" z="8qFlv6yqy9DfbmUgQvhbTOtdZnI="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" property="status" z="jdjoVIE7joYNqo9C/Wr2L1WleQ8="/>
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productName" property="productName" z="EpBM43g3VgwoaCht2Xccxs7g3Ek="/>
+            <table:column date="true" dateTimePattern="${invoiceItem_created_date_format}" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_created" property="created" z="0yM59ADf5iAt8OISZiCHStw/ZNc="/>
         </table:table>
     </page:list>
 </div>

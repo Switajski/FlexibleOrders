@@ -17,4 +17,10 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 	public InvoiceItemController(InvoiceItemService readService) {
 		super(readService);
 	}
+
+	@Override
+	protected void resolveDependencies(InvoiceItem entity) {
+		// TODO Auto-generated method stub
+		
+	}
 }

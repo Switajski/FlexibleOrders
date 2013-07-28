@@ -8,9 +8,9 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.web.InvoiceItemController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import org.springframework.web.util.WebUtils;
 privileged aspect InvoiceItemController_Roo_Controller {
     
     @Autowired
-    InvoiceItemService InvoiceItemController.invoiceItemService;
+    InvoiceItemRepository InvoiceItemController.invoiceItemRepository;
     
     @Autowired
     CustomerService InvoiceItemController.customerService;
@@ -48,7 +48,7 @@ privileged aspect InvoiceItemController_Roo_Controller {
             return "invoiceitems/create";
         }
         uiModel.asMap().clear();
-        invoiceItemService.saveInvoiceItem(invoiceItem);
+        invoiceItemRepository.save(invoiceItem);
         return "redirect:/invoiceitems/" + encodeUrlPathSegment(invoiceItem.getId().toString(), httpServletRequest);
     }
     
@@ -69,7 +69,7 @@ privileged aspect InvoiceItemController_Roo_Controller {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String InvoiceItemController.show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("invoiceitem", invoiceItemService.findInvoiceItem(id));
+        uiModel.addAttribute("invoiceitem", invoiceItemRepository.findOne(id));
         uiModel.addAttribute("itemId", id);
         return "invoiceitems/show";
     }
@@ -79,11 +79,11 @@ privileged aspect InvoiceItemController_Roo_Controller {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("invoiceitems", invoiceItemService.findInvoiceItemEntries(firstResult, sizeNo));
-            float nrOfPages = (float) invoiceItemService.countAllInvoiceItems() / sizeNo;
+            uiModel.addAttribute("invoiceitems", invoiceItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / sizeNo, sizeNo)).getContent());
+            float nrOfPages = (float) invoiceItemRepository.count() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("invoiceitems", invoiceItemService.findAllInvoiceItems());
+            uiModel.addAttribute("invoiceitems", invoiceItemRepository.findAll());
         }
         addDateTimeFormatPatterns(uiModel);
         return "invoiceitems/list";
@@ -96,20 +96,20 @@ privileged aspect InvoiceItemController_Roo_Controller {
             return "invoiceitems/update";
         }
         uiModel.asMap().clear();
-        invoiceItemService.updateInvoiceItem(invoiceItem);
+        invoiceItemRepository.save(invoiceItem);
         return "redirect:/invoiceitems/" + encodeUrlPathSegment(invoiceItem.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String InvoiceItemController.updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, invoiceItemService.findInvoiceItem(id));
+        populateEditForm(uiModel, invoiceItemRepository.findOne(id));
         return "invoiceitems/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String InvoiceItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        InvoiceItem invoiceItem = invoiceItemService.findInvoiceItem(id);
-        invoiceItemService.deleteInvoiceItem(invoiceItem);
+        InvoiceItem invoiceItem = invoiceItemRepository.findOne(id);
+        invoiceItemRepository.delete(invoiceItem);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

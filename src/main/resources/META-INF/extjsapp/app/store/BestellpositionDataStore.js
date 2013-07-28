@@ -59,11 +59,6 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     messageProperty: 'message'
                 },
                 autoSync: true,
-                writer: {
-                    type: 'json',
-                    root: 'data',
-                    writeAllFields: false
-                },
                 afterRequest:function(request,success){
                     console.log(request);	                    
                 },

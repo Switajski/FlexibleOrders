@@ -1,9 +1,12 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -18,16 +21,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
 
 public abstract class JsonController<T> {
 
 	CrudServiceAdapter<T> crudServiceAdapter;
+
+	/* Code for Strong typing (checked)
+	 */ 
 	private Class< T > type;
 
+	@SuppressWarnings("unchecked")
 	public JsonController(CrudServiceAdapter<T> crudServiceAdapter) {
 		this.crudServiceAdapter = crudServiceAdapter;
+		/* Code for Strong typing (checked)
+		 */
 		Type t = getClass().getGenericSuperclass();
         ParameterizedType pt = (ParameterizedType) t;
         type = (Class) pt.getActualTypeArguments()[0];
@@ -53,25 +63,70 @@ public abstract class JsonController<T> {
 	
 	@RequestMapping(value="/json", /*headers = "Accept:application/json",*/ method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse create(@RequestBody String json) {
- 		ObjectMapper mapper = new ObjectMapper();
- 		T myObject = null;
-		try {
-			myObject = mapper.readValue(json, new TypeReference<Map<String, T>>(){});
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		JsonObjectResponse response = new JsonObjectResponse();
+
+		if (json.charAt(0) == '['){
+			try {
+				List<T> entities = parseJsonArray(json);
+				for (T entity:entities){
+					resolveDependencies(entity);
+					crudServiceAdapter.save(entity);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setMessage(e.getMessage());
+				response.setData(e);
+				response.setSuccess(false);
+				return response;
+			} 
+		} else {
+			try {
+				T entity = parseJsonObject(json);
+				resolveDependencies(entity);
+				crudServiceAdapter.save(entity);					
+				response.setData(entity);
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setMessage(e.getMessage());
+				response.setData(e);
+				response.setSuccess(false);
+				return response;
+			}
 		}
 		
-		JsonObjectResponse response = new JsonObjectResponse();
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
 		response.setTotal(crudServiceAdapter.countAll());
-		response.setData(myObject);
 		
 		return response;
 	}
+
+	private T parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		return (T) mapper.readValue(json, type); 
+	}
+
+	@SuppressWarnings({"unchecked"})
+	private List<T> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
+		T[] typedArray = (T[]) Array.newInstance(type.getComponentType(),1);
+		ObjectMapper mapper = new ObjectMapper();
+		T[] records = (T[]) mapper.readValue(json, typedArray.getClass());
+		
+		ArrayList<T> list = new ArrayList<T>();
+		for (T record:records)
+			list.add(record);
+		
+		return list;
+	}
+	
+	/**
+	 * Resolves dependencies between domain entities. E.g. orderItem's productNumber into 
+	 * the object product. This is done for technical reasons of O/R-Mapping.
+	 * </br>
+	 * TODO: this technical matter should be implemented by Jackson's deserializer
+	 *  
+	 * @param entity
+	 */
+	protected abstract void resolveDependencies(T entity);
 	
 }

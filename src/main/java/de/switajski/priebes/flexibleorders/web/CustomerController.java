@@ -16,5 +16,11 @@ public class CustomerController extends JsonController<Customer>{
 	public CustomerController(CustomerService crudServiceAdapter) {
 		super(crudServiceAdapter);
 	}
+
+	@Override
+	protected void resolveDependencies(Customer entity) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

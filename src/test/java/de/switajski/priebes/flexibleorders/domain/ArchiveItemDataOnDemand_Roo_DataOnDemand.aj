@@ -12,7 +12,6 @@ import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
-import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -40,9 +39,6 @@ privileged aspect ArchiveItemDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     ProductDataOnDemand ArchiveItemDataOnDemand.productDataOnDemand;
-    
-    @Autowired
-    ArchiveItemService ArchiveItemDataOnDemand.archiveItemService;
     
     @Autowired
     ArchiveItemRepository ArchiveItemDataOnDemand.archiveItemRepository;
@@ -218,14 +214,14 @@ privileged aspect ArchiveItemDataOnDemand_Roo_DataOnDemand {
         }
         ArchiveItem obj = data.get(index);
         Long id = obj.getId();
-        return archiveItemService.findArchiveItem(id);
+        return archiveItemRepository.findOne(id);
     }
     
     public ArchiveItem ArchiveItemDataOnDemand.getRandomArchiveItem() {
         init();
         ArchiveItem obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return archiveItemService.findArchiveItem(id);
+        return archiveItemRepository.findOne(id);
     }
     
     public boolean ArchiveItemDataOnDemand.modifyArchiveItem(ArchiveItem obj) {
@@ -235,7 +231,7 @@ privileged aspect ArchiveItemDataOnDemand_Roo_DataOnDemand {
     public void ArchiveItemDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = archiveItemService.findArchiveItemEntries(from, to);
+        data = archiveItemRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'ArchiveItem' illegally returned null");
         }
@@ -247,7 +243,7 @@ privileged aspect ArchiveItemDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             ArchiveItem obj = getNewTransientArchiveItem(i);
             try {
-                archiveItemService.saveArchiveItem(obj);
+                archiveItemRepository.save(obj);
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {

@@ -16,5 +16,10 @@ public class ProductController extends JsonController<Product> {
 	public ProductController(ProductService productService) {
 		super(productService);
 	}
+
+	@Override
+	protected void resolveDependencies(Product entity) {
+				
+	}
 	
 }

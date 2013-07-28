@@ -1,30 +1,27 @@
 package de.switajski.priebes.flexibleorders.web;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import flexjson.JSONSerializer;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.OrderItemService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
+
 @RequestMapping("/orderitems")
 @Controller
 @RooWebScaffold(path = "orderitems", formBackingObject = OrderItem.class)
 public class OrderItemController extends JsonController<OrderItem>{
 
+	@Autowired ProductService productService;
+	
 	@Autowired
 	public OrderItemController(OrderItemService readService) {
 		super(readService);
@@ -41,6 +38,15 @@ public class OrderItemController extends JsonController<OrderItem>{
 		response.setData(entities);
 		
 		return response;
+	}
+
+	@Override
+	protected void resolveDependencies(OrderItem entity) {
+		long productNumber = entity.getProduct().getProductNumber();
+		Product p = productService.findByProductNumber(productNumber);
+		entity.setProduct(p);
+		
+		customerService.find(entity.getCustomer().getId());
 	}
 
 }

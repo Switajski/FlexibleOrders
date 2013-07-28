@@ -13,6 +13,19 @@
  * Do NOT hand edit this file.
  */
 
+Ext.override(Ext.data.JsonWriter, {
+	encode:false,
+	writeAllFields:true,
+	listful: true,
+	constructor: function(config){
+		this.callParent(this,config);
+		return this;
+	},
+	render: function(params, baseParams, data){
+		params.jsonData = data;
+	}
+});
+
 Ext.define('MyApp.controller.MyController', {
     debug: true,
     extend: 'Ext.app.Controller',

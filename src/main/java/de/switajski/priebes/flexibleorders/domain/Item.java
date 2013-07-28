@@ -24,7 +24,7 @@ import javax.validation.constraints.Min;
 
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
-import de.switajski.priebes.flexibleorders.json.JsonProductDeserializer;
+import de.switajski.priebes.flexibleorders.json.ProductNumberDeserializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
 import javax.persistence.Enumerated;
@@ -98,6 +98,7 @@ public abstract class Item implements Comparable<Item> {
     @NotNull
     private Long orderNumber;
     
+    
     /**
      * Data like productnumber can change over time. 
      * In order to get time-specific data it is nessecary to historize it.
@@ -122,7 +123,7 @@ public abstract class Item implements Comparable<Item> {
         this.status = status;
     }
 
-	@JsonDeserialize(using=JsonProductDeserializer.class)
+	@JsonDeserialize(using=ProductNumberDeserializer.class)
 	public void setProduct(Product product) {
         this.product = product;
         this.productNumber = product.getProductNumber();

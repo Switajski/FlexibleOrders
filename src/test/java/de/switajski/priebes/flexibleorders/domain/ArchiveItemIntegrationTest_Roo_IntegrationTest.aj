@@ -6,7 +6,6 @@ package de.switajski.priebes.flexibleorders.domain;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItemIntegrationTest;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
-import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
@@ -31,47 +30,44 @@ privileged aspect ArchiveItemIntegrationTest_Roo_IntegrationTest {
     ArchiveItemDataOnDemand ArchiveItemIntegrationTest.dod;
     
     @Autowired
-    ArchiveItemService ArchiveItemIntegrationTest.archiveItemService;
-    
-    @Autowired
     ArchiveItemRepository ArchiveItemIntegrationTest.archiveItemRepository;
     
     @Test
-    public void ArchiveItemIntegrationTest.testCountAllArchiveItems() {
+    public void ArchiveItemIntegrationTest.testCount() {
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", dod.getRandomArchiveItem());
-        long count = archiveItemService.countAllArchiveItems();
+        long count = archiveItemRepository.count();
         Assert.assertTrue("Counter for 'ArchiveItem' incorrectly reported there were no entries", count > 0);
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testFindArchiveItem() {
+    public void ArchiveItemIntegrationTest.testFind() {
         ArchiveItem obj = dod.getRandomArchiveItem();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to provide an identifier", id);
-        obj = archiveItemService.findArchiveItem(id);
+        obj = archiveItemRepository.findOne(id);
         Assert.assertNotNull("Find method for 'ArchiveItem' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'ArchiveItem' returned the incorrect identifier", id, obj.getId());
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testFindAllArchiveItems() {
+    public void ArchiveItemIntegrationTest.testFindAll() {
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", dod.getRandomArchiveItem());
-        long count = archiveItemService.countAllArchiveItems();
+        long count = archiveItemRepository.count();
         Assert.assertTrue("Too expensive to perform a find all test for 'ArchiveItem', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<ArchiveItem> result = archiveItemService.findAllArchiveItems();
+        List<ArchiveItem> result = archiveItemRepository.findAll();
         Assert.assertNotNull("Find all method for 'ArchiveItem' illegally returned null", result);
         Assert.assertTrue("Find all method for 'ArchiveItem' failed to return any data", result.size() > 0);
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testFindArchiveItemEntries() {
+    public void ArchiveItemIntegrationTest.testFindEntries() {
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", dod.getRandomArchiveItem());
-        long count = archiveItemService.countAllArchiveItems();
+        long count = archiveItemRepository.count();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<ArchiveItem> result = archiveItemService.findArchiveItemEntries(firstResult, maxResults);
+        List<ArchiveItem> result = archiveItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
         Assert.assertNotNull("Find entries method for 'ArchiveItem' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'ArchiveItem' returned an incorrect number of entries", count, result.size());
     }
@@ -82,7 +78,7 @@ privileged aspect ArchiveItemIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to provide an identifier", id);
-        obj = archiveItemService.findArchiveItem(id);
+        obj = archiveItemRepository.findOne(id);
         Assert.assertNotNull("Find method for 'ArchiveItem' illegally returned null for id '" + id + "'", obj);
         boolean modified =  dod.modifyArchiveItem(obj);
         Integer currentVersion = obj.getVersion();
@@ -91,28 +87,28 @@ privileged aspect ArchiveItemIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testUpdateArchiveItemUpdate() {
+    public void ArchiveItemIntegrationTest.testSaveUpdate() {
         ArchiveItem obj = dod.getRandomArchiveItem();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to provide an identifier", id);
-        obj = archiveItemService.findArchiveItem(id);
+        obj = archiveItemRepository.findOne(id);
         boolean modified =  dod.modifyArchiveItem(obj);
         Integer currentVersion = obj.getVersion();
-        ArchiveItem merged = (ArchiveItem)archiveItemService.updateArchiveItem(obj);
+        ArchiveItem merged = (ArchiveItem)archiveItemRepository.save(obj);
         archiveItemRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'ArchiveItem' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testSaveArchiveItem() {
+    public void ArchiveItemIntegrationTest.testSave() {
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", dod.getRandomArchiveItem());
         ArchiveItem obj = dod.getNewTransientArchiveItem(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'ArchiveItem' identifier to be null", obj.getId());
         try {
-            archiveItemService.saveArchiveItem(obj);
+            archiveItemRepository.save(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -126,15 +122,15 @@ privileged aspect ArchiveItemIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void ArchiveItemIntegrationTest.testDeleteArchiveItem() {
+    public void ArchiveItemIntegrationTest.testDelete() {
         ArchiveItem obj = dod.getRandomArchiveItem();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ArchiveItem' failed to provide an identifier", id);
-        obj = archiveItemService.findArchiveItem(id);
-        archiveItemService.deleteArchiveItem(obj);
+        obj = archiveItemRepository.findOne(id);
+        archiveItemRepository.delete(obj);
         archiveItemRepository.flush();
-        Assert.assertNull("Failed to remove 'ArchiveItem' with identifier '" + id + "'", archiveItemService.findArchiveItem(id));
+        Assert.assertNull("Failed to remove 'ArchiveItem' with identifier '" + id + "'", archiveItemRepository.findOne(id));
     }
     
 }

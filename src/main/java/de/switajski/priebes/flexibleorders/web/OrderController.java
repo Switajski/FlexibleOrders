@@ -18,5 +18,11 @@ public class OrderController extends JsonController<Order> {
 	public OrderController(OrderService crudServiceAdapter) {
 		super(crudServiceAdapter);
 	}
+
+	@Override
+	protected void resolveDependencies(Order entity) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

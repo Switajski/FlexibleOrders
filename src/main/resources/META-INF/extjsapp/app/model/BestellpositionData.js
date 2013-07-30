@@ -31,6 +31,10 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 type: 'int'
 		 },
 		 {
+			 name: 'customer',
+			 type: 'int'
+		 },
+		 {
 			 name: 'orderNumber',
 			 type: 'int'
 		 },

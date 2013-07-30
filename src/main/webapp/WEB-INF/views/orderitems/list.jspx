@@ -4,12 +4,12 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_de_switajski_priebes_flexibleorders_domain_OrderItem" items="${orderitems}" z="oSfKXjmYNhTo2CjwIkG0w6NysGY=">
         <table:table data="${orderitems}" id="l_de_switajski_priebes_flexibleorders_domain_OrderItem" path="/orderitems" z="tso8USAZOYSvM1i9u7Vx2pv4vTc=">
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_product" property="product" z="ekUqWeoefFDPrl8jRPWpleIIXsc="/>
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_customer" property="customer" z="VeZEV0jptBVDoCUgw0cqDTO46H4="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_quantity" property="quantity" z="dRgo77W6sBGritWbHi3OFwFlkX4="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_priceNet" property="priceNet" z="hEKiSCnmqQ8KbpNtNKGMevGSTlo="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_status" property="status" z="EfhBGNVT+GASNyJyqKGR+aW9rzo="/>
             <table:column date="true" dateTimePattern="${orderItem_created_date_format}" id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_created" property="created" z="JZpCE3FEfV7mv5XObN0Dt/FK/1g="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_productName" property="productName" z="CJmsZPC5yeqUYenhw0PxFH71EIE="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_OrderItem_productNumber" property="productNumber" z="WJKhczQfCJb/lBVEAbmuc6SqhDo="/>
         </table:table>
     </page:list>
 </div>

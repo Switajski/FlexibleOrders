@@ -56,11 +56,11 @@ privileged aspect InvoiceItemController_Roo_Controller {
     public String InvoiceItemController.createForm(Model uiModel) {
         populateEditForm(uiModel, new InvoiceItem());
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (productRepository.count() == 0) {
-            dependencies.add(new String[] { "product", "products" });
-        }
         if (customerService.countAllCustomers() == 0) {
             dependencies.add(new String[] { "customer", "customers" });
+        }
+        if (productRepository.count() == 0) {
+            dependencies.add(new String[] { "product", "products" });
         }
         uiModel.addAttribute("dependencies", dependencies);
         return "invoiceitems/create";

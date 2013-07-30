@@ -1,10 +1,13 @@
 package de.switajski.priebes.flexibleorders.web;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.service.ProductService;
 
 @RequestMapping("/products")
@@ -20,6 +23,13 @@ public class ProductController extends JsonController<Product> {
 	@Override
 	protected void resolveDependencies(Product entity) {
 				
+	}
+
+	@Override
+	protected Page<Product> findByFilterable(PageRequest pageRequest,
+			JsonFilter filter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

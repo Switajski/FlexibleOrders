@@ -22,9 +22,12 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.Min;
 
+import de.switajski.priebes.flexibleorders.json.CustomerIdDeserializer;
+import de.switajski.priebes.flexibleorders.json.CustomerToIdSerializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.ProductNumberDeserializer;
+import de.switajski.priebes.flexibleorders.json.ProductToProductNumberSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
 import javax.persistence.Enumerated;
@@ -138,5 +141,20 @@ public abstract class Item implements Comparable<Item> {
 	@JsonDeserialize(using=JsonDateDeserializer.class)
 	public void setCreated(Date created) {
         this.created = created;
+    }
+
+	@JsonSerialize(using=CustomerToIdSerializer.class)
+	public Customer getCustomer() {
+        return this.customer;
+    }
+
+	@JsonDeserialize(using=CustomerIdDeserializer.class)
+	public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+	@JsonSerialize(using=ProductToProductNumberSerializer.class)
+	public Product getProduct() {
+        return this.product;
     }
 }

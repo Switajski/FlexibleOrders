@@ -1,3 +1,17 @@
+var filters = {
+        ftype: 'filters',
+        // encode and local configuration options defined previously for easier reuse
+        encode: true, // json encode the filter query
+        local: false,   // defaults to false (remote filtering)
+
+        // Filters are most naturally placed in the column definition, but can also be
+        // added here.
+        filters: [{
+            type: 'string',
+            dataIndex: 'visible'
+        }]
+    };
+
 Ext.define('MyApp.view.BestellpositionGridPanel',{
 	extend: 'Ext.grid.Panel',
 	alias: 'widget.BestellpositionGrid',
@@ -8,10 +22,10 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	           'MyApp.model.ArtikelData',
 	           'MyApp.store.BestellpositionDataStore',
 	           'Ext.grid.plugin.CellEditing',
+	           'Ext.ux.grid.FiltersFeature',
 	           'Ext.form.field.Text',
 	           'Ext.toolbar.TextItem'
 	           ],
-	
 	 //store: 'BestellpositionDataStore',
 	 initComponent: function() {
 	        var me = this;
@@ -37,6 +51,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 		        	text:'sync',
 		        	scope: this
 		        }],
+		        features: [filters],
 	            columns: [
 	                {
 	                	 xtype: 'gridcolumn',
@@ -71,7 +86,11 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 xtype: 'gridcolumn',
 	                   	 dataIndex: 'orderNumber',
 	                   	 width: 75,
-	                   	 text: 'Bestellung'
+	                   	 text: 'Bestellung',
+	                   	 filter: {
+	                        type: 'string'
+	                      //, disabled: true
+	                   	 }
 	                },
 	                {
 	                	xtype: 'gridcolumn',
@@ -93,7 +112,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   	 editor: {
 	                        xtype: 'numberfield',
 	                        allowBlank: false,
-	                        minValue : 1	
+	                        minValue : 1
 	                    }
 	                   	 
 	                },
@@ -126,9 +145,9 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	                   		 allowBlank: true,
 	                   		 minValue: Ext.Date.format(new Date(), 'd/m/Y'),
 	                   		 minText: 'Datum liegt in der Vergangenheit'
-	               	 }
-	            }
-	           ],
+	               	 	}
+	            	}
+	           ]
 	        });
 			me.callParent(arguments);
 			
@@ -144,6 +163,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 	
 	onAddClick: function(){
 		bestellnr = Ext.ComponentQuery.query('form[itemid="form"]')[0].getForm().getValues().orderNumber;
+		customer = Ext.ComponentQuery.query('form[itemid="form"]')[0].getForm().getValues().customer;
 		console.log('hierher!');
 		if (bestellnr == null || bestellnr==0 || bestellnr=="")
 		{
@@ -159,6 +179,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel',{
 				status: 'ORDERED'
 			}), edit = this.editing;
 			rec.data.orderNumber = bestellnr;
+			rec.data.customer = customer; 
 			this.store.insert(0,rec);
 			edit.startEditByPosition({
 				row:0,

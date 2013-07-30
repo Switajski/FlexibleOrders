@@ -2,14 +2,18 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
@@ -46,7 +50,15 @@ public class OrderItemController extends JsonController<OrderItem>{
 		Product p = productService.findByProductNumber(productNumber);
 		entity.setProduct(p);
 		
-		customerService.find(entity.getCustomer().getId());
+		Customer customer = customerService.find(entity.getCustomer().getId());
+		entity.setCustomer(customer);
+	}
+
+	@Override
+	protected Page<OrderItem> findByFilterable(PageRequest pageRequest,
+			JsonFilter filter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

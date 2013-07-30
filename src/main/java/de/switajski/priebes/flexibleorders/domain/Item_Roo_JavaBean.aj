@@ -3,25 +3,11 @@
 
 package de.switajski.priebes.flexibleorders.domain;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import java.math.BigDecimal;
 
 privileged aspect Item_Roo_JavaBean {
-    
-    public Product Item.getProduct() {
-        return this.product;
-    }
-    
-    public Customer Item.getCustomer() {
-        return this.customer;
-    }
-    
-    public void Item.setCustomer(Customer customer) {
-        this.customer = customer;
-    }
     
     public int Item.getQuantity() {
         return this.quantity;

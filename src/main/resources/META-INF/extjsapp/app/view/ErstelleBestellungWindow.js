@@ -47,7 +47,7 @@ Ext.define(
 					            	  items: 
 					            		  [
 					            		   {
-					            			   xtype: 'textfield',
+					            			   xtype: 'numberfield',
 //					            			   anchor: '100%',
 					            			   fieldLabel: 'Bestellnr',
 					            			   allowBlank: false,
@@ -59,21 +59,21 @@ Ext.define(
 //					            			   anchor:'100%',
 					            			   name:'customer',
 					            			   fieldLabel: 'Kunde',
-					            			   allowBlank: false,
 					            			   displayField: 'shortName',
 					            			   valueField: 'id',
+					            			   allowBlank: false,
 					            			   enableRegEx: true,
 					            			   forceSelection: true,
 					            			   queryMode: 'local',
 					            			   store: 'KundeDataStore',
 					            			   tpl: Ext.create('Ext.XTemplate',
 					            					   '<tpl for=".">',
-					            					   '<div class="x-boundlist-item">{shortName}</div>',
+					            					   '<div class="x-boundlist-item">{id} - {shortName}</div>',
 					            					   '</tpl>'
 					            			   ),
 					            			   displayTpl: Ext.create('Ext.XTemplate',
 					            					   '<tpl for=".">',
-					            					   '{shortName}',
+					            					   '{id} - {shortName}',
 					            					   '</tpl>'
 					            			   )
 					            		   },
@@ -98,9 +98,9 @@ Ext.define(
 					            			   handler: function(btn){
 					            				   form = Ext.getCmp('ErstelleBestellungForm').getForm();
 					            				   orderNumber = form.getValues().orderNumber;
+					            				   customerId = form.getValues().customer;
 					            				   store = Ext.data.StoreMgr.lookup('NewOrderBpds');
 					            				   grid = Ext.getCmp('newOrderBpg');
-					            				   console.log('asdfasdfasdf');
 					            				   if (orderNumber==0 || orderNumber==""){
 					            					   Ext.MessageBox.show({
 					            						   title: 'Bestellnummer leer',
@@ -108,8 +108,18 @@ Ext.define(
 					            						   icon: Ext.MessageBox.ERROR,
 					            						   buttons: Ext.Msg.OK
 					            					   });
-					            				   } else {
+					            				   } else if (customerId==0 || customerId=="") {
+					            					   Ext.MessageBox.show({
+					            						   title: 'Kundenfeld leer',
+					            						   msg: 'Bitte eine Kunden auswaehlen',
+					            						   icon: Ext.MessageBox.ERROR,
+					            						   buttons: Ext.Msg.OK
+					            					   });
+					            				   }  
+					            				   else {
 					            					   store.sync();
+					            					   form.reset();
+					            					   console.log('asdfasdfasdf');					            					   
 					            				   }
 					            			   }
 					            		   }]

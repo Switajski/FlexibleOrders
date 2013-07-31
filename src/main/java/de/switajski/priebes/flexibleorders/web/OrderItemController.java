@@ -57,8 +57,8 @@ public class OrderItemController extends JsonController<OrderItem>{
 	@Override
 	protected Page<OrderItem> findByFilterable(PageRequest pageRequest,
 			JsonFilter filter) {
-		// TODO Auto-generated method stub
-		return null;
+		if (filter.value=="") return null;
+		return this.orderItemService.findByOrderNumber(Long.parseLong(filter.value), pageRequest);
 	}
 
 }

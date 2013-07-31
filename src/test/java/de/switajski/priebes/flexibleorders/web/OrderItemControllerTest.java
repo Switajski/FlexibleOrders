@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.web;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.HashSet;
 
 import org.codehaus.jackson.JsonParseException;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.ProductService;
@@ -120,6 +122,17 @@ public class OrderItemControllerTest {
 	
 	
 	public static final String FILTER_REQUEST_URL_DECODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]&page=1&start=0&limit=25";
+	public static final String FILTER_REQUEST_DECODED = "[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]";
 	public static final String FILTER_REQUEST_URL_ENCODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=%5B%7B%22type%22%3A%22string%22%2C%22value%22%3A%2245%22%2C%22field%22%3A%22orderNumber%22%7D%5D&page=1&start=0&limit=25";
 
+	@Test
+	public void shouldDeserializeFilter() throws JsonParseException, JsonMappingException, IOException{
+		JsonFilter[] typedArray = (JsonFilter[]) Array.newInstance(JsonFilter.class,1);
+		
+		ObjectMapper mapper = new ObjectMapper();  
+	    JsonFilter[] filters = mapper.readValue(FILTER_REQUEST_DECODED, typedArray.getClass());   
+	    
+		JsonFilter filter = filters[0];
+	}
+	
 }

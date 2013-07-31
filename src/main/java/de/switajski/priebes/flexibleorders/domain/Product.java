@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
+import javax.validation.constraints.Min;
 
 @RooJavaBean
 @RooToString
@@ -59,4 +61,9 @@ public class Product {
      */
     @ManyToOne
     private Category category;
+
+    /**
+     */
+    @Min(0L)
+    private BigDecimal priceNet;
 }

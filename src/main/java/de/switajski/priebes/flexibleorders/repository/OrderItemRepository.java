@@ -34,9 +34,10 @@ public interface OrderItemRepository extends JpaSpecificationExecutor<OrderItem>
 			+ "group by oi.orderNumber")
 	Page<Long> getAllOrderNumbers(Customer customer, Pageable pageable);
 	
-	@Query("select oi.orderNumber "
-			+ "from OrderItem oi "
-			+ "group by oi.orderNumber")
+	@Query("select distinct oi.orderNumber "
+			+ "from OrderItem oi ")
+//			+ "group by oi.orderNumber ")
+//			+ "order by min(oi.created)")
 	Page<Long> getAllOrderNumbers(Pageable pageable);
 	
 	@Query("select oi.orderNumber "

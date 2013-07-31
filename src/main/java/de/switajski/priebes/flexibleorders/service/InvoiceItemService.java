@@ -6,6 +6,4 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 
 public interface InvoiceItemService extends CrudServiceAdapter<InvoiceItem>{
 	
-	Page<InvoiceItem> findByOrderItem(Pageable pageable, Long orderItem);
-	
 }

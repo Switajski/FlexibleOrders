@@ -35,6 +35,9 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
             autoLoad: false,
             model: 'MyApp.model.BestellpositionData',
             storeId: 'BestellpositionDataStore',
+            autoLoad: true,
+            pageSize:20,
+            remoteFilter: true,
             proxy: {
                 type: 'ajax',
                 actionMethods: {
@@ -58,7 +61,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     root: 'data',
                     messageProperty: 'message'
                 },
-                autoSync: true,
+//                autoSync: true,
                 afterRequest:function(request,success){
                     console.log(request);	                    
                 },

@@ -8,7 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
-import de.switajski.priebes.flexibleorders.service.ProductService;
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,9 +31,6 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     CategoryDataOnDemand ProductDataOnDemand.categoryDataOnDemand;
     
     @Autowired
-    ProductService ProductDataOnDemand.productService;
-    
-    @Autowired
     ProductRepository ProductDataOnDemand.productRepository;
     
     public Product ProductDataOnDemand.getNewTransientProduct(int index) {
@@ -44,6 +41,7 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
         setImageGalery(obj, index);
         setIntro(obj, index);
         setName(obj, index);
+        setPriceNet(obj, index);
         setProductNumber(obj, index);
         setProductType(obj, index);
         setSortOrder(obj, index);
@@ -80,6 +78,11 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
         obj.setName(name);
     }
     
+    public void ProductDataOnDemand.setPriceNet(Product obj, int index) {
+        BigDecimal priceNet = BigDecimal.valueOf(index);
+        obj.setPriceNet(priceNet);
+    }
+    
     public void ProductDataOnDemand.setProductNumber(Product obj, int index) {
         Long productNumber = new Integer(index).longValue();
         obj.setProductNumber(productNumber);
@@ -105,14 +108,14 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
         }
         Product obj = data.get(index);
         Long id = obj.getId();
-        return productService.findProduct(id);
+        return productRepository.findOne(id);
     }
     
     public Product ProductDataOnDemand.getRandomProduct() {
         init();
         Product obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return productService.findProduct(id);
+        return productRepository.findOne(id);
     }
     
     public boolean ProductDataOnDemand.modifyProduct(Product obj) {
@@ -122,7 +125,7 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
     public void ProductDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = productService.findProductEntries(from, to);
+        data = productRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Product' illegally returned null");
         }
@@ -134,7 +137,7 @@ privileged aspect ProductDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Product obj = getNewTransientProduct(i);
             try {
-                productService.saveProduct(obj);
+                productRepository.save(obj);
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {

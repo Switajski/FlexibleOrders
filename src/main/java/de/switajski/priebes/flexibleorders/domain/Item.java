@@ -66,6 +66,7 @@ public abstract class Item implements Comparable<Item> {
     /**
      */
     @Min(0L)
+    @NotNull
     private BigDecimal priceNet;
 
     /**

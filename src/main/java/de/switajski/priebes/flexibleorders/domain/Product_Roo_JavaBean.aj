@@ -6,6 +6,7 @@ package de.switajski.priebes.flexibleorders.domain;
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import java.math.BigDecimal;
 
 privileged aspect Product_Roo_JavaBean {
     
@@ -87,6 +88,14 @@ privileged aspect Product_Roo_JavaBean {
     
     public void Product.setCategory(Category category) {
         this.category = category;
+    }
+    
+    public BigDecimal Product.getPriceNet() {
+        return this.priceNet;
+    }
+    
+    public void Product.setPriceNet(BigDecimal priceNet) {
+        this.priceNet = priceNet;
     }
     
 }

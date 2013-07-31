@@ -13,5 +13,6 @@
         <field:input field="image" id="c_de_switajski_priebes_flexibleorders_domain_Product_image" z="rCcmNfcYvR2U1lJXoIumxESlLaE="/>
         <field:input field="imageGalery" id="c_de_switajski_priebes_flexibleorders_domain_Product_imageGalery" z="YAmcaGrn+hb+MqAs66+NiBz51cE="/>
         <field:select field="category" id="c_de_switajski_priebes_flexibleorders_domain_Product_category" itemValue="id" items="${categorys}" path="/categorys" z="XeOkvC+T+4cOd1ZiNAVAR30X/2s="/>
+        <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_Product_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="GRSyIljIKgb3OniiYq943ZGpB1s="/>
     </form:update>
 </div>

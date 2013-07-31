@@ -16,7 +16,7 @@ import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired

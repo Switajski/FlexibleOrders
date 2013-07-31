@@ -39,8 +39,7 @@ Ext.define('MyApp.controller.MyController', {
     stores: [
         'BestellungDataStore',
         'BestellpositionDataStore',
-        'KundeDataStore',
-        'NewOrderBpds'
+        'KundeDataStore'
     ],
     views: [
         'MainPanel',

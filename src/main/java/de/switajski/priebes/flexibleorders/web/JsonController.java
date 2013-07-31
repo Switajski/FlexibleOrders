@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,12 +26,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
+import de.switajski.priebes.flexibleorders.service.PriebesJoomlaImporterService;
 
 public abstract class JsonController<T> {
 
+	private static Logger log = Logger.getLogger(JsonController.class);
 	CrudServiceAdapter<T> crudServiceAdapter;
-//	JpaRepository<T,ID extends Serializable> crudServiceAdapter;
 
 	/* Code for Strong typing (checked)
 	 */ 
@@ -42,42 +45,81 @@ public abstract class JsonController<T> {
 		/* Code for Strong typing (checked)
 		 */
 		Type t = getClass().getGenericSuperclass();
-        ParameterizedType pt = (ParameterizedType) t;
-        type = (Class) pt.getActualTypeArguments()[0];
+		ParameterizedType pt = (ParameterizedType) t;
+		type = (Class) pt.getActualTypeArguments()[0];
 	}
-	
+
 	@RequestMapping(value="/json", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAllPageable(
 			@RequestParam(value = "page", required = true) Integer page,
-            @RequestParam(value = "start", required = false) Integer start,
-            @RequestParam(value = "limit", required = true) Integer limit,
-            @RequestParam(value = "sort", required = false) String sorts,
-            @RequestParam(value = "filter", required = false) String filters) 
-            		throws JsonParseException, JsonMappingException, IOException {
- 	
+			@RequestParam(value = "start", required = false) Integer start,
+			@RequestParam(value = "limit", required = true) Integer limit,
+			@RequestParam(value = "sort", required = false) String sorts,
+			@RequestParam(value = "filter", required = false) String filters) 
+					throws Exception {
+
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
+		log.debug("received json filter request:"+filters);
 		JsonObjectResponse response = new JsonObjectResponse();
 		Page<T> entities = null;
-		if (filters == null){ 
-			 entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit-1));
+		if (filters == null|| isRequestForEmptingFilter(filters)){ 
+			entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit-1));
 		} else {
-			JsonFilter filter = deserializeFiltersJson(filters);
+			JsonFilter filter;
+			try {
+				filter = deserializeFiltersJson(filters);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
 			entities = findByFilterable(new PageRequest(page-1, limit-1), filter);
 		}
 		response.setData(entities.getContent());
 		response.setTotal(entities.getTotalElements());
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
-		
+
 		return response;
 	}
-	
+
+	private boolean isRequestForEmptingFilter(String filters) {
+		return (filters.contains("property") && filters.contains("null"));
+	}
+
 	protected abstract Page<T> findByFilterable(PageRequest pageRequest, JsonFilter filter);
-	
-	private JsonFilter deserializeFiltersJson(String filters) throws JsonParseException, JsonMappingException, IOException {
+
+	private JsonFilter deserializeFiltersJson(String filters) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();  
-	    JsonFilter filter = mapper.readValue(filters, JsonFilter.class);   
-		return filter;
+		//	Extjs - Json for adding a filter: 	[{"property":"orderNumber","value":1}]
+		if (filters.contains("property")){
+			JsonQueryFilter[] typedArray = (JsonQueryFilter[]) Array.newInstance(JsonQueryFilter.class, 1);
+			JsonQueryFilter[] qFilter;
+			try {
+				qFilter = mapper.readValue(filters, typedArray.getClass());
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			JsonFilter filter = new JsonFilter();
+			filter.setField(qFilter[0].getProperty());
+			filter.setValue(qFilter[0].getValue());
+			return filter;
+		}else{
+
+			// filters = [{"type":"string","value":"13","field":"orderNumber"}]
+			JsonFilter[] typedArray = (JsonFilter[]) Array.newInstance(JsonFilter.class,1);
+
+			//TODO: implement logic for multiple filters  
+
+			JsonFilter[] filter;
+			try {
+				filter = mapper.readValue(filters, typedArray.getClass());
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}   
+			return filter[0];
+		}
 	}
 
 	@RequestMapping(value="/json", /*headers = "Accept:application/json",*/ method=RequestMethod.POST)
@@ -114,11 +156,11 @@ public abstract class JsonController<T> {
 				return response;
 			}
 		}
-		
+
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
 		response.setTotal(crudServiceAdapter.countAll());
-		
+
 		return response;
 	}
 
@@ -132,14 +174,14 @@ public abstract class JsonController<T> {
 		T[] typedArray = (T[]) Array.newInstance(type.getComponentType(),1);
 		ObjectMapper mapper = new ObjectMapper();
 		T[] records = (T[]) mapper.readValue(json, typedArray.getClass());
-		
+
 		ArrayList<T> list = new ArrayList<T>();
 		for (T record:records)
 			list.add(record);
-		
+
 		return list;
 	}
-	
+
 	/**
 	 * Resolves dependencies between domain entities. E.g. orderItem's productNumber into 
 	 * the object product. This is done for technical reasons of O/R-Mapping.
@@ -149,5 +191,5 @@ public abstract class JsonController<T> {
 	 * @param entity
 	 */
 	protected abstract void resolveDependencies(T entity);
-	
+
 }

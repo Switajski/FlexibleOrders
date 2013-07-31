@@ -51,6 +51,7 @@ public class PriebesJoomlaImporterServiceTest {
 	public void shouldImportOrderItems(){
 		pji.importCustomers();
 		pji.importProducts();
+		pji.importPrices();
 		pji.importOrderItems();
 		assertFalse("Product repository is empty!", orderItemRepository.count()==0);
 	}

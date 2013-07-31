@@ -1,11 +1,13 @@
 package de.switajski.priebes.flexibleorders.service;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -44,14 +46,14 @@ import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 public class PriebesJoomlaImporterService implements ImporterService {
 
 	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
-	
+
 	public static final String CAT_IMAGE_PATH="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/bestellsystemv2?"
 			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
 	private static final String PRIEBES_DB = "priebesJoomlaDb";
 	private Connection connection;
 	private Category rootCategory;
-	
+
 	@Autowired	CustomerRepository customerRepository;
 	@Autowired	CategoryRepository categoryRepo;
 	@Autowired	ProductRepository productRepository;
@@ -59,14 +61,14 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	@Autowired	ShippingItemRepository shippingItemRepo;
 	@Autowired	InvoiceItemRepository invoiceRepo;
 	@Autowired 	ArchiveItemRepository archiveRepo;
-	
+
 	private Connection getConnection(){
 		if (this.connection==null)
 			connection = this.init();
 		return this.connection;
-			
+
 	}
-	
+
 	public Connection init() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -75,7 +77,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			if (checkDuplicates())
 				throw new IllegalStateException("Cannot import as long as there are duplicates!");
 			return connection;
-			
+
 		} catch (SQLException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -103,11 +105,11 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		connection = this.getConnection();
 		try {
 			stmt = (Statement) connection.createStatement(
-					 ResultSet.TYPE_SCROLL_INSENSITIVE,
-					 ResultSet.CONCUR_READ_ONLY);
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
 					+".jos_k2store_address left join priebesJoomlaDb.jos_users on jos_k2store_address.user_id=jos_users.id");
-			
+
 			while (rs.next()) {
 				// retrieve and print the values for the current row
 				int id = rs.getInt("id");
@@ -117,15 +119,15 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				String first_name = rs.getString("first_name");
 				String last_name = rs.getString("last_name");
 				String password = rs.getString("password");
-				
+
 				String address_1 = rs.getString("address_1");
 				address_1 += " " +rs.getString("address_2");
 				String city = rs.getString("city");
 				String zip = rs.getString("zip".trim());
 				String phone_1 = rs.getString("phone_1");
-				
+
 				log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
-				
+
 				Customer c = new Customer();
 				c.setEmail(email);		
 				c.setPhone(phone_1);
@@ -138,14 +140,14 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				c.setPostalCode(Integer.parseInt(zip.trim()));
 				c.setCountry(Country.GERMANY);
 				customerRepository.save(c);
-				
+
 			}
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
 	private boolean existsCustomer(String email) {
@@ -156,13 +158,13 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		Statement stmt;
 		try {
 			stmt = (Statement) getConnection().createStatement(
-					 ResultSet.TYPE_SCROLL_INSENSITIVE,
-					 ResultSet.CONCUR_READ_ONLY);
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
 			String catImagePath="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
-			
+
 			ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
 					+".jos_k2_categories ORDER BY id");
-			
+
 			while (rs.next()) {
 				Long id = rs.getLong("id");
 				String name = rs.getString("name");
@@ -174,25 +176,25 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				boolean published = false;
 				if (rs.getInt("published")==0) published = false;
 				String image = rs.getString("image");
-				
+
 				log.debug("ROW = " + id + " " + name + " " + description + " " + parent);
-				
+
 				Category kat = new Category();
 				kat.setName(name);
 				kat.setActivated(published);
 				kat.setImage(image);
 				kat.setSortOrder(ordering);
-				
+
 				categoryRepo.save(kat);
-				
+
 				this.populateCategoryWithArtikel(kat,id);
 			}
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
 	private void populateCategoryWithArtikel(Category category, Long id) {
@@ -253,8 +255,50 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	}
 
 	public void importPrices() {
-		// TODO Auto-generated method stub
-		
+		Statement stmt;
+		try {
+			stmt = (Statement) getConnection().createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = stmt.executeQuery("SELECT * from priebesJoomlaDb.jos_k2_items");
+
+			HashSet<String> doNotImportSet = new HashSet<String>();
+
+			while (rs.next()){
+				boolean hatBestand=false;
+
+				Date created = rs.getDate("created");
+				String title = rs.getString("title");
+				if (title == null || title.isEmpty()){
+					System.out.println("Importiere Preise: Name des Artikels ist leer!");
+					continue;
+				}
+				if (productRepository.findByName(title) == null) continue;
+				Product artikel = productRepository.findByName(title);
+				String plugins = rs.getString("plugins");
+				if (!plugins.contains("k2storeitem_price=")) continue;
+				String[] PluginsArray = plugins.split("\nk2storeitem_tax");
+				if (PluginsArray.length!=2) System.out.println("Fehler beim Einlesen der k2_items.plugins!");
+				String item_price=PluginsArray[0]; //k2storeitem_price=28.10
+				String item_bestand = PluginsArray[1]; //k2storeitem_shipping=1
+				//k2storeitem_bestand=
+				item_price=item_price.substring(18);
+				if (item_price.isEmpty()) continue; 
+				item_price = item_price.replace(",", ".");
+				System.out.println(item_price);
+				double k2storeitem_price = Double.parseDouble(item_price);
+				BigDecimal price = BigDecimal.valueOf(k2storeitem_price);
+				String[] bestandArray = item_bestand.split("k2storeitem_bestand=");
+				if (item_bestand.length()==2) hatBestand=true;
+				BigDecimal item_priceD= BigDecimal.valueOf(k2storeitem_price);
+
+				artikel.setPriceNet(item_priceD);
+				productRepository.saveAndFlush(artikel);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -277,37 +321,37 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				//Loop for OrderItems
 				while(orderItems.next()){
 					OrderItem oi = new OrderItem();
-					
+
 					Long orderNumber = orders.getLong("order_id");
 					oi.setOrderNumber(orderNumber);
 					List<OrderItem> orderItemList = orderItemRepository.findByOrderNumber(orderNumber);
 					if (orderItemList.isEmpty()) oi.setOrderItemNumber(1);
 					else oi.setOrderItemNumber(orderItemList.size()+1);
-					
+
 					String product_id = orderItems.getString("product_id");
 					String title = this.getSingleResult("select title from priebesJoomlaDb.jos_k2_items where id="+product_id, "title");
 					if (title==null) continue;
 					Product product = productRepository.findByName(title);
 					oi.setProduct(product);
-					
+
 					oi.setCreated(orders.getDate("created_date"));
 					String email = this.getSingleResult("SELECT email from priebesJoomlaDb.jos_users where id="+orders.getInt("user_id"), "email");
 					Customer customer = customerRepository.findByEmail(email);
 					if (customer==null) continue;
 					oi.setCustomer(customer);
-					
+
 					if (orderItems.getLong("rechnung_id") != 0l)
 					{oi.setAccountNumber(orderItems.getLong("rechnung_id"));
 					oi.setInvoiceNumber(orderItems.getLong("rechnung_id"));}
 					if (orderItems.getLong("ab_id") != 0l)
-					oi.setOrderConfirmationNumber(orderItems.getLong("ab_id"));
-					
+						oi.setOrderConfirmationNumber(orderItems.getLong("ab_id"));
+
 					oi.setQuantity(orderItems.getInt("orderitem_quantity"));
 					oi.setPriceNet(orderItems.getBigDecimal("orderitem_price"));
 					oi.setStatus(Status.COMPLETED);
-					
+
 					orderItemRepository.save(oi);
-					
+
 					if (oi.getOrderConfirmationNumber()!=null){
 						ShippingItem si = oi.confirm(false);
 						shippingItemRepo.save(si);
@@ -324,7 +368,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 							}
 						}
 					}
-					
+
 				}
 				stmt2.close();			
 			}
@@ -334,12 +378,12 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		}
 
 	}
-	
+
 	private String getSingleResult(String query, String column) throws SQLException{
 		Statement stmt = (Statement) getConnection().createStatement(
-				 ResultSet.TYPE_SCROLL_INSENSITIVE,
-				 ResultSet.CONCUR_READ_ONLY);
-		
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_READ_ONLY);
+
 		ResultSet as = stmt.executeQuery(query);
 		String toReturn = null;
 		while (as.next()){
@@ -349,7 +393,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		stmt.close();
 		return toReturn;
 	}
-	
+
 
 
 }

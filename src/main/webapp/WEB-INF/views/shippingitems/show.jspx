@@ -3,8 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_de_switajski_priebes_flexibleorders_domain_ShippingItem" object="${shippingitem}" path="/shippingitems" z="jcHyAwvn9mjdjyroR39eHm8n3Ts=">
-        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" object="${shippingitem}" z="vQZnzQibyO282Q3IUZWnzvtpZHE="/>
-        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" object="${shippingitem}" z="ufm7mwXYnSfHtRRBzIREsoX8YDQ="/>
         <field:display field="quantity" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantity" object="${shippingitem}" z="ATOfHsoXlehLw3HYmEHGaGxgDP0="/>
         <field:display field="priceNet" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_priceNet" object="${shippingitem}" z="tYyxYsy+pfYWHcGxtMPxYZvooE8="/>
         <field:display field="status" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" object="${shippingitem}" z="mGHJ8lQfwXDq+7Y2+L2lVHkWDYc="/>

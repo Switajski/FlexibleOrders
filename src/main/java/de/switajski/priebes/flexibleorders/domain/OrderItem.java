@@ -28,7 +28,6 @@ public class OrderItem extends Item {
 
     /**
      */
-    @Column(unique=true)
     @NotNull
     private int orderItemNumber;
 

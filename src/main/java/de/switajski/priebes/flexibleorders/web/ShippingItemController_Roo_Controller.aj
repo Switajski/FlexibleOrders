@@ -8,19 +8,16 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.repository.ProductRepository;
+import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 import de.switajski.priebes.flexibleorders.web.ShippingItemController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -36,13 +33,13 @@ import org.springframework.web.util.WebUtils;
 privileged aspect ShippingItemController_Roo_Controller {
     
     @Autowired
-    ShippingItemService ShippingItemController.shippingItemService;
+    ShippingItemRepository ShippingItemController.shippingItemRepository;
     
     @Autowired
     CustomerService ShippingItemController.customerService;
     
     @Autowired
-    ProductService ShippingItemController.productService;
+    ProductRepository ShippingItemController.productRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String ShippingItemController.create(@Valid ShippingItem shippingItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -51,7 +48,7 @@ privileged aspect ShippingItemController_Roo_Controller {
             return "shippingitems/create";
         }
         uiModel.asMap().clear();
-        shippingItemService.saveShippingItem(shippingItem);
+        shippingItemRepository.save(shippingItem);
         return "redirect:/shippingitems/" + encodeUrlPathSegment(shippingItem.getId().toString(), httpServletRequest);
     }
     
@@ -59,11 +56,11 @@ privileged aspect ShippingItemController_Roo_Controller {
     public String ShippingItemController.createForm(Model uiModel) {
         populateEditForm(uiModel, new ShippingItem());
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (productService.countAllProducts() == 0) {
-            dependencies.add(new String[] { "product", "products" });
-        }
         if (customerService.countAllCustomers() == 0) {
             dependencies.add(new String[] { "customer", "customers" });
+        }
+        if (productRepository.count() == 0) {
+            dependencies.add(new String[] { "product", "products" });
         }
         uiModel.addAttribute("dependencies", dependencies);
         return "shippingitems/create";
@@ -72,7 +69,7 @@ privileged aspect ShippingItemController_Roo_Controller {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String ShippingItemController.show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("shippingitem", shippingItemService.findShippingItem(id));
+        uiModel.addAttribute("shippingitem", shippingItemRepository.findOne(id));
         uiModel.addAttribute("itemId", id);
         return "shippingitems/show";
     }
@@ -82,11 +79,11 @@ privileged aspect ShippingItemController_Roo_Controller {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("shippingitems", shippingItemService.findShippingItemEntries(firstResult, sizeNo));
-            float nrOfPages = (float) shippingItemService.countAllShippingItems() / sizeNo;
+            uiModel.addAttribute("shippingitems", shippingItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / sizeNo, sizeNo)).getContent());
+            float nrOfPages = (float) shippingItemRepository.count() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("shippingitems", shippingItemService.findAllShippingItems());
+            uiModel.addAttribute("shippingitems", shippingItemRepository.findAll());
         }
         addDateTimeFormatPatterns(uiModel);
         return "shippingitems/list";
@@ -99,20 +96,20 @@ privileged aspect ShippingItemController_Roo_Controller {
             return "shippingitems/update";
         }
         uiModel.asMap().clear();
-        shippingItemService.updateShippingItem(shippingItem);
+        shippingItemRepository.save(shippingItem);
         return "redirect:/shippingitems/" + encodeUrlPathSegment(shippingItem.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String ShippingItemController.updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, shippingItemService.findShippingItem(id));
+        populateEditForm(uiModel, shippingItemRepository.findOne(id));
         return "shippingitems/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String ShippingItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        ShippingItem shippingItem = shippingItemService.findShippingItem(id);
-        shippingItemService.deleteShippingItem(shippingItem);
+        ShippingItem shippingItem = shippingItemRepository.findOne(id);
+        shippingItemRepository.delete(shippingItem);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -127,7 +124,7 @@ privileged aspect ShippingItemController_Roo_Controller {
         uiModel.addAttribute("shippingItem", shippingItem);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("customers", customerService.findAllCustomers());
-        uiModel.addAttribute("products", productService.findAllProducts());
+        uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("countrys", Arrays.asList(Country.values()));
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }

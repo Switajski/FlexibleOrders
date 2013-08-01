@@ -4,12 +4,12 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_de_switajski_priebes_flexibleorders_domain_ShippingItem" items="${shippingitems}" z="zBzbfAzUdVOXA2i0OZSFvkSGD8I=">
         <table:table data="${shippingitems}" id="l_de_switajski_priebes_flexibleorders_domain_ShippingItem" path="/shippingitems" z="SdhC1vPOC6thiXY/zBuNw655nI8=">
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" property="product" z="kDTELyUQW39I4zIzSukMcgCb848="/>
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" property="customer" z="CjNDdCZIXF7zmQWRAHlE744qe6w="/>
             <table:column date="true" dateTimePattern="${shippingItem_created_date_format}" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_created" property="created" z="2fOY1Jm5fxWwZ88hMxTAQUdfRx0="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantity" property="quantity" z="uChDzkq1/91Jim5UOSPQ8g71yTQ="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_priceNet" property="priceNet" z="K+V5kIS9LH/YBo4rm5P6g4cgFLI="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" property="status" z="hgan2kQVYiQ43jlEdM6XnB+luls="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productName" property="productName" z="JZejaBbJR22WXsh4K3q3AwQLVTE="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productNumber" property="productNumber" z="ScDiyxSIaGlH0ql3TZop58GL+dQ="/>
         </table:table>
     </page:list>
 </div>

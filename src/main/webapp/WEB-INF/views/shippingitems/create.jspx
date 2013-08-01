@@ -3,8 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_de_switajski_priebes_flexibleorders_domain_ShippingItem" modelAttribute="shippingItem" path="/shippingitems" render="${empty dependencies}" z="g/4waMI/Cu+42lXrp7b8eslSeTs=">
-        <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" itemValue="id" items="${products}" path="/products" required="true" z="FUSVEx8FjHQtfZe+jpbB99wKV3M="/>
-        <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="sqdoxjnIX5ebR/Ne7CiT+ijT+Wc="/>
         <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantity" required="true" z="hT2/Dj0SGqmWZZnOCqjGOkl/lF0="/>
         <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="RJ2mf8H2W30P4AvGi3oXxGzCfUI="/>
         <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" items="${statuses}" path="statuses" required="true" z="E6F2D/UYC6sbcvud7u7zr6ex9to="/>

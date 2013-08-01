@@ -15,12 +15,6 @@
 
 Ext.define('MyApp.model.BestellpositionData', {
 	extend: 'Ext.data.Model',
-	/*uses: [
-        'MyApp.model.Kunde'
-    ],
-    hasOne: {
-        model: 'MyApp.model.Kunde'
-    }*/
 	fields: 
 		[
 		 {

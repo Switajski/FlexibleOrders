@@ -48,6 +48,8 @@ public class OrderItemController extends JsonController<OrderItem>{
 	protected void resolveDependencies(OrderItem entity) {
 		long productNumber = entity.getProduct().getProductNumber();
 		Product p = productService.findByProductNumber(productNumber);
+		if (entity.getPriceNet()==null && p.getPriceNet()==null) 
+			throw new IllegalArgumentException("Price of product and order item is not set!");
 		entity.setProduct(p);
 		
 		Customer customer = customerService.find(entity.getCustomer().getId());

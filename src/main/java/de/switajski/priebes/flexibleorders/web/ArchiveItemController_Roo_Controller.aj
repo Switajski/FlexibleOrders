@@ -8,19 +8,16 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
-import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
+import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
+import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.web.ArchiveItemController;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -36,13 +33,13 @@ import org.springframework.web.util.WebUtils;
 privileged aspect ArchiveItemController_Roo_Controller {
     
     @Autowired
-    ArchiveItemService ArchiveItemController.archiveItemService;
+    ArchiveItemRepository ArchiveItemController.archiveItemRepository;
     
     @Autowired
     CustomerService ArchiveItemController.customerService;
     
     @Autowired
-    ProductService ArchiveItemController.productService;
+    ProductRepository ArchiveItemController.productRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String ArchiveItemController.create(@Valid ArchiveItem archiveItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -51,7 +48,7 @@ privileged aspect ArchiveItemController_Roo_Controller {
             return "archiveitems/create";
         }
         uiModel.asMap().clear();
-        archiveItemService.saveArchiveItem(archiveItem);
+        archiveItemRepository.save(archiveItem);
         return "redirect:/archiveitems/" + encodeUrlPathSegment(archiveItem.getId().toString(), httpServletRequest);
     }
     
@@ -59,11 +56,11 @@ privileged aspect ArchiveItemController_Roo_Controller {
     public String ArchiveItemController.createForm(Model uiModel) {
         populateEditForm(uiModel, new ArchiveItem());
         List<String[]> dependencies = new ArrayList<String[]>();
-        if (productService.countAllProducts() == 0) {
-            dependencies.add(new String[] { "product", "products" });
-        }
         if (customerService.countAllCustomers() == 0) {
             dependencies.add(new String[] { "customer", "customers" });
+        }
+        if (productRepository.count() == 0) {
+            dependencies.add(new String[] { "product", "products" });
         }
         uiModel.addAttribute("dependencies", dependencies);
         return "archiveitems/create";
@@ -72,7 +69,7 @@ privileged aspect ArchiveItemController_Roo_Controller {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String ArchiveItemController.show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("archiveitem", archiveItemService.findArchiveItem(id));
+        uiModel.addAttribute("archiveitem", archiveItemRepository.findOne(id));
         uiModel.addAttribute("itemId", id);
         return "archiveitems/show";
     }
@@ -82,11 +79,11 @@ privileged aspect ArchiveItemController_Roo_Controller {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("archiveitems", archiveItemService.findArchiveItemEntries(firstResult, sizeNo));
-            float nrOfPages = (float) archiveItemService.countAllArchiveItems() / sizeNo;
+            uiModel.addAttribute("archiveitems", archiveItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / sizeNo, sizeNo)).getContent());
+            float nrOfPages = (float) archiveItemRepository.count() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("archiveitems", archiveItemService.findAllArchiveItems());
+            uiModel.addAttribute("archiveitems", archiveItemRepository.findAll());
         }
         addDateTimeFormatPatterns(uiModel);
         return "archiveitems/list";
@@ -99,20 +96,20 @@ privileged aspect ArchiveItemController_Roo_Controller {
             return "archiveitems/update";
         }
         uiModel.asMap().clear();
-        archiveItemService.updateArchiveItem(archiveItem);
+        archiveItemRepository.save(archiveItem);
         return "redirect:/archiveitems/" + encodeUrlPathSegment(archiveItem.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String ArchiveItemController.updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, archiveItemService.findArchiveItem(id));
+        populateEditForm(uiModel, archiveItemRepository.findOne(id));
         return "archiveitems/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String ArchiveItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        ArchiveItem archiveItem = archiveItemService.findArchiveItem(id);
-        archiveItemService.deleteArchiveItem(archiveItem);
+        ArchiveItem archiveItem = archiveItemRepository.findOne(id);
+        archiveItemRepository.delete(archiveItem);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -128,7 +125,7 @@ privileged aspect ArchiveItemController_Roo_Controller {
         uiModel.addAttribute("archiveItem", archiveItem);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("customers", customerService.findAllCustomers());
-        uiModel.addAttribute("products", productService.findAllProducts());
+        uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("countrys", Arrays.asList(Country.values()));
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }

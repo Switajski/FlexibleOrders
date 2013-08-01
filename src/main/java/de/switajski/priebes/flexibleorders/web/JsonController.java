@@ -66,12 +66,8 @@ public abstract class JsonController<T> {
 			entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit-1));
 		} else {
 			JsonFilter filter;
-			try {
-				filter = deserializeFiltersJson(filters);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw e;
-			}
+
+			filter = deserializeFiltersJson(filters);
 			entities = findByFilterable(new PageRequest(page-1, limit-1), filter);
 		}
 		response.setData(entities.getContent());
@@ -94,12 +90,8 @@ public abstract class JsonController<T> {
 		if (filters.contains("property")){
 			JsonQueryFilter[] typedArray = (JsonQueryFilter[]) Array.newInstance(JsonQueryFilter.class, 1);
 			JsonQueryFilter[] qFilter;
-			try {
+	
 				qFilter = mapper.readValue(filters, typedArray.getClass());
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw e;
-			}
 			JsonFilter filter = new JsonFilter();
 			filter.setField(qFilter[0].getProperty());
 			filter.setValue(qFilter[0].getValue());
@@ -123,38 +115,22 @@ public abstract class JsonController<T> {
 	}
 
 	@RequestMapping(value="/json", /*headers = "Accept:application/json",*/ method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody String json) {
+	public @ResponseBody JsonObjectResponse create(@RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
 		JsonObjectResponse response = new JsonObjectResponse();
 
 		if (json.charAt(0) == '['){
-			try {
 				List<T> entities = parseJsonArray(json);
 				for (T entity:entities){
 					resolveDependencies(entity);
 					crudServiceAdapter.save(entity);
 				}
 				response.setTotal(entities.size());
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.setMessage(e.getMessage());
-				response.setData(e);
-				response.setSuccess(false);
-				return response;
-			} 
 		} else {
-			try {
 				T entity = parseJsonObject(json);
 				resolveDependencies(entity);
 				crudServiceAdapter.save(entity);					
 				response.setData(entity);
 				response.setTotal(1l);
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.setMessage(e.getMessage());
-				response.setData(e);
-				response.setSuccess(false);
-				return response;
-			}
 		}
 
 		response.setMessage("All entities retrieved.");

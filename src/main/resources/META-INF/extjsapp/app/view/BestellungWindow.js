@@ -20,7 +20,7 @@ Ext.define('MyApp.view.BestellungWindow', {
             items: [
                 {
                     xtype: 'form',
-                    id: 'BestellungForm',
+                    itemid: 'reportForm',
                     dock: 'top',
                     bodyPadding: 10,
                     items:[
@@ -61,22 +61,8 @@ Ext.define('MyApp.view.BestellungWindow', {
                 {
                 	xtype:'BestellpositionGrid',
                 	flex:1,
-                	id: 'BestellpositionGridPanel',
-                	store: 'BestellpositionDataStore',
-        	        dockedItems: [{
-                        xtype: 'toolbar',
-                        items: [{
-                             id: 'ErstelleBpButton',
-                             icon: 'images/add.png',
-                             text: 'hinzuf&uuml;gen',
-                             scope: this
-                        }, {
-                             id: 'DeleteBpButton',
-                             icon: 'images/delete.png',
-                    	     text: 'l&ouml;schen',
-                                 scope: this
-                        }]
-                      }]
+                	id: 'BestellpositionGridPanel2',
+                	store: 'BestellpositionDataStore'
                 }
             ]
         });

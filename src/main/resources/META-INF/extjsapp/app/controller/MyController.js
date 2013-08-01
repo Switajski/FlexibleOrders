@@ -26,6 +26,8 @@ Ext.override(Ext.data.JsonWriter, {
 	}
 });
 
+
+
 Ext.define('MyApp.controller.MyController', {
     debug: true,
     extend: 'Ext.app.Controller',
@@ -47,7 +49,11 @@ Ext.define('MyApp.controller.MyController', {
         'BestellungWindow',
         'ErstelleBestellungWindow',
         'BpWindow',
-        'BestellpositionGridPanel'
+        'BestellpositionGridPanel',
+        'ConfirmWindow',
+        'CompleteWindow',
+        'DeliverWindow',
+        'TransitionWindow'
     ],
     //TODO: Registrieren und Initialisiseren von Views an einer Stelle implementieren
     // Die view muss eine ID haben
@@ -59,13 +65,8 @@ Ext.define('MyApp.controller.MyController', {
     init: function(application) {
         this.control({
             '#BestellungGridPanel': {
-                selectionchange: this.changeBestellungSelection,
-                itemdblclick: this.showBestellung
-            },
-            '#BestellpositionGridPanel':{
-                selectionchange: this.changeBpSelection,
-                added: this.syncBpGrid,
-                removed: this.syncBpGrid
+                selectionchange: this.onSelectionchange,
+                itemdblclick: this.showTransition
             },
             '#ErstelleBpButton': {
                 click: this.loadBpForm
@@ -82,9 +83,6 @@ Ext.define('MyApp.controller.MyController', {
             '#SubmitBpButton':{
                 click: this.addBp
             },
-            /*'#SubmitBestellungButton':{
-                click: this.addBestellung
-            },*/
             '#AbBestellungButton':{
             	click: this.bestaetigeAuftragDialog
             },
@@ -108,15 +106,14 @@ Ext.define('MyApp.controller.MyController', {
             }*/
         });
         this.getBpFormView().create();
-        this.getBestellungWindowView().create();
         this.getBpWindowView().create();
         this.getErstelleBestellungWindowView().create();
     },
 
-    changeBestellungSelection: function(view, selections, options) {
+    onSelectionchange: function(view, selections, options) {
         if (view.getStore().storeId!="BestellungDataStore") return;
         if (selections.length == 0) return;
-        
+        console.log('changeBestellungSelection');
         //Variablen laden
         /*var bestellung = selections[0];
         this.activeBestellnr = bestellung.getData().orderNumber;
@@ -220,7 +217,7 @@ Ext.define('MyApp.controller.MyController', {
         return bp;
     },
 
-    deleteBp: function(btn) {
+    /*deleteBp: function(btn) {
         var bpGridPanel = Ext.getCmp('BestellpositionGridPanel');
         var selectionModel = bpGridPanel.getSelectionModel();
         var bp = selectionModel.getSelection();
@@ -242,7 +239,7 @@ Ext.define('MyApp.controller.MyController', {
         bestellungStore.sync();
 
         if (this.debug) console.log('Bestellung geloescht!');
-    },
+    },*/
     
     bestaetigeAuftragDialog: function(btn, e, eOpts) {
         console.log('bestaetigeAuftragDialog');
@@ -320,13 +317,36 @@ Ext.define('MyApp.controller.MyController', {
     			);*/
     },
     
-    showBestellung: function(grid, record) {
-        var bestellungWindow = Ext.getCmp('BestellungWindow');
-        bestellungWindow.show();
-        var form = Ext.getCmp('BestellungForm');
-        form.getForm().loadRecord(record);
+    showTransition: function(grid, record) {
+    	Ext.ComponentQuery.query('panel[extend=MyApp.view.TransitionWindow]');
+    	switch (record.data.status){
+    		case "ORDERED":
+    			this.getConfirmWindowView().create();
+		        Ext.ComponentQuery.query('panel[itemid=ConfirmWindow]')[0].show();
+		        Ext.getCmp('BestellungForm').getForm().loadRecord(record);
+    			break;
+    		case "CONFIRMED":
+    			this.getDeliverWindowView().create();
+		        Ext.ComponentQuery.query('panel[itemid=DeliverWindow]')[0].loadAndShow(record);
+		        break;
+    		case "DELIVERED":
+    			this.getCompleteWindowView().create();
+    			Ext.ComponentQuery.query('panel[itemid=CompleteWindow]')[0].loadAndShow(record);
+    			break;
+    		case "COMPLETED":
+    			this.getTransitionWindowView().create();
+    			Ext.ComponentQuery.query('panel[itemid=TransitionWindow]')[0].loadAndShow(record);
+    			break;
+    		case "CANCELED":
+    			this.getTransitionWindowView().create();
+    			Ext.ComponentQuery.query('panel[itemid=TransitionWindow]')[0].loadAndShow(record);
+    			break;
+    			
+    	}
+    	
     },
 
+    /*
     loadBpForm: function(btn, e, eOpts) {
         var bestellung = this.getBestellungSelection();
 
@@ -339,7 +359,7 @@ Ext.define('MyApp.controller.MyController', {
         catch (e){
             Ext.Msg.alert('Hinweis', 'Bevor eine eine Bestellposition erstellt werden kann, muss eine Bestellung ausgew&auml;hlt sein </br> Fehlerdetails:'+ e.toString());
         }
-    },
+    },*/
 
     loadErstelleBestellungWindow: function(btn, e, eOpts) {
         console.log('function createBestellung');
@@ -399,7 +419,7 @@ Ext.define('MyApp.controller.MyController', {
             this.activeBestellpositionId = 0;
             return;
         }
-        
+        alert('Onselectionchange');
         this.activeBestellpositionId = selections[0].getData().id;
         bpDataStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
         bpDataStore.getProxy().setExtraParam({id:this.activeBestellpositionId});

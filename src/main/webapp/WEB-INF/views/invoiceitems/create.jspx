@@ -18,6 +18,8 @@
         <field:input field="invoiceCity" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCity" required="true" z="+4uFdYC8/gbj4U2fr6WrDOeWwT4="/>
         <field:input field="invoicePostalCode" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoicePostalCode" required="true" z="FyiIS2osdfyPpV+tcf33WlAKTCc="/>
         <field:select field="invoiceCountry" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCountry" items="${countrys}" path="countrys" required="true" z="bKLyOPZguV0X8+dv5czENfZxsYo="/>
+        <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="JmoDrLge7NMvtlkejAqLhvwgmo4="/>
+        <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" itemValue="id" items="${products}" path="/products" required="true" z="kSsOmG7uUHwLBoHaersUbGQQkz0="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_InvoiceItem" render="${not empty dependencies}" z="Yann8E0ymKAbxiUS1fbElDbg4DQ="/>
 </div>

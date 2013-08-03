@@ -19,5 +19,7 @@
         <field:display field="shippingCity" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCity" object="${shippingitem}" z="ntHPkJPirEx16TaleLmuHtt6hw8="/>
         <field:display field="shippingPostalCode" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingPostalCode" object="${shippingitem}" z="kxBK1fv1tXdrJIzenCzC/YF4P/c="/>
         <field:display field="shippingCountry" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCountry" object="${shippingitem}" z="Lcu9ZW+VnYzMh4opeP4O8oT8k4A="/>
+        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" object="${shippingitem}" z="ufm7mwXYnSfHtRRBzIREsoX8YDQ="/>
+        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" object="${shippingitem}" z="vQZnzQibyO282Q3IUZWnzvtpZHE="/>
     </page:show>
 </div>

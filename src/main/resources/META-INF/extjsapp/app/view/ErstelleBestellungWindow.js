@@ -36,27 +36,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 								change : this.onOrderNumberChange
 							}
 						}, {
-							xtype : 'combobox',
-							// anchor:'100%',
-							name : 'customer',
-							itemid : 'customer',
-							fieldLabel : 'Kunde',
-							displayField : 'shortName',
-							valueField : 'id',
-							// allowBlank: false,
-							enableRegEx : true,
-							forceSelection : true,
-							queryMode : 'local',
-							store : 'KundeDataStore',
-							tpl : Ext
-									.create(
-											'Ext.XTemplate',
-											'<tpl for=".">',
-											'<div class="x-boundlist-item">{id} - {shortName}</div>',
-											'</tpl>'),
-							displayTpl : Ext.create('Ext.XTemplate',
-									'<tpl for=".">', '{id} - {shortName}',
-									'</tpl>')
+							xtype : 'customercombobox'
 						}, {
 							xtype : 'BestellpositionGrid',
 							id : 'BestellpositionGrid',
@@ -86,7 +66,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 	onOrderNumberChange : function(form, data) {
 		var store = Ext.data.StoreManager.lookup('BestellpositionDataStore');
 		console.log(data);
-		Ext.data.StoreManager.lookup('BestellpositionDataStore').filters
+		// Ext.data.StoreManager.lookup('BestellpositionDataStore').filters
 		store.filters.removeAll();
 		store.filter("orderNumber", data);
 	},
@@ -130,3 +110,25 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 	}
 
 });
+
+/*Ext.define('MyApp.view.ErstelleBestellungWindow', {
+	extend : 'Ext.form.field.ComboBox',
+	alias : 'widget.customercombobox',
+	xtype : 'combobox',
+	// anchor:'100%',
+	name : 'customer',
+	itemid : 'customer',
+	fieldLabel : 'Kunde',
+	displayField : 'shortName',
+	valueField : 'id',
+	// allowBlank: false,
+	enableRegEx : true,
+	forceSelection : true,
+	queryMode : 'local',
+	store : 'KundeDataStore',
+	tpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
+			'<div class="x-boundlist-item">{id} - {shortName}</div>', '</tpl>'),
+	displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
+			'{id} - {shortName}', '</tpl>')
+
+});*/

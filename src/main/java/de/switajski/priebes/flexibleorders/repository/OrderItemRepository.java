@@ -21,8 +21,6 @@ extends JpaSpecificationExecutor<OrderItem>,
 	JpaRepository<OrderItem, Long>, 
 	ItemRepository<OrderItem>{
 	
-	Page<OrderItem> findByOrderItemNumber(Long orderItemNumber, Pageable pageable);
-	
 	/**
 	 * 
 	 * @param pageable
@@ -31,18 +29,20 @@ extends JpaSpecificationExecutor<OrderItem>,
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
 			+ "where oi.customer = ?1 "
-			+ "group by oi.orderNumber")
+			+ "group by oi.orderNumber "
+			+ "order by min(oi.created) desc")
 	Page<Long> getAllOrderNumbers(Customer customer, Pageable pageable);
 	
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
-			+ "group by oi.orderNumber ")
-//			+ "order by min(oi.created)")
+			+ "group by oi.orderNumber "
+			+ "order by min(oi.created) desc")
 	Page<Long> getAllOrderNumbers(Pageable pageable);
 	
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
-			+ "group by oi.orderNumber")
+			+ "group by oi.orderNumber "
+			+ "order by min(oi.created) desc")
 	List<Long> getAllOrderNumbers();
 	
 	@Query("select count(DISTINCT oi.orderNumber) "
@@ -52,7 +52,8 @@ extends JpaSpecificationExecutor<OrderItem>,
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
 			+ "where oi.customer = ?1 "
-			+ "group by oi.orderNumber")
+			+ "group by oi.orderNumber "
+			+ "order by min(oi.created) desc")
 	List<Long> getAllOrderNumbers(Customer customer);
 
 }

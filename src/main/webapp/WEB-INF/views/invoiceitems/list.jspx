@@ -8,8 +8,8 @@
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_priceNet" property="priceNet" z="8qFlv6yqy9DfbmUgQvhbTOtdZnI="/>
             <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" property="status" z="jdjoVIE7joYNqo9C/Wr2L1WleQ8="/>
             <table:column date="true" dateTimePattern="${invoiceItem_created_date_format}" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_created" property="created" z="0yM59ADf5iAt8OISZiCHStw/ZNc="/>
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productName" property="productName" z="EpBM43g3VgwoaCht2Xccxs7g3Ek="/>
-            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productNumber" property="productNumber" z="1l4vP6FOxrPwhGfLzXx6H5TUFlY="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" property="customer" z="sw/B7KBjTZ25AoOQ0tROHX3GW5A="/>
+            <table:column id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" property="product" z="at8GX1d7YeQGib0Kf+gjtZluTms="/>
         </table:table>
     </page:list>
 </div>

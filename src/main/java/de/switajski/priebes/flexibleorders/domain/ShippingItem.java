@@ -113,15 +113,17 @@ public class ShippingItem extends Item {
      * This is done by {@link OrderItem#confirm} 
      * 
      * @param orderItem
+	 * @param quantity 
      * @param transmitToSupplier
      */
-    public ShippingItem(OrderItem orderItem, Boolean transmitToSupplier) {
+    public ShippingItem(OrderItem orderItem, int quantity, Boolean transmitToSupplier) {
     	if (transmitToSupplier) throw new UnsupportedOperationException("Implement me!");
     	
     	historize(orderItem);
     	setTransmitToSupplier(transmitToSupplier);
 		setCreated(new Date());
 		setStatus(Status.CONFIRMED);
+		setQuantity(quantity);
 		Customer customer = orderItem.getCustomer();
 		
 		//TODO: Create @Embedded class shippingAddress
@@ -133,10 +135,14 @@ public class ShippingItem extends Item {
 		setShippingStreet(customer.getStreet());
 	}
 
-	public InvoiceItem deliver() {
-		InvoiceItem ii = new InvoiceItem(this);
+	public InvoiceItem deliver(int quantity) {
+		InvoiceItem ii = new InvoiceItem(this, quantity);
 		this.setStatus(Status.SHIPPED);
 		return ii;
+	}
+	
+	public InvoiceItem deliver(){
+		return this.deliver(this.getQuantity());
 	}
 
 	@Override

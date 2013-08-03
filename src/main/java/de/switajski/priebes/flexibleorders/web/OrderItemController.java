@@ -1,4 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.ProductService;
@@ -24,11 +26,19 @@ import de.switajski.priebes.flexibleorders.service.ProductService;
 @RooWebScaffold(path = "orderitems", formBackingObject = OrderItem.class)
 public class OrderItemController extends JsonController<OrderItem>{
 
-	@Autowired ProductService productService;
+	private ProductService productService;
+	private OrderItemService orderItemService;
+	private CustomerService customerService;
 	
 	@Autowired
-	public OrderItemController(OrderItemService readService) {
+	public OrderItemController(OrderItemService readService,
+			ProductService productService,
+			OrderItemService orderItemService,
+			CustomerService customerService) {
 		super(readService);
+		this.productService = productService;
+		this.orderItemService = orderItemService;
+		this.customerService = customerService;
 	}
 	
 	@RequestMapping(value="/json", params="orderNumber", headers = "Accept=application/json")
@@ -58,9 +68,15 @@ public class OrderItemController extends JsonController<OrderItem>{
 
 	@Override
 	protected Page<OrderItem> findByFilterable(PageRequest pageRequest,
-			JsonFilter filter) {
-		if (filter.value=="") return null;
-		return this.orderItemService.findByOrderNumber(Long.parseLong(filter.value), pageRequest);
+			HashMap<String, String> filter) {
+		if (filter.get("OrderNumber")!=null) 
+		 	if (filter.get("OrderNumber")=="") 
+		 		return null;
+		 	else
+		 		return this.orderItemService.findByOrderNumber(Long.parseLong(filter.get("OrderNumber")), pageRequest);
+		else if (filter.get("Status")=="ORDERED")
+			return orderItemService.findOrdered(pageRequest);
+		else return null;
 	}
 
 }

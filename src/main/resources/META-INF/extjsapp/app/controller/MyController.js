@@ -36,12 +36,18 @@ Ext.define('MyApp.controller.MyController', {
     models: [
         'BestellungData',
         'BestellpositionData',
-        'KundeData'
+        'KundeData',
+        'ArchiveItemData',
+        'InvoiceItemData',
+        'ShippingItemData'
     ],
     stores: [
         'BestellungDataStore',
         'BestellpositionDataStore',
-        'KundeDataStore'
+        'KundeDataStore',
+        'InvoiceItemDataStore',
+        'ShippingItemDataStore',
+        'ArchiveItemDataStore'
     ],
     views: [
         'MainPanel',
@@ -61,9 +67,14 @@ Ext.define('MyApp.controller.MyController', {
     activeBestellnr: 0,
     activeBestellpositionId:0,
     bestellungDataStore: null,
+    
+    activeCustomer: 0,
 
     init: function(application) {
         this.control({
+        	'#mainCustomerComboBox':{
+        		change: this.onCustomerChange
+        	},
             '#BestellungGridPanel': {
                 selectionchange: this.onSelectionchange,
                 itemdblclick: this.showTransition
@@ -97,17 +108,13 @@ Ext.define('MyApp.controller.MyController', {
             },
             '#RechnungPdf':{
             	click: this.showRechnungPdf
-            }/*,
-            '#BestellungDataStore':{
-            	afterRequest: this.reloadBestellungGridPanel
-            },
-            '#BestellpositionDataStore':{
-            	afterRequest: this.loadBps
-            }*/
+            }
         });
         this.getBpFormView().create();
         this.getBpWindowView().create();
         this.getErstelleBestellungWindowView().create();
+        this.getStore('BestellpositionDataStore').filter('status', 'ordered');
+        this.getStore('BestellpositionDataStore').load();
     },
 
     onSelectionchange: function(view, selections, options) {
@@ -304,7 +311,7 @@ Ext.define('MyApp.controller.MyController', {
 
     	//Reload GridPanel
     	MyApp.getApplication().getController('MyController').sleep(500);
-    	Ext.data.StoreManager.lookup('BestellungDataStore').reload();
+    	//Ext.data.StoreManager.lookup('BestellungDataStore').reload();
     	grid = Ext.getCmp('BestellungGrid');
     	grid.refresh();
     	Ext.getCmp('RechnungBestellungButton').setDisabled(true);
@@ -322,14 +329,13 @@ Ext.define('MyApp.controller.MyController', {
     	switch (record.data.status){
     		case "ORDERED":
     			this.getConfirmWindowView().create();
-		        Ext.ComponentQuery.query('panel[itemid=ConfirmWindow]')[0].show();
-		        Ext.getCmp('BestellungForm').getForm().loadRecord(record);
-    			break;
+		        Ext.ComponentQuery.query('panel[itemid=ConfirmWindow]')[0].loadAndShow(record);
+		        break;
     		case "CONFIRMED":
     			this.getDeliverWindowView().create();
 		        Ext.ComponentQuery.query('panel[itemid=DeliverWindow]')[0].loadAndShow(record);
 		        break;
-    		case "DELIVERED":
+    		case "SHIPPED":
     			this.getCompleteWindowView().create();
     			Ext.ComponentQuery.query('panel[itemid=CompleteWindow]')[0].loadAndShow(record);
     			break;
@@ -364,73 +370,27 @@ Ext.define('MyApp.controller.MyController', {
     loadErstelleBestellungWindow: function(btn, e, eOpts) {
         console.log('function createBestellung');
         var bestellungWindow = Ext.getCmp('ErstelleBestellungWindow');
+        var customerid = Ext.getCmp('mainCustomerComboBox').getValue();
+        if (customerid==null)
+        	Ext.MessageBox.show({
+                            title: 'Keinen Kunden ausgew&auml;hlt',
+                            msg: "bitte Kunden ausw&auml;hlen",
+                            icon: Ext.MessageBox.INFO,
+                            buttons: Ext.Msg.OK
+                        });
+        else {
         store = Ext.data.StoreMgr.lookup('BestellpositionDataStore');
         bestellungWindow.show();
+        	
+        }
     },
 
-    getBestellungSelection: function(){
+/*    getBestellungSelection: function(){
         var bestellungGridPanel = Ext.getCmp('BestellungGridPanel');
         var selectionModel = bestellungGridPanel.getSelectionModel();
         var bestellung = selectionModel.getSelection()[0];
         return bestellung;
-    },
-
-    addBp: function(btn, e, eOpts){
-        var form = Ext.getCmp('ErstelleBpForm');
-        if (form.isValid()) {
-            var bpDataStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
-            if (this.debug){
-                console.log('Werte der ErstelleBpForm: ');
-                console.log(form.getValues());
-            }
-            bpDataStore.insert(0, form.getValues());
-            bpDataStore.sync();
-            form.getForm().reset();
-
-            Ext.getCmp('BpForm').hide();
-            this.sleep(500);
-            bpDataStore.reload(this.activeBestellnr);
-        }
-    },
-
-    /*addBestellung: function(btn,e,eOpts){
-        var form = Ext.getCmp('ErstelleBestellungForm');
-        if (form.isValid()) {
-            var bestellungDataStore = Ext.data.StoreManager.lookup('BestellungDataStore');
-            if (this.debug){
-                console.log('Werte der ErstelleBestellungForm: ');
-                console.log(form.getValues());
-            }
-            bestellungDataStore.insert(0, form.getValues());
-            bestellungDataStore.sync();
-            form.getForm().reset();
-            this.sleep(500);
-
-            //TODO: Code von addBp und addBestellung ist doppelt. Da gibts Optimierungspotenzial.
-
-            var bestellungWindow = Ext.getCmp('ErstelleBestellungWindow');
-            bestellungWindow.hide();
-            Ext.StoreManager.get('BestellungDataStore').reload();
-        }
     },*/
-
-    changeBpSelection: function(grid, selections){
-        if (selections.length == 0){
-            this.activeBestellpositionId = 0;
-            return;
-        }
-        alert('Onselectionchange');
-        this.activeBestellpositionId = selections[0].getData().id;
-        bpDataStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
-        bpDataStore.getProxy().setExtraParam({id:this.activeBestellpositionId});
-
-        /*deletebutton = Ext.getCmp('DeleteBpButton');
-        deletebutton.setDisabled(true);
-
-        if (selections[0].getData().status == 'ORDERED')
-            deletebutton.setDisabled(false);*/
-        
-    },
 
     syncBpGrid: function(view, owner, options){
         if (this.debug) console.log('syncBpGrid');
@@ -456,6 +416,46 @@ Ext.define('MyApp.controller.MyController', {
     	      break;
     	    }
     	  }
-    	}
-
+    	},
+	confirm: function(record){
+		//TODO: send record.data.product + record.data.quantity
+		console.log(record.data.product + " " + record.data.quantity + " " + record.data.orderNumber);
+		
+		var request = Ext.Ajax.request({
+    	    url: '/FlexibleOrders/transitions/json',
+    	    params: {
+    	        productNumber: record.data.product,
+    	        quantity: record.data.quantity,
+    	        customer: record.data.customer
+    	    },
+    	    success: function(response){
+    	        var text = response.responseText;
+    	    },
+    	    failure: function(response){
+    	    	//TODO: Fehlerhandling vereinheitlichen
+    	    	Ext.Msg.alert('Fehler', response.status + response.text);
+    	    }
+    	});
+    	if (this.debug) console.log('confirm order');
+    	
+		//Sync
+    	MyApp.getApplication().getController('MyController').sleep(500);
+		var allGrids = Ext.ComponentQuery.query('PositionGrid');
+		allGrids.forEach(function(grid) {
+			grid.getStore().sync();
+		});		
+	},
+	onCustomerChange: function(field, newValue, oldValue, eOpts){
+		console.log('onCustomerChange');
+	//	var allGrids = Ext.ComponentQuery.query('PositionGrid');
+			var oiStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
+			
+			
+			oiStore.getProxy().setExtraParam(
+				{customer:newValue,
+				itemType:'ordered'}
+				);
+			oiStore.sync();
+	}
+    
  });

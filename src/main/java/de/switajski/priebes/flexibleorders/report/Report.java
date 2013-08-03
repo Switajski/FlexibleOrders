@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.json.CustomerToIdSerializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -33,6 +34,7 @@ public class Report<T extends Item> {
 		setItems(items);
 	}
 
+	@JsonSerialize(using=CustomerToIdSerializer.class)
 	public Customer getCustomer() {
 		return customer;
 	}

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
 
@@ -65,14 +67,12 @@ public class OrderItemServiceImpl extends JpaRepositoryToServiceAdapter<OrderIte
 	}
 
 	@Override
-	public Page<OrderItem> findByOrderItemNumber(Long orderItemNumber,
-			Pageable pageable) {
-		return orderItemRepository.findByOrderItemNumber(orderItemNumber, pageable);
-	}
-
-	@Override
 	public Page<OrderItem> findAll(Pageable pageable) {
 		return orderItemRepository.findAll(pageable);
+	}
+	
+	public Page<OrderItem> findOrdered(Pageable pageable){
+		return orderItemRepository.findByStatus(Status.ORDERED, pageable);
 	}
 
 }

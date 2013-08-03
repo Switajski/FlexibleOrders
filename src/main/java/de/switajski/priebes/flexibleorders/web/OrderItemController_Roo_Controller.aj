@@ -8,8 +8,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.web.OrderItemController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -30,12 +28,6 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect OrderItemController_Roo_Controller {
-    
-    @Autowired
-    OrderItemService OrderItemController.orderItemService;
-    
-    @Autowired
-    CustomerService OrderItemController.customerService;
     
     @Autowired
     ProductRepository OrderItemController.productRepository;

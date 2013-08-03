@@ -1,4 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
+import java.util.HashMap;
+import java.util.List;
+
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
@@ -29,7 +32,7 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 
 	@Override
 	protected Page<InvoiceItem> findByFilterable(PageRequest pageRequest,
-			JsonFilter filter) {
+			HashMap<String, String> filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

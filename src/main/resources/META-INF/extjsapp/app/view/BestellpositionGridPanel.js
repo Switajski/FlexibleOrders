@@ -107,7 +107,11 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 					allowBlank : false,
 					minValue : 1
 				}
-
+			}, {
+				xtype : 'gridcolumn',
+				dataIndex : 'customer',
+				width : 50,
+				text : 'Kundenr'
 			}, {
 				xtype : 'numbercolumn',
 				dataIndex : 'priceNet',

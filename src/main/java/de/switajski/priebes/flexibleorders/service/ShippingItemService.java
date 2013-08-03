@@ -8,4 +8,5 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 //@RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.ShippingItem.class })
 public interface ShippingItemService extends CrudServiceAdapter<ShippingItem>{
 	Page<ShippingItem> findByOrderNumber(Long orderNumber, Pageable pageable);
+	Page<ShippingItem> findConfirmed(Pageable pageable);
 }

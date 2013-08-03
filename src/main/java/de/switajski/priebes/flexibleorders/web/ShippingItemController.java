@@ -1,4 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
+import java.util.HashMap;
+import java.util.List;
+
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
@@ -27,9 +30,12 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 
 	@Override
 	protected Page<ShippingItem> findByFilterable(PageRequest pageRequest,
-			JsonFilter filter) {
-		if (filter.value=="") return null;
-		return this.shippingItemService.findByOrderNumber(Long.parseLong(filter.value), pageRequest);
+			HashMap<String, String> filter) {
+		if (filter.get("OrderNumber")!=null && filter.get("OrderNumber") != "") 
+			return shippingItemService.findByOrderNumber(Long.parseLong(filter.get("OrderNumber")), pageRequest);
+		else if (filter.get("Status")=="ORDERED")
+			return shippingItemService.findConfirmed(pageRequest);
+		else return null;
 	}
 
 	@Override

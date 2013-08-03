@@ -15,6 +15,7 @@
 
 Ext.define('MyApp.store.ArchiveItemDataStore', {
     extend: 'MyApp.store.BestellpositionDataStore',
+    alias: 'widget.ArchiveItemDataStore',
 	customurl: '/FlexibleOrders/archiveitems/json/',
 	custommodel: 'MyApp.model.ArchiveItemData',
 	customstoreid: 'ArchiveItemDataStore',

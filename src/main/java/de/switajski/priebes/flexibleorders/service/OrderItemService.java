@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.roo.addon.layers.service.RooService;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 @RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.OrderItem.class })
 public interface OrderItemService extends CrudServiceAdapter<OrderItem>{
@@ -14,27 +15,21 @@ public interface OrderItemService extends CrudServiceAdapter<OrderItem>{
 	List<OrderItem> findByOrderNumber(Long orderNumber);
 
 	Page<OrderItem> findByOrderNumber(Long orderNumber, Pageable pageable);
-
-	Page<OrderItem> findByOrderItemNumber(Long orderItemNumber, Pageable pageable);
 	
 	public abstract long countAllOrderItems();
 
-	
 	public abstract void deleteOrderItem(OrderItem orderItem);
-
 
 	public abstract OrderItem findOrderItem(Long id);
 
-
 	public abstract List<OrderItem> findAllOrderItems();
-
 
 	public abstract List<OrderItem> findOrderItemEntries(int firstResult, int maxResults);
 
-
 	public abstract void saveOrderItem(OrderItem orderItem);
 
-
 	public abstract OrderItem updateOrderItem(OrderItem orderItem);
+	
+	public abstract Page<OrderItem> findOrdered(Pageable pageable);
 
 }

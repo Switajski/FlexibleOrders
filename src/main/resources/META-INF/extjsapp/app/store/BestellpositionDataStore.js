@@ -7,24 +7,20 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
     requires: [
         'MyApp.model.BestellpositionData'
     ],
-
-    reload: function(activeBestellnr){
-    	this.load({
-            params: {
-                orderNumber: activeBestellnr
-            },
-            url: this.customurl
-        });
+    extraParams:{
+                	customer:1,
+					itemType:'ordered'
     },
+    alias: 'widget.BestellpositionDataStore',
+
     constructor: function(cfg) {
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
-            autoLoad: false,
             model: this.custommodel,
             storeId: this.customstoreid,
-            autoLoad: true,
-            pageSize:20,
+            autoLoad: false,
+            pageSize:5,
             remoteFilter: true,
             proxy: {
                 type: 'ajax',
@@ -39,6 +35,10 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     update: this.customurl,
                     destroy: this.customurl,
                     create: this.customurl
+                },
+                extraParams:{
+                	customer:1,
+					itemType:'ordered'
                 },
                 headers: {
                     Accept: 'application/json'

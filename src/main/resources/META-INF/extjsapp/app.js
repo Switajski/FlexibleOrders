@@ -28,11 +28,17 @@ Ext.application({
         'BpForm',
         'ErstelleBestellungWindow',
         'BestellungWindow',
-        'PositionGridPanel',
 		'ConfirmWindow',
         'CompleteWindow',
         'DeliverWindow',
-        'TransitionWindow'
+        'TransitionWindow',
+        'PositionGridPanel',
+        'OrderItemGridPanel',
+        'ShippingItemGridPanel',
+        'InvoiceItemGridPanel',
+        'ArchiveItemGridPanel',
+        'BestellungGridPanel',
+        'CustomerComboBox'
     ],
     autoCreateViewport: true,
     controllers: [

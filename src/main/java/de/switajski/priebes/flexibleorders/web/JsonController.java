@@ -63,12 +63,12 @@ public abstract class JsonController<T> {
 		JsonObjectResponse response = new JsonObjectResponse();
 		Page<T> entities = null;
 		if (filters == null|| isRequestForEmptingFilter(filters)){ 
-			entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit-1));
+			entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit));
 		} else {
-			JsonFilter filter;
+			HashMap<String, String> filterList;
 
-			filter = deserializeFiltersJson(filters);
-			entities = findByFilterable(new PageRequest(page-1, limit-1), filter);
+			filterList = deserializeFiltersJson(filters);
+			entities = findByFilterable(new PageRequest(page-1, limit), filterList);
 		}
 		response.setData(entities.getContent());
 		response.setTotal(entities.getTotalElements());
@@ -82,36 +82,36 @@ public abstract class JsonController<T> {
 		return (filters.contains("property") && filters.contains("null"));
 	}
 
-	protected abstract Page<T> findByFilterable(PageRequest pageRequest, JsonFilter filter);
+	protected abstract Page<T> findByFilterable(PageRequest pageRequest, HashMap<String, String> filterList);
 
-	private JsonFilter deserializeFiltersJson(String filters) throws Exception {
+	private HashMap<String, String> deserializeFiltersJson(String filters) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();  
+		HashMap<String, String> jsonFilters = new HashMap<String, String>();
 		//	Extjs - Json for adding a filter: 	[{"property":"orderNumber","value":1}]
 		if (filters.contains("property")){
 			JsonQueryFilter[] typedArray = (JsonQueryFilter[]) Array.newInstance(JsonQueryFilter.class, 1);
 			JsonQueryFilter[] qFilter;
-	
-				qFilter = mapper.readValue(filters, typedArray.getClass());
-			JsonFilter filter = new JsonFilter();
-			filter.setField(qFilter[0].getProperty());
-			filter.setValue(qFilter[0].getValue());
-			return filter;
+			qFilter = mapper.readValue(filters, typedArray.getClass());
+			
+			jsonFilters.put(qFilter[0].getProperty(), qFilter[0].getValue());
 		}else{
 
 			// filters = [{"type":"string","value":"13","field":"orderNumber"}]
 			JsonFilter[] typedArray = (JsonFilter[]) Array.newInstance(JsonFilter.class,1);
 
-			//TODO: implement logic for multiple filters  
-
-			JsonFilter[] filter;
+			JsonFilter[] filterArray;
 			try {
-				filter = mapper.readValue(filters, typedArray.getClass());
+				filterArray = mapper.readValue(filters, typedArray.getClass());
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
 			}   
-			return filter[0];
+			//TODO: implement logic for multiple filters
+			for (JsonFilter jsonFilter:filterArray){
+				jsonFilters.put(jsonFilter.field, jsonFilter.getValue());
+			}
 		}
+		return jsonFilters;
 	}
 
 	@RequestMapping(value="/json", /*headers = "Accept:application/json",*/ method=RequestMethod.POST)

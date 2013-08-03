@@ -49,14 +49,15 @@ public class InvoiceItem extends Item {
     /**
      * The only way to create a InvoiceItem is to generate it from a ShippingItem.
      * This is done by {@link ShippingItem#deliver} 
-     * 
+     * @param quantity 
      * @param orderItem
      * @param transmitToSupplier
      */
-    public InvoiceItem(ShippingItem shippingItem) {
+    public InvoiceItem(ShippingItem shippingItem, int quantity) {
     	historize(shippingItem);
     	setCreated(new Date());
     	setStatus(Status.SHIPPED);
+    	setQuantity(quantity);
     	
     	Customer customer = shippingItem.getCustomer();
     	setInvoiceCity(customer.getCity());
@@ -71,8 +72,8 @@ public class InvoiceItem extends Item {
     public InvoiceItem(){
     }
     
-    public ArchiveItem complete(ShippingItem shippingItem){
-    	ArchiveItem ai = new ArchiveItem(this, shippingItem);
+    public ArchiveItem complete(ShippingItem shippingItem, int quantity){
+    	ArchiveItem ai = new ArchiveItem(this, shippingItem, quantity);
     	this.setStatus(Status.COMPLETED);
     	return ai;
     }

@@ -18,5 +18,7 @@
         <field:display field="invoiceCity" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCity" object="${invoiceitem}" z="Sxe05BXcydu5zRWdIsVV4aP/SVI="/>
         <field:display field="invoicePostalCode" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoicePostalCode" object="${invoiceitem}" z="9uLFNrwvxL+TtjUoi/h4MpHXdg4="/>
         <field:display field="invoiceCountry" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCountry" object="${invoiceitem}" z="shwe2UXrR0MZVjoWoYBeKOw9Z9c="/>
+        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" object="${invoiceitem}" z="1zKFmytomUnltHVKi+ZZYw0vpCU="/>
+        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" object="${invoiceitem}" z="FjsQqpc8o7TsRuaKNcxgXmVbKzo="/>
     </page:show>
 </div>

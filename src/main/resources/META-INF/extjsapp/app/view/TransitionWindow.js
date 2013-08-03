@@ -1,19 +1,29 @@
 Ext.define('MyApp.view.TransitionWindow', {
-	customid: 'orderNumber',
-	customstore: 'MyApp.store.BestellpositionDataStore',
-	itemid: 'TransitionWindow',
 	extend : 'Ext.window.Window',
+	customid : 'orderNumber',
+	customfirstreport : 'Abstrakt',
+	customsecondreport : 'Abstrakt2',
+	customfirststore : 'MyApp.store.BestellpositionDataStore',
+	customsecondstore : 'MyApp.store.ShippingItemDataStore',
+	customfirstgrid:'PositionGrid',
+	customsecondgrid:'PositionGrid',
+	customtransitionfunction: function(){
+		alert('muss ueberschrieben werden!');
+	},
+	itemid : 'TransitionWindow',
 	requires : ['MyApp.view.BestellpositionGridPanel'],
-	height : 400,
-	width : 500,
+	height : 500,
+	width : 820,
 	closeAction : 'destroy',
 	title : 'TransitionWindow',
 	initComponent : function() {
 		var me = this;
-		var firstDataStore = Ext.create(this.customstore,
-				{
-				});
+		var firstDataStore = Ext.create(this.customfirststore, {});
+		var secondDataStore = Ext.create(this.customsecondstore, {});
+		//TODO: über custom transitionFunction actionmethode des PositionGripanel überschreiben
 		
+		Ext.ComponentQuery.query('');
+
 		Ext.applyIf(me, {
 					layout : 'border',
 					defaults : {
@@ -23,13 +33,13 @@ Ext.define('MyApp.view.TransitionWindow', {
 					},
 					items : [{
 								xtype : 'form',
-								region : 'center',
+								region : 'north',
 								id : 'BestellungForm',
 								dock : 'top',
 								bodyPadding : 10,
 								items : [{
 											xtype : 'fieldset',
-											title : 'Bestellungdetails',
+											title : this.customfirstreport+'details',
 											flex : 1,
 											items : [{
 														xtype : 'displayfield',
@@ -50,17 +60,27 @@ Ext.define('MyApp.view.TransitionWindow', {
 														xtype : 'displayfield',
 														anchor : '100%',
 														name : 'created',
-														fieldLabel : 'Bestelldatum'
+														fieldLabel : this.customfirstreport+'datum'
 													}]
 										}
 
 								]
 							}, {
-								xtype : 'PositionGrid',
-								region : 'south',
+								xtype : this.customfirstgrid,
+								region : 'center',
+								itemid: 'firstGrid',
 								flex : 1,
-								id : 'firstGrid',
-								store : firstDataStore
+								store : firstDataStore,
+								onActionClick: this.customtransitionfunction,
+								customIsFirstGrid: true
+							},
+							{
+								xtype : this.customsecondgrid,
+								region : 'south',
+								itemid: 'secondGrid',
+								flex : 1,
+								store : secondDataStore,
+								customIsFirstGrid: false
 							}
 
 					]
@@ -68,11 +88,15 @@ Ext.define('MyApp.view.TransitionWindow', {
 
 		me.callParent(arguments);
 	},
-	loadAndShow : function(record){
+	loadAndShow : function(record) {
 		this.show();
 		this.down('form').getForm().loadRecord(record);
-		this.down('grid').getStore().filters.removeAll();
-		this.down('grid').getStore().filter(this.customid,record.data.orderNumber);
+		this.down('grid[itemid=firstGrid]').getStore().filters.removeAll();
+		this.down('grid[itemid=firstGrid]').getStore().filter(this.customid,
+				record.data.orderNumber);
+		this.down('grid[itemid=secondGrid]').getStore().filters.removeAll();
+		this.down('grid[itemid=secondGrid]').getStore().filter(this.customid,
+				record.data.orderNumber);
 	}
 
 });

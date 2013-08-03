@@ -1,5 +1,8 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +33,7 @@ public class OrderController extends JsonController<Order> {
 
 	@Override
 	protected Page<Order> findByFilterable(PageRequest pageRequest,
-			JsonFilter filter) {
+			HashMap<String, String> filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

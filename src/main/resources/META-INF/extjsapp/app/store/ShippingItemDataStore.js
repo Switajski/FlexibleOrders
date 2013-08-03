@@ -15,6 +15,7 @@
 
 Ext.define('MyApp.store.ShippingItemDataStore', {
     extend: 'MyApp.store.BestellpositionDataStore',
+    alias : 'widget.ShippingItemDataStore',
 	customurl: '/FlexibleOrders/shippingitems/json/',
 	custommodel: 'MyApp.model.ShippingItemData',
 	customstoreid: 'ShippingItemDataStore',

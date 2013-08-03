@@ -19,6 +19,8 @@
         <field:input field="shippingCity" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCity" required="true" z="KhxXFChQHX3b/aSvDl17NvU13BA="/>
         <field:input field="shippingPostalCode" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingPostalCode" required="true" z="26Gwy9ZBMONmU4TrLYrRfHI0EW4="/>
         <field:select field="shippingCountry" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCountry" items="${countrys}" path="countrys" required="true" z="YTZhrQPFxZzCgshGrOIah7YnnUg="/>
+        <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="sqdoxjnIX5ebR/Ne7CiT+ijT+Wc="/>
+        <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" itemValue="id" items="${products}" path="/products" required="true" z="FUSVEx8FjHQtfZe+jpbB99wKV3M="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_ShippingItem" render="${not empty dependencies}" z="9L9foR1QvjkdI5rGm5N8sF2GmWs="/>
 </div>

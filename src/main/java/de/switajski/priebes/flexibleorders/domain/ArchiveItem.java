@@ -24,15 +24,17 @@ public class ArchiveItem extends Item {
 	/**
      * The only way to create a ArchiveItem is to generate it from a IvoiceItem.
      * This is done by {@link IvoiceItem#complete} 
+	 * @param quantity 
      * 
      * @param orderItem
      * @param transmitToSupplier
      */
-    public ArchiveItem(InvoiceItem invoiceItem, ShippingItem shippingItem) {
+    public ArchiveItem(InvoiceItem invoiceItem, ShippingItem shippingItem, int quantity) {
 		historize(invoiceItem);
 		
 		setCreated(new Date());
 		setStatus(Status.COMPLETED);
+		setQuantity(quantity);
 		
 		Customer customer = shippingItem.getCustomer();
 		setShippingCity(customer.getCity());

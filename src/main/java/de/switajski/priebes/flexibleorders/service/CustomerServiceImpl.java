@@ -105,17 +105,17 @@ extends JpaRepositoryToServiceAdapter<Customer> implements CustomerService {
 
 	@Override
 	public List<ShippingItem> findConfirmedItems(Customer customer) {
-		return shippingItemRepository.findByCustomerAndStatus(customer, Status.ORDERED);
+		return shippingItemRepository.findByCustomerAndStatus(customer, Status.CONFIRMED);
 	}
 
 	@Override
 	public List<InvoiceItem> findShippedItems(Customer customer) {
-		return invoiceItemRepository.findByCustomerAndStatus(customer, Status.ORDERED);
+		return invoiceItemRepository.findByCustomerAndStatus(customer, Status.SHIPPED);
 	}
 
 	@Override
 	public List<ArchiveItem> findCompletedItems(Customer customer) {
-		return archiveItemRepository.findByCustomerAndStatus(customer, Status.ORDERED);
+		return archiveItemRepository.findByCustomerAndStatus(customer, Status.COMPLETED);
 	}
 
 }

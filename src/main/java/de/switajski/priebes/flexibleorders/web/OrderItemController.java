@@ -26,10 +26,12 @@ import de.switajski.priebes.flexibleorders.service.ProductService;
 @RooWebScaffold(path = "orderitems", formBackingObject = OrderItem.class)
 public class OrderItemController extends JsonController<OrderItem>{
 
+	private static final String ID = "orderNumber";
+	private static final String FILTER_STATUS = "ordered";
 	private ProductService productService;
 	private OrderItemService orderItemService;
 	private CustomerService customerService;
-	
+
 	@Autowired
 	public OrderItemController(OrderItemService readService,
 			ProductService productService,
@@ -40,17 +42,17 @@ public class OrderItemController extends JsonController<OrderItem>{
 		this.orderItemService = orderItemService;
 		this.customerService = customerService;
 	}
-	
+
 	@RequestMapping(value="/json", params="orderNumber", headers = "Accept=application/json")
 	public @ResponseBody JsonObjectResponse listByOrderNumber(
-            @RequestParam(value = "orderNumber", required = true) Long orderNumber) {
+			@RequestParam(value = "orderNumber", required = true) Long orderNumber) {
 		JsonObjectResponse response = new JsonObjectResponse();
 		List<OrderItem> entities =  orderItemService.findByOrderNumber(orderNumber);
 		response.setMessage("All order items retrieved.");
 		response.setSuccess(true);
 		response.setTotal(entities.size());
 		response.setData(entities);
-		
+
 		return response;
 	}
 
@@ -61,7 +63,7 @@ public class OrderItemController extends JsonController<OrderItem>{
 		if (entity.getPriceNet()==null && p.getPriceNet()==null) 
 			throw new IllegalArgumentException("Price of product and order item is not set!");
 		entity.setProduct(p);
-		
+
 		Customer customer = customerService.find(entity.getCustomer().getId());
 		entity.setCustomer(customer);
 	}
@@ -69,14 +71,20 @@ public class OrderItemController extends JsonController<OrderItem>{
 	@Override
 	protected Page<OrderItem> findByFilterable(PageRequest pageRequest,
 			HashMap<String, String> filter) {
-		if (filter.get("OrderNumber")!=null) 
-		 	if (filter.get("OrderNumber")=="") 
-		 		return null;
-		 	else
-		 		return this.orderItemService.findByOrderNumber(Long.parseLong(filter.get("OrderNumber")), pageRequest);
-		else if (filter.get("Status")=="ORDERED")
-			return orderItemService.findOrdered(pageRequest);
-		else return null;
+		if (filter.get("status") != null)
+			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
+				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
+				return customerService.findOrderedItems(customer, pageRequest);			
+			}
+		if (filter.get(ID)!=null && filter.get("status")==null) 
+			if (filter.get(ID)!="") 
+				return this.orderItemService.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
+		if (filter.get("status")!=null)
+			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
+				Page<OrderItem> orderItems = orderItemService.findOrdered(pageRequest);
+				return orderItems;
+			}
+		return null;
 	}
 
 }

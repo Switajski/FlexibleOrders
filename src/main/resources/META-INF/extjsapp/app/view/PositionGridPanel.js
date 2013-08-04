@@ -55,14 +55,14 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						}
 					}, {
 						xtype : 'gridcolumn',
-						dataIndex : 'invoiceNumber',
-						width : 75,
-						text : 'Rechnung'
-					}, {
-						xtype : 'gridcolumn',
 						dataIndex : 'orderConfirmationNumber',
 						width : 75,
 						text : 'AB'
+					},{
+						xtype : 'gridcolumn',
+						dataIndex : 'invoiceNumber',
+						width : 75,
+						text : 'Rechnung'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantity',

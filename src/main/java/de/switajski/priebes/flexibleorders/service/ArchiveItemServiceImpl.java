@@ -33,4 +33,11 @@ public class ArchiveItemServiceImpl extends JpaRepositoryToServiceAdapter<Archiv
 	public Page<ArchiveItem> findCompleted(Pageable pageable){
 		return ((ItemRepository<ArchiveItem>) this.jpaRepository).findByStatus(Status.COMPLETED, pageable);
 	}
+
+	@Override
+	public Page<ArchiveItem> findByAccountNumber(Long accountNumber,
+			Pageable pageable) {
+		((ItemRepository<ArchiveItem>) this.jpaRepository).findByAccountNumber(accountNumber, pageable);
+		return null;
+	}
 }

@@ -2,6 +2,8 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.HashMap;
 import java.util.List;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RooWebScaffold(path = "shippingitems", formBackingObject = ShippingItem.class)
 public class ShippingItemController extends JsonController<ShippingItem> {
 
-	ShippingItemService shippingItemService;
-	
+	private static final String FILTER_STATUS = "confirmed";
+	private static final String ID = "orderConfirmationNumber";
+	private ShippingItemService shippingItemService;
+
 	@Autowired
 	public ShippingItemController(
 			ShippingItemService crudServiceAdapter) {
@@ -31,16 +35,25 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 	@Override
 	protected Page<ShippingItem> findByFilterable(PageRequest pageRequest,
 			HashMap<String, String> filter) {
-		if (filter.get("OrderNumber")!=null && filter.get("OrderNumber") != "") 
-			return shippingItemService.findByOrderNumber(Long.parseLong(filter.get("OrderNumber")), pageRequest);
-		else if (filter.get("Status")=="ORDERED")
-			return shippingItemService.findConfirmed(pageRequest);
-		else return null;
+		if (filter.get("status") != null)
+			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
+				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
+				return customerService.findConfirmedItems(customer, pageRequest);			
+			}
+		if (filter.get(ID)!=null && filter.get("status")==null) 
+			if (filter.get(ID)!="") 
+				return this.shippingItemService.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
+		if (filter.get("status")!=null)
+			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
+				Page<ShippingItem> items = shippingItemService.findConfirmed(pageRequest);
+				return items;
+			}
+		return null;
 	}
 
 	@Override
 	protected void resolveDependencies(ShippingItem entity) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

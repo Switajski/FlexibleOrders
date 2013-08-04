@@ -114,7 +114,9 @@ Ext.define('MyApp.controller.MyController', {
         this.getBpWindowView().create();
         this.getErstelleBestellungWindowView().create();
         this.getStore('BestellpositionDataStore').filter('status', 'ordered');
-        this.getStore('BestellpositionDataStore').load();
+        this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
+        this.getStore('InvoiceItemDataStore').filter('status', 'shipped');
+        this.getStore('ArchiveItemDataStore').filter('status', 'completed');
     },
 
     onSelectionchange: function(view, selections, options) {
@@ -448,14 +450,29 @@ Ext.define('MyApp.controller.MyController', {
 	onCustomerChange: function(field, newValue, oldValue, eOpts){
 		console.log('onCustomerChange');
 	//	var allGrids = Ext.ComponentQuery.query('PositionGrid');
-			var oiStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
+		var stores = new Array();
+			stores[0] = Ext.data.StoreManager.lookup('BestellpositionDataStore');
+			stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
+			stores[2] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
+			stores[3] = Ext.data.StoreManager.lookup('ArchiveItemDataStore');
 			
+			stores.forEach(function(store) {
+				found = false;
+				store.filters.items.forEach(function(filter) {
+					if (filter.property=='customer'){
+						filter.value=newValue;
+						found=true;
+						store.load();
+					}
+				});
+				if (!found)
+				store.filter("customer",newValue);
+			});
+			/*this.getStore('BestellpositionDataStore').filter('status', 'ordered');
+        	this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
+        	this.getStore('InvoiceItemDataStore').filter('status', 'shipped');
+        	this.getStore('ArchiveItemDataStore').filter('status', 'completed');*/
 			
-			oiStore.getProxy().setExtraParam(
-				{customer:newValue,
-				itemType:'ordered'}
-				);
-			oiStore.sync();
-	}
+		}
     
  });

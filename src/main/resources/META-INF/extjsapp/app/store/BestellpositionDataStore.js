@@ -36,10 +36,6 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     destroy: this.customurl,
                     create: this.customurl
                 },
-                extraParams:{
-                	customer:1,
-					itemType:'ordered'
-                },
                 headers: {
                     Accept: 'application/json'
                 },

@@ -10,7 +10,6 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.web.InvoiceItemController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -34,9 +33,6 @@ privileged aspect InvoiceItemController_Roo_Controller {
     
     @Autowired
     InvoiceItemRepository InvoiceItemController.invoiceItemRepository;
-    
-    @Autowired
-    CustomerService InvoiceItemController.customerService;
     
     @Autowired
     ProductRepository InvoiceItemController.productRepository;

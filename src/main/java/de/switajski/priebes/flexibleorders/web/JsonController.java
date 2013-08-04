@@ -70,8 +70,13 @@ public abstract class JsonController<T> {
 			filterList = deserializeFiltersJson(filters);
 			entities = findByFilterable(new PageRequest(page-1, limit), filterList);
 		}
-		response.setData(entities.getContent());
-		response.setTotal(entities.getTotalElements());
+		if (entities!=null){
+			response.setTotal(entities.getTotalElements());
+			response.setData(entities.getContent());			
+		}
+		else {
+			response.setTotal(0l);
+		}
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
 
@@ -93,7 +98,8 @@ public abstract class JsonController<T> {
 			JsonQueryFilter[] qFilter;
 			qFilter = mapper.readValue(filters, typedArray.getClass());
 			
-			jsonFilters.put(qFilter[0].getProperty(), qFilter[0].getValue());
+			for (JsonQueryFilter f:qFilter)
+				jsonFilters.put(f.getProperty(), f.getValue());
 		}else{
 
 			// filters = [{"type":"string","value":"13","field":"orderNumber"}]

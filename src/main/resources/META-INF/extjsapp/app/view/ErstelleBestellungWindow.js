@@ -30,8 +30,8 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 							// anchor: '100%',
 							fieldLabel : 'Bestellnr',
 							allowBlank : false,
-							name : 'orderNumber',
-							valueField : 'orderNumber',
+							name : 'ordernumber',
+							valueField : 'ordernumber',
 							listeners : {
 								change : this.onOrderNumberChange
 							}
@@ -68,7 +68,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 		console.log(data);
 		// Ext.data.StoreManager.lookup('BestellpositionDataStore').filters
 		store.filters.removeAll();
-		store.filter("orderNumber", data);
+		store.filter("ordernumber", data);
 	},
 	onSelectionchange : function(view, selections, options) {
 		// TODO: löschen und Hinzufügen Button der Bps de/aktivieren

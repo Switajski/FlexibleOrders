@@ -10,7 +10,6 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.web.ArchiveItemController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -34,9 +33,6 @@ privileged aspect ArchiveItemController_Roo_Controller {
     
     @Autowired
     ArchiveItemRepository ArchiveItemController.archiveItemRepository;
-    
-    @Autowired
-    CustomerService ArchiveItemController.customerService;
     
     @Autowired
     ProductRepository ArchiveItemController.productRepository;

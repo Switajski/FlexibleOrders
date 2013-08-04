@@ -27,5 +27,11 @@ public class ShippingItemServiceImpl extends JpaRepositoryToServiceAdapter<Shipp
 	public Page<ShippingItem> findConfirmed(Pageable pageable){
 		return ((ItemRepository<ShippingItem>) jpaRepository).findByStatus(Status.CONFIRMED, pageable);
 	}
+
+	@Override
+	public Page<ShippingItem> findByOrderConfirmationNumber(
+			Long orderConfirmationNumber, Pageable pageable) {
+		return ((ItemRepository<ShippingItem>) jpaRepository).findByOrderConfirmationNumber(orderConfirmationNumber, pageable);
+	}
 	
 }

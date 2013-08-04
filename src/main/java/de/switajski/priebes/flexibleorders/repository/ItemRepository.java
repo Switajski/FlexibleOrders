@@ -17,11 +17,11 @@ public interface ItemRepository<T extends Item> {
 	Page<T> findByOrderConfirmationNumber(Long OrderConfirmationNumber, Pageable pageable);
 	List<T> findByOrderConfirmationNumber(Long OrderConfirmationNumber);
 	
-	Page<T> findByInvoiceNumber(Long InvoiceNumber, Status status, Pageable pageable);
-	List<T> findByInvoiceNumber(Long InvoiceNumber, Status status);
+	Page<T> findByInvoiceNumber(Long InvoiceNumber, Pageable pageable);
+	List<T> findByInvoiceNumber(Long InvoiceNumber);
 	
-	Page<T> findByAccountNumber(Long AccountNumber, Status status, Pageable pageable);
-	List<T> findByAccountNumber(Long AccountNumber, Status status);
+	Page<T> findByAccountNumber(Long AccountNumber, Pageable pageable);
+	List<T> findByAccountNumber(Long AccountNumber);
 	
 	List<T> findByCustomer(Customer customer);
 	Page<T> findByCustomer(Customer customer, Pageable pageable);

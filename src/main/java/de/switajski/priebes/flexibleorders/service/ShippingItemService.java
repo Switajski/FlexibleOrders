@@ -9,4 +9,5 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 public interface ShippingItemService extends CrudServiceAdapter<ShippingItem>{
 	Page<ShippingItem> findByOrderNumber(Long orderNumber, Pageable pageable);
 	Page<ShippingItem> findConfirmed(Pageable pageable);
+	Page<ShippingItem> findByOrderConfirmationNumber(Long orderConfirmationNumber, Pageable pageable);
 }

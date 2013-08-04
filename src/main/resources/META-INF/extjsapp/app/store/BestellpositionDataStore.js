@@ -7,10 +7,6 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
     requires: [
         'MyApp.model.BestellpositionData'
     ],
-    extraParams:{
-                	customer:1,
-					itemType:'ordered'
-    },
     alias: 'widget.BestellpositionDataStore',
 
     constructor: function(cfg) {

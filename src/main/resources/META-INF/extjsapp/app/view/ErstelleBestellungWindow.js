@@ -30,14 +30,14 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 							// anchor: '100%',
 							fieldLabel : 'Bestellnr',
 							allowBlank : false,
-							name : 'ordernumber',
-							valueField : 'ordernumber',
-							listeners : {
+							name : 'orderNumber',
+							valueField : 'orderNumber'
+							/*listeners : {
 								change : this.onOrderNumberChange
-							}
-						}, {
+							}*/
+						},/* {
 							xtype : 'customercombobox'
-						}, {
+						},*/ {
 							xtype : 'BestellpositionGrid',
 							id : 'BestellpositionGrid',
 							store : 'BestellpositionDataStore',

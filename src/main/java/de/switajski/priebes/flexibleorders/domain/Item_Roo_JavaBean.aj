@@ -25,10 +25,7 @@ privileged aspect Item_Roo_JavaBean {
         this.priceNet = priceNet;
     }
     
-    public Status Item.getStatus() {
-        return this.status;
-    }
-    
+        
     public String Item.getProductName() {
         return this.productName;
     }

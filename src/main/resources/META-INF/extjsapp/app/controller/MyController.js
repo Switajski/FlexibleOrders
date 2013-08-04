@@ -250,46 +250,7 @@ Ext.define('MyApp.controller.MyController', {
         if (this.debug) console.log('Bestellung geloescht!');
     },*/
     
-    bestaetigeAuftragDialog: function(btn, e, eOpts) {
-        console.log('bestaetigeAuftragDialog');
-    	Ext.MessageBox.prompt('Versandkosten', 'Bitte Versandkosten netto eingeben:',
-    			Ext.Function.bind(this.bestaetigeAuftrag, null, [this.activeBestellnr], 2));
-    },
-    
-    bestaetigeAuftrag: function(status, versandkosten, activeBestellnr){
-    	console.log('/leanorders/bestellungs/bestaetigeAuftrag/'
-    			+activeBestellnr
-    			+" Parameter2:"+ versandkosten
-    			+" Parameter3:"+ activeBestellnr);
-    	var request = Ext.Ajax.request({
-    	    url: '/leanorders/bestellungs/bestaetigeAuftrag/'+activeBestellnr,
-    	    params: {
-    	        versandNetto: versandkosten
-    	    },
-    	    success: function(response){
-    	        var text = response.responseText;
-    	    },
-    	    failure: function(response){
-    	    	//TODO: Fehlerhandling vereinheitlichen
-    	    	Ext.Msg.alert('Fehler', response.status + response.text);
-    	    }
-    	});
-    	if (this.debug) console.log('bestaetigeAuftrag');
-
-    	//Reload GridPanel
-    	MyApp.getApplication().getController('MyController').sleep(500);
-    	Ext.data.StoreManager.lookup('BestellungDataStore').reload();
-    	grid = Ext.getCmp('BestellungGrid');
-    	grid.refresh();
-    	Ext.getCmp('AbBestellungButton').setDisabled(true);
-    	Ext.getCmp('RechnungBestellungButton').setDisabled(false);
-    	Ext.getCmp('AbPdf').setDisabled(false);
-    	//Falsch, da Status des Grid-Records immer noch auf Auftragbestaetigt ist
-    	/*grid.fireEvent('selectionchange', 
-    			grid.getSelectionModel(), 
-    			grid.getSelectionModel().getSelection()
-    			);*/
-    },
+   
     
     liefereDialog: function(btn, e, eOpts){
     	Ext.MessageBox.confirm('Best&auml;tigen', 'Auftrag sicher liefern?', 
@@ -419,16 +380,21 @@ Ext.define('MyApp.controller.MyController', {
     	    }
     	  }
     	},
-	confirm: function(record){
-		//TODO: send record.data.product + record.data.quantity
+	confirm: function(event, ocnr,record){
 		console.log(record.data.product + " " + record.data.quantity + " " + record.data.orderNumber);
+		
+		// get ocnr aus untererem Grid
+		//var secondGrid = Ext.ComponentQuery.query('panel[itemid=secondGrid]')[0];
+		//if (secondGrid = grid.getStore().totalCount==0)
+		
 		
 		var request = Ext.Ajax.request({
     	    url: '/FlexibleOrders/transitions/json',
     	    params: {
     	        productNumber: record.data.product,
     	        quantity: record.data.quantity,
-    	        customer: record.data.customer
+    	        customer: record.data.customer,
+    	        orderConfirmationNumber: ocnr
     	    },
     	    success: function(response){
     	        var text = response.responseText;
@@ -444,12 +410,46 @@ Ext.define('MyApp.controller.MyController', {
     	MyApp.getApplication().getController('MyController').sleep(500);
 		var allGrids = Ext.ComponentQuery.query('PositionGrid');
 		allGrids.forEach(function(grid) {
-			grid.getStore().sync();
+			grid.getStore().load();
 		});		
 	},
+	
+	 bestaetigeAuftragDialog: function(btn, e, eOpts) {
+        console.log('bestaetigeAuftragDialog');
+    	Ext.MessageBox.prompt('Versandkosten', 'Bitte Versandkosten netto eingeben:',
+    			Ext.Function.bind(this.bestaetigeAuftrag, null, [this.activeBestellnr], 2));
+    },
+    
+    bestaetigeAuftrag: function(status, versandkosten, activeBestellnr){
+    	console.log('/leanorders/bestellungs/bestaetigeAuftrag/'
+    			+activeBestellnr
+    			+" Parameter2:"+ versandkosten
+    			+" Parameter3:"+ activeBestellnr);
+    	var request = Ext.Ajax.request({
+    	    url: '/leanorders/bestellungs/bestaetigeAuftrag/'+activeBestellnr,
+    	    params: {
+    	        versandNetto: versandkosten
+    	    },
+    	    success: function(response){
+    	        var text = response.responseText;
+    	    },
+    	    failure: function(response){
+    	    	//TODO: Fehlerhandling vereinheitlichen
+    	    	Ext.Msg.alert('Fehler', response.status + response.text);
+    	    }
+    	});
+    	if (this.debug) console.log('bestaetigeAuftrag');
+
+    	//Reload GridPanel
+    	MyApp.getApplication().getController('MyController').sleep(500);
+    	Ext.data.StoreManager.lookup('BestellungDataStore').reload();
+    	grid = Ext.getCmp('BestellungGrid');
+    	grid.refresh();
+    	
+    },
+	
 	onCustomerChange: function(field, newValue, oldValue, eOpts){
 		console.log('onCustomerChange');
-	//	var allGrids = Ext.ComponentQuery.query('PositionGrid');
 		var stores = new Array();
 			stores[0] = Ext.data.StoreManager.lookup('BestellpositionDataStore');
 			stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
@@ -465,13 +465,11 @@ Ext.define('MyApp.controller.MyController', {
 						store.load();
 					}
 				});
-				if (!found)
-				store.filter("customer",newValue);
+				if (!found){
+					store.filter("customer",newValue);
+					//store.load();
+				}
 			});
-			/*this.getStore('BestellpositionDataStore').filter('status', 'ordered');
-        	this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
-        	this.getStore('InvoiceItemDataStore').filter('status', 'shipped');
-        	this.getStore('ArchiveItemDataStore').filter('status', 'completed');*/
 			
 		}
     

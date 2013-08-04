@@ -29,8 +29,10 @@ public class ArchiveItem extends Item {
      * @param orderItem
      * @param transmitToSupplier
      */
-    public ArchiveItem(InvoiceItem invoiceItem, ShippingItem shippingItem, int quantity) {
-		historize(invoiceItem);
+    public ArchiveItem(InvoiceItem invoiceItem, ShippingItem shippingItem, int quantity, long accountNumber) {
+		setAccountNumber(accountNumber);
+    	
+    	historize(invoiceItem);
 		
 		setCreated(new Date());
 		setStatus(Status.COMPLETED);

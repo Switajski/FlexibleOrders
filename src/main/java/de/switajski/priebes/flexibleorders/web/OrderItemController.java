@@ -26,7 +26,7 @@ import de.switajski.priebes.flexibleorders.service.ProductService;
 @RooWebScaffold(path = "orderitems", formBackingObject = OrderItem.class)
 public class OrderItemController extends JsonController<OrderItem>{
 
-	private static final String ID = "orderNumber";
+	private static final String ID = "ordernumber";
 	private static final String FILTER_STATUS = "ordered";
 	private ProductService productService;
 	private OrderItemService orderItemService;

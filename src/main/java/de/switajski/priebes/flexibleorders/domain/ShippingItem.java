@@ -116,9 +116,10 @@ public class ShippingItem extends Item {
 	 * @param quantity 
      * @param transmitToSupplier
      */
-    public ShippingItem(OrderItem orderItem, int quantity, Boolean transmitToSupplier) {
+    public ShippingItem(OrderItem orderItem, int quantity, Boolean transmitToSupplier, long orderConfirmationNumber) {
     	if (transmitToSupplier) throw new UnsupportedOperationException("Implement me!");
     	
+    	this.setOrderConfirmationNumber(orderConfirmationNumber);
     	historize(orderItem);
     	setTransmitToSupplier(transmitToSupplier);
 		setCreated(new Date());
@@ -135,14 +136,15 @@ public class ShippingItem extends Item {
 		setShippingStreet(customer.getStreet());
 	}
 
-	public InvoiceItem deliver(int quantity) {
-		InvoiceItem ii = new InvoiceItem(this, quantity);
+	public InvoiceItem deliver(int quantity, long invoiceNumber) {
+		InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
+		this.setInvoiceNumber(invoiceNumber);
 		this.setStatus(Status.SHIPPED);
 		return ii;
 	}
 	
-	public InvoiceItem deliver(){
-		return this.deliver(this.getQuantity());
+	public InvoiceItem deliver(long invoiceNumber){
+		return this.deliver(this.getQuantity(), invoiceNumber);
 	}
 
 	@Override

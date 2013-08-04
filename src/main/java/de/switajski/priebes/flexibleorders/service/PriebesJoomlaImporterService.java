@@ -353,15 +353,15 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					orderItemRepository.save(oi);
 
 					if (oi.getOrderConfirmationNumber()!=null){
-						ShippingItem si = oi.confirm(false, oi.getQuantity());
+						ShippingItem si = oi.confirm(false, oi.getQuantity(),oi.getOrderConfirmationNumber());
 						shippingItemRepo.save(si);
 						orderItemRepository.save(oi);
 						if (oi.getInvoiceNumber()!=null){
-							InvoiceItem ii = si.deliver(si.getQuantity());
+							InvoiceItem ii = si.deliver(si.getQuantity(),oi.getInvoiceNumber());
 							invoiceRepo.save(ii);
 							orderItemRepository.save(oi);
 							if (oi.getAccountNumber()!=null){
-								ArchiveItem ai = ii.complete(si, si.getQuantity());
+								ArchiveItem ai = ii.complete(si, si.getQuantity(),oi.getAccountNumber());
 								archiveRepo.save(ai);
 								invoiceRepo.save(ii);
 								orderItemRepository.save(oi);

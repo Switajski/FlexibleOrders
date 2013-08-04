@@ -19,9 +19,9 @@ import de.switajski.priebes.flexibleorders.report.Order;
  */
 public interface TransitionService {
 
-	List<ShippingItem> confirm(Customer customer, Product product, int quantity, boolean toSupplier);
+	List<ShippingItem> confirm(Customer customer, Product product, int quantity, boolean toSupplier, long orderConfirmationNumber);
 	
-	List<InvoiceItem> deliver(Customer customer, Product product, int quantity);
+	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber);
 	
-	List<ArchiveItem> complete(Customer customer, Product product, int quantity);
+	List<ArchiveItem> complete(Customer customer, Product product, int quantity, long accountNumber);
 }

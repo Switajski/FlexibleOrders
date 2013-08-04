@@ -36,14 +36,15 @@ public class OrderItem extends Item {
      * @param toSupplier
      * @return
      */
-	public ShippingItem confirm(boolean toSupplier, int quantity) {
-		ShippingItem si = new ShippingItem(this, quantity, toSupplier);
+	public ShippingItem confirm(boolean toSupplier, int quantity, long orderConfirmationNumber) {
+		setOrderConfirmationNumber(orderConfirmationNumber);
+		ShippingItem si = new ShippingItem(this, quantity, toSupplier, orderConfirmationNumber);
 		this.setStatus(Status.CONFIRMED);
 		return si;
 	}
 	
-	public ShippingItem confirm(boolean toSupplier) {
-		return this.confirm(toSupplier, this.getQuantity());
+	public ShippingItem confirm(boolean toSupplier, long orderConfirmationNumber) {
+		return this.confirm(toSupplier, this.getQuantity(), orderConfirmationNumber);
 	}
 
 	@Override

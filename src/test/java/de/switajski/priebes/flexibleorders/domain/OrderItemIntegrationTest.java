@@ -28,16 +28,18 @@ public class OrderItemIntegrationTest {
 	@Test
 	public void shouldConfirm(){
 		boolean toSupplier = false;
+		long orderConfirmationNumber = 1345l;
 		
 		OrderItem orderItem = dod.getSpecificOrderItem(12);
-		ShippingItem shippingItem = orderItem.confirm(toSupplier);
+		ShippingItem shippingItem = orderItem.confirm(toSupplier, orderConfirmationNumber);
 		shippingItemRepository.saveAndFlush(shippingItem);
-		
+		orderItemRepository.saveAndFlush(orderItem);
 //		pji.importCustomers();
 				
 		List<ShippingItem> sis = shippingItemRepository.findByOrderNumber(shippingItem.getOrderNumber());
 		
 		assertTrue(!sis.isEmpty());
+		assertTrue(orderItemRepository.findByOrderConfirmationNumber(orderConfirmationNumber).get(0).equals(orderItem));
 	}
 	
 	@Transactional

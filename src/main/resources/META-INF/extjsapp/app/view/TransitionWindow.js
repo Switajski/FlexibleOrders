@@ -14,12 +14,12 @@ Ext.define('MyApp.view.TransitionWindow', {
 	requires : ['MyApp.view.BestellpositionGridPanel'],
 	height : 500,
 	width : 820,
-	closeAction : 'destroy',
+	closeAction : 'hide',
 	title : 'TransitionWindow',
 	initComponent : function() {
 		var me = this;
-		var firstDataStore = Ext.create(this.customfirststore, {});
-		var secondDataStore = Ext.create(this.customsecondstore, {});
+		//var firstDataStore = Ext.create(this.customfirststore, {id:''});
+		var secondDataStore = Ext.create(this.customsecondstore, {id:'andereId'});
 		//TODO: über custom transitionFunction actionmethode des PositionGripanel überschreiben
 		
 		Ext.ComponentQuery.query('');
@@ -70,7 +70,7 @@ Ext.define('MyApp.view.TransitionWindow', {
 								region : 'center',
 								itemid: 'firstGrid',
 								flex : 1,
-								store : firstDataStore,
+								store : this.customfirststore,
 								onActionClick: this.customtransitionfunction,
 								customIsFirstGrid: true
 							},
@@ -90,13 +90,13 @@ Ext.define('MyApp.view.TransitionWindow', {
 	},
 	loadAndShow : function(record) {
 		this.show();
-		this.down('form').getForm().loadRecord(record);
+		/*this.down('form').getForm().loadRecord(record);
 		this.down('grid[itemid=firstGrid]').getStore().filters.removeAll();
 		this.down('grid[itemid=firstGrid]').getStore().filter(this.customid,
 				record.data.orderNumber);
 		this.down('grid[itemid=secondGrid]').getStore().filters.removeAll();
 		this.down('grid[itemid=secondGrid]').getStore().filter(this.customid,
-				record.data.orderNumber);
+				record.data.orderNumber);*/
 	}
 
 });

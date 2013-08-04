@@ -51,18 +51,19 @@ public class TransitionController {
 	public @ResponseBody JsonObjectResponse confirm(
 			@RequestParam(value = "customer", required = true) long customerId,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
-			@RequestParam(value = "quantity", required = true) int quantity, 
+			@RequestParam(value = "quantity", required = true) int quantity,
+			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
 			@RequestParam(value = "toSupplier", required = false, defaultValue="false") boolean toSupplier) 
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
 		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
-				+ " quantity:" + quantity);
+				+ " quantity:" + quantity + " orderConfirmationNumber:"+orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
 		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		List<ShippingItem> shippingItems = transitionService.confirm(customer, product, quantity, toSupplier);
+		List<ShippingItem> shippingItems = transitionService.confirm(customer, product, quantity, toSupplier, orderConfirmationNumber);
 		for (ShippingItem shippingItem:shippingItems)
 			shippingItemService.save(shippingItem);
 		response.setData(shippingItems);

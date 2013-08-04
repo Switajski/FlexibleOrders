@@ -45,10 +45,11 @@ public class TransitionServiceImpl implements TransitionService {
 		this.customerService = customerService;
 	}
 	
+	@Transactional
 	@Override
-	@RequestMapping(value="/json", method=RequestMethod.POST)
+//	@RequestMapping(value="/json", method=RequestMethod.POST)
 	public List<ShippingItem> confirm(Customer customer, Product product,
-			int quantity, boolean toSupplier) {
+			int quantity, boolean toSupplier, long orderConfirmationNumber) {
 		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
 		List<OrderItem> traversedItems = new ArrayList<OrderItem>();
 		
@@ -66,13 +67,18 @@ public class TransitionServiceImpl implements TransitionService {
 				else if (quantityIsSufficient(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
 					if (oi.getStatus()!=Status.ORDERED)
 					shippingItems.add(oi.confirm(toSupplier, oi.getQuantity()));
+					orderItemRepository.saveAndFlush(oi);
 					
 				}
 			} else {
 				shippingItems.add(oi.confirm(toSupplier, quantity));
+				orderItemRepository.saveAndFlush(oi);
 			}
 		}
 		
+		for (ShippingItem shippingItem:shippingItems){
+			shippingItemRepository.saveAndFlush(shippingItem);
+		}
 		return shippingItems;
 	}
 	
@@ -92,14 +98,14 @@ public class TransitionServiceImpl implements TransitionService {
 	
 	@Override
 	public List<InvoiceItem> deliver(Customer customer, Product product,
-			int quantity) {
+			int quantity, long invoiceNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<ArchiveItem> complete(Customer customer, Product product,
-			int quantity) {
+			int quantity, long accountNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}

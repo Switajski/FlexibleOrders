@@ -64,7 +64,7 @@ public class InvoicePdfViewTest {
 		
 		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
 		for (OrderItem orderItem:order.getItems()){
-			ShippingItem si = orderItem.confirm(false);
+			ShippingItem si = orderItem.confirm(false, 1235l);
 			shippingItemService.saveShippingItem(si);
 			shippingItems.add(si);
 		}
@@ -72,7 +72,7 @@ public class InvoicePdfViewTest {
 		
 		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
 		for (ShippingItem shippingItem:orderConfirmation.getItems()){
-			InvoiceItem ii = shippingItem.deliver();
+			InvoiceItem ii = shippingItem.deliver(2635l);
 			invoiceItemService.saveInvoiceItem(ii);
 			invoiceItems.add(ii);
 		}

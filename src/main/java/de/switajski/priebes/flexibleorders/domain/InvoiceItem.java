@@ -53,7 +53,9 @@ public class InvoiceItem extends Item {
      * @param orderItem
      * @param transmitToSupplier
      */
-    public InvoiceItem(ShippingItem shippingItem, int quantity) {
+    public InvoiceItem(ShippingItem shippingItem, int quantity, long invoiceNumber) {
+    	setInvoiceNumber(invoiceNumber);
+    	
     	historize(shippingItem);
     	setCreated(new Date());
     	setStatus(Status.SHIPPED);
@@ -72,9 +74,10 @@ public class InvoiceItem extends Item {
     public InvoiceItem(){
     }
     
-    public ArchiveItem complete(ShippingItem shippingItem, int quantity){
-    	ArchiveItem ai = new ArchiveItem(this, shippingItem, quantity);
-    	this.setStatus(Status.COMPLETED);
+    public ArchiveItem complete(ShippingItem shippingItem, int quantity, long accountNumber){
+    	ArchiveItem ai = new ArchiveItem(this, shippingItem, quantity, accountNumber);
+    	setAccountNumber(accountNumber);
+    	setStatus(Status.COMPLETED);
     	return ai;
     }
 

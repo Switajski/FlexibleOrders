@@ -69,8 +69,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 					forceSelection : true,
 					queryMode : 'local',
 					store : 'ArtikelDataStore',
-					tpl : Ext
-							.create(
+					tpl : Ext.create(
 									'Ext.XTemplate',
 									'<tpl for=".">',
 									'<div class="x-boundlist-item">{productNumber} - {name}</div>',
@@ -153,8 +152,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	onAddClick : function() {
 		bestellnr = Ext.ComponentQuery.query('form[itemid="form"]')[0]
 				.getForm().getValues().orderNumber;
-		customer = Ext.ComponentQuery.query('form[itemid="form"]')[0].getForm()
-				.getValues().customer;
+		customer = Ext.getCmp('mainCustomerComboBox').getValue();
 		console.log('hierher!');
 		if (bestellnr == null || bestellnr == 0 || bestellnr == "") {
 			Ext.MessageBox.show({

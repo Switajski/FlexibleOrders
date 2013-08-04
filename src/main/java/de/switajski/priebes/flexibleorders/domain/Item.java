@@ -161,4 +161,14 @@ public abstract class Item implements Comparable<Item> {
 	public Product getProduct() {
         return this.product;
     }
+
+	public Status getStatus() {
+        return this.status;
+		/*TODO: Status von Ids abhängig machen
+		 * if (this.accountNumber!=null) return Status.COMPLETED;
+        if (this.invoiceNumber!=null) return Status.SHIPPED;
+        if (this.orderConfirmationNumber!=null) return Status.CONFIRMED;
+        if (this.orderNumber!=null) return Status.ORDERED;
+		return null;*/
+    }
 }

@@ -5,7 +5,7 @@ Ext.define('MyApp.view.CustomerComboBox', {
 	// anchor:'100%',
 	name : 'customer',
 	itemid : 'customer',
-	fieldLabel : 'Kunde',
+	//fieldLabel : 'Kunde',
 	displayField : 'shortName',
 	valueField : 'id',
 	// allowBlank: false,

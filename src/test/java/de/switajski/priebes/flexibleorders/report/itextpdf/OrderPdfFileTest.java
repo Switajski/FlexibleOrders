@@ -56,6 +56,8 @@ public class OrderPdfFileTest {
 	@Transactional
 	@Test
 	public void shouldGenerateOrder(){
+
+		
 		OrderPdfFile bpf = new OrderPdfFile();
         
 		try {

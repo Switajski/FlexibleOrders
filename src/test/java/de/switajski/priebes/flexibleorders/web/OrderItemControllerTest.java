@@ -95,6 +95,13 @@ public class OrderItemControllerTest {
 
 
 	}
+	
+	@Transactional
+	@Test
+	public void shouldDeserializeOrderItemsByJsonController() throws Exception{
+		OrderItemController oic = new OrderItemController(orderItemService, productService, orderItemService, null);
+		oic.parseJsonArray(CREATE_ORDERITEMS_REQUEST_JSON);
+	}
 
 	@Test
 	@Transactional

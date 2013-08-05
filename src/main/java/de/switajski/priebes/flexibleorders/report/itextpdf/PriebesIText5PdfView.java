@@ -275,8 +275,8 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
                 fPara.setAlignment(Element.ALIGN_CENTER);
                 fPara.setFont(FontFactory.getFont(FONT,10,Font.NORMAL));
                 fPara.setAlignment(Element.ALIGN_CENTER);
-                fPara.add("priebes OHG / Maxstraße 1 / 71636 Ludwigsburg\n" +
-                		"www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)" +
+                fPara.add("priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg\n" + 
+                		"www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)\n" +
                 		"KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390");
                 PdfPCell footerCell = new PdfPCell();
                 footerCell.addElement(fPara);

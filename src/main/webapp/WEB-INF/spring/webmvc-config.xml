@@ -104,9 +104,9 @@
 	</bean>
 	<bean class="de.switajski.priebes.flexibleorders.web.ApplicationConversionServiceFactoryBean"
 		id="applicationConversionService" />
-	<!-- <bean class="org.springframework.web.servlet.view.XmlViewResolver">
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
 		<property name="location">
 			<value>/WEB-INF/spring/pdf-views.xml</value>
 		</property>
-	</bean>-->
+	</bean>
 </beans>

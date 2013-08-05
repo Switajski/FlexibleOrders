@@ -1,7 +1,16 @@
 Ext.define('MyApp.view.DeliverWindow', {
 	extend : 'MyApp.view.TransitionWindow',
 	title : 'Auftrag liefern',
-	itemid: 'DeliverWindow'
+	itemid: 'DeliverWindow',
+	
+	customfirstreport : 'Auftragsbestaetigungs',
+	customsecondreport : 'Rechnungs',
+	
+	customfirststore : 'ShippingItemDataStore',
+	customsecondstore : 'InvoiceItemDataStore',
+
+	customfirstgrid:'ShippingItemGrid',
+	customsecondgrid:'InvoiceItemGrid',
 	/*initComponent : function() {
 		var me = this;
 		var firstDataStore = Ext.create('MyApp.store.BestellpositionDataStore',

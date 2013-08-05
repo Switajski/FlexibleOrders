@@ -3,8 +3,8 @@ Ext.define('MyApp.view.TransitionWindow', {
 	customid : 'orderNumber',
 	customfirstreport : 'Abstrakt',
 	customsecondreport : 'Abstrakt2',
-	customfirststore : 'MyApp.store.BestellpositionDataStore',
-	customsecondstore : 'MyApp.store.ShippingItemDataStore',
+	customfirststore : 'BestellpositionDataStore',
+	customsecondstore : 'ShippingItemDataStore',
 	customfirstgrid:'PositionGrid',
 	customsecondgrid:'PositionGrid',
 	customtransitionfunction: function(){
@@ -19,7 +19,7 @@ Ext.define('MyApp.view.TransitionWindow', {
 	initComponent : function() {
 		var me = this;
 		//var firstDataStore = Ext.create(this.customfirststore, {id:''});
-		var secondDataStore = Ext.create(this.customsecondstore, {id:'andereId'});
+		//var secondDataStore = Ext.create(this.customsecondstore, {id:'andereId'});
 		//TODO: über custom transitionFunction actionmethode des PositionGripanel überschreiben
 		
 		Ext.ComponentQuery.query('');
@@ -79,7 +79,7 @@ Ext.define('MyApp.view.TransitionWindow', {
 								region : 'south',
 								itemid: 'secondGrid',
 								flex : 1,
-								store : secondDataStore,
+								store : this.secondDataStore,
 								customIsFirstGrid: false
 							}
 

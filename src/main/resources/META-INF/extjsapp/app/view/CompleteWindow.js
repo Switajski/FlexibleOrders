@@ -1,7 +1,16 @@
 Ext.define('MyApp.view.CompleteWindow', {
 	extend : 'MyApp.view.TransitionWindow',
 	title : 'Rechnung archivieren',
-	itemid: 'CompleteWindow'
+	itemid: 'CompleteWindow',
+	
+	customfirstreport : 'Rechnung',
+	customsecondreport : 'Bezahlt',
+	
+	customfirststore : 'InvoiceItemDataStore',
+	customsecondstore : 'ArchiveItemDataStore',
+
+	customfirstgrid:'InvoiceItemGrid',
+	customsecondgrid:'ArchiveItemGrid',
 	/*initComponent : function() {
 		var me = this;
 		var firstDataStore = Ext.create('MyApp.store.BestellpositionDataStore',

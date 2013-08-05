@@ -7,7 +7,7 @@ Ext.define('MyApp.view.ConfirmWindow', {
 	customsecondreport : 'Auftragsbestaetigungs',
 	
 	customfirststore : 'BestellpositionDataStore',
-	customsecondstore : 'MyApp.store.ShippingItemDataStore',
+	customsecondstore : 'ShippingItemDataStore',
 
 	customfirstgrid:'OrderItemGrid',
 	customsecondgrid:'ShippingItemGrid',

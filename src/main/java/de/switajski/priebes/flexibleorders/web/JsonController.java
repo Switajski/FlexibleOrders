@@ -152,8 +152,8 @@ public abstract class JsonController<T> {
 	}
 
 	@SuppressWarnings({"unchecked"})
-	private List<T> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
-		T[] typedArray = (T[]) Array.newInstance(type.getComponentType(),1);
+	public List<T> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
+		T[] typedArray = (T[]) Array.newInstance(type,1);
 		ObjectMapper mapper = new ObjectMapper();
 		T[] records = (T[]) mapper.readValue(json, typedArray.getClass());
 

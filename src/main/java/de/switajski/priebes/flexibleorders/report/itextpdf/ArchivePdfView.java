@@ -13,7 +13,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.report.Order;
 
 @Component
-public class OrderPdfView extends PriebesIText5PdfView {
+public class ArchivePdfView extends PriebesIText5PdfView {
 
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,

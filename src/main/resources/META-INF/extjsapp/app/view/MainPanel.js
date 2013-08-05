@@ -110,15 +110,17 @@ Ext.define('MyApp.view.MainPanel', {
 				xtype : 'fieldcontainer',
 				items : [{
 							xtype : 'customercombobox',
-							id : 'mainCustomerComboBox'
+							id : 'mainCustomerComboBox',
+							fieldLabel: 'Kunde'
 						}, {
 							xtype : 'OrderItemGrid',
 							store : 'BestellpositionDataStore',
-							customurl : '/FlexibleOrders/customers/json/getItems',
-							extraParams : {
+							customurl : '/FlexibleOrders/customers/json/getItems'
+							/*extraParams : {
 								customer : 1,
 								itemType : 'ordered'
-							}
+							},*/
+							
 						}, {
 							xtype : 'ShippingItemGrid',
 							store : 'ShippingItemDataStore'

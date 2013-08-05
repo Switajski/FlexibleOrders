@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
 import de.switajski.priebes.flexibleorders.service.ProductService;
@@ -34,20 +36,23 @@ public class TransitionController {
 	private CustomerService customerService;
 	private ProductService productService;
 	private ShippingItemService shippingItemService;
+	private InvoiceItemService invoiceItemService;
 
 	@Autowired
 	public TransitionController(
 			TransitionService transitionService,
 			CustomerService customerService,
 			ProductService productService,
-			ShippingItemService shippingItemService) {
+			ShippingItemService shippingItemService,
+			InvoiceItemService invoiceItemService) {
 		this.transitionService = transitionService;
 		this.customerService = customerService;
 		this.productService = productService;
 		this.shippingItemService = shippingItemService;
+		this.invoiceItemService = invoiceItemService;
 	}
 
-	@RequestMapping(value="/json", method=RequestMethod.POST)
+	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse confirm(
 			@RequestParam(value = "customer", required = true) long customerId,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
@@ -73,5 +78,32 @@ public class TransitionController {
 
 		return response;
 	}
+	
+	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse deliver(
+			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "quantity", required = true) int quantity,
+			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber) 
+					throws Exception {
+		
+		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
+		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
+				+ " quantity:" + quantity + " orderConfirmationNumber:"+invoiceNumber);
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		Customer customer = customerService.find(customerId);
+		Product product = productService.findByProductNumber(productNumber);
+		List<InvoiceItem> shippingItems = transitionService.deliver(customer, product, quantity, invoiceNumber);
+		for (InvoiceItem shippingItem:shippingItems)
+			invoiceItemService.save(shippingItem);
+		response.setData(shippingItems);
+		response.setTotal(shippingItems.size());
+		response.setMessage("order item(s) confirmed");
+		response.setSuccess(true);
+
+		return response;
+	}
+
 	
 }

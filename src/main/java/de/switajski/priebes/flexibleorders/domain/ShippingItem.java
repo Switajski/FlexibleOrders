@@ -137,16 +137,12 @@ public class ShippingItem extends Item {
 	}
 
 	public InvoiceItem deliver(int quantity, long invoiceNumber) {
-		InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
 		this.setInvoiceNumber(invoiceNumber);
+		InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
 		this.setStatus(Status.SHIPPED);
 		return ii;
 	}
 	
-	public InvoiceItem deliver(long invoiceNumber){
-		return this.deliver(this.getQuantity(), invoiceNumber);
-	}
-
 	@Override
 	public int compareTo(Item o) {
 		return 0;

@@ -72,7 +72,7 @@ public class InvoicePdfViewTest {
 		
 		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
 		for (ShippingItem shippingItem:orderConfirmation.getItems()){
-			InvoiceItem ii = shippingItem.deliver(2635l);
+			InvoiceItem ii = shippingItem.deliver(shippingItem.getQuantity(), 2635l);
 			invoiceItemService.saveInvoiceItem(ii);
 			invoiceItems.add(ii);
 		}

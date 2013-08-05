@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RooWebScaffold(path = "invoiceitems", formBackingObject = InvoiceItem.class)
 public class InvoiceItemController extends JsonController<InvoiceItem>{
 
-	private static final String FILTER_STATUS = "SHIPPED";
+	private static final String FILTER_STATUS = "shipped";
 	private static final String ID = "invoiceNumber";
 	private InvoiceItemService invoiceItemService;
 	private CustomerService customerService;

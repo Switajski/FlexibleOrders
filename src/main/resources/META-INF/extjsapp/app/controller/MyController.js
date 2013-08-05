@@ -115,10 +115,10 @@ Ext.define('MyApp.controller.MyController', {
 		 * //BpGrid und Controller aktualisieren
 		 * bpform.findField('bestellung').setValue(this.activeBestellnr);
 		 * this.getBpFormView.bestellnr = this.activeBestellnr;
-		 * Ext.StoreMgr.get('BestellpositionDataStore').reload(this.activeBestellnr);
-		 *  // Buttons konfigurieren ORDERED, CONFIRMED, SHIPPED, COMPLETED;
-		 * buttons = this.getButtons(); switch (bestellung.getData().status){
-		 * case "ORDERED": buttons.abBestellungButton.setDisabled(false);
+		 * Ext.StoreMgr.get('BestellpositionDataStore').reload(this.activeBestellnr); //
+		 * Buttons konfigurieren ORDERED, CONFIRMED, SHIPPED, COMPLETED; buttons =
+		 * this.getButtons(); switch (bestellung.getData().status){ case
+		 * "ORDERED": buttons.abBestellungButton.setDisabled(false);
 		 * buttons.bezahltBestellungButton.setDisabled(true);
 		 * buttons.deleteBestellung.setDisabled(false);
 		 * buttons.deleteBestellungButton.setDisabled(false);
@@ -378,13 +378,8 @@ Ext.define('MyApp.controller.MyController', {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.orderNumber);
 
-			// get ocnr aus untererem Grid
-			// var secondGrid =
-			// Ext.ComponentQuery.query('panel[itemid=secondGrid]')[0];
-			// if (secondGrid = grid.getStore().totalCount==0)
-
 			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/json',
+						url : '/FlexibleOrders/transitions/confirm/json',
 						params : {
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
@@ -411,45 +406,97 @@ Ext.define('MyApp.controller.MyController', {
 					});
 		}
 	},
+	
+	deliver:function(event, inr, record) {
+		if (event == "ok") {
+			console.log(record.data.product + " " + record.data.quantity + " "
+					+ record.data.orderConfirmationNumber);
 
-	bestaetigeAuftragDialog : function(btn, e, eOpts) {
-		console.log('bestaetigeAuftragDialog');
-		Ext.MessageBox.prompt('Versandkosten',
-				'Bitte Versandkosten netto eingeben:', Ext.Function
-						.bind(this.bestaetigeAuftrag, null,
-								[this.activeBestellnr], 2));
+			var request = Ext.Ajax.request({
+						url : '/FlexibleOrders/transitions/deliver/json',
+						params : {
+							productNumber : record.data.product,
+							quantity : record.data.quantity,
+							customer : record.data.customer,
+							invoiceNumber : inr
+						},
+						success : function(response) {
+							var text = response.responseText;
+						},
+						failure : function(response) {
+							// TODO: Fehlerhandling vereinheitlichen
+							Ext.Msg.alert('Fehler', response.status
+											+ response.text);
+						}
+					});
+			if (this.debug)
+				console.log('deliver order confirmation');
+
+			// Sync
+			MyApp.getApplication().getController('MyController').sleep(500);
+			var allGrids = Ext.ComponentQuery.query('PositionGrid');
+			allGrids.forEach(function(grid) {
+						grid.getStore().load();
+					});
+		}
+	},
+	
+	deliver:function(event, anr, record) {
+		if (event == "ok") {
+			console.log(record.data.product + " " + record.data.quantity + " "
+					+ record.data.orderConfirmationNumber);
+
+			var request = Ext.Ajax.request({
+						url : '/FlexibleOrders/transitions/complete/json',
+						params : {
+							productNumber : record.data.product,
+							quantity : record.data.quantity,
+							customer : record.data.customer,
+							accountNumber : anr
+						},
+						success : function(response) {
+							var text = response.responseText;
+						},
+						failure : function(response) {
+							// TODO: Fehlerhandling vereinheitlichen
+							Ext.Msg.alert('Fehler', response.status
+											+ response.text);
+						}
+					});
+			if (this.debug)
+				console.log('complete invoice');
+
+			// Sync
+			MyApp.getApplication().getController('MyController').sleep(500);
+			var allGrids = Ext.ComponentQuery.query('PositionGrid');
+			allGrids.forEach(function(grid) {
+						grid.getStore().load();
+					});
+		}
 	},
 
-	bestaetigeAuftrag : function(status, versandkosten, activeBestellnr) {
-		console.log('/leanorders/bestellungs/bestaetigeAuftrag/'
-				+ activeBestellnr + " Parameter2:" + versandkosten
-				+ " Parameter3:" + activeBestellnr);
-		var request = Ext.Ajax.request({
-					url : '/leanorders/bestellungs/bestaetigeAuftrag/'
-							+ activeBestellnr,
-					params : {
-						versandNetto : versandkosten
-					},
-					success : function(response) {
-						var text = response.responseText;
-					},
-					failure : function(response) {
-						// TODO: Fehlerhandling vereinheitlichen
-						Ext.Msg
-								.alert('Fehler', response.status
-												+ response.text);
-					}
-				});
-		if (this.debug)
-			console.log('bestaetigeAuftrag');
-
-		// Reload GridPanel
-		MyApp.getApplication().getController('MyController').sleep(500);
-		Ext.data.StoreManager.lookup('BestellungDataStore').reload();
-		grid = Ext.getCmp('BestellungGrid');
-		grid.refresh();
-
-	},
+	/*
+	 * bestaetigeAuftragDialog : function(btn, e, eOpts) {
+	 * console.log('bestaetigeAuftragDialog');
+	 * Ext.MessageBox.prompt('Versandkosten', 'Bitte Versandkosten netto
+	 * eingeben:', Ext.Function .bind(this.bestaetigeAuftrag, null,
+	 * [this.activeBestellnr], 2)); },
+	 * 
+	 * bestaetigeAuftrag : function(status, versandkosten, activeBestellnr) {
+	 * console.log('/leanorders/bestellungs/bestaetigeAuftrag/' +
+	 * activeBestellnr + " Parameter2:" + versandkosten + " Parameter3:" +
+	 * activeBestellnr); var request = Ext.Ajax.request({ url :
+	 * '/leanorders/bestellungs/bestaetigeAuftrag/' + activeBestellnr, params : {
+	 * versandNetto : versandkosten }, success : function(response) { var text =
+	 * response.responseText; }, failure : function(response) { // TODO:
+	 * Fehlerhandling vereinheitlichen Ext.Msg .alert('Fehler', response.status +
+	 * response.text); } }); if (this.debug) console.log('bestaetigeAuftrag');
+	 *  // Reload GridPanel
+	 * MyApp.getApplication().getController('MyController').sleep(500);
+	 * Ext.data.StoreManager.lookup('BestellungDataStore').reload(); grid =
+	 * Ext.getCmp('BestellungGrid'); grid.refresh();
+	 *  },
+	 */
 
 	onCustomerChange : function(field, newValue, oldValue, eOpts) {
 		console.log('onCustomerChange');

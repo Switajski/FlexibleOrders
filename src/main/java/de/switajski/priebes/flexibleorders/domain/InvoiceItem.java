@@ -48,9 +48,9 @@ public class InvoiceItem extends Item {
     
     /**
      * The only way to create a InvoiceItem is to generate it from a ShippingItem.
-     * This is done by {@link ShippingItem#deliver} 
+     * This is done by {@link InvoiceItem#deliver} 
      * @param quantity 
-     * @param orderItem
+     * @param shippingItem
      * @param transmitToSupplier
      */
     public InvoiceItem(ShippingItem shippingItem, int quantity, long invoiceNumber) {
@@ -74,9 +74,9 @@ public class InvoiceItem extends Item {
     public InvoiceItem(){
     }
     
-    public ArchiveItem complete(ShippingItem shippingItem, int quantity, long accountNumber){
-    	ArchiveItem ai = new ArchiveItem(this, shippingItem, quantity, accountNumber);
+    public ArchiveItem complete(int quantity, long accountNumber){
     	setAccountNumber(accountNumber);
+    	ArchiveItem ai = new ArchiveItem(this, quantity, accountNumber);
     	setStatus(Status.COMPLETED);
     	return ai;
     }

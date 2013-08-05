@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -32,17 +33,20 @@ public class TransitionServiceImpl implements TransitionService {
 	private ShippingItemRepository shippingItemRepository;
 	private InvoiceItemRepository invoiceItemRepository;
 	private CustomerService customerService;
+	private ArchiveItemRepository archiveItemRepository;
 
 	@Autowired
 	public TransitionServiceImpl(
 			OrderItemRepository orderItemRepo,
 			ShippingItemRepository shippingItemRepo,
 			InvoiceItemRepository invoiceItemRepo,
-			CustomerService customerService) {
+			CustomerService customerService,
+			ArchiveItemRepository archiveItemRepository) {
 		this.orderItemRepository = orderItemRepo;
 		this.shippingItemRepository = shippingItemRepo;
 		this.invoiceItemRepository = invoiceItemRepo;
 		this.customerService = customerService;
+		this.archiveItemRepository = archiveItemRepository;
 	}
 	
 	@Transactional
@@ -90,6 +94,15 @@ public class TransitionServiceImpl implements TransitionService {
 		}
 		return (availableQuantity >= neededQuantity);
 	}
+	
+	private boolean quantityIsSufficient2(int neededQuantity, List<ShippingItem> matchingOis, List<ShippingItem> traversedItems) {
+		int availableQuantity = 0;
+		for (ShippingItem oi:matchingOis){
+			if (!traversedItems.contains(oi))
+			availableQuantity += oi.getQuantity();
+		}
+		return (availableQuantity >= neededQuantity);
+	}
 
 	private boolean isQuantityExceeded(Item oi, int quantity) {
 		return (oi.getQuantity()>quantity);
@@ -99,15 +112,80 @@ public class TransitionServiceImpl implements TransitionService {
 	@Override
 	public List<InvoiceItem> deliver(Customer customer, Product product,
 			int quantity, long invoiceNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
+		List<ShippingItem> traversedItems = new ArrayList<ShippingItem>();
+		
+		List<ShippingItem> matchingOis = new ArrayList<ShippingItem>();
+		for (ShippingItem oi:customerService.findConfirmedItems(customer))
+			if (oi.getProduct().equals(product)) matchingOis.add(oi);
+		
+		for (ShippingItem oi:matchingOis){
+			traversedItems.add(oi);
+			if (isQuantityExceeded(oi, quantity)){
+				if (matchingOis.size() == traversedItems.size()){
+					throw new IllegalArgumentException(
+							"bestaetigte Menge ist zu viel!");
+				}
+				else if (quantityIsSufficient2(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
+					if (oi.getStatus()!=Status.CONFIRMED)
+						invoiceItems.add(oi.deliver(oi.getQuantity(), invoiceNumber));
+					shippingItemRepository.saveAndFlush(oi);
+					
+				}
+			} else {
+				invoiceItems.add(oi.deliver(quantity, invoiceNumber));
+				shippingItemRepository.saveAndFlush(oi);
+			}
+		}
+		
+		for (InvoiceItem invoiceItem:invoiceItems){
+			invoiceItemRepository.saveAndFlush(invoiceItem);
+		}
+		return invoiceItems;
 	}
 
 	@Override
 	public List<ArchiveItem> complete(Customer customer, Product product,
 			int quantity, long accountNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ArchiveItem> archiveItems = new ArrayList<ArchiveItem>();
+		List<InvoiceItem> traversedItems = new ArrayList<InvoiceItem>();
+		
+		List<InvoiceItem> matchingOis = new ArrayList<InvoiceItem>();
+		for (InvoiceItem oi:customerService.findShippedItems(customer))
+			if (oi.getProduct().equals(product)) matchingOis.add(oi);
+		
+		for (InvoiceItem oi:matchingOis){
+			traversedItems.add(oi);
+			if (isQuantityExceeded(oi, quantity)){
+				if (matchingOis.size() == traversedItems.size()){
+					throw new IllegalArgumentException(
+							"bestaetigte Menge ist zu viel!");
+				}
+				else if (quantityIsSufficient3(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
+					if (oi.getStatus()!=Status.CONFIRMED)
+						archiveItems.add(oi.complete(oi.getQuantity(), accountNumber));
+					invoiceItemRepository.saveAndFlush(oi);
+					
+				}
+			} else {
+				archiveItems.add(oi.complete(quantity, accountNumber));
+				invoiceItemRepository.saveAndFlush(oi);
+			}
+		}
+		
+		for (ArchiveItem archiveItem:archiveItems){
+			archiveItemRepository.saveAndFlush(archiveItem);
+		}
+		return archiveItems;
+	}
+	
+	private boolean quantityIsSufficient3(int neededQuantity, List<InvoiceItem> matchingOis, List<InvoiceItem> traversedItems) {
+		int availableQuantity = 0;
+		for (InvoiceItem oi:matchingOis){
+			if (!traversedItems.contains(oi))
+			availableQuantity += oi.getQuantity();
+		}
+		return (availableQuantity >= neededQuantity);
 	}
 
 }

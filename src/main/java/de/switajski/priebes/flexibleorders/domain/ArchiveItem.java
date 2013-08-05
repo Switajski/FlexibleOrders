@@ -29,7 +29,7 @@ public class ArchiveItem extends Item {
      * @param orderItem
      * @param transmitToSupplier
      */
-    public ArchiveItem(InvoiceItem invoiceItem, ShippingItem shippingItem, int quantity, long accountNumber) {
+    public ArchiveItem(InvoiceItem invoiceItem, int quantity, long accountNumber) {
 		setAccountNumber(accountNumber);
     	
     	historize(invoiceItem);
@@ -38,13 +38,7 @@ public class ArchiveItem extends Item {
 		setStatus(Status.COMPLETED);
 		setQuantity(quantity);
 		
-		Customer customer = shippingItem.getCustomer();
-		setShippingCity(customer.getCity());
-		setShippingCountry(customer.getCountry());
-		setShippingName1(customer.getName1());
-		setShippingName2(customer.getName2());
-		setShippingPostalCode(customer.getPostalCode());
-		setShippingStreet(customer.getStreet());
+		Customer customer = invoiceItem.getCustomer();
 
 		customer = invoiceItem.getCustomer();
 		setInvoiceCity(customer.getCity());
@@ -54,7 +48,7 @@ public class ArchiveItem extends Item {
 		setInvoicePostalCode(customer.getPostalCode());
 		setInvoiceStreet(customer.getStreet());
 		
-		setAnNaeherei(shippingItem.getTransmitToSupplier());
+		setAnNaeherei(false);
 		
 	}
 

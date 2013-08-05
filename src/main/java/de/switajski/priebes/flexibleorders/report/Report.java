@@ -117,7 +117,7 @@ public class Report<T extends Item> {
 			BigDecimal amount = 
 					item.getPriceNet()
 					.multiply(new BigDecimal(item.getQuantity())); 
-			netAmount.add(amount);
+			netAmount = netAmount.add(amount);
 		}
 		return netAmount;
 	}
@@ -130,7 +130,7 @@ public class Report<T extends Item> {
 		BigDecimal productSumNet = BigDecimal.ZERO;
 		for (Item i:getItems())
 			if (i.getProduct().getProductType().equals(ProductType.PRODUCT))
-				productSumNet.add(
+				productSumNet = productSumNet.add(
 						i.getPriceNet()
 						.multiply(
 								new BigDecimal(i.getQuantity()))

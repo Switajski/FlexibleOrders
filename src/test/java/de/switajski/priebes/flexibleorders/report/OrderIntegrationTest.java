@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.report;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -70,6 +71,7 @@ public class OrderIntegrationTest {
 		orderItems.add(merged);
 		
 		Order order = new Order(orderItems);
+		assertFalse(order.getNetAmount().equals(BigDecimal.ZERO));
 		assertEquals(order.getItems().size(), 2);
 		
 	}

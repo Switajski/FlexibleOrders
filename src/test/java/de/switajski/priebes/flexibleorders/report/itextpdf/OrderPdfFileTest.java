@@ -50,7 +50,6 @@ public class OrderPdfFileTest {
 		orderItems.add(merged);
 		
 		order = new Order(orderItems);
-		
 	}
 	
 	@Transactional

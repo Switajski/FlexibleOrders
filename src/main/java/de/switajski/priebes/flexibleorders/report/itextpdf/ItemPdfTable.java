@@ -66,11 +66,11 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 	
 	private void createBody() {
 		
-		
+		int bPos = 1;
 		for (T bp:bpList){
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
 
-			PdfPCell bestellpos = new PdfPCell(new Phrase(getItemNumber(bp)));
+			PdfPCell bestellpos = new PdfPCell(new Phrase(String.valueOf(bPos)));
 			bestellpos.setFixedHeight(20f);
 			cells.add(bestellpos);
 			
@@ -104,6 +104,7 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 				cell.setBorder(Rectangle.NO_BORDER);
 				this.addCell(cell);
 			}
+			bPos++;
 		}
 
 	}

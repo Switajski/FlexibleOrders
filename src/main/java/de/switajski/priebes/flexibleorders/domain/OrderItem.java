@@ -42,10 +42,6 @@ public class OrderItem extends Item {
 		this.setStatus(Status.CONFIRMED);
 		return si;
 	}
-	
-	public ShippingItem confirm(boolean toSupplier, long orderConfirmationNumber) {
-		return this.confirm(toSupplier, this.getQuantity(), orderConfirmationNumber);
-	}
 
 	@Override
 	public int compareTo(Item o) {

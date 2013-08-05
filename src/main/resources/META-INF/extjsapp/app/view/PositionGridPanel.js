@@ -19,7 +19,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	alias : 'widget.PositionGrid',
 	title : "Abstrakte Positionen - (abstract items)",
 	customIsFirstPanel : true,
-	customicon: 'images/new_rechnung.png',
+	customicon : 'images/new_rechnung.png',
 	initComponent : function() {
 		var me = this;
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
@@ -35,9 +35,9 @@ Ext.define('MyApp.view.PositionGridPanel', {
 			 * 'sync', scope : this }],
 			 */
 
-			listeners:{
-		itemdblclick: this.onitemdblclick
-	},
+			listeners : {
+				itemdblclick : this.onitemdblclick
+			},
 			features : [filters],
 			columns : [{
 						xtype : 'gridcolumn',
@@ -59,7 +59,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'orderConfirmationNumber',
 						width : 75,
 						text : 'AB'
-					},{
+					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'invoiceNumber',
 						width : 75,
@@ -95,8 +95,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						text : 'Geplante Auslieferung',
 						width : 120,
 						format : 'd/m/Y'
-					},
-					{
+					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
@@ -106,10 +105,9 @@ Ext.define('MyApp.view.PositionGridPanel', {
 							tooltip : 'Position in den naechten Schritt bringen',
 							scope : this,
 							handler : this.onActionClick
-						}],
-						//disabled : this.customIsFirstGrid
-					},
-					{
+						}]
+						// disabled : this.customIsFirstGrid
+					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
@@ -119,18 +117,30 @@ Ext.define('MyApp.view.PositionGridPanel', {
 							tooltip : 'Position in den naechten Schritt bringen',
 							scope : this,
 							handler : this.onPdfClick
-						}],
-						//disabled : this.customIsFirstGrid
+						}]
+
+						// disabled : this.customIsFirstGrid
+					}, {
+						xtype : 'actioncolumn',
+						width : 30,
+						sortable : false,
+						menuDisabled : true,
+						items : [{
+									icon : 'images/delete.png',
+									tooltip : 'In den vorherigen Abschnitt verschieben',
+									scope : this,
+									handler : this.onRemoveClick
+								}]
 					}
 
 			],
 			dockedItems : [{
-				xtype : 'pagingtoolbar',
-				dock : 'bottom',
-				width : 360,
-				displayInfo : true,
-				store : this.store
-			}]
+						xtype : 'pagingtoolbar',
+						dock : 'bottom',
+						width : 360,
+						displayInfo : true,
+						store : this.store
+					}]
 		});
 		me.callParent(arguments);
 
@@ -144,8 +154,13 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		// alert('Diese Methode ist "abstract" - sollte in den Unterklassen
 		// implementiert werden ');
 	},
-	onitemdblclick:function(grid, record){
-		MyApp.getApplication().getController('MyController').showTransition(grid, record);
-	}
+	onitemdblclick : function(grid, record) {
+		MyApp.getApplication().getController('MyController').showTransition(
+				grid, record);
+	},
+	onRemoveClick: function(grid, rowIndex){
+        this.getStore().removeAt(rowIndex);
+        this.getStore().sync();
+    }
 
 });

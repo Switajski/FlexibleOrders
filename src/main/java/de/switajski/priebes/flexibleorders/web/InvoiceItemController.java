@@ -5,10 +5,13 @@ import java.util.List;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
+import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,13 +29,16 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 	private static final String ID = "invoiceNumber";
 	private InvoiceItemService invoiceItemService;
 	private CustomerService customerService;
+	private ShippingItemRepository shippingItemRepository;
 
 	@Autowired
 	public InvoiceItemController(InvoiceItemService readService,
-			CustomerService customerService) {
+			CustomerService customerService,
+			ShippingItemRepository shippingItemRepository) {
 		super(readService);
 		this.invoiceItemService = readService;
 		this.customerService = customerService;
+		this.shippingItemRepository = shippingItemRepository;
 	}
 
 	@Override
@@ -58,5 +64,24 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 				return items;
 			}
 		return null;
+	}
+
+	@Override
+	void delete(Long id) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	void deleteStepBackward(InvoiceItem item) {
+		List<ShippingItem> ois = shippingItemRepository.findByOrderNumber(item.getOrderNumber());
+		for (ShippingItem oi:ois){
+			if(oi.getProduct().equals(item.getProduct())){
+				oi.stepBackward();
+				shippingItemRepository.delete(oi);
+				shippingItemRepository.saveAndFlush(oi);
+			}
+
+		}
 	}
 }

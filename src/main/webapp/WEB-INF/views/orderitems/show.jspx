@@ -14,5 +14,7 @@
         <field:display field="orderNumber" id="s_de_switajski_priebes_flexibleorders_domain_OrderItem_orderNumber" object="${orderitem}" z="cC6X2l7Yh6ArDdmybr+4c5exPV4="/>
         <field:display date="true" dateTimePattern="${orderItem_expecteddelivery_date_format}" field="expectedDelivery" id="s_de_switajski_priebes_flexibleorders_domain_OrderItem_expectedDelivery" object="${orderitem}" z="k0ucRGehAZWNqn+ZC82i2LeYF68="/>
         <field:display field="orderItemNumber" id="s_de_switajski_priebes_flexibleorders_domain_OrderItem_orderItemNumber" object="${orderitem}" z="BZo1C/nlqQvWqcPlKdMUJKNH0GI="/>
+        <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_OrderItem_customer" object="${orderitem}" z="75CHnwUPPSs58NFebRocps/cX+s="/>
+        <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_OrderItem_product" object="${orderitem}" z="TavUlycpFEb1fxjXLzNYK1EJAQE="/>
     </page:show>
 </div>

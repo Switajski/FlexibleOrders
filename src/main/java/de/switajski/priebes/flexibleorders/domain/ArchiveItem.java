@@ -48,6 +48,13 @@ public class ArchiveItem extends Item {
 		setInvoicePostalCode(customer.getPostalCode());
 		setInvoiceStreet(customer.getStreet());
 		
+		setShippingCity(customer.getCity());
+		setShippingCountry(customer.getCountry());
+		setShippingName1(customer.getName1());
+		setShippingName2(customer.getName2());
+		setShippingPostalCode(customer.getPostalCode());
+		setShippingStreet(customer.getStreet());
+		
 		setAnNaeherei(false);
 		
 	}

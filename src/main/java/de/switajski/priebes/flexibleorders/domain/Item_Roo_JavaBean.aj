@@ -4,7 +4,6 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import java.math.BigDecimal;
 
 privileged aspect Item_Roo_JavaBean {
@@ -25,7 +24,6 @@ privileged aspect Item_Roo_JavaBean {
         this.priceNet = priceNet;
     }
     
-        
     public String Item.getProductName() {
         return this.productName;
     }

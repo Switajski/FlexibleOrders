@@ -70,12 +70,12 @@ public class TransitionServiceImpl implements TransitionService {
 				}
 				else if (quantityIsSufficient(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
 					if (oi.getStatus()!=Status.ORDERED)
-					shippingItems.add(oi.confirm(toSupplier, oi.getQuantity()));
+					shippingItems.add(oi.confirm(toSupplier, oi.getQuantity(), orderConfirmationNumber));
 					orderItemRepository.saveAndFlush(oi);
 					
 				}
 			} else {
-				shippingItems.add(oi.confirm(toSupplier, quantity));
+				shippingItems.add(oi.confirm(toSupplier, quantity, orderConfirmationNumber));
 				orderItemRepository.saveAndFlush(oi);
 			}
 		}

@@ -6,7 +6,9 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
+import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,15 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 	private static final String FILTER_STATUS = "confirmed";
 	private static final String ID = "orderConfirmationNumber";
 	private ShippingItemService shippingItemService;
+	private OrderItemRepository orderItemRepository;
 
 	@Autowired
 	public ShippingItemController(
-			ShippingItemService crudServiceAdapter) {
+			ShippingItemService crudServiceAdapter,
+			OrderItemRepository orderItemService) {
 		super(crudServiceAdapter);
 		this.shippingItemService = crudServiceAdapter;
+		this.orderItemRepository = orderItemService;
 	}
 
 	@Override
@@ -55,5 +60,25 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 	protected void resolveDependencies(ShippingItem entity) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	void delete(Long id) {
+		
+		
+	}
+
+	@Override
+	void deleteStepBackward(ShippingItem item) {
+		List<OrderItem> ois = orderItemRepository.findByOrderNumber(item.getOrderNumber());
+		for (OrderItem oi:ois){
+			if(oi.getProduct().equals(item.getProduct())){
+				oi.stepBackward();
+				orderItemRepository.delete(oi);
+				orderItemRepository.saveAndFlush(oi);
+				
+			}
+		}
+		
 	}
 }

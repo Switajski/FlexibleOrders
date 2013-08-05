@@ -102,16 +102,6 @@ privileged aspect ArchiveItemController_Roo_Controller {
         return "archiveitems/update";
     }
     
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String ArchiveItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        ArchiveItem archiveItem = archiveItemRepository.findOne(id);
-        archiveItemRepository.delete(archiveItem);
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/archiveitems";
-    }
-    
     void ArchiveItemController.addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("archiveItem_created_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("archiveItem_expecteddelivery_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));

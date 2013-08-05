@@ -106,16 +106,6 @@ privileged aspect ShippingItemController_Roo_Controller {
         return "shippingitems/update";
     }
     
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String ShippingItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        ShippingItem shippingItem = shippingItemRepository.findOne(id);
-        shippingItemRepository.delete(shippingItem);
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/shippingitems";
-    }
-    
     void ShippingItemController.addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("shippingItem_created_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
     }

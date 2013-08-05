@@ -86,6 +86,31 @@ public abstract class JsonController<T> {
 	private boolean isRequestForEmptingFilter(String filters) {
 		return (filters.contains("property") && filters.contains("null"));
 	}
+	
+	@RequestMapping(value="/json/delete", method=RequestMethod.DELETE)
+	public @ResponseBody JsonObjectResponse deleteEntity(
+			@RequestParam(value = "id", required = true) Long id) 
+					throws Exception {
+		JsonObjectResponse response = new JsonObjectResponse();
+		if (crudServiceAdapter.find(id)!=null){
+			deleteStepBackward(crudServiceAdapter.find(id));
+			crudServiceAdapter.delete(crudServiceAdapter.find(id));
+			
+			response.setMessage("Entity deleted.");
+			response.setSuccess(true);
+		}
+		else{
+			response.setSuccess(false);
+			response.setMessage("Entity not found");
+		}
+		response.setTotal(0l);	
+
+		return response;
+	}
+
+	abstract void deleteStepBackward(T item) ;
+
+	abstract void delete(Long id) ;
 
 	protected abstract Page<T> findByFilterable(PageRequest pageRequest, HashMap<String, String> filterList);
 

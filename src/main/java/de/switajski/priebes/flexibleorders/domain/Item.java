@@ -171,4 +171,19 @@ public abstract class Item implements Comparable<Item> {
         if (this.orderNumber!=null) return Status.ORDERED;
 		return null;*/
     }
+	
+	public void stepBackward(){
+		if (this.accountNumber!=null){
+			setStatus(Status.SHIPPED);
+			setAccountNumber(null);
+		}
+        if (this.invoiceNumber!=null){
+        	setStatus(Status.CONFIRMED);
+        	setInvoiceNumber(null);
+        }
+        if (this.orderConfirmationNumber!=null){
+        	setStatus(Status.ORDERED);
+        	setOrderConfirmationNumber(null);
+        }
+	}
 }

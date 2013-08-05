@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
@@ -19,6 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.report.Order;
+import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
@@ -37,6 +39,7 @@ public class TransitionController {
 	private ProductService productService;
 	private ShippingItemService shippingItemService;
 	private InvoiceItemService invoiceItemService;
+	private ArchiveItemService archiveItemService;
 
 	@Autowired
 	public TransitionController(
@@ -44,12 +47,14 @@ public class TransitionController {
 			CustomerService customerService,
 			ProductService productService,
 			ShippingItemService shippingItemService,
-			InvoiceItemService invoiceItemService) {
+			InvoiceItemService invoiceItemService,
+			ArchiveItemService archiveItemService) {
 		this.transitionService = transitionService;
 		this.customerService = customerService;
 		this.productService = productService;
 		this.shippingItemService = shippingItemService;
 		this.invoiceItemService = invoiceItemService;
+		this.archiveItemService = archiveItemService;
 	}
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
@@ -97,6 +102,32 @@ public class TransitionController {
 		List<InvoiceItem> shippingItems = transitionService.deliver(customer, product, quantity, invoiceNumber);
 		for (InvoiceItem shippingItem:shippingItems)
 			invoiceItemService.save(shippingItem);
+		response.setData(shippingItems);
+		response.setTotal(shippingItems.size());
+		response.setMessage("order item(s) confirmed");
+		response.setSuccess(true);
+
+		return response;
+	}
+	
+	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse complete(
+			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "quantity", required = true) int quantity,
+			@RequestParam(value = "accountNumber", required = true) long accountNumber) 
+					throws Exception {
+		
+		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
+		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
+				+ " quantity:" + quantity + " orderConfirmationNumber:"+accountNumber);
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		Customer customer = customerService.find(customerId);
+		Product product = productService.findByProductNumber(productNumber);
+		List<ArchiveItem> shippingItems = transitionService.complete(customer, product, quantity, accountNumber);
+		for (ArchiveItem shippingItem:shippingItems)
+			archiveItemService.save(shippingItem);
 		response.setData(shippingItems);
 		response.setTotal(shippingItems.size());
 		response.setMessage("order item(s) confirmed");

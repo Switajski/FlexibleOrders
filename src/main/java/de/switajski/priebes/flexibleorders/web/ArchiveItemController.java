@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.web;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 
 @RequestMapping("/archiveitems")
 @Controller
@@ -23,14 +27,17 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 	private static final String ID = "accountNumber";
 	private ArchiveItemService archiveItemService;
 	private CustomerService customerService;
+	private InvoiceItemRepository invoiceItemRepository;
 
 	@Autowired
 	public ArchiveItemController(
 			ArchiveItemService crudServiceAdapter,
-			CustomerService customerService) {
+			CustomerService customerService,
+			InvoiceItemRepository invoiceItemRepository) {
 		super(crudServiceAdapter);
 		this.archiveItemService = crudServiceAdapter;
 		this.customerService = customerService;
+		this.invoiceItemRepository = invoiceItemRepository;
 	}
 
 	@Override
@@ -55,5 +62,24 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 	protected void resolveDependencies(ArchiveItem entity) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	void delete(Long id) {
+
+	}
+
+	@Override
+	void deleteStepBackward(ArchiveItem item) {
+		List<InvoiceItem> ois = invoiceItemRepository.findByOrderNumber(item.getOrderNumber());
+		for (InvoiceItem oi:ois){
+			if(oi.getProduct().equals(item.getProduct())){
+				oi.stepBackward();
+				invoiceItemRepository.delete(oi);
+				invoiceItemRepository.saveAndFlush(oi);
+				
+			}
+
+		}
 	}
 }

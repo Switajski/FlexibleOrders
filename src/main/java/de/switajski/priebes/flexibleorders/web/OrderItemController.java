@@ -87,4 +87,15 @@ public class OrderItemController extends JsonController<OrderItem>{
 		return null;
 	}
 
+	@Override
+	void delete(Long id) {
+		
+	}
+
+	@Override
+	void deleteStepBackward(OrderItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

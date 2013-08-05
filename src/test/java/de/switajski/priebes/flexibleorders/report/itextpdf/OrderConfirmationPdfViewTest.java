@@ -60,7 +60,7 @@ public class OrderConfirmationPdfViewTest {
 		
 		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
 		for (OrderItem orderItem:order.getItems()){
-			ShippingItem si = orderItem.confirm(false, 1234l);
+			ShippingItem si = orderItem.confirm(false, orderItem.getQuantity(), 1234l);
 			shippingItemService.saveShippingItem(si);
 			shippingItems.add(si);
 		}

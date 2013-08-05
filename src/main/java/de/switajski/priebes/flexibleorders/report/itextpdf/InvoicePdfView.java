@@ -23,7 +23,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		Invoice invoice =  (Invoice) model.get("Invoice");
 		insertHeader(document);
         insertAdresse(document, invoice.getCustomer().getInvoiceAddress());
-        insertSubject(document, "Invoice Nr."
+        insertSubject(document, "Rechnung Nr."
         		//TODO: implement Invoice nr.
 //        		+ invoice.getInvoiceNumber().toString()
         		);

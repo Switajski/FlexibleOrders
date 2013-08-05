@@ -441,10 +441,10 @@ Ext.define('MyApp.controller.MyController', {
 		}
 	},
 	
-	deliver:function(event, anr, record) {
+	complete:function(event, anr, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.orderConfirmationNumber);
+					+ record.data.accountNumber);
 
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/complete/json',

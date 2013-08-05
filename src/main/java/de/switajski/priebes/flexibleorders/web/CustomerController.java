@@ -92,5 +92,17 @@ public class CustomerController extends JsonController<Customer>{
 
 		return response;
     }
+
+	@Override
+	void delete(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void deleteStepBackward(Customer item) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

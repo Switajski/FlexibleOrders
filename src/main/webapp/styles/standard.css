@@ -1,7 +1,7 @@
 /* main elements */
 
 body,div,td {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Courier, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #666;
 }
@@ -16,14 +16,14 @@ body {
 }
 
 #wrapper {
-	width:800px;
-	min-width: 800px;
-	max-width: 800px;
+	width:900px;
+	min-width: 900px;
+	max-width: 900px;
 	margin-right: auto;
 	margin-left: auto;
 
 	/* fix max-width incompatibility in IE6 */
-	width:expression(document.body.clientWidth > 800? "800px": "auto" );
+	width:expression(document.body.clientWidth > 900? "900px": "auto" );
 	
 	overflow:hidden;
 	display:block;
@@ -65,7 +65,7 @@ body {
 
 #menu h2 {
 	color: #fff;
-	background: #648C1D;
+	background: #97BE15;
 	text-transform: uppercase;
 	font-weight:bold;
 	font-size: 12px;
@@ -109,7 +109,7 @@ table.navigation {
 }
 
 label {
-	width:100px;
+	width:130px;
 	float:left;
 	margin-left: 5px;
 	margin-top: 0px;

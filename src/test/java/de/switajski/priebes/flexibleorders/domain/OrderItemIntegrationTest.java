@@ -31,7 +31,7 @@ public class OrderItemIntegrationTest {
 		long orderConfirmationNumber = 1345l;
 		
 		OrderItem orderItem = dod.getSpecificOrderItem(12);
-		ShippingItem shippingItem = orderItem.confirm(toSupplier, orderConfirmationNumber);
+		ShippingItem shippingItem = orderItem.confirm(toSupplier, 12, orderConfirmationNumber);
 		shippingItemRepository.saveAndFlush(shippingItem);
 		orderItemRepository.saveAndFlush(orderItem);
 //		pji.importCustomers();

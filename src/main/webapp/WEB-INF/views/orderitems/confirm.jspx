@@ -2,9 +2,9 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_de_switajski_priebes_flexibleorders_domain_OrderItem" items="${orderitems}" z="oSfKXjmYNhTo2CjwIkG0w6NysGY=">
+    <div id="_title_pl_de_switajski_priebes_flexibleorders_domain_OrderItem_id_pane">
         <script src="http://localhost/ext-4.2.1.883/ext-all-debug-w-comments.js"><jsp:text /></script>
-    <link rel="stylesheet" href="http://localhost/ext-4.2.1.883/resources/ext-theme-classic/ext-theme-classic-all.css" ><jsp:text /></link>
+    <link rel="stylesheet" href="http://localhost/ext-4.2.1.883/resources/priebes-theme-all.css" ><jsp:text /></link>
     <script type="text/javascript" src="/FlexibleOrders/resources/app.js"><jsp:text /></script>
-    </page:list>
+    </div>
 </div>

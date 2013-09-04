@@ -17,8 +17,8 @@
 Ext.define('MyApp.view.MainPanel', {
 	extend : 'Ext.panel.Panel',
 	frame : false,
-	height : 850,
-	width : 1000,
+	//height : 850,
+	//width : 1000,
 	layout : {
 		align : 'stretch',
 		type : 'vbox'
@@ -31,32 +31,32 @@ Ext.define('MyApp.view.MainPanel', {
 		items : [{
 			xtype : 'button',
 			text : 'Berichte',
-			icon : 'images/pdf_button.png',
+			icon : '/FlexibleOrders/images/pdf_button.png',
 			menu : {
 				xtype : 'menu',
 				minWidth : 120,
 				items : [{
 
 							id : 'showOrderedButton',
-							icon : 'images/add.png',
+							icon : '/FlexibleOrders/images/add.png',
 							text : 'nicht best&auml;tigte Bestellpositionen anzeigen',
 							scope : this
 						}, {
 
 							id : 'showConfirmedButton',
-							icon : 'images/add.png',
+							icon : '/FlexibleOrders/images/add.png',
 							text : 'nicht gelieferte Auftragspositionen anzeigen',
 							scope : this
 						}, {
 
 							id : 'showShippedButton',
-							icon : 'images/add.png',
+							icon : '/FlexibleOrders/images/add.png',
 							text : 'nicht bezahlte Lieferungpositionen anzeigen',
 							scope : this
 						}, {
 
 							id : 'showCompletedButton',
-							icon : 'images/add.png',
+							icon : '/FlexibleOrders/images/add.png',
 							text : 'bezahlte/archivierte Positionen anzeigen',
 							scope : this
 						}, {
@@ -65,25 +65,25 @@ Ext.define('MyApp.view.MainPanel', {
 			}
 		}, {
 			id : 'ErstelleBestellungButton',
-			icon : 'images/add.png',
+			icon : '/FlexibleOrders/images/add.png',
 			text : 'erstelle Bestellung',
 			scope : this
 		}, {
 			id : 'AbBestellungButton',
 			text : 'Auftrag best&auml;tigen',
-			icon : 'images/new_ab.png',
+			icon : '/FlexibleOrders/images/new_ab.png',
 			tooltip : 'Auftrag bestaetigen. Damit kommen die Bestellpositionen unter offene Posten',
 			schope : this
 		}, {
 			id : 'RechnungBestellungButton',
 			text : 'Rechnung erstellen',
-			icon : 'images/new_rechnung.png',
+			icon : '/FlexibleOrders/images/new_rechnung.png',
 			tooltip : 'Rechnung in Pdf erstellen und aus den offenen Posten herausnehmen.',
 			schope : this
 		}, {
 			id : 'BezahltBestellungButton',
 			text : 'Als Bezahlt markieren',
-			icon : 'images/bezahlt.png',
+			icon : '/FlexibleOrders/images/bezahlt.png',
 			tooltip : 'Bestellung als bezahlt markieren',
 			schope : this
 		}/*, {

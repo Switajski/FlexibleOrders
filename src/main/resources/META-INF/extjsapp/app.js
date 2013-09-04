@@ -5,6 +5,7 @@ Ext.Loader.setConfig({
 });
 
 Ext.application({
+	appFolder: '/FlexibleOrders/resources/app',
     models: [
         'BestellungData',
         'BestellpositionData',
@@ -40,11 +41,18 @@ Ext.application({
         'BestellungGridPanel',
         'CustomerComboBox'
     ],
-    autoCreateViewport: true,
+    autoCreateViewport: false,
     controllers: [
         'MyController'
     ],
-    name: 'MyApp'
+    name: 'MyApp',
+    //autoCreateViewport:true,
+    launch: function() {
+        Ext.create('MyApp.view.MainPanel', {
+            layout: 'fit',
+            renderTo: Ext.get('_title_pl_de_switajski_priebes_flexibleorders_domain_OrderItem_id_pane')
+        });
+    }
 });
 
 

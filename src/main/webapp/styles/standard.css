@@ -16,9 +16,9 @@ body {
 }
 
 #wrapper {
-	width:900px;
-	min-width: 900px;
-	max-width: 900px;
+	width:1100px;
+	min-width: 1100px;
+	max-width: 1100px;
 	margin-right: auto;
 	margin-left: auto;
 
@@ -226,7 +226,7 @@ ul li {
 }
 /* table elements */
 
-table {
+table.dojo {
 	background: #EEEEEE;
 	margin: 2px 0 0 0;
 	border: 1px solid #BBBBBB;
@@ -234,24 +234,24 @@ table {
 	width: 100%
 }
 
-table table {
+table.dojo table {
 	margin: -5px 0;
 	border: 0px solid #e0e7d3;
 	width: 100%;
 }
 
-table td,table th {
+table.dojo td,table th {
 	padding: 2px;
 	border: 1px solid #CCCCCC;
 }
 
-table td form {
+table.dojo td form {
 	text-align:center;
 	vertical-align: middle;
 	margin: 0px;
 }
 
-table th {
+table.dojo th {
 	font-size: 0.9em;
 	text-align: left;
 	font-weight: bold;
@@ -259,13 +259,13 @@ table th {
 	background: #999;
 }
 
-table thead {
+table.dojo thead {
 	font-weight: bold;
 	font-style: italic;
 	background-color: #BBBBBB;
 }
 
-table a:link {color: #303030;}
+table.dojo a:link {color: #303030;}
 
 .utilbox {width: 18px;}
 

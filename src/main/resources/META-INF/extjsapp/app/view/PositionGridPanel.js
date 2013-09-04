@@ -19,7 +19,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	alias : 'widget.PositionGrid',
 	title : "Abstrakte Positionen - (abstract items)",
 	customIsFirstPanel : true,
-	customicon : 'images/new_rechnung.png',
+	customicon : '/FlexibleOrders/images/new_rechnung.png',
 	initComponent : function() {
 		var me = this;
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
@@ -113,7 +113,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						sortable : false,
 						// menuDisabled: true,
 						items : [{
-							icon : 'images/pdf_button.png',
+							icon : '/FlexibleOrders/images/pdf_button.png',
 							tooltip : 'Position in den naechten Schritt bringen',
 							scope : this,
 							handler : this.onPdfClick
@@ -126,7 +126,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						sortable : false,
 						menuDisabled : true,
 						items : [{
-									icon : 'images/delete.png',
+									icon : '/FlexibleOrders/images/delete.png',
 									tooltip : 'In den vorherigen Abschnitt verschieben',
 									scope : this,
 									handler : this.onRemoveClick

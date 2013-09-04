@@ -43,40 +43,40 @@ Ext.define('MyApp.view.BestellungGridPanel', {
 				xtype : 'toolbar',
 				items : [{
 							id : 'ErstelleBestellungButton',
-							icon : 'images/add.png',
+							icon : '/FlexibleOrders/images/add.png',
 							text : 'erstelle',
 							scope : this
 						}, {
 							id : 'AbBestellungButton',
 							text : 'Auftrag best&auml;tigen',
-							icon : 'images/new_ab.png',
+							icon : '/FlexibleOrders/images/new_ab.png',
 							tooltip : 'Auftrag bestaetigen. Damit kommen die Bestellpositionen unter offene Posten',
 							disabled : true,
 							schope : this
 						}, {
 							id : 'RechnungBestellungButton',
 							text : 'Rechnung erstellen',
-							icon : 'images/new_rechnung.png',
+							icon : '/FlexibleOrders/images/new_rechnung.png',
 							tooltip : 'Rechnung in Pdf erstellen und aus den offenen Posten herausnehmen.',
 							disabled : true,
 							schope : this
 						}, {
 							id : 'BezahltBestellungButton',
 							text : 'Als Bezahlt markieren',
-							icon : 'images/bezahlt.png',
+							icon : '/FlexibleOrders/images/bezahlt.png',
 							tooltip : 'Bestellung als bezahlt markieren',
 							disabled : true,
 							schope : this
 						}, {
 							id : 'StornoBestellungButton',
-							icon : 'images/delete_task.png',
+							icon : '/FlexibleOrders/images/delete_task.png',
 							text : 'stornieren',
 							tooltip : 'Die Bestellung bleibt in der Datenbank, wird allerdings als "Storniert" markiert',
 							disabled : true,
 							scope : this
 						}, {
 							id : 'DeleteBestellungButton',
-							icon : 'images/delete.png',
+							icon : '/FlexibleOrders/images/delete.png',
 							text : 'l&ouml;schen',
 							tooltip : 'Bestellung wird engdg&uuml;ltig aus der Datenbank gel&ouml;scht.',
 							disabled : true,
@@ -86,7 +86,7 @@ Ext.define('MyApp.view.BestellungGridPanel', {
 						}, {
 							xtype : 'button',
 							text : 'PDF',
-							icon : 'images/pdf_button.png',
+							icon : '/FlexibleOrders/images/pdf_button.png',
 							menu : {
 								xtype : 'menu',
 								minWidth : 120,

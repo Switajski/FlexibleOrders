@@ -2,7 +2,7 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 	extend : 'MyApp.view.PositionGridPanel',
 	alias : 'widget.InvoiceItemGrid',
 	title : "Rechnungspositionen - Invoice items",
-	customicon : 'images/new_ab.png',
+	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('invoiceItemGrid - customtransitionfunction');
 				var anr = this.getStore().data.items[0].data.invoiceNumber;

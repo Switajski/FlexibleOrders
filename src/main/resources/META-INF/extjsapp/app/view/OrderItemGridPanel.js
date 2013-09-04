@@ -2,7 +2,7 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 			extend : 'MyApp.view.PositionGridPanel',
 			alias : 'widget.OrderItemGrid',
 			title : "Bestellpositionen",
-			customicon : 'images/new_ab.png',
+			customicon : '/FlexibleOrders/images/new_ab.png',
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
 				// var secondStore =

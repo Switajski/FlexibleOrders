@@ -63,12 +63,6 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 	}
 
 	@Override
-	void delete(Long id) {
-		
-		
-	}
-
-	@Override
 	void deleteStepBackward(ShippingItem item) {
 		List<OrderItem> ois = orderItemRepository.findByOrderNumber(item.getOrderNumber());
 		for (OrderItem oi:ois){

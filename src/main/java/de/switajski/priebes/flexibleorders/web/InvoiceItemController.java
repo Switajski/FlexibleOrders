@@ -67,12 +67,6 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 	}
 
 	@Override
-	void delete(Long id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	void deleteStepBackward(InvoiceItem item) {
 		List<ShippingItem> ois = shippingItemRepository.findByOrderNumber(item.getOrderNumber());
 		for (ShippingItem oi:ois){

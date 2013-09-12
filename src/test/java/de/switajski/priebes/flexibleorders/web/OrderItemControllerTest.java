@@ -67,6 +67,20 @@ public class OrderItemControllerTest {
 			+ "\"status\":\"ORDERED\","
 			+ "\"expectedDelivery\":\"\""
 			+ "}]";
+	
+	public static final String CREATE_ORDERITEM_REQUEST_JSON2 = "{"
+			+ "\"id\":1015808,"
+			+ "\"product\":10071,"
+			+ "\"customer\":2,"
+			+ "\"orderNumber\":777,"
+			+ "\"invoiceNumber\":null,"
+			+ "\"orderConfirmationNumber\":777,"
+			+ "\"quantity\":17,"
+			+ "\"priceNet\":14.24,"
+			+ "\"status\":\"CONFIRMED\","
+			+ "\"expectedDelivery\":\""
+			+ "\"}";			
+	
 	@Transactional
 	@Test
 	public void shouldDeserializeOrderItem() throws Exception{

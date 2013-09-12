@@ -8,13 +8,14 @@ Ext.define('MyApp.view.CustomerComboBox', {
 	//fieldLabel : 'Kunde',
 	displayField : 'shortName',
 	valueField : 'id',
+	width: 350,
 	// allowBlank: false,
 	enableRegEx : true,
 	forceSelection : true,
 	queryMode : 'local',
 	store : 'KundeDataStore',
 	tpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
-			'<div class="x-boundlist-item">{id} - {shortName}</div>', '</tpl>'),
+			'<div class="x-boundlist-item">ID:{id} - {shortName}</div>', '</tpl>'),
 	displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
 			'{id} - {shortName}', '</tpl>')
 

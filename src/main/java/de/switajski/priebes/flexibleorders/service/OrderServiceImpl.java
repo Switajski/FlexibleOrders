@@ -98,4 +98,15 @@ public class OrderServiceImpl implements OrderService {
 		return pages;
 	}
 
+	@Override
+	public List<Long> findOrderNumbersLike(Long orderNumber) {
+		ArrayList<Long> orderNumbersToReturn = new ArrayList<Long>();
+		List<Long> orderNumbers = orderItemRepository.getAllOrderNumbers();
+		for (Long on:orderNumbers){
+			if (on.toString().startsWith(orderNumber.toString()))
+				orderNumbersToReturn.add(on);
+		}
+		return orderNumbersToReturn;
+	}
+
 }

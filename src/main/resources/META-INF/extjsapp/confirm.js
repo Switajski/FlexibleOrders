@@ -10,8 +10,8 @@ Ext.application({
         'BestellungData',
         'BestellpositionData',
         'ShippingItemData',
-        'InvoiceItemData',
-        'ArchiveItemData',
+//        'InvoiceItemData',
+//        'ArchiveItemData',
         'ArtikelData',
         'KundeData'
     ],
@@ -19,8 +19,8 @@ Ext.application({
         'BestellungDataStore',
         'BestellpositionDataStore',
         'ShippingItemDataStore',
-        'InvoiceItemDataStore',
-        'ArchiveItemDataStore',
+//        'InvoiceItemDataStore',
+//        'ArchiveItemDataStore',
         'ArtikelDataStore',
         'KundeDataStore',
         'OrderNumberDataStore'
@@ -37,8 +37,8 @@ Ext.application({
         'PositionGridPanel',
         'OrderItemGridPanel',
         'ShippingItemGridPanel',
-        'InvoiceItemGridPanel',
-        'ArchiveItemGridPanel',
+//        'InvoiceItemGridPanel',
+//        'ArchiveItemGridPanel',
         'BestellungGridPanel',
         'CustomerComboBox',
         'OrderNumberComboBox'
@@ -50,9 +50,9 @@ Ext.application({
     name: 'MyApp',
     //autoCreateViewport:true,
     launch: function() {
-        Ext.create('MyApp.view.MainPanel', {
+        Ext.create('MyApp.view.ConfirmPanel', {
             layout: 'fit',
-            renderTo: Ext.get('_title_pl_de_switajski_priebes_flexibleorders_domain_OrderItem_id_pane')
+            renderTo: Ext.get('extjs_confirm')
         });
     }
 });

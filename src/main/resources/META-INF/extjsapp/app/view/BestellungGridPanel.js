@@ -1,3 +1,4 @@
+// Gridpanel with option to add orderitems
 Ext.define('MyApp.view.BestellungGridPanel', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.bestellunggridpanel',

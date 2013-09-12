@@ -8,14 +8,8 @@ import java.util.Date;
 
 privileged aspect OrderItem_Roo_JavaBean {
     
-    public Date OrderItem.getExpectedDelivery() {
-        return this.expectedDelivery;
-    }
-    
-    public void OrderItem.setExpectedDelivery(Date expectedDelivery) {
-        this.expectedDelivery = expectedDelivery;
-    }
-    
+        
+        
     public int OrderItem.getOrderItemNumber() {
         return this.orderItemNumber;
     }

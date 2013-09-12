@@ -61,12 +61,21 @@ public class OrderItemController extends JsonController<OrderItem>{
 	protected void resolveDependencies(OrderItem entity) {
 		long productNumber = entity.getProduct().getProductNumber();
 		Product p = productService.findByProductNumber(productNumber);
-		if (entity.getPriceNet()==null && p.getPriceNet()==null) 
+		
+		if (hasNoPrice(entity)) 
 			throw new IllegalArgumentException("Price of product and order item is not set!");
 		entity.setProduct(p);
 
+		if (hasConflictingCustomer(entity))
+			throw new IllegalArgumentException("An order item with same order number exists, but has a different customer!");
+		
 		Customer customer = customerService.find(entity.getCustomer().getId());
 		entity.setCustomer(customer);
+	}
+
+	private boolean hasNoPrice(OrderItem entity) {
+		return (entity.getPriceNet()==null && 
+				productService.findByProductNumber(entity.getProductNumber()).getPriceNet()==null);
 	}
 
 	@Override
@@ -89,11 +98,6 @@ public class OrderItemController extends JsonController<OrderItem>{
 	}
 
 	@Override
-	void delete(Long id) {
-		
-	}
-
-	@Override
 	void deleteStepBackward(OrderItem item) {
 		// TODO Auto-generated method stub
 		
@@ -113,5 +117,21 @@ public class OrderItemController extends JsonController<OrderItem>{
         addDateTimeFormatPatterns(uiModel);
         return "orderitems/confirm";
     }
+	
+	/**
+	 * verifies, that an order has not different customers
+	 * @param orderItem
+	 */
+	private boolean hasConflictingCustomer(OrderItem orderItem) {
+		List<OrderItem> orderItems = orderItemService.findByOrderNumber(orderItem.getOrderNumber());
+		if (!orderItems.isEmpty()){
+			for (OrderItem oi: orderItems)
+				if (oi.getOrderNumber()!=orderItem.getOrderNumber()){
+					return true;
+				}
+		}
+		return false;
+	}
+
 
 }

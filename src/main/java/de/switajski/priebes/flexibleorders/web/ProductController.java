@@ -36,12 +36,6 @@ public class ProductController extends JsonController<Product> {
 	}
 
 	@Override
-	void delete(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	void deleteStepBackward(Product item) {
 		// TODO Auto-generated method stub
 		

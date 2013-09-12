@@ -22,8 +22,7 @@ Ext.application({
         'InvoiceItemDataStore',
         'ArchiveItemDataStore',
         'ArtikelDataStore',
-        'KundeDataStore',
-        'OrderNumberDataStore'
+        'KundeDataStore'
     ],
     views: [
         'MainPanel',
@@ -40,8 +39,7 @@ Ext.application({
         'InvoiceItemGridPanel',
         'ArchiveItemGridPanel',
         'BestellungGridPanel',
-        'CustomerComboBox',
-        'OrderNumberComboBox'
+        'CustomerComboBox'
     ],
     autoCreateViewport: false,
     controllers: [
@@ -52,7 +50,7 @@ Ext.application({
     launch: function() {
         Ext.create('MyApp.view.MainPanel', {
             layout: 'fit',
-            renderTo: Ext.get('_title_pl_de_switajski_priebes_flexibleorders_domain_OrderItem_id_pane')
+            renderTo: Ext.get('extjs_listitems')
         });
     }
 });

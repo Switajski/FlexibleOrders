@@ -36,11 +36,11 @@ Ext.define('MyApp.controller.MyController', {
 			'ArchiveItemData', 'InvoiceItemData', 'ShippingItemData'],
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
-			'ArchiveItemDataStore'],
+			'ArchiveItemDataStore','OrderNumberDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
 			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow',
-			'TransitionWindow'],
+			'TransitionWindow', 'OrderNumberComboBox'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
 	// implementieren
 	// Die view muss eine ID haben
@@ -330,6 +330,7 @@ Ext.define('MyApp.controller.MyController', {
 						buttons : Ext.Msg.OK
 					});
 		else {
+			Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0].setValue("");
 			store = Ext.data.StoreMgr.lookup('BestellpositionDataStore');
 			bestellungWindow.show();
 

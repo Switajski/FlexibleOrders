@@ -65,11 +65,6 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 	}
 
 	@Override
-	void delete(Long id) {
-
-	}
-
-	@Override
 	void deleteStepBackward(ArchiveItem item) {
 		List<InvoiceItem> ois = invoiceItemRepository.findByOrderNumber(item.getOrderNumber());
 		for (InvoiceItem oi:ois){

@@ -1,4 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
 @RooJavaBean
@@ -48,4 +52,14 @@ public class OrderItem extends Item {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@JsonSerialize(using=JsonDateSerializer.class)
+	public Date getExpectedDelivery() {
+        return this.expectedDelivery;
+    }
+
+	@JsonDeserialize(using=JsonDateDeserializer.class)
+	public void setExpectedDelivery(Date expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+    }
 }

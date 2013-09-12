@@ -49,7 +49,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'orderNumber',
-						width : 75,
+						width : 90,
 						text : 'Bestellung',
 						filter : {
 							type : 'string'
@@ -57,12 +57,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'orderConfirmationNumber',
-						width : 75,
+						width : 90,
 						text : 'AB'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'invoiceNumber',
-						width : 75,
+						width : 90,
 						text : 'Rechnung'
 					}, {
 						xtype : 'gridcolumn',
@@ -73,13 +73,13 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'numbercolumn',
 						dataIndex : 'priceNet',
-						width : 75,
+						width : 85,
 						text : 'Preis Netto',
 						renderer : Ext.util.Format.euMoney
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'status',
-						width : 75,
+						width : 90,
 						text : 'Status',
 						filter : {
 							type : 'string'
@@ -87,7 +87,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customer',
-						width : 25,
+						width : 40,
 						text : 'KId'
 					}, {
 						xtype : 'gridcolumn',
@@ -129,7 +129,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 									icon : '/FlexibleOrders/images/delete.png',
 									tooltip : 'In den vorherigen Abschnitt verschieben',
 									scope : this,
-									handler : this.onRemoveClick
+									//handler : this.onRemoveClick
+									handler: function(grid, rowIndex, colIndex) {
+                    					var rec = grid.getStore().getAt(rowIndex);
+                    					grid.getStore().remove(rec);
+                    					grid.getStore().sync();
+                					}
 								}]
 					}
 
@@ -158,7 +163,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		MyApp.getApplication().getController('MyController').showTransition(
 				grid, record);
 	},
-	onRemoveClick: function(grid, rowIndex){
+	onRemoveClick: function(grid, rowIndex, a, b, c, d, e, f, g){
         this.getStore().removeAt(rowIndex);
         this.getStore().sync();
     }

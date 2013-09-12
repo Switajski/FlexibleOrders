@@ -34,6 +34,7 @@ Ext.define('MyApp.view.BestellungWindow', {
                                     anchor: '100%',
                                     name: 'ordernumber',
                                     fieldLabel: 'Bestellnr'
+                                	
                                 },
                                 {
                                     xtype: 'displayfield',

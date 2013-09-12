@@ -25,4 +25,6 @@ public interface OrderService extends CrudServiceAdapter<Order> {
 	
 	Order find(Long orderNumber);
 	
+	List<Long> findOrderNumbersLike(Long orderNumber);
+	
 }

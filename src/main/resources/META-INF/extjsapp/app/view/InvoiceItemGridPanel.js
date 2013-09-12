@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.InvoiceItemGridPanel', {
 	extend : 'MyApp.view.PositionGridPanel',
 	alias : 'widget.InvoiceItemGrid',
-	title : "Rechnungspositionen - Invoice items",
+	title : "Nicht abgeschlossene Rechnungspositionen",
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('invoiceItemGrid - customtransitionfunction');

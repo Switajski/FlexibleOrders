@@ -86,31 +86,33 @@ public abstract class JsonController<T> {
 	private boolean isRequestForEmptingFilter(String filters) {
 		return (filters.contains("property") && filters.contains("null"));
 	}
-	
-	@RequestMapping(value="/json/delete", method=RequestMethod.DELETE)
-	public @ResponseBody JsonObjectResponse deleteEntity(
-			@RequestParam(value = "id", required = true) Long id) 
-					throws Exception {
+
+	@RequestMapping(value="/json", method=RequestMethod.DELETE)
+	public @ResponseBody JsonObjectResponse delete( @RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
 		JsonObjectResponse response = new JsonObjectResponse();
-		if (crudServiceAdapter.find(id)!=null){
-			deleteStepBackward(crudServiceAdapter.find(id));
-			crudServiceAdapter.delete(crudServiceAdapter.find(id));
-			
-			response.setMessage("Entity deleted.");
-			response.setSuccess(true);
+
+		if (json.charAt(0) == '['){
+			List<T> entities = parseJsonArray(json);
+			for (T entity:entities){
+				resolveDependencies(entity);
+				crudServiceAdapter.delete(entity);
+			}
+			response.setTotal(entities.size());
+		} else {
+			T entity = parseJsonObject(json);
+			resolveDependencies(entity);
+			crudServiceAdapter.delete(entity);					
+			response.setData(entity);
+			response.setTotal(1l);
 		}
-		else{
-			response.setSuccess(false);
-			response.setMessage("Entity not found");
-		}
-		response.setTotal(0l);	
+
+		response.setMessage("Entity deleted.");
+		response.setSuccess(true);
 
 		return response;
 	}
 
 	abstract void deleteStepBackward(T item) ;
-
-	abstract void delete(Long id) ;
 
 	protected abstract Page<T> findByFilterable(PageRequest pageRequest, HashMap<String, String> filterList);
 
@@ -122,7 +124,7 @@ public abstract class JsonController<T> {
 			JsonQueryFilter[] typedArray = (JsonQueryFilter[]) Array.newInstance(JsonQueryFilter.class, 1);
 			JsonQueryFilter[] qFilter;
 			qFilter = mapper.readValue(filters, typedArray.getClass());
-			
+
 			for (JsonQueryFilter f:qFilter)
 				jsonFilters.put(f.getProperty(), f.getValue());
 		}else{
@@ -150,18 +152,18 @@ public abstract class JsonController<T> {
 		JsonObjectResponse response = new JsonObjectResponse();
 
 		if (json.charAt(0) == '['){
-				List<T> entities = parseJsonArray(json);
-				for (T entity:entities){
-					resolveDependencies(entity);
-					crudServiceAdapter.save(entity);
-				}
-				response.setTotal(entities.size());
-		} else {
-				T entity = parseJsonObject(json);
+			List<T> entities = parseJsonArray(json);
+			for (T entity:entities){
 				resolveDependencies(entity);
-				crudServiceAdapter.save(entity);					
-				response.setData(entity);
-				response.setTotal(1l);
+				crudServiceAdapter.save(entity);
+			}
+			response.setTotal(entities.size());
+		} else {
+			T entity = parseJsonObject(json);
+			resolveDependencies(entity);
+			crudServiceAdapter.save(entity);					
+			response.setData(entity);
+			response.setTotal(1l);
 		}
 
 		response.setMessage("All entities retrieved.");
@@ -173,6 +175,7 @@ public abstract class JsonController<T> {
 
 	private T parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
 		return (T) mapper.readValue(json, type); 
 	}
 
@@ -180,6 +183,7 @@ public abstract class JsonController<T> {
 	public List<T> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
 		T[] typedArray = (T[]) Array.newInstance(type,1);
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
 		T[] records = (T[]) mapper.readValue(json, typedArray.getClass());
 
 		ArrayList<T> list = new ArrayList<T>();
@@ -190,11 +194,12 @@ public abstract class JsonController<T> {
 	}
 
 	/**
-	 * Resolves dependencies between domain entities. E.g. orderItem's productNumber into 
+	 * Verifies and resolves dependencies between domain entities. E.g. orderItem's productNumber into 
 	 * the object product. This is done for technical reasons of O/R-Mapping.
 	 * </br>
 	 * TODO: this technical matter should be implemented by Jackson's deserializer
-	 *  
+	 * TODO: Verification should be done by a separate layer, or by the domain model 
+	 * 
 	 * @param entity
 	 */
 	protected abstract void resolveDependencies(T entity);

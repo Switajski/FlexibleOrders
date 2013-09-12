@@ -2,7 +2,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 	extend : 'Ext.window.Window',
 	id : 'ErstelleBestellungWindow',
 	frame : true,
-	width : 770,
+	width : 900,
 	layout : {
 		align : 'stretch',
 		type : 'vbox'
@@ -16,7 +16,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 		Ext.applyIf(me, {
 			dockedItems : [{
 				xtype : 'form',
-				itemid : 'form',
+				itemid : 'ErstelleBestellungForm',
 				id : 'ErstelleBestellungForm',
 				dock : 'top',
 				layout : {
@@ -25,19 +25,24 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 				},
 				bodyPadding : 10,
 				items : [{
-							itemid : 'orderNumber',
-							xtype : 'numberfield',
+							/*xtype : 'numberfield',
 							// anchor: '100%',
 							fieldLabel : 'Bestellnr',
 							allowBlank : false,
 							name : 'orderNumber',
-							valueField : 'orderNumber'
-							/*listeners : {
-								change : this.onOrderNumberChange
-							}*/
-						},/* {
-							xtype : 'customercombobox'
-						},*/ {
+							valueField : 'orderNumber'*/
+							itemid : 'orderNumber',
+							xtype : 'ordernumbercombobox',
+							fieldLabel: 'Bestellnr',
+							listeners : {
+								change : this.onOrderNumberChange,
+								specialkey: function(field, e){
+					                if (e.getKey() == e.ENTER) {
+					                       Ext.ComponentQuery.query('#ErstelleBestellungForm button[itemid=add]')[0].focus();
+					        	    }
+					            }
+							}
+						}, {
 							xtype : 'BestellpositionGrid',
 							id : 'BestellpositionGrid',
 							store : 'BestellpositionDataStore',
@@ -64,11 +69,17 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 		me.callParent(arguments);
 	},
 	onOrderNumberChange : function(form, data) {
-		var store = Ext.data.StoreManager.lookup('BestellpositionDataStore');
+		/*if (data!= null){
+		var store = Ext.data.StoreManager.lookup('OrderNumberDataStore');
 		console.log(data);
-		// Ext.data.StoreManager.lookup('BestellpositionDataStore').filters
-		store.filters.removeAll();
-		store.filter("ordernumber", data);
+		
+		store.getProxy().extraParams = {orderNumber: data};
+		store.read();
+		}*/
+		
+	},
+	onSelect : function(form,data){
+		alert('onSelect');
 	},
 	onSelectionchange : function(view, selections, options) {
 		// TODO: löschen und Hinzufügen Button der Bps de/aktivieren

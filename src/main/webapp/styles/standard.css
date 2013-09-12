@@ -1,6 +1,6 @@
 /* main elements */
 
-body,div,td {
+body,div {
 	font-family: Courier, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #666;
@@ -16,9 +16,9 @@ body {
 }
 
 #wrapper {
-	width:1100px;
-	min-width: 1100px;
-	max-width: 1100px;
+	width:1200px;
+	min-width: 1200px;
+	max-width: 1200px;
 	margin-right: auto;
 	margin-left: auto;
 
@@ -278,7 +278,7 @@ caption {
 	padding-bottom: 4px;
 }
 
-fieldset {
+fieldset.dojo {
 	background: #e0e7d3;
 	padding: 8px;
 	padding-bottom: 22px;

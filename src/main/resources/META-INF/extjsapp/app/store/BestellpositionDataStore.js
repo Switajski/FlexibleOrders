@@ -29,7 +29,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                 api:{
                     read: this.customurl,
                     update: this.customurl,
-                    destroy: this.customurl/+'delete',
+                    destroy: this.customurl,
                     create: this.customurl
                 },
                 headers: {

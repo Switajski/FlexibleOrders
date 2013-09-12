@@ -94,15 +94,14 @@ public class CustomerController extends JsonController<Customer>{
     }
 
 	@Override
-	void delete(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	void deleteStepBackward(Customer item) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@RequestMapping(value = "listitems", produces = "text/html")
+    public String confirm(Model uiModel) {
+        return "customers/listitems";
+    }
 	
 }

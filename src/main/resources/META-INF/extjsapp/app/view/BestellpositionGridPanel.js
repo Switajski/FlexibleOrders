@@ -19,7 +19,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	alias : 'widget.BestellpositionGrid',
 	// width: 250,
 	// height: 300,
-	title : "Bestellpositionen",
+	//title : "Bestellpositionen",
 	requires : ['MyApp.model.ArtikelData',
 			'MyApp.store.BestellpositionDataStore',
 			'Ext.grid.plugin.CellEditing', 'Ext.ux.grid.FiltersFeature',
@@ -31,16 +31,17 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 
 		Ext.applyIf(me, {
 			plugins : [this.editing],
-			tbar : [{
+			tbar : ['Bestellposition',
+				{
 						itemid: 'add',
 						dock : 'top',
-						icon : 'images/add.png',
+						icon : '/FlexibleOrders/images/add.png',
 						text : 'hinzuf&uuml;gen',
 						scope : this,
 						handler : this.onAddClick
 					}, {
 						itemid : 'delete',
-						icon : 'images/delete.png',
+						icon : '/FlexibleOrders/images/delete.png',
 						text : 'l&ouml;schen',
 						scope : this,
 						handler : this.onDeleteClick
@@ -99,7 +100,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 			}, {
 				xtype : 'gridcolumn',
 				dataIndex : 'quantity',
-				width : 50,
+				width : 75,
 				text : 'Menge',
 				editor : {
 					xtype : 'numberfield',
@@ -150,8 +151,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	},
 
 	onAddClick : function() {
-		bestellnr = Ext.ComponentQuery.query('form[itemid="form"]')[0]
-				.getForm().getValues().orderNumber;
+		bestellnr = Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0].rawValue;
 		customer = Ext.getCmp('mainCustomerComboBox').getValue();
 		console.log('hierher!');
 		if (bestellnr == null || bestellnr == 0 || bestellnr == "") {

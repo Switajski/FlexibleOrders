@@ -1,6 +1,10 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,21 +12,78 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.report.Order;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.util.orderNumber;
 
 @Controller
 @RequestMapping("/orders")
 public class OrderController extends JsonController<Order> {
 	
-	@Autowired OrderItemService orderItemService;
+	OrderItemService orderItemService;
+	OrderService orderService;
+	CustomerService customerService;
+	
+	private static Logger log = Logger.getLogger(OrderController.class);
 
 	@Autowired
-	public OrderController(OrderService crudServiceAdapter) {
+	public OrderController(OrderService crudServiceAdapter,
+			OrderItemService orderItemService,
+			CustomerService customerService) {
 		super(crudServiceAdapter);
+		this.orderService = crudServiceAdapter;
+		this.orderItemService = orderItemService;
+		this.customerService = customerService;
+	}
+	
+	@RequestMapping(value="/listOrderNumbers", method=RequestMethod.GET)
+	public @ResponseBody JsonObjectResponse listOrderNumbers(
+			@RequestParam(value = "query", required = false) Long orderNumberObject) 
+					throws Exception {
+
+		log.debug("listOrderNumbers request:"+orderNumberObject);
+		JsonObjectResponse response = new JsonObjectResponse();	
+
+		if (orderNumberObject != null){
+			List<Long> orderNumbers = orderService.findOrderNumbersLike(orderNumberObject);
+			if (!orderNumbers.isEmpty()){
+				response.setTotal(orderNumbers.size());
+				response.setData(formatOrderNumbers(orderNumbers));			
+			}
+			else {
+				response.setTotal(0l);
+			}
+		} 
+		else { //orderNumber == null
+			List<Customer> customers = customerService.findAll();
+			ArrayList<Long> list = new ArrayList<Long>();
+			for (Customer customer:customers)
+				list.addAll(orderService.getOrderNumbersByCustomer(customer, new PageRequest(1,20)).getContent());
+			response.setTotal(list.size());
+			response.setData(formatOrderNumbers(list));
+		}
+			
+		response.setMessage("All entities retrieved.");
+		response.setSuccess(true);
+
+		return response;
+	}
+	
+	private orderNumber[] formatOrderNumbers(List<Long> orderNumberList){
+		List<orderNumber> entities = new ArrayList<orderNumber>();
+		for (Long on:orderNumberList)
+			entities.add(new orderNumber(on));
+		orderNumber[] orderNumberArray = entities.toArray(new orderNumber[0]);
+		return orderNumberArray;
 	}
 
 	@Override
@@ -56,12 +117,6 @@ public class OrderController extends JsonController<Order> {
 		
         return new ModelAndView("OrderPdfView","Order",null);
     }
-
-	@Override
-	void delete(Long id) {
-		
-		
-	}
 
 	@Override
 	void deleteStepBackward(Order item) {

@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.ShippingItemGridPanel', {
 	extend : 'MyApp.view.PositionGridPanel',
 	alias : 'widget.ShippingItemGrid',
-	title : "Auftragbestaetigungspositionen - Shipping items",
+	title : "Nicht gelieferte Auftragspositionen",
 	onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('ShippingItemGrid - customtransitionfunction');
 				var inr = this.getStore().data.items[0].data.orderConfirmationNumber;

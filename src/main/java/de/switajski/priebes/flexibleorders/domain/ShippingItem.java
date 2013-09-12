@@ -1,21 +1,35 @@
 package de.switajski.priebes.flexibleorders.domain;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.validation.constraints.NotNull;
+
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 @RooJavaBean
 @RooToString
 @RooJpaEntity
 public class ShippingItem extends Item {
+	/**
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date expectedDelivery;
 
     public Boolean getTransmitToSupplier() {
         return transmitToSupplier;
@@ -145,9 +159,15 @@ public class ShippingItem extends Item {
         return 0;
     }
 
-    /**
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date expectedDelivery;
+
+    @JsonSerialize(using=JsonDateSerializer.class)
+	public Date getExpectedDelivery() {
+        return this.expectedDelivery;
+    }
+
+	@JsonDeserialize(using=JsonDateDeserializer.class)
+	public void setExpectedDelivery(Date expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+    }
+
 }

@@ -103,9 +103,16 @@ public class OrderItemController extends JsonController<OrderItem>{
 		
 	}
 	
+	/**
+	 * Site is created by Extjs and JSON
+	 * @param page
+	 * @param size
+	 * @param uiModel
+	 * @return
+	 */
 	@RequestMapping(value = "confirm", produces = "text/html")
-    public String confirm(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
+    public String showConfirmationPage(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        /*if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
             uiModel.addAttribute("orderitems", orderItemService.findOrderItemEntries(firstResult, sizeNo));
@@ -114,7 +121,7 @@ public class OrderItemController extends JsonController<OrderItem>{
         } else {
             uiModel.addAttribute("orderitems", orderItemService.findAllOrderItems());
         }
-        addDateTimeFormatPatterns(uiModel);
+        addDateTimeFormatPatterns(uiModel);*/
         return "orderitems/confirm";
     }
 	

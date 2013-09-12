@@ -21,5 +21,6 @@
         <field:display field="shippingCountry" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_shippingCountry" object="${shippingitem}" z="Lcu9ZW+VnYzMh4opeP4O8oT8k4A="/>
         <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" object="${shippingitem}" z="ufm7mwXYnSfHtRRBzIREsoX8YDQ="/>
         <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" object="${shippingitem}" z="vQZnzQibyO282Q3IUZWnzvtpZHE="/>
+        <field:display date="true" dateTimePattern="${shippingItem_expecteddelivery_date_format}" field="expectedDelivery" id="s_de_switajski_priebes_flexibleorders_domain_ShippingItem_expectedDelivery" object="${shippingitem}" z="LdhMZ9HonNi1QPMcdhKGQa135ZY="/>
     </page:show>
 </div>

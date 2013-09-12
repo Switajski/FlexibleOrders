@@ -50,6 +50,6 @@ Ext.define('MyApp.model.BestellpositionData', {
 		 },
 		 {
 			 name: 'expectedDelivery'
-		 },
+		 }
 		 ]
 });

@@ -32,4 +32,12 @@ public interface OrderItemService extends CrudServiceAdapter<OrderItem>{
 	
 	public abstract Page<OrderItem> findOrdered(Pageable pageable);
 
+	/**
+	 * returns the order item which generated the shipping item. </br>
+	 * In other words: it finds the Orderitem of {@link OrderItem#confirm}
+	 * 
+	 * @param orderItem
+	 * @return
+	 */
+	public abstract OrderItem findCorresponding(ShippingItem shippingItem);
 }

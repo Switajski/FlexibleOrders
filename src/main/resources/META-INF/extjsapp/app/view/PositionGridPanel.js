@@ -129,12 +129,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 									icon : '/FlexibleOrders/images/delete.png',
 									tooltip : 'In den vorherigen Abschnitt verschieben',
 									scope : this,
-									//handler : this.onRemoveClick
-									handler: function(grid, rowIndex, colIndex) {
-                    					var rec = grid.getStore().getAt(rowIndex);
-                    					grid.getStore().remove(rec);
-                    					grid.getStore().sync();
-                					}
+									handler : this.onRemoveClick
 								}]
 					}
 

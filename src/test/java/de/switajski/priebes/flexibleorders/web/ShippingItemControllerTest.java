@@ -39,7 +39,7 @@ public class ShippingItemControllerTest {
 		ShippingItem oi = mapper.readValue(CREATE_SHIPPING_ITEM_REQUEST_JSON, 
 				ShippingItem.class);
 		Product product = oi.getProduct();
-		assertTrue(product.getProductNumber().equals(1015808l));
+		assertTrue(product.getProductNumber().equals(10071l));
 
 	}
 	

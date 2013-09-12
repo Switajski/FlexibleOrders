@@ -408,6 +408,40 @@ Ext.define('MyApp.controller.MyController', {
 		}
 	},
 	
+	deconfirm: function(event, ocnr, record) {
+		if (event == "ok") {
+			console.log(record.data.product + " " + record.data.quantity + " "
+					+ record.data.orderNumber);
+
+			var request = Ext.Ajax.request({
+						url : '/FlexibleOrders/transitions/deconfirm/json',
+						params : {
+							productNumber : record.data.product,
+							quantity : record.data.quantity,
+							customer : record.data.customer,
+							orderConfirmationNumber : ocnr
+						},
+						success : function(response) {
+							var text = response.responseText;
+						},
+						failure : function(response) {
+							// TODO: Fehlerhandling vereinheitlichen
+							Ext.Msg.alert('Fehler', response.status
+											+ response.text);
+						}
+					});
+			if (this.debug)
+				console.log('deconfirm order');
+
+			// Sync
+			MyApp.getApplication().getController('MyController').sleep(500);
+			var allGrids = Ext.ComponentQuery.query('PositionGrid');
+			allGrids.forEach(function(grid) {
+						grid.getStore().load();
+					});
+		}
+	},
+	
 	deliver:function(event, inr, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "

@@ -84,6 +84,29 @@ public class TransitionController {
 		return response;
 	}
 	
+	@RequestMapping(value="/deconfirm/json", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse deconfirm(
+			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber) 
+					throws Exception {
+		
+		log.debug("received json deconfirm request: customer:"+customerId + " product:"+ productNumber 
+				+ " orderConfirmationNumber:"+orderConfirmationNumber);
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		Customer customer = customerService.find(customerId);
+		Product product = productService.findByProductNumber(productNumber);
+		ShippingItem shippingItem = transitionService.deconfirm(customer, product, orderConfirmationNumber);
+		
+		response.setData(shippingItem);
+		response.setTotal(1);
+		response.setMessage("order item deconfirmed");
+		response.setSuccess(true);
+
+		return response;
+	}
+	
 	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deliver(
 			@RequestParam(value = "customer", required = true) long customerId,

@@ -131,7 +131,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 				xtype : 'gridcolumn',
 				dataIndex : 'expectedDelivery',
 				text : 'Geplante Auslieferung',
-				width : 110,
+				width : 120,
 				format : 'd/m/Y',
 				editor : {
 					xtype : 'datefield',

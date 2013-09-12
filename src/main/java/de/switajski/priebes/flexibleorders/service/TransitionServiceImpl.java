@@ -34,6 +34,7 @@ public class TransitionServiceImpl implements TransitionService {
 	private InvoiceItemRepository invoiceItemRepository;
 	private CustomerService customerService;
 	private ArchiveItemRepository archiveItemRepository;
+	private OrderItemService orderItemService;
 
 	@Autowired
 	public TransitionServiceImpl(
@@ -41,12 +42,15 @@ public class TransitionServiceImpl implements TransitionService {
 			ShippingItemRepository shippingItemRepo,
 			InvoiceItemRepository invoiceItemRepo,
 			CustomerService customerService,
-			ArchiveItemRepository archiveItemRepository) {
+			ArchiveItemRepository archiveItemRepository,
+			OrderService orderService,
+			OrderItemService orderItemService) {
 		this.orderItemRepository = orderItemRepo;
 		this.shippingItemRepository = shippingItemRepo;
 		this.invoiceItemRepository = invoiceItemRepo;
 		this.customerService = customerService;
 		this.archiveItemRepository = archiveItemRepository;
+		this.orderItemService = orderItemService;
 	}
 	
 	@Transactional
@@ -85,6 +89,8 @@ public class TransitionServiceImpl implements TransitionService {
 		}
 		return shippingItems;
 	}
+	
+	
 	
 	private boolean quantityIsSufficient(int neededQuantity, List<OrderItem> matchingOis, List<OrderItem> traversedItems) {
 		int availableQuantity = 0;
@@ -186,6 +192,48 @@ public class TransitionServiceImpl implements TransitionService {
 			availableQuantity += oi.getQuantity();
 		}
 		return (availableQuantity >= neededQuantity);
+	}
+
+	@Override
+	public ShippingItem deconfirm(Customer customer, Product product,
+			long orderConfirmationNumber) {
+		List<ShippingItem> siToReturn = new ArrayList<ShippingItem>();
+		
+		// find open shipping items
+		List<ShippingItem> openShippingItems = shippingItemRepository.findByOrderConfirmationNumber(orderConfirmationNumber);
+		for (ShippingItem si:openShippingItems){
+			if (si.getStatus().equals(Status.CONFIRMED))
+				if (si.getProduct().equals(product))
+					if (si.getCustomer().equals(customer))
+						siToReturn.add(si);
+		}
+		
+		// find corresponding order items
+		OrderItem oi = orderItemService.findCorresponding(openShippingItems.get(0));
+		
+		// set order items to ORDERED and set the order confirmation number to null
+		oi.setStatus(Status.ORDERED);
+		oi.setOrderConfirmationNumber(null);
+		
+		// delete shipping items
+		for (ShippingItem si:siToReturn)
+			shippingItemRepository.delete(si);
+		
+		return siToReturn.get(0);
+	}
+
+	@Override
+	public InvoiceItem withdraw(Customer customer, Product product,
+			long invoiceNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArchiveItem decomplete(Customer customer, Product product,
+			long accountNumber) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

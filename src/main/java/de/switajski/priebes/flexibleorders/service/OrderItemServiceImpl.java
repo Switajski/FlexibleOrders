@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,47 +15,53 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 
 
 @Service
 @Transactional
 public class OrderItemServiceImpl extends JpaRepositoryToServiceAdapter<OrderItem> implements OrderItemService {
 
+	OrderItemRepository orderItemRepository;
+	ShippingItemRepository shippingItemRepository;
+
 	@Autowired
-	public OrderItemServiceImpl(OrderItemRepository jpaRepository) {
+	public OrderItemServiceImpl(OrderItemRepository jpaRepository,
+			OrderItemRepository orderItemRepository,
+			ShippingItemRepository shippingItemRepository) {
 		super(jpaRepository);
+		this.orderItemRepository = orderItemRepository;
+		this.shippingItemRepository = shippingItemRepository;
 	}
 
-	@Autowired
-    OrderItemRepository orderItemRepository;
 
 	public long countAllOrderItems() {
-        return orderItemRepository.count();
-    }
+		return orderItemRepository.count();
+	}
 
 	public void deleteOrderItem(OrderItem orderItem) {
-        orderItemRepository.delete(orderItem);
-    }
+		orderItemRepository.delete(orderItem);
+	}
 
 	public OrderItem findOrderItem(Long id) {
-        return orderItemRepository.findOne(id);
-    }
+		return orderItemRepository.findOne(id);
+	}
 
 	public List<OrderItem> findAllOrderItems() {
-        return orderItemRepository.findAll();
-    }
+		return orderItemRepository.findAll();
+	}
 
 	public List<OrderItem> findOrderItemEntries(int firstResult, int maxResults) {
-        return orderItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
-    }
+		return orderItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+	}
 
 	public void saveOrderItem(OrderItem orderItem) {
 		orderItemRepository.save(orderItem);
-    }
+	}
 
 	public OrderItem updateOrderItem(OrderItem orderItem) {
-        return orderItemRepository.save(orderItem);
-    }
+		return orderItemRepository.save(orderItem);
+	}
 
 	@Override
 	public List<OrderItem> findByOrderNumber(Long orderNumber) {
@@ -70,9 +77,22 @@ public class OrderItemServiceImpl extends JpaRepositoryToServiceAdapter<OrderIte
 	public Page<OrderItem> findAll(Pageable pageable) {
 		return orderItemRepository.findAll(pageable);
 	}
-	
+
 	public Page<OrderItem> findOrdered(Pageable pageable){
 		return orderItemRepository.findByStatus(Status.ORDERED, pageable);
 	}
+
+	@Override
+	public OrderItem findCorresponding(ShippingItem shippingItem) {
+		List<OrderItem> orderItems = orderItemRepository.findByOrderNumber(shippingItem.getOrderNumber());
+		for (OrderItem oi:orderItems){
+			if (oi.getProduct().equals(shippingItem.getProduct())){
+				return oi;
+			}
+		}
+
+		return null;
+	}
+
 
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.roo.addon.layers.service.RooService;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 //@RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.ShippingItem.class })
@@ -13,4 +14,5 @@ public interface ShippingItemService extends CrudServiceAdapter<ShippingItem>{
 	Page<ShippingItem> findConfirmed(Pageable pageable);
 	Page<ShippingItem> findByOrderConfirmationNumber(Long orderConfirmationNumber, Pageable pageable);
 	List<ShippingItem> findByOrderConfirmationNumber(Long id);
+	
 }

@@ -97,6 +97,16 @@ privileged aspect OrderItemController_Roo_Controller {
         return "orderitems/update";
     }
     
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String OrderItemController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        OrderItem orderItem = orderItemService.findOrderItem(id);
+        orderItemService.deleteOrderItem(orderItem);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/orderitems";
+    }
+    
     void OrderItemController.addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("orderItem_created_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("orderItem_expecteddelivery_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));

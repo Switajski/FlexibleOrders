@@ -4,11 +4,13 @@ import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +29,17 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 	private static final String ID = "orderConfirmationNumber";
 	private ShippingItemService shippingItemService;
 	private OrderItemRepository orderItemRepository;
+	private ProductService productService;
 
 	@Autowired
 	public ShippingItemController(
 			ShippingItemService crudServiceAdapter,
-			OrderItemRepository orderItemService) {
+			OrderItemRepository orderItemService,
+			ProductService productService) {
 		super(crudServiceAdapter);
 		this.shippingItemService = crudServiceAdapter;
 		this.orderItemRepository = orderItemService;
+		this.productService = productService;
 	}
 
 	@Override
@@ -58,7 +63,11 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 
 	@Override
 	protected void resolveDependencies(ShippingItem entity) {
-		// TODO Auto-generated method stub
+		long productNumber = entity.getProduct().getProductNumber();
+		entity.setProduct(productService.findByProductNumber(productNumber));
+		
+		Customer customer = customerService.find(entity.getCustomer().getId());
+		entity.setCustomer(customer);
 
 	}
 

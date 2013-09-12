@@ -36,6 +36,12 @@ public class OrderItem extends Item {
     private int orderItemNumber;
 
     /**
+     * this method represents the second transistion of the order process. 
+     * The first one is to create an order item: </br>
+     * 1. new Orderitem </br>
+     * 2. orderItem.confirm </br>
+     * 3. shippingItem.deliver </br>
+     * ...
      * 
      * @param toSupplier
      * @return

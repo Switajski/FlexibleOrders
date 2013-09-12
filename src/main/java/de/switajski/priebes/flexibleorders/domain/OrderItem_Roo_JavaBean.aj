@@ -4,12 +4,9 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import java.util.Date;
 
 privileged aspect OrderItem_Roo_JavaBean {
     
-        
-        
     public int OrderItem.getOrderItemNumber() {
         return this.orderItemNumber;
     }

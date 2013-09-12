@@ -13,15 +13,17 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.report.Order;
 
 /**
- * Orders are reports. Consequently read-only.
  * @author Marek
  *
  */
 public interface TransitionService {
 
 	List<ShippingItem> confirm(Customer customer, Product product, int quantity, boolean toSupplier, long orderConfirmationNumber);
+	ShippingItem deconfirm(Customer customer, Product product, long orderConfirmationNumber);
 	
 	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber);
+	InvoiceItem withdraw(Customer customer, Product product, long invoiceNumber);
 	
 	List<ArchiveItem> complete(Customer customer, Product product, int quantity, long accountNumber);
+	ArchiveItem decomplete(Customer customer, Product product, long accountNumber);
 }

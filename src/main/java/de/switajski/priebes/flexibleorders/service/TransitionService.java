@@ -22,7 +22,7 @@ public interface TransitionService {
 	ShippingItem deconfirm(Customer customer, Product product, long orderConfirmationNumber);
 	
 	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber);
-	InvoiceItem withdraw(Customer customer, Product product, long invoiceNumber);
+	InvoiceItem withdraw(Customer customer, Product product, long invoiceNumber, int quantity);
 	
 	List<ArchiveItem> complete(Customer customer, Product product, int quantity, long accountNumber);
 	ArchiveItem decomplete(Customer customer, Product product, long accountNumber);

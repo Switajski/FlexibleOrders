@@ -25,17 +25,23 @@ Ext.define('MyApp.view.DeliverPanel', {
 	},
 	title : 'Auftragspositionen liefern',
 	requires : ['MyApp.store.ShippingItemDataStore'],
-	/*dockedItems : [{
+	dockedItems : [{
 		xtype : 'toolbar',
 		dock : 'top',
 		items : [{
-			id : 'ErstelleBestellungButton',
+			id : 'AddShippingCostsButton',
 			icon : '/FlexibleOrders/images/add.png',
-			text : 'erstelle Bestellung',
+			text : 'Fuege Versandkosten hinzu',
+			scope : this
+		},
+		{
+			id : 'CreateShippingCostsButton',
+			icon : '/FlexibleOrders/images/add.png',
+			text : 'Erstelle Versandkosten',
 			scope : this
 		}]
 
-	}],*/
+	}],
 
 	initComponent : function() {
 		var me = this;
@@ -64,8 +70,6 @@ Ext.define('MyApp.view.DeliverPanel', {
 
 				]
 			}]
-				// { xtype:'bestellunggridpanel' },
-
 		});
 		me.callParent(arguments);
 	}

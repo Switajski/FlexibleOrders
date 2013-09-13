@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -15,6 +16,7 @@ import javax.persistence.Enumerated;
 @RooJavaBean
 @RooToString
 @RooJpaEntity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InvoiceItem extends Item {
 
     /**

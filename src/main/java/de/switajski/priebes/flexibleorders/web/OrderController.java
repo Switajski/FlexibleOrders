@@ -23,7 +23,6 @@ import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
-import de.switajski.priebes.flexibleorders.util.orderNumber;
 
 @Controller
 @RequestMapping("/orders")
@@ -124,5 +123,14 @@ public class OrderController extends JsonController<Order> {
 		
 	}
 	
+	public class orderNumber {
+
+		  public long orderNumber;
+
+		  public orderNumber(long orderNumber) {
+		    this.orderNumber = orderNumber;
+		  }
+
+		}
 	
 }

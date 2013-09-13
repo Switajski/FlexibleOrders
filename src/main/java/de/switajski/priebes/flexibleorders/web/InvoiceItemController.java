@@ -5,12 +5,14 @@ import java.util.List;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +32,30 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 	private InvoiceItemService invoiceItemService;
 	private CustomerService customerService;
 	private ShippingItemRepository shippingItemRepository;
+	private ProductService productService;
 
 	@Autowired
 	public InvoiceItemController(InvoiceItemService readService,
 			CustomerService customerService,
-			ShippingItemRepository shippingItemRepository) {
+			ShippingItemRepository shippingItemRepository,
+			ProductService productService) {
 		super(readService);
 		this.invoiceItemService = readService;
 		this.customerService = customerService;
 		this.shippingItemRepository = shippingItemRepository;
+		this.productService = productService;
 	}
 
 	@Override
 	protected void resolveDependencies(InvoiceItem entity) {
-		// TODO Auto-generated method stub
+		long productNumber = entity.getProduct().getProductNumber();
+		Product p = productService.findByProductNumber(productNumber);
+		
+		if (hasConflictingCustomer(entity))
+			throw new IllegalArgumentException("An order item with same order number exists, but has a different customer!");
+		
+		Customer customer = customerService.find(entity.getCustomer().getId());
+		entity.setCustomer(customer);
 
 	}
 
@@ -78,4 +90,21 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 
 		}
 	}
+
+	//TODO: DRY in OrderItemController - same Method, but different Entity
+	/**
+	 * verifies, that an order has not different customers
+	 * @param orderItem
+	 */
+	private boolean hasConflictingCustomer(InvoiceItem invoiceItem) {
+		List<InvoiceItem> invoiceItems = invoiceItemService.findByInvoiceNumber(invoiceItem.getInvoiceNumber());
+		if (!invoiceItems.isEmpty()){
+			for (InvoiceItem oi: invoiceItems)
+				if (oi.getOrderNumber()!=invoiceItem.getInvoiceNumber()){
+					return true;
+				}
+		}
+		return false;
+	}
+
 }

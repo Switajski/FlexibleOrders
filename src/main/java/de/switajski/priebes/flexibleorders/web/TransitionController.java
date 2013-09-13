@@ -133,6 +133,31 @@ public class TransitionController {
 		return response;
 	}
 	
+	@RequestMapping(value="/withdraw/json", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse withdraw(
+			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
+			@RequestParam(value = "quantity", required = true) int quantity) 
+					throws Exception {
+		
+		log.debug("received json withdraw request: customer:"+customerId + " product:"+ productNumber 
+				+ " invoiceNumber:"+invoiceNumber);
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		Customer customer = customerService.find(customerId);
+		Product product = productService.findByProductNumber(productNumber);
+		InvoiceItem invoiceItem = transitionService.withdraw(customer, product, invoiceNumber, quantity);
+		
+		response.setData(invoiceItem);
+		response.setTotal(1);
+		response.setMessage("invoice item withdrawed");
+		response.setSuccess(true);
+
+		return response;
+	}
+
+	
 	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse complete(
 			@RequestParam(value = "customer", required = true) long customerId,

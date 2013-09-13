@@ -14,6 +14,13 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 				var win = window.open('/FlexibleOrders/invoices/' + record.data.invoiceNumber
 						+ '.pdf', '_blank');
 				win.focus();
+			},
+	onRemoveClick: function(view, a, b, column, event, record, f) {
+				console.log('invvoiceItemGrid - customtransitionfunction');
+				MyApp.getApplication().getController('MyController').withdraw(
+						"ok", record);
+
 			}
+
 
 });

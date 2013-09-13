@@ -1,4 +1,3 @@
-
 Ext.define('MyApp.model.InvoiceItemData', {
-	extend: 'MyApp.model.BestellpositionData',
-});
+			extend : 'MyApp.model.ShippingItemData'
+		});

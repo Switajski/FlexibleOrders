@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
+import de.switajski.priebes.flexibleorders.web.JsonController;
 
 @Transactional
 @Service
@@ -35,6 +37,7 @@ public class TransitionServiceImpl implements TransitionService {
 	private CustomerService customerService;
 	private ArchiveItemRepository archiveItemRepository;
 	private OrderItemService orderItemService;
+	private static Logger log = Logger.getLogger(JsonController.class);
 
 	@Autowired
 	public TransitionServiceImpl(
@@ -224,8 +227,12 @@ public class TransitionServiceImpl implements TransitionService {
 
 	@Override
 	public InvoiceItem withdraw(Customer customer, Product product,
-			long invoiceNumber) {
-		// TODO Auto-generated method stub
+			long invoiceNumber, int quantity) {
+		
+		log.debug("withdrawing customer:" + customer.getId() +
+				" productNumber:" + product.getProductNumber() +
+				" invoiceNumber" + invoiceNumber +
+				" quantity:" + quantity);
 		return null;
 	}
 

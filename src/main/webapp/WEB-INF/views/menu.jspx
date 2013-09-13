@@ -10,6 +10,7 @@
         </menu:category>
         <menu:category id="c_shippingitem" z="PQsaZGWS91xAZdfKj5chiAeBGDg=">
             <menu:item id="i_shippingitem_new" messageCode="global_menu_new" url="/shippingitems?form" z="j9T2atXSxXL+E2p5jo1JU6ohqUQ="/>
+            <menu:item id="i_shippingitem_deliver" messageCode="global_menu_deliver" url="/shippingitems/deliver" />
             <menu:item id="i_shippingitem_list" messageCode="global_menu_list" url="/shippingitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jBmCDwiCaRzsQrtQqA8WmpsVyrg="/>
         </menu:category>
         <menu:category id="c_invoiceitem" z="4uyH+wMUSjWVLV28xRX+6qU1kE0=">

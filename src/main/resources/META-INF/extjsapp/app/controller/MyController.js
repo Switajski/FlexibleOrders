@@ -39,7 +39,7 @@ Ext.define('MyApp.controller.MyController', {
 			'ArchiveItemDataStore','OrderNumberDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
-			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow',
+			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
 			'TransitionWindow', 'OrderNumberComboBox'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
 	// implementieren

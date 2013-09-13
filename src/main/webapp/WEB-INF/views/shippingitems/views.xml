@@ -4,6 +4,9 @@
     <definition extends="default" name="shippingitems/list">
         <put-attribute name="body" value="/WEB-INF/views/shippingitems/list.jspx"/>
     </definition>
+<definition extends="default" name="shippingitems/deliver">
+        <put-attribute name="body" value="/WEB-INF/views/shippingitems/deliver.jspx"/>
+    </definition>
 <definition extends="default" name="shippingitems/show">
         <put-attribute name="body" value="/WEB-INF/views/shippingitems/show.jspx"/>
     </definition>

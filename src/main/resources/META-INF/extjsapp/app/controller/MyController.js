@@ -450,8 +450,10 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/deliver/json',
 						params : {
+							trackNumber : userRequestedTrackNumber,
+							packageNumber : userRequestedPackageNumber,
+							quantity : userRequestedQuantityNumber,
 							productNumber : record.data.product,
-							quantity : record.data.quantity,
 							customer : record.data.customer,
 							invoiceNumber : inr
 						},

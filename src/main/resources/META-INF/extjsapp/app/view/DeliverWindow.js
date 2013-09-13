@@ -10,7 +10,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 	customsecondstore : 'InvoiceItemDataStore',
 
 	customfirstgrid:'ShippingItemGrid',
-	customsecondgrid:'InvoiceItemGrid',
+	customsecondgrid:'InvoiceItemGrid'
 	/*initComponent : function() {
 		var me = this;
 		var firstDataStore = Ext.create('MyApp.store.BestellpositionDataStore',

@@ -4,9 +4,8 @@ Ext.define('MyApp.view.ShippingItemGridPanel', {
 	title : "Zu liefernde Auftragspositionen",
 	onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('ShippingItemGrid - customtransitionfunction');
-				var inr = this.getStore().data.items[0].data.orderConfirmationNumber;
 				MyApp.getApplication().getController('MyController').deliver(
-						"ok", inr, record);
+						"ok", record);
 
 			},
 	onPdfClick : function(view, a, b, column, event, record, f){

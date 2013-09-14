@@ -13,7 +13,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 			layout : 'anchor',
 			items : [{
 						xtype : 'form',
-						id : 'BestellungForm',
+						id : 'DeliverForm',
 						bodyPadding : 10,
 						items : [{
 									xtype : 'fieldset',
@@ -49,48 +49,45 @@ Ext.define('MyApp.view.DeliverWindow', {
 												name : 'shippingName1',
 												fieldLabel : 'Name 1',
 												allowBlank : false
-											},{
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'shippingName2',
 												fieldLabel : 'Name 2',
 												allowBlank : false
-											},
-											{
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'shippingStreet',
 												fieldLabel : 'Strasse',
 												allowBlank : false
-											},
-											{
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'shippingPostalCode',
 												fieldLabel : 'PLZ',
 												allowBlank : false
-											},{
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'shippingCity',
 												fieldLabel : 'Stadt',
 												allowBlank : false
-											},{
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'shippingCountry',
 												fieldLabel : 'Land',
 												allowBlank : false
 											}]
-								},
-								{
+								}, {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
 									flex : 1,
-									items : [
-											{
+									items : [{
 												itemid : 'invoiceNumber',
 												xtype : 'invoicenumbercombobox',
+												name : 'invoiceNumber',
 												fieldLabel : 'Rechnungsnr',
 												allowBlank : false,
 												allowDecimals : false,
@@ -138,7 +135,6 @@ Ext.define('MyApp.view.DeliverWindow', {
 		me.callParent(arguments);
 		if (this.record == null)
 			console.error('no record set!');
-		console.log('hierher');
 
 		var invoiceItem = Ext.create('MyApp.model.InvoiceItemData', {
 					product : this.record.data.product,
@@ -154,12 +150,30 @@ Ext.define('MyApp.view.DeliverWindow', {
 				})
 
 		this.down('form').getForm().loadRecord(invoiceItem);
-		console.log(this.down('form').getForm().getRecord());
-		var combobox = Ext.ComponentQuery.query('invoicenumbercombobox')[0];
-		combobox.setValue(this.record.data.orderConfirmationNumber);
+
+		// set the listeners to update record onChange
+		this.down('form').items.each(function(item) {
+			item.items.each(function(ii) {
+				console.log(ii);
+				ii.on({
+					change : function() {
+						var window = Ext.ComponentQuery.query('DeliverWindow')[0];
+						window.down('form').getForm()
+								.updateRecord(window.record);
+					}
+				});
+			});
+		});
 	},
+	updateRecord : function() {
+		// var window = Ext.ComponentQuery.query('DeliverWindow')[0];
+		// window.down('form').getForm().updateRecord(window.record);
+		console.log('Es funktioniert!');
+	},
+
 	setInvoiceNumber : function(invoiceNumber) {
 		this.down('form').down('invoicenumbercombobox').setValue(invoiceNumber);
+		this.record.data.invoiceNumber = invoiceNumber;
 	},
 	setQuantity : function(quantity) {
 		this.down('form').down('numberfield[name=quantity]').setValue(quantity);
@@ -212,6 +226,13 @@ Ext.define('MyApp.view.DeliverWindow', {
 		if (form.isValid()) {
 			form.updateRecord(active);
 			this.onReset();
+		}
+	},
+	onComboboxChange : function() {
+		if (record != null) {
+			var combobox = Ext.ComponentQuery.query('invoicenumbercombobox')[0];
+			this.record.data.invoiceNumber = combobox.getValue();
+			console.log('new value' + combobox.getValue());
 		}
 	}
 

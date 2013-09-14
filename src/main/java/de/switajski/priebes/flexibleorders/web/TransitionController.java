@@ -112,7 +112,9 @@ public class TransitionController {
 			@RequestParam(value = "customer", required = true) long customerId,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "quantity", required = true) int quantity,
-			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber) 
+			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
+			@RequestParam(value = "trackNumber", required = false) String trackNumber,
+			@RequestParam(value = "packageNumber", required = false) String packageNumber) 
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
@@ -122,7 +124,8 @@ public class TransitionController {
 		
 		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		List<InvoiceItem> shippingItems = transitionService.deliver(customer, product, quantity, invoiceNumber);
+		List<InvoiceItem> shippingItems = transitionService.deliver(customer, product, quantity, 
+				invoiceNumber, trackNumber, packageNumber);
 		for (InvoiceItem shippingItem:shippingItems)
 			invoiceItemService.save(shippingItem);
 		response.setData(shippingItems);

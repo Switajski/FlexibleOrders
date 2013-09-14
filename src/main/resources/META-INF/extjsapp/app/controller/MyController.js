@@ -460,17 +460,14 @@ Ext.define('MyApp.controller.MyController', {
 	 * 
 	 * @param {} function only succeds if event is equals "ok". This variable if for 
 	 * previous confirmation messages.
-	 * @param {} inr custom invoice Number, if the user wants to add the shipping item 
-	 * to a different invoice
-	 * @param {} record selected record from a grid
+	 * @param {} record selected shipping item from a grid
 	 */
-	deliver : function(event, inr, record) {
+	deliver : function(event, record) {
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					record: record,
 					onSave : function() {
 						MyApp.getApplication().getController('MyController').deliver2(
 							"ok",
-							this.getInvoiceNumber(),
 							this.record
 						);
 					}
@@ -479,7 +476,13 @@ Ext.define('MyApp.controller.MyController', {
 		
 	},
 
-	deliver2 : function(event, inr, record) {
+	/**
+	 * 
+	 * @param {} event
+	 * @param {} inr
+	 * @param {} record the invoice item for the transition 
+	 */
+	deliver2 : function(event, record) {
 		console.log('deliver2');
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
@@ -488,12 +491,12 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/deliver/json',
 						params : {
-							trackNumber : userRequestedTrackNumber,
-							packageNumber : userRequestedPackageNumber,
-							quantity : userRequestedQuantityNumber,
+							trackNumber : record.data.trackNumber,
+							packageNumber : record.data.packageNumber,
+							quantity : record.data.quantity,
 							productNumber : record.data.product,
 							customer : record.data.customer,
-							invoiceNumber : inr
+							invoiceNumber : record.data.invoiceNumber
 						},
 						success : function(response) {
 							var text = response.responseText;
@@ -514,7 +517,7 @@ Ext.define('MyApp.controller.MyController', {
 						grid.getStore().load();
 					});
 		}
-	},
+	},	
 	
 	withdraw : function(event, record) {
 		if (event == "ok") {

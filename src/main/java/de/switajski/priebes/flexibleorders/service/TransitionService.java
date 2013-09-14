@@ -21,7 +21,7 @@ public interface TransitionService {
 	List<ShippingItem> confirm(Customer customer, Product product, int quantity, boolean toSupplier, long orderConfirmationNumber);
 	ShippingItem deconfirm(Customer customer, Product product, long orderConfirmationNumber);
 	
-	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber);
+	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber, String trackNumber, String packageNumber);
 	InvoiceItem withdraw(Customer customer, Product product, long invoiceNumber, int quantity);
 	
 	List<ArchiveItem> complete(Customer customer, Product product, int quantity, long accountNumber);

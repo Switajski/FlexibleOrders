@@ -121,7 +121,7 @@ public class TransitionServiceImpl implements TransitionService {
 	
 	@Override
 	public List<InvoiceItem> deliver(Customer customer, Product product,
-			int quantity, long invoiceNumber) {
+			int quantity, long invoiceNumber, String trackNumber, String packageNumber) {
 		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
 		List<ShippingItem> traversedItems = new ArrayList<ShippingItem>();
 		
@@ -238,7 +238,7 @@ public class TransitionServiceImpl implements TransitionService {
 	@Override
 	public InvoiceItem withdraw(Customer customer, Product product,
 			long invoiceNumber, int quantity) {
-		
+		//TODO: verify invoiceNumber and same customer!
 		log.debug("withdrawing customer:" + customer.getId() +
 				" productNumber:" + product.getProductNumber() +
 				" invoiceNumber" + invoiceNumber +

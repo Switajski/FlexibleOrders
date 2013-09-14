@@ -63,7 +63,7 @@ public class TransitionServiceImpl implements TransitionService {
 	public List<ShippingItem> confirm(Customer customer, Product product,
 			int quantity, boolean toSupplier, long orderConfirmationNumber) {
 		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
-		List<OrderItem> traversedItems = new ArrayList<OrderItem>();
+		/*List<OrderItem> traversedItems = new ArrayList<OrderItem>();
 		
 		List<OrderItem> matchingOis = new ArrayList<OrderItem>();
 		for (OrderItem oi:customerService.findOrderedItems(customer))
@@ -91,6 +91,21 @@ public class TransitionServiceImpl implements TransitionService {
 		for (ShippingItem shippingItem:shippingItems){
 			shippingItemRepository.saveAndFlush(shippingItem);
 		}
+		return shippingItems;*/
+
+		//TODO: confirm by quantity 
+		List<OrderItem> orderItemsByOcn = orderItemRepository.findByStatus(Status.ORDERED);
+		for (OrderItem oi:orderItemsByOcn){
+			if (oi.getProduct().equals(product))
+				if (oi.getStatus()==Status.ORDERED){
+					ShippingItem si = oi.confirm(false, oi.getQuantity(), orderConfirmationNumber);
+					orderItemRepository.saveAndFlush(oi);
+					shippingItemRepository.saveAndFlush(si);
+					shippingItems.add(si);
+				}
+					
+		}
+		
 		return shippingItems;
 	}
 	
@@ -115,7 +130,7 @@ public class TransitionServiceImpl implements TransitionService {
 	}
 
 	private boolean isQuantityExceeded(Item oi, int quantity) {
-		return (oi.getQuantity()>quantity);
+		return (oi.getQuantity()>=quantity);
 	}
 
 	
@@ -211,13 +226,16 @@ public class TransitionServiceImpl implements TransitionService {
 					if (si.getCustomer().equals(customer))
 						siToReturn.add(si);
 		}
-		
+		if (openShippingItems.isEmpty())
+			throw new IllegalStateException("no open Shipping Items found, that match product and customer!");
 		// find corresponding order items
 		OrderItem oi = orderItemService.findCorresponding(openShippingItems.get(0));
 		
+		//TODO: move to logic
 		// set order items to ORDERED and set the order confirmation number to null
 		oi.setStatus(Status.ORDERED);
 		oi.setOrderConfirmationNumber(null);
+		oi.setQuantityLeft(oi.getQuantityLeft() + oi.getQuantity());
 		
 		// delete shipping items
 		for (ShippingItem si:siToReturn)
@@ -268,6 +286,7 @@ public class TransitionServiceImpl implements TransitionService {
 				if (si.getQuantity() == quantity){
 					si.setInvoiceNumber(null);
 					si.setStatus(Status.CONFIRMED);
+					si.setQuantityLeft(si.getQuantityLeft() + quantity);
 					withdrawn = true;
 					break;
 				}

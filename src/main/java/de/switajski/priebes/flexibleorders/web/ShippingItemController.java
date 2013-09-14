@@ -71,6 +71,7 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 		Customer customer = customerService.find(entity.getCustomer().getId());
 		entity.setCustomer(customer);
 
+		entity.setQuantityLeft(entity.getQuantity());
 	}
 
 	@Override

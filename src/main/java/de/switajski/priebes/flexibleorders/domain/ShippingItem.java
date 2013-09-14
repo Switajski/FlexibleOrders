@@ -1,19 +1,24 @@
 package de.switajski.priebes.flexibleorders.domain;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.validation.constraints.NotNull;
+
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 @RooJavaBean
@@ -133,6 +138,7 @@ public class ShippingItem extends Item {
         setCreated(new Date());
         setStatus(Status.CONFIRMED);
         setQuantity(quantity);
+        setQuantityLeft(quantity);
         Customer customer = orderItem.getCustomer();
         //TODO: Create @Embedded class shippingAddress
         setShippingCity(customer.getCity());
@@ -144,9 +150,16 @@ public class ShippingItem extends Item {
     }
 
     public InvoiceItem deliver(int quantity, long invoiceNumber) {
+    	if (quantity > this.getQuantityLeft()) 
+    		throw new IllegalArgumentException("quantity is more than left!");
+    	if (quantity < 1)
+        	throw new IllegalArgumentException("quantity cannot be less than 1");
+        
+    	this.setQuantityLeft(getQuantity() - quantity);
         this.setInvoiceNumber(invoiceNumber);
         InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
-        this.setStatus(Status.SHIPPED);
+        if (getQuantityLeft()==0) 
+        	this.setStatus(Status.SHIPPED);
         return ii;
     }
 

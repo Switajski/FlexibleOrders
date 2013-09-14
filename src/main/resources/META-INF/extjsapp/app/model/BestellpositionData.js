@@ -43,6 +43,10 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 type: 'int'
 		 },
 		 {
+			 name: 'quantityLeft',
+			 type: 'int'
+		 },
+		 {
 			 name: 'priceNet'
 		 },
 		 {

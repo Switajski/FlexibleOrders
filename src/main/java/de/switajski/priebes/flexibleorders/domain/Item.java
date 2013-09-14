@@ -172,6 +172,7 @@ public abstract class Item implements Comparable<Item> {
 		return null;*/
     }
 	
+	@Deprecated
 	public void stepBackward(){
 		if (this.accountNumber!=null){
 			setStatus(Status.SHIPPED);

@@ -71,6 +71,8 @@ public class OrderItemController extends JsonController<OrderItem>{
 		
 		Customer customer = customerService.find(entity.getCustomer().getId());
 		entity.setCustomer(customer);
+		
+		entity.setQuantityLeft(entity.getQuantity());
 	}
 
 	private boolean hasNoPrice(OrderItem entity) {

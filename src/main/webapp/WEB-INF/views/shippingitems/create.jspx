@@ -22,6 +22,7 @@
         <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="sqdoxjnIX5ebR/Ne7CiT+ijT+Wc="/>
         <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_product" itemValue="id" items="${products}" path="/products" required="true" z="FUSVEx8FjHQtfZe+jpbB99wKV3M="/>
         <field:datetime dateTimePattern="${shippingItem_expecteddelivery_date_format}" field="expectedDelivery" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_expectedDelivery" z="fPCALMZ2EsJEoLs6b+WEXX1oeX0="/>
+        <field:input field="quantityLeft" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantityLeft" validationMessageCode="field_invalid_integer" z="O6lR+EM3H8U3Cx4IMb+K6zWIhOQ="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_ShippingItem" render="${not empty dependencies}" z="9L9foR1QvjkdI5rGm5N8sF2GmWs="/>
 </div>

@@ -347,6 +347,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 						oi.setOrderConfirmationNumber(orderItems.getLong("ab_id"));
 
 					oi.setQuantity(orderItems.getInt("orderitem_quantity"));
+					oi.setQuantityLeft(orderItems.getInt("orderitem_quantity"));
 					oi.setPriceNet(orderItems.getBigDecimal("orderitem_price"));
 					oi.setStatus(Status.COMPLETED);
 

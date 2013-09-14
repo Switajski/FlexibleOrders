@@ -4,13 +4,17 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
@@ -30,6 +34,9 @@ public class OrderItem extends Item {
      */
     @NotNull
     private int orderItemNumber;
+    /**
+     */
+    private Integer quantityLeft;
 
     /**
      * this method represents the second transistion of the order process.
@@ -43,9 +50,15 @@ public class OrderItem extends Item {
      * @return
      */
     public ShippingItem confirm(boolean toSupplier, int quantity, long orderConfirmationNumber) {
-        setOrderConfirmationNumber(orderConfirmationNumber);
+        if (quantity > this.getQuantity()) 
+        	throw new IllegalArgumentException("quantity provided is more than ordered!");
+        if (quantity < 1)
+        	throw new IllegalArgumentException("quantity cannot be less than 1");
+        this.setQuantityLeft(getQuantityLeft() - quantity);
+    	setOrderConfirmationNumber(orderConfirmationNumber);
         ShippingItem si = new ShippingItem(this, quantity, toSupplier, orderConfirmationNumber);
-        this.setStatus(Status.CONFIRMED);
+        if (getQuantityLeft()==0) 
+        	this.setStatus(Status.CONFIRMED);
         return si;
     }
 
@@ -65,7 +78,4 @@ public class OrderItem extends Item {
         this.expectedDelivery = expectedDelivery;
     }
 
-    /**
-     */
-    private Integer quantityLeft;
 }

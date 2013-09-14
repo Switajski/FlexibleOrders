@@ -15,4 +15,12 @@ privileged aspect OrderItem_Roo_JavaBean {
         this.orderItemNumber = orderItemNumber;
     }
     
+    public Integer OrderItem.getQuantityLeft() {
+        return this.quantityLeft;
+    }
+    
+    public void OrderItem.setQuantityLeft(Integer quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
+    
 }

@@ -64,4 +64,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.packageNumber = packageNumber;
     }
     
+    public String InvoiceItem.getTrackNumber() {
+        return this.trackNumber;
+    }
+    
+    public void InvoiceItem.setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+    }
+    
 }

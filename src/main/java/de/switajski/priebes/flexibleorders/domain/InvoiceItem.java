@@ -85,4 +85,8 @@ public class InvoiceItem extends Item {
     /**
      */
     private String packageNumber;
+
+    /**
+     */
+    private String trackNumber;
 }

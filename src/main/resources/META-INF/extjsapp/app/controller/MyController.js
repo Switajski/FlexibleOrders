@@ -456,6 +456,14 @@ Ext.define('MyApp.controller.MyController', {
 		}
 	},
 
+	/**
+	 * 
+	 * @param {} function only succeds if event is equals "ok". This variable if for 
+	 * previous confirmation messages.
+	 * @param {} inr custom invoice Number, if the user wants to add the shipping item 
+	 * to a different invoice
+	 * @param {} record selected record from a grid
+	 */
 	deliver : function(event, inr, record) {
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					record: record,

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javassist.NotFoundException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,6 @@ public class TransitionServiceImpl implements TransitionService {
 			InvoiceItemRepository invoiceItemRepo,
 			CustomerService customerService,
 			ArchiveItemRepository archiveItemRepository,
-			OrderService orderService,
 			OrderItemService orderItemService) {
 		this.orderItemRepository = orderItemRepo;
 		this.shippingItemRepository = shippingItemRepo;
@@ -225,6 +226,15 @@ public class TransitionServiceImpl implements TransitionService {
 		return siToReturn.get(0);
 	}
 
+	/**
+	 * this is a reverse method of deliver.</br>
+	 * The invoice item which has to be withdrawn is specified by the invoice 
+	 * number and product.
+	 * 
+	 * @param invoiceNumber
+	 * @param quantity is needed in case the order confirmation has two shipping items
+	 * with the same product
+	 */
 	@Override
 	public InvoiceItem withdraw(Customer customer, Product product,
 			long invoiceNumber, int quantity) {
@@ -233,7 +243,38 @@ public class TransitionServiceImpl implements TransitionService {
 				" productNumber:" + product.getProductNumber() +
 				" invoiceNumber" + invoiceNumber +
 				" quantity:" + quantity);
-		return null;
+		
+		// get invoice items of the invoice
+		List<InvoiceItem> invoiceItems = invoiceItemRepository.findByInvoiceNumber(invoiceNumber);
+		
+		// find the specified invoice item and the corresponding shipping item
+		InvoiceItem invoiceItem = null;
+		for (InvoiceItem ii: invoiceItems){
+			if (ii.getProduct().equals(product))
+				if (ii.getQuantity() == quantity){
+					invoiceItem = ii;
+					break;
+				}
+		}
+		//if not found, break
+		if (invoiceItem == null)
+			return null;
+		
+		// find corresponding shipping item
+		boolean withdrawn = false;
+		List<ShippingItem> csi = shippingItemRepository.findByInvoiceNumber(invoiceNumber);
+		for (ShippingItem si:csi){
+			if (si.getProduct().equals(product))
+				if (si.getQuantity() == quantity){
+					si.setInvoiceNumber(null);
+					si.setStatus(Status.CONFIRMED);
+					withdrawn = true;
+					break;
+				}
+		}
+		if (withdrawn) invoiceItemRepository.delete(invoiceItem);
+		
+		return invoiceItem;
 	}
 
 	@Override

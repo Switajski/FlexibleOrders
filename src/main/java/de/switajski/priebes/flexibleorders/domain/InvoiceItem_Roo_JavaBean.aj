@@ -56,4 +56,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.invoiceCountry = invoiceCountry;
     }
     
+    public String InvoiceItem.getPackageNumber() {
+        return this.packageNumber;
+    }
+    
+    public void InvoiceItem.setPackageNumber(String packageNumber) {
+        this.packageNumber = packageNumber;
+    }
+    
 }

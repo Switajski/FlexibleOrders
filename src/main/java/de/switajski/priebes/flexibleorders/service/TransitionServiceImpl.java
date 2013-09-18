@@ -39,7 +39,7 @@ public class TransitionServiceImpl implements TransitionService {
 	private CustomerService customerService;
 	private ArchiveItemRepository archiveItemRepository;
 	private OrderItemService orderItemService;
-	private static Logger log = Logger.getLogger(JsonController.class);
+	private static Logger log = Logger.getLogger(TransitionServiceImpl.class);
 
 	@Autowired
 	public TransitionServiceImpl(
@@ -60,6 +60,7 @@ public class TransitionServiceImpl implements TransitionService {
 	@Override
 	public ShippingItem confirm(long orderNumber, Product product,
 			int quantity, boolean toSupplier, long orderConfirmationNumber) {
+		log.debug("confirm");
 		List<OrderItem> orderItems = 
 				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
 		if (orderItems.size()>1) 
@@ -73,11 +74,38 @@ public class TransitionServiceImpl implements TransitionService {
 	}
 
 	@Override
+	public ShippingItem deconfirm(long orderNumber, Product product,
+			long orderConfirmationNumber) {
+		log.debug("deconfirm");
+		List<ShippingItem> sis = 
+				shippingItemRepository.findByOrderConfirmationNumberAndProduct(orderConfirmationNumber, product);
+		List<OrderItem> ois = 
+				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
+		
+		if (sis.size()>1)
+			throw new IllegalStateException("Order confirmation has shipping items with same products");
+		if (sis.size()>1)
+			throw new IllegalStateException("Order has order items with same products");
+		
+		ShippingItem siToDelete = sis.get(0);
+		OrderItem orderItemToDeconfirm = ois.get(0);
+		
+		siToDelete.deconfirm(orderItemToDeconfirm);
+		
+		shippingItemRepository.delete(siToDelete);
+		shippingItemRepository.flush();
+		orderItemRepository.saveAndFlush(orderItemToDeconfirm);
+		
+		return sis.get(0);
+	}
+
+	@Override
 	public InvoiceItem deliver(long orderConfirmationNumber, Product product,
 			int quantity, long invoiceNumber, String trackNumber,
 			String packageNumber) {
+		log.debug("deliver");
 		List<ShippingItem> shippingItems = 
-				shippingItemRepository.findByOrderNumberAndProduct(orderConfirmationNumber, product);
+				shippingItemRepository.findByOrderConfirmationNumberAndProduct(orderConfirmationNumber, product);
 		if (shippingItems.size()>1) 
 			throw new IllegalStateException("Order confirmation has shipping items with same products");
 		ShippingItem siToConfirm = shippingItems.get(0);
@@ -92,7 +120,7 @@ public class TransitionServiceImpl implements TransitionService {
 	@Override
 	public InvoiceItem withdraw(long orderConfirmationNumber, Product product,
 			long invoiceNumber) {
-		// TODO Auto-generated method stub
+		log.error("withdraw - not implemented");
 		return null;
 	}
 
@@ -100,6 +128,7 @@ public class TransitionServiceImpl implements TransitionService {
 	public ArchiveItem complete(long invoiceNumber, Product product,
 			int quantity, long accountNumber) {
 		// TODO Auto-generated method stub
+		log.error("complete - not implemented");
 		return null;
 	}
 
@@ -107,14 +136,9 @@ public class TransitionServiceImpl implements TransitionService {
 	public ArchiveItem decomplete(long invoiceNumber, Product product,
 			long accountNumber) {
 		// TODO Auto-generated method stub
+		log.error("decomplete - not implemented");
 		return null;
 	}
 
-	@Override
-	public ShippingItem deconfirm(long orderNumber, Product product,
-			long orderConfirmationNumber) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

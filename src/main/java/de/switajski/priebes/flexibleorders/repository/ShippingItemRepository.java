@@ -19,7 +19,7 @@ extends JpaSpecificationExecutor<ShippingItem>,
 JpaRepository<ShippingItem, Long>,
 ItemRepository<ShippingItem> {
 
-	List<ShippingItem> findByOrderNumberAndProduct(
+	List<ShippingItem> findByOrderConfirmationNumberAndProduct(
 			long orderConfirmationNumber, Product product);
 
 }

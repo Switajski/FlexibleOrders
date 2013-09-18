@@ -1,11 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,18 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
 import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 import de.switajski.priebes.flexibleorders.service.TransitionService;
@@ -35,7 +25,6 @@ public class TransitionController {
 	
 	private static Logger log = Logger.getLogger(TransitionController.class);
 	private TransitionService transitionService;
-	private CustomerService customerService;
 	private ProductService productService;
 	private ShippingItemService shippingItemService;
 	private InvoiceItemService invoiceItemService;
@@ -44,13 +33,11 @@ public class TransitionController {
 	@Autowired
 	public TransitionController(
 			TransitionService transitionService,
-			CustomerService customerService,
 			ProductService productService,
 			ShippingItemService shippingItemService,
 			InvoiceItemService invoiceItemService,
 			ArchiveItemService archiveItemService) {
 		this.transitionService = transitionService;
-		this.customerService = customerService;
 		this.productService = productService;
 		this.shippingItemService = shippingItemService;
 		this.invoiceItemService = invoiceItemService;
@@ -84,7 +71,7 @@ public class TransitionController {
 	
 	@RequestMapping(value="/deconfirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deconfirm(
-			@RequestParam(value = "customer", required = true) long orderNumber,
+			@RequestParam(value = "orderNumber", required = true) long orderNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber) 
 					throws Exception {

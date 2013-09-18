@@ -398,8 +398,9 @@ Ext.define('MyApp.controller.MyController', {
 						params : {
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
-							customer : record.data.customer,
-							orderConfirmationNumber : ocnr
+							orderConfirmationNumber : ocnr,
+							orderNumber : record.data.orderNumber,
+							toSupplier : record.data.toSupplier
 						},
 						success : function(response) {
 							var text = response.responseText;
@@ -432,7 +433,7 @@ Ext.define('MyApp.controller.MyController', {
 						params : {
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
-							customer : record.data.customer,
+							orderNumber : record.data.orderNumber,
 							orderConfirmationNumber : ocnr
 						},
 						success : function(response) {
@@ -495,7 +496,7 @@ Ext.define('MyApp.controller.MyController', {
 							packageNumber : record.data.packageNumber,
 							quantity : record.data.quantity,
 							productNumber : record.data.product,
-							customer : record.data.customer,
+							orderConfirmationNumber: record.data.orderConfirmationNumber,
 							invoiceNumber : record.data.invoiceNumber
 						},
 						success : function(response) {
@@ -528,7 +529,7 @@ Ext.define('MyApp.controller.MyController', {
 						url : '/FlexibleOrders/transitions/withdraw/json',
 						params : {
 							productNumber : record.data.product,
-							customer : record.data.customer,
+							orderConfirmationNumber : record.data.orderConfirmationNumber,
 							invoiceNumber : record.data.invoiceNumber,
 							quantity : record.data.quantity
 						},
@@ -554,6 +555,10 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 
+	decomplete : function(event, record){
+		console.error('implement me!');
+	},
+	
 	complete : function(event, anr, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
@@ -564,7 +569,7 @@ Ext.define('MyApp.controller.MyController', {
 						params : {
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
-							customer : record.data.customer,
+							invoiceNumber:record.data.invoiceNumber,
 							accountNumber : anr
 						},
 						success : function(response) {

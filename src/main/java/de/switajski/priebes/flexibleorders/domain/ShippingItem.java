@@ -184,6 +184,8 @@ public class ShippingItem extends Item {
 
 	public void deconfirm(OrderItem oi) {
 		oi.reduceConfirmedQuantity(getQuantity());
+		oi.setStatus(Status.ORDERED);
+		oi.setOrderConfirmationNumber(null);
 	}
 	
 	/**

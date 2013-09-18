@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.service;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.AssertTrue;
@@ -25,7 +24,6 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Status;
-import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -37,19 +35,22 @@ import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class TransitionServiceTest {
 
-	@Autowired OrderItemRepository orderItemRepository;
-	@Autowired ShippingItemRepository shippingItemRepository;
-	@Autowired InvoiceItemRepository invoiceItemRepository;
-	@Autowired CustomerService customerService;
 	@Autowired ArchiveItemRepository archiveItemRepository;
+	@Autowired CustomerService customerService;
+	@Autowired InvoiceItemRepository invoiceItemRepository;
 	@Autowired OrderItemService orderItemService;
+	@Autowired OrderItemRepository orderItemRepository;
+	@Autowired ProductService productService;
+	@Autowired ShippingItemRepository shippingItemRepository;
+	@Autowired TransitionService transitionService;
 	
 	private CustomerDataOnDemand cDod;
 	private ProductDataOnDemand pDod;
 	
-	private final static int PRODUCT_NR = 98134756;
+	private final static Long PRODUCT_NR = 98134756l;
 	private final static int CUSTOMER_NR = 1234;
-	private static final int QUANTITY = 4;
+	private static final int QUANTITY_INITIAL = 4;
+	private static final int QUANTITY_CONFIRMED = 2;
 	private static final Long ORDER_NR = 1976578l;
 	private static final long ORDER_CONFIRMATION_NR = 98756345l;
 	
@@ -66,8 +67,10 @@ public class TransitionServiceTest {
 		OrderItem oi = getGivenOrderItem();
 		orderItemRepository.saveAndFlush(oi);
 		
-		ShippingItem si = oi.confirm(false, QUANTITY, ORDER_CONFIRMATION_NR);
-		shippingItemRepository.saveAndFlush(si);
+		ShippingItem si = transitionService.confirm(ORDER_NR, 
+				productService.findByProductNumber(PRODUCT_NR), 
+				QUANTITY_INITIAL, 
+				false, ORDER_CONFIRMATION_NR);
 		
 		assertGivenConfirmedState(oi, si);
 	}
@@ -78,33 +81,74 @@ public class TransitionServiceTest {
 		OrderItem oi = getGivenOrderItem();
 		orderItemRepository.saveAndFlush(oi);
 		
-		ShippingItem si = oi.confirm(false, QUANTITY, ORDER_CONFIRMATION_NR);
-		shippingItemRepository.saveAndFlush(si);
+		ShippingItem si = transitionService.confirm(ORDER_NR, 
+				productService.findByProductNumber(PRODUCT_NR), 
+				QUANTITY_INITIAL, 
+				false, ORDER_CONFIRMATION_NR);
 		
-		si.deconfirm(oi);
+		transitionService.deconfirm(ORDER_NR, productService.findByProductNumber(PRODUCT_NR), ORDER_CONFIRMATION_NR);
+		
+		assertGivenDeconfirmedState(oi, si);
+	}
+
+	private void assertGivenDeconfirmedState(OrderItem oi, ShippingItem si) {
+		// assert proper order item state
+		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
+		assertFalse("no order item with given orderNumber found!", orderItems.isEmpty());
+		OrderItem oiIs = orderItems.get(0);
+		assertEquals("Status not set to ORDERED", oiIs.getStatus(), Status.ORDERED);
+		assertEquals("OrderNumber of orderItem should be same as given", oi.getOrderNumber(), oiIs.getOrderNumber());
+		assertEquals("OrderConfirmation of should be null", null, oi.getOrderConfirmationNumber());
+		assertTrue(oiIs.getQuantityLeft() == QUANTITY_INITIAL);
+
+		// assert proper shipping item state
+		List<ShippingItem> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
+		assertEquals("should not find shippingItem with given orderConfirmationNumber and productNumber", siItems.isEmpty(), true);
+
 	}
 
 	private void assertGivenConfirmedState(OrderItem oi, ShippingItem si) {
-		List<OrderItem> orderItems = orderItemRepository.findByOrderNumber(ORDER_NR);
+		// assert proper order item state
+		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
 		assertFalse("no order item with given orderNumber found!", orderItems.isEmpty());
 		OrderItem equivalentOi = orderItems.get(0);
 		assertEquals("Status not set to CONFIRMED", equivalentOi.getStatus(), Status.CONFIRMED);
-		assertEquals("OrderNumber of orderItem is wrong", oi.getOrderNumber(), equivalentOi.getOrderNumber());
-		assertEquals("OrderConfirmation of orderItem is wrong", oi.getOrderConfirmationNumber(), equivalentOi.getOrderConfirmationNumber());
+		assertEquals("OrderNumber of orderItem should be same as given", oi.getOrderNumber(), equivalentOi.getOrderNumber());
+		assertEquals("OrderConfirmation of orderItem should be same as given", oi.getOrderConfirmationNumber(), equivalentOi.getOrderConfirmationNumber());
+		assertEquals(oi.getQuantity(), QUANTITY_INITIAL);
+		assertEquals((oi.getQuantityLeft() == 0), true);
 		
+		// assert proper shipping item state
 		List<ShippingItem> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
 		assertFalse("no shipping item with given orderConfirmationNumber found!", siItems.isEmpty());
-		assertEquals("shipping item in repository is not the same as the one returned in OrderItem.confirm()", si, siItems.get(0));
+		assertEquals("shipping item in repository should be the same as the one returned in OrderItem.confirm()", si, siItems.get(0));
+	}
+	
+	private void assertGivenPartialConfirmedState(OrderItem oi, ShippingItem si){
+		// assert proper order item state
+		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
+		assertFalse("no order item with given orderNumber found!", orderItems.isEmpty());
+		OrderItem equivalentOi = orderItems.get(0);
+				
+		Status shouldBe;
+		if (QUANTITY_CONFIRMED==QUANTITY_INITIAL) shouldBe = Status.CONFIRMED;
+		else shouldBe = Status.ORDERED;
+		assertEquals("Status should be only confirmed when quantity_left equals quantity", 
+				equivalentOi.getStatus(), shouldBe);
+		assertEquals((oi.getQuantityLeft() == (QUANTITY_INITIAL - QUANTITY_CONFIRMED)), true);
+
 	}
 
 	private OrderItem getGivenOrderItem() {
-		Product product = pDod.getSpecificProduct(PRODUCT_NR);
+		Product product = pDod.getSpecificProduct(Integer.valueOf(PRODUCT_NR.toString()));
 		product.setPriceNet(BigDecimal.TEN);
+		product.setProductNumber(PRODUCT_NR);
+		productService.saveProduct(product);
 		
 		Customer customer = cDod.getSpecificCustomer(CUSTOMER_NR);
 		
 		OrderItem oi = new OrderItem(); 
-		oi.setInitialState(product, customer, QUANTITY, ORDER_NR);
+		oi.setInitialState(product, customer, QUANTITY_INITIAL, ORDER_NR);
 		return oi;
 	}
 	

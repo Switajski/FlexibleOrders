@@ -18,12 +18,32 @@ import de.switajski.priebes.flexibleorders.report.Order;
  */
 public interface TransitionService {
 
-	List<ShippingItem> confirm(Customer customer, Product product, int quantity, boolean toSupplier, long orderConfirmationNumber);
-	ShippingItem deconfirm(Customer customer, Product product, long orderConfirmationNumber);
+	ShippingItem confirm(long orderNumber, 
+			Product product, 
+			int quantity, 
+			boolean toSupplier, 
+			long orderConfirmationNumber);
+	ShippingItem deconfirm(long orderNumber, 
+			Product product, 
+			long orderConfirmationNumber);
 	
-	List<InvoiceItem> deliver(Customer customer, Product product, int quantity, long invoiceNumber, String trackNumber, String packageNumber);
-	InvoiceItem withdraw(Customer customer, Product product, long invoiceNumber, int quantity);
+	InvoiceItem deliver(long orderConfirmationNumber, 
+			Product product, 
+			int quantity, 
+			long invoiceNumber, 
+			String trackNumber, 
+			String packageNumber);
+	InvoiceItem withdraw(long orderConfirmationNumber,
+			Product product,
+			long invoiceNumber);
 	
-	List<ArchiveItem> complete(Customer customer, Product product, int quantity, long accountNumber);
-	ArchiveItem decomplete(Customer customer, Product product, long accountNumber);
+	ArchiveItem complete(
+			long invoiceNumber, 
+			Product product, 
+			int quantity, 
+			long accountNumber);
+	ArchiveItem decomplete(
+			long invoiceNumber, 
+			Product product, 
+			long accountNumber);
 }

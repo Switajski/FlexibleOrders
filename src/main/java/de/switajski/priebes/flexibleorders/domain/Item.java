@@ -133,8 +133,9 @@ public abstract class Item implements Comparable<Item> {
         this.productNumber = product.getProductNumber();
         this.productName = product.getName();
         if (getPriceNet()==null){
-        	this.priceNet = product.getPriceNet();
+        	this.setPriceNet(product.getPriceNet());
         }
+
     }
 	
 	@JsonSerialize(using=JsonDateSerializer.class)

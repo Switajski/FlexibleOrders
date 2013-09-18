@@ -59,7 +59,7 @@ public class TransitionController {
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse confirm(
-			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "orderNumber", required = true) long orderNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
@@ -67,17 +67,15 @@ public class TransitionController {
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
+		log.debug("received json confirm request: orderNumber:"+orderNumber + " product:"+ productNumber 
 				+ " quantity:" + quantity + " orderConfirmationNumber:"+orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		List<ShippingItem> shippingItems = transitionService.confirm(customer, product, quantity, toSupplier, orderConfirmationNumber);
-		for (ShippingItem shippingItem:shippingItems)
+		ShippingItem shippingItem = transitionService.confirm(orderNumber, product, quantity, toSupplier, orderConfirmationNumber);
 			shippingItemService.save(shippingItem);
-		response.setData(shippingItems);
-		response.setTotal(shippingItems.size());
+		response.setData(shippingItem);
+		response.setTotal(1);
 		response.setMessage("order item(s) confirmed");
 		response.setSuccess(true);
 
@@ -86,18 +84,17 @@ public class TransitionController {
 	
 	@RequestMapping(value="/deconfirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deconfirm(
-			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "customer", required = true) long orderNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber) 
 					throws Exception {
 		
-		log.debug("received json deconfirm request: customer:"+customerId + " product:"+ productNumber 
+		log.debug("received json deconfirm request: orderNumber:"+orderNumber + " product:"+ productNumber 
 				+ " orderConfirmationNumber:"+orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		ShippingItem shippingItem = transitionService.deconfirm(customer, product, orderConfirmationNumber);
+		ShippingItem shippingItem = transitionService.deconfirm(orderNumber, product, orderConfirmationNumber);
 		
 		response.setData(shippingItem);
 		response.setTotal(1);
@@ -109,7 +106,7 @@ public class TransitionController {
 	
 	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deliver(
-			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
@@ -118,19 +115,17 @@ public class TransitionController {
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
+		log.debug("received json confirm request: orderConfirmationNumber:"+orderConfirmationNumber + " product:"+ productNumber 
 				+ " quantity:" + quantity + " orderConfirmationNumber:"+invoiceNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		List<InvoiceItem> shippingItems = transitionService.deliver(customer, product, quantity, 
+		InvoiceItem invoiceItem = transitionService.deliver(orderConfirmationNumber, product, quantity, 
 				invoiceNumber, trackNumber, packageNumber);
-		for (InvoiceItem shippingItem:shippingItems)
-			invoiceItemService.save(shippingItem);
-		response.setData(shippingItems);
-		response.setTotal(shippingItems.size());
-		response.setMessage("order item(s) confirmed");
+		invoiceItemService.save(invoiceItem);
+		response.setData(invoiceItem);
+		response.setTotal(1);
+		response.setMessage("invoice item confirmed");
 		response.setSuccess(true);
 
 		return response;
@@ -138,19 +133,18 @@ public class TransitionController {
 	
 	@RequestMapping(value="/withdraw/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse withdraw(
-			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
 			@RequestParam(value = "quantity", required = true) int quantity) 
 					throws Exception {
 		
-		log.debug("received json withdraw request: customer:"+customerId + " product:"+ productNumber 
+		log.debug("received json withdraw request: orderConfirmationNumber:"+orderConfirmationNumber + " product:"+ productNumber 
 				+ " invoiceNumber:"+invoiceNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		InvoiceItem invoiceItem = transitionService.withdraw(customer, product, invoiceNumber, quantity);
+		InvoiceItem invoiceItem = transitionService.withdraw(orderConfirmationNumber, product, invoiceNumber);
 		
 		response.setData(invoiceItem);
 		response.setTotal(1);
@@ -163,25 +157,23 @@ public class TransitionController {
 	
 	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse complete(
-			@RequestParam(value = "customer", required = true) long customerId,
+			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
 			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "accountNumber", required = true) long accountNumber) 
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: customer:"+customerId + " product:"+ productNumber 
+		log.debug("received json confirm request: invoiceNumber:"+invoiceNumber + " product:"+ productNumber 
 				+ " quantity:" + quantity + " orderConfirmationNumber:"+accountNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Customer customer = customerService.find(customerId);
 		Product product = productService.findByProductNumber(productNumber);
-		List<ArchiveItem> shippingItems = transitionService.complete(customer, product, quantity, accountNumber);
-		for (ArchiveItem shippingItem:shippingItems)
-			archiveItemService.save(shippingItem);
-		response.setData(shippingItems);
-		response.setTotal(shippingItems.size());
-		response.setMessage("order item(s) confirmed");
+		ArchiveItem archiveItem = transitionService.complete(invoiceNumber, product, quantity, accountNumber);
+		archiveItemService.save(archiveItem);
+		response.setData(archiveItem);
+		response.setTotal(1);
+		response.setMessage("archiveItem iten confirmed");
 		response.setSuccess(true);
 
 		return response;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 
 @Repository
 @RooJpaRepository(domainType = OrderItem.class)
@@ -55,5 +56,7 @@ extends JpaSpecificationExecutor<OrderItem>,
 			+ "group by oi.orderNumber "
 			+ "order by min(oi.created) desc")
 	List<Long> getAllOrderNumbers(Customer customer);
+	
+	List<OrderItem> findByOrderNumberAndProduct(Long orderNumber, Product product);
 
 }

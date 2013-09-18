@@ -82,17 +82,4 @@ public class OrderItemServiceImpl extends JpaRepositoryToServiceAdapter<OrderIte
 		return orderItemRepository.findByStatus(Status.ORDERED, pageable);
 	}
 
-	@Override
-	public OrderItem findCorresponding(ShippingItem shippingItem) {
-		List<OrderItem> orderItems = orderItemRepository.findByOrderNumber(shippingItem.getOrderNumber());
-		for (OrderItem oi:orderItems){
-			if (oi.getProduct().equals(shippingItem.getProduct())){
-				return oi;
-			}
-		}
-
-		return null;
-	}
-
-
 }

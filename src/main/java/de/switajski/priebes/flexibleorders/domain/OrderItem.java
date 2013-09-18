@@ -61,6 +61,29 @@ public class OrderItem extends Item {
         	this.setStatus(Status.CONFIRMED);
         return si;
     }
+    
+    /**
+     * method to create set the initial state of an order item. These parameters are required to
+     * persist the entity.
+     * 
+     * @param product the product ordered
+     * @param customer the customer that ordered an product
+     * @param quantity how many pieces of a product were ordered
+     * @param orderNumber a unique order number
+     */
+    public void setInitialState(Product product, 
+    		Customer customer, 
+    		int quantity,
+    		Long orderNumber){
+    	setCustomer(customer);
+    	setQuantity(quantity);
+    	setOrderNumber(orderNumber);
+    	
+    	setStatus(Status.ORDERED);
+    	setProduct(product);
+    	setCreated(new Date());
+    	setQuantityLeft(quantity);
+    }
 
     @Override
     public int compareTo(Item o) {
@@ -77,5 +100,23 @@ public class OrderItem extends Item {
     public void setExpectedDelivery(Date expectedDelivery) {
         this.expectedDelivery = expectedDelivery;
     }
+
+    /**
+     * adds quantity. Afterwards the quantity left to reach the next CONFIRMED State 
+     * is more
+     * @param quantity amount to add in quantityLeft
+     */
+	public void addConfirmedQuantity(int quantity) {
+		setQuantityLeft(getQuantityLeft()-quantity);
+	}
+	
+	/**
+	 * reduces quantity. Afterwards the quantity left to reach the next CONFIRMED State 
+	 * is less
+	 * @param quantity
+	 */
+	public void reduceConfirmedQuantity(int quantity) {
+		setQuantityLeft(getQuantityLeft()+quantity);
+	}
 
 }

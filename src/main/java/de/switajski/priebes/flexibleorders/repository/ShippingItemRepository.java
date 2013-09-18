@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.repository;
 import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 import org.springframework.data.domain.Page;
@@ -17,5 +18,8 @@ public interface ShippingItemRepository
 extends JpaSpecificationExecutor<ShippingItem>, 
 JpaRepository<ShippingItem, Long>,
 ItemRepository<ShippingItem> {
+
+	List<ShippingItem> findByOrderNumberAndProduct(
+			long orderConfirmationNumber, Product product);
 
 }

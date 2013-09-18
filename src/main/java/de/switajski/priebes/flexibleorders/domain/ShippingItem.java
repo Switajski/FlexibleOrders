@@ -181,4 +181,26 @@ public class ShippingItem extends Item {
     /**
      */
     private Integer quantityLeft;
+
+	public void deconfirm(OrderItem oi) {
+		oi.reduceConfirmedQuantity(getQuantity());
+	}
+	
+	/**
+     * adds quantity. Afterwards the quantity left to reach the next SHIPPED State 
+     * is more
+     * @param quantity amount to add in quantityLeft
+     */
+	public void addConfirmedQuantity(int quantity) {
+		setQuantityLeft(getQuantityLeft()-quantity);
+	}
+	
+	/**
+	 * reduces quantity. Afterwards the quantity left to reach the next SHIPPED State 
+	 * is less
+	 * @param quantity
+	 */
+	public void reduceConfirmedQuantity(int quantity) {
+		setQuantityLeft(getQuantityLeft()+quantity);
+	}
 }

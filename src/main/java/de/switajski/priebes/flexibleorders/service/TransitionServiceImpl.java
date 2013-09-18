@@ -57,248 +57,62 @@ public class TransitionServiceImpl implements TransitionService {
 		this.orderItemService = orderItemService;
 	}
 	
-	@Transactional
 	@Override
-//	@RequestMapping(value="/json", method=RequestMethod.POST)
-	public List<ShippingItem> confirm(Customer customer, Product product,
+	public ShippingItem confirm(long orderNumber, Product product,
 			int quantity, boolean toSupplier, long orderConfirmationNumber) {
-		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
-		/*List<OrderItem> traversedItems = new ArrayList<OrderItem>();
+		List<OrderItem> orderItems = 
+				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
+		if (orderItems.size()>1) 
+			throw new IllegalStateException("Order has order items with same products");
+		OrderItem oiToConfirm = orderItems.get(0);
+		ShippingItem si = oiToConfirm.confirm(toSupplier, quantity, orderConfirmationNumber);
 		
-		List<OrderItem> matchingOis = new ArrayList<OrderItem>();
-		for (OrderItem oi:customerService.findOrderedItems(customer))
-			if (oi.getProduct().equals(product)) matchingOis.add(oi);
-		
-		for (OrderItem oi:matchingOis){
-			traversedItems.add(oi);
-			if (isQuantityExceeded(oi, quantity)){
-				if (matchingOis.size() == traversedItems.size()){
-					throw new IllegalArgumentException(
-							"bestaetigte Menge ist zu viel!");
-				}
-				else if (quantityIsSufficient(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
-					if (oi.getStatus()!=Status.ORDERED)
-					shippingItems.add(oi.confirm(toSupplier, oi.getQuantity(), orderConfirmationNumber));
-					orderItemRepository.saveAndFlush(oi);
-					
-				}
-			} else {
-				shippingItems.add(oi.confirm(toSupplier, quantity, orderConfirmationNumber));
-				orderItemRepository.saveAndFlush(oi);
-			}
-		}
-		
-		for (ShippingItem shippingItem:shippingItems){
-			shippingItemRepository.saveAndFlush(shippingItem);
-		}
-		return shippingItems;*/
-
-		//TODO: confirm by quantity 
-		List<OrderItem> orderItemsByOcn = orderItemRepository.findByStatus(Status.ORDERED);
-		for (OrderItem oi:orderItemsByOcn){
-			if (oi.getProduct().equals(product))
-				if (oi.getStatus()==Status.ORDERED){
-					ShippingItem si = oi.confirm(false, oi.getQuantity(), orderConfirmationNumber);
-					orderItemRepository.saveAndFlush(oi);
-					shippingItemRepository.saveAndFlush(si);
-					shippingItems.add(si);
-				}
-					
-		}
-		
-		return shippingItems;
-	}
-	
-	
-	
-	private boolean quantityIsSufficient(int neededQuantity, List<OrderItem> matchingOis, List<OrderItem> traversedItems) {
-		int availableQuantity = 0;
-		for (OrderItem oi:matchingOis){
-			if (!traversedItems.contains(oi))
-			availableQuantity += oi.getQuantity();
-		}
-		return (availableQuantity >= neededQuantity);
-	}
-	
-	private boolean quantityIsSufficient2(int neededQuantity, List<ShippingItem> matchingOis, List<ShippingItem> traversedItems) {
-		int availableQuantity = 0;
-		for (ShippingItem oi:matchingOis){
-			if (!traversedItems.contains(oi))
-			availableQuantity += oi.getQuantity();
-		}
-		return (availableQuantity >= neededQuantity);
-	}
-
-	private boolean isQuantityExceeded(Item oi, int quantity) {
-		return (oi.getQuantity()>=quantity);
-	}
-
-	
-	@Override
-	public List<InvoiceItem> deliver(Customer customer, Product product,
-			int quantity, long invoiceNumber, String trackNumber, String packageNumber) {
-		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
-		List<ShippingItem> traversedItems = new ArrayList<ShippingItem>();
-		
-		List<ShippingItem> matchingOis = new ArrayList<ShippingItem>();
-		for (ShippingItem oi:customerService.findConfirmedItems(customer))
-			if (oi.getProduct().equals(product)) matchingOis.add(oi);
-		
-		for (ShippingItem oi:matchingOis){
-			traversedItems.add(oi);
-			if (isQuantityExceeded(oi, quantity)){
-				if (matchingOis.size() == traversedItems.size()){
-					throw new IllegalArgumentException(
-							"bestaetigte Menge ist zu viel!");
-				}
-				else if (quantityIsSufficient2(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
-					if (oi.getStatus()!=Status.CONFIRMED)
-						invoiceItems.add(oi.deliver(oi.getQuantity(), invoiceNumber));
-					shippingItemRepository.saveAndFlush(oi);
-					
-				}
-			} else {
-				invoiceItems.add(oi.deliver(quantity, invoiceNumber));
-				shippingItemRepository.saveAndFlush(oi);
-			}
-		}
-		
-		for (InvoiceItem invoiceItem:invoiceItems){
-			invoiceItemRepository.saveAndFlush(invoiceItem);
-		}
-		return invoiceItems;
+		orderItemRepository.saveAndFlush(oiToConfirm);
+		shippingItemRepository.saveAndFlush(si);
+		return si;
 	}
 
 	@Override
-	public List<ArchiveItem> complete(Customer customer, Product product,
+	public InvoiceItem deliver(long orderConfirmationNumber, Product product,
+			int quantity, long invoiceNumber, String trackNumber,
+			String packageNumber) {
+		List<ShippingItem> shippingItems = 
+				shippingItemRepository.findByOrderNumberAndProduct(orderConfirmationNumber, product);
+		if (shippingItems.size()>1) 
+			throw new IllegalStateException("Order confirmation has shipping items with same products");
+		ShippingItem siToConfirm = shippingItems.get(0);
+		InvoiceItem ii = siToConfirm.deliver(quantity, invoiceNumber);
+		
+		shippingItemRepository.saveAndFlush(siToConfirm);
+		invoiceItemRepository.saveAndFlush(ii);
+		return ii;
+
+	}
+
+	@Override
+	public InvoiceItem withdraw(long orderConfirmationNumber, Product product,
+			long invoiceNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArchiveItem complete(long invoiceNumber, Product product,
 			int quantity, long accountNumber) {
-		List<ArchiveItem> archiveItems = new ArrayList<ArchiveItem>();
-		List<InvoiceItem> traversedItems = new ArrayList<InvoiceItem>();
-		
-		List<InvoiceItem> matchingOis = new ArrayList<InvoiceItem>();
-		for (InvoiceItem oi:customerService.findShippedItems(customer))
-			if (oi.getProduct().equals(product)) matchingOis.add(oi);
-		
-		for (InvoiceItem oi:matchingOis){
-			traversedItems.add(oi);
-			if (isQuantityExceeded(oi, quantity)){
-				if (matchingOis.size() == traversedItems.size()){
-					throw new IllegalArgumentException(
-							"bestaetigte Menge ist zu viel!");
-				}
-				else if (quantityIsSufficient3(quantity - oi.getQuantity(), matchingOis, traversedItems) ) {
-					if (oi.getStatus()!=Status.CONFIRMED)
-						archiveItems.add(oi.complete(oi.getQuantity(), accountNumber));
-					invoiceItemRepository.saveAndFlush(oi);
-					
-				}
-			} else {
-				archiveItems.add(oi.complete(quantity, accountNumber));
-				invoiceItemRepository.saveAndFlush(oi);
-			}
-		}
-		
-		for (ArchiveItem archiveItem:archiveItems){
-			archiveItemRepository.saveAndFlush(archiveItem);
-		}
-		return archiveItems;
-	}
-	
-	private boolean quantityIsSufficient3(int neededQuantity, List<InvoiceItem> matchingOis, List<InvoiceItem> traversedItems) {
-		int availableQuantity = 0;
-		for (InvoiceItem oi:matchingOis){
-			if (!traversedItems.contains(oi))
-			availableQuantity += oi.getQuantity();
-		}
-		return (availableQuantity >= neededQuantity);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public ShippingItem deconfirm(Customer customer, Product product,
-			long orderConfirmationNumber) {
-		List<ShippingItem> siToReturn = new ArrayList<ShippingItem>();
-		
-		// find open shipping items
-		List<ShippingItem> openShippingItems = shippingItemRepository.findByOrderConfirmationNumber(orderConfirmationNumber);
-		for (ShippingItem si:openShippingItems){
-			if (si.getStatus().equals(Status.CONFIRMED))
-				if (si.getProduct().equals(product))
-					if (si.getCustomer().equals(customer))
-						siToReturn.add(si);
-		}
-		if (openShippingItems.isEmpty())
-			throw new IllegalStateException("no open Shipping Items found, that match product and customer!");
-		// find corresponding order items
-		OrderItem oi = orderItemService.findCorresponding(openShippingItems.get(0));
-		
-		//TODO: move to logic
-		// set order items to ORDERED and set the order confirmation number to null
-		oi.setStatus(Status.ORDERED);
-		oi.setOrderConfirmationNumber(null);
-		oi.setQuantityLeft(oi.getQuantityLeft() + oi.getQuantity());
-		
-		// delete shipping items
-		for (ShippingItem si:siToReturn)
-			shippingItemRepository.delete(si);
-		
-		return siToReturn.get(0);
-	}
-
-	/**
-	 * this is a reverse method of deliver.</br>
-	 * The invoice item which has to be withdrawn is specified by the invoice 
-	 * number and product.
-	 * 
-	 * @param invoiceNumber
-	 * @param quantity is needed in case the order confirmation has two shipping items
-	 * with the same product
-	 */
-	@Override
-	public InvoiceItem withdraw(Customer customer, Product product,
-			long invoiceNumber, int quantity) {
-		//TODO: verify invoiceNumber and same customer!
-		log.debug("withdrawing customer:" + customer.getId() +
-				" productNumber:" + product.getProductNumber() +
-				" invoiceNumber" + invoiceNumber +
-				" quantity:" + quantity);
-		
-		// get invoice items of the invoice
-		List<InvoiceItem> invoiceItems = invoiceItemRepository.findByInvoiceNumber(invoiceNumber);
-		
-		// find the specified invoice item and the corresponding shipping item
-		InvoiceItem invoiceItem = null;
-		for (InvoiceItem ii: invoiceItems){
-			if (ii.getProduct().equals(product))
-				if (ii.getQuantity() == quantity){
-					invoiceItem = ii;
-					break;
-				}
-		}
-		//if not found, break
-		if (invoiceItem == null)
-			return null;
-		
-		// find corresponding shipping item
-		boolean withdrawn = false;
-		List<ShippingItem> csi = shippingItemRepository.findByInvoiceNumber(invoiceNumber);
-		for (ShippingItem si:csi){
-			if (si.getProduct().equals(product))
-				if (si.getQuantity() == quantity){
-					si.setInvoiceNumber(null);
-					si.setStatus(Status.CONFIRMED);
-					si.setQuantityLeft(si.getQuantityLeft() + quantity);
-					withdrawn = true;
-					break;
-				}
-		}
-		if (withdrawn) invoiceItemRepository.delete(invoiceItem);
-		
-		return invoiceItem;
-	}
-
-	@Override
-	public ArchiveItem decomplete(Customer customer, Product product,
+	public ArchiveItem decomplete(long invoiceNumber, Product product,
 			long accountNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ShippingItem deconfirm(long orderNumber, Product product,
+			long orderConfirmationNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -35,6 +35,7 @@ public class Product {
     /**
      */
     @NotNull
+    @Column(unique = true)
     private String name;
 
     /**

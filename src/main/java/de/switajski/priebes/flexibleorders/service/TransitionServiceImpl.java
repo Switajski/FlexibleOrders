@@ -74,7 +74,8 @@ public class TransitionServiceImpl implements TransitionService {
 	}
 
 	@Override
-	public ShippingItem deconfirm(long orderNumber, Product product,
+	public ShippingItem deconfirm(long orderNumber, 
+			Product product,
 			long orderConfirmationNumber) {
 		log.debug("deconfirm");
 		List<ShippingItem> sis = 

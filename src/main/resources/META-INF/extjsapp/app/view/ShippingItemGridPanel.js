@@ -15,11 +15,8 @@ Ext.define('MyApp.view.ShippingItemGridPanel', {
 			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
-				// var secondStore =
-				// Ext.ComponentQuery.query('grid[itemid=secondGrid]')[0].getStore();
-				var ocnr = this.getStore().data.items[0].data.orderNumber;
 				MyApp.getApplication().getController('MyController').deconfirm(
-						"ok", ocnr, record);
+						"ok", record.data.orderConfirmationNumber, record);
 
 			}
 });

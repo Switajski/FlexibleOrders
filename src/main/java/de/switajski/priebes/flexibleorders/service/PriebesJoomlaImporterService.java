@@ -48,9 +48,9 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
 
 	public static final String CAT_IMAGE_PATH="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
-	public static final String DATABASE_URL = "jdbc:mysql://localhost/bestellsystemv2?"
-			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
 	private static final String PRIEBES_DB = "priebesJoomlaDb";
+	public static final String DATABASE_URL = "jdbc:mysql://localhost/"+PRIEBES_DB+"?"
+			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
 	private Connection connection;
 	private Category rootCategory;
 
@@ -224,6 +224,8 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				Date a_created = as.getDate("created");
 				long a_ordering = as.getLong("ordering");
 				long a_artikelnummer = as.getLong("artikelnummer");
+				if (category.getName()=="sommerfuﬂs‰cke")
+					System.out.println("Halt!");
 				if (a_artikelnummer==0 || (productRepository.findByProductNumber(a_artikelnummer)!=null)) {
 					Random gen = new Random();
 					a_artikelnummer = gen.nextInt();

@@ -87,6 +87,11 @@ public class ShippingItem extends Item {
     public void setShippingCountry(Country shippingCountry) {
         this.shippingCountry = shippingCountry;
     }
+    
+    /**
+     */
+    private Integer quantityLeft;
+
 
     /**
      */
@@ -178,10 +183,7 @@ public class ShippingItem extends Item {
         this.expectedDelivery = expectedDelivery;
     }
 
-    /**
-     */
-    private Integer quantityLeft;
-
+    
 	public void deconfirm(OrderItem oi) {
 		oi.reduceConfirmedQuantity(getQuantity());
 		oi.setStatus(Status.ORDERED);
@@ -204,5 +206,12 @@ public class ShippingItem extends Item {
 	 */
 	public void reduceConfirmedQuantity(int quantity) {
 		setQuantityLeft(getQuantityLeft()+quantity);
+	}
+	
+	@Override
+	public Status getStatus(){
+		if (getQuantityLeft()==0)
+			return Status.SHIPPED;
+		else return Status.CONFIRMED;
 	}
 }

@@ -5,16 +5,24 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.persistence.ManyToOne;
+
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
+
 import javax.validation.constraints.Min;
+
 import de.switajski.priebes.flexibleorders.json.CustomerIdDeserializer;
 import de.switajski.priebes.flexibleorders.json.CustomerToIdSerializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
@@ -22,6 +30,7 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.ProductNumberDeserializer;
 import de.switajski.priebes.flexibleorders.json.ProductToProductNumberSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
+
 import javax.persistence.Enumerated;
 
 @JsonAutoDetect
@@ -63,8 +72,7 @@ public abstract class Item implements Comparable<Item> {
 
     /**
      */
-    @NotNull
-    @Enumerated
+    @Transient
     private Status status;
 
     /**

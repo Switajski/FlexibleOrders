@@ -72,4 +72,12 @@ privileged aspect InvoiceItem_Roo_JavaBean {
         this.trackNumber = trackNumber;
     }
     
+    public int InvoiceItem.getQuantityLeft() {
+        return this.quantityLeft;
+    }
+    
+    public void InvoiceItem.setQuantityLeft(int quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
+    
 }

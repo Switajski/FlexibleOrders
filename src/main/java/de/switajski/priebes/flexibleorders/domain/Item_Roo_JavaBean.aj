@@ -44,20 +44,16 @@ privileged aspect Item_Roo_JavaBean {
         return this.orderConfirmationNumber;
     }
     
-        
     public Long Item.getInvoiceNumber() {
         return this.invoiceNumber;
     }
     
-        
     public Long Item.getAccountNumber() {
         return this.accountNumber;
     }
     
-        
     public Long Item.getOrderNumber() {
         return this.orderNumber;
     }
     
-        
 }

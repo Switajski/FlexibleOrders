@@ -120,5 +120,12 @@ public class OrderItem extends Item {
 	public void reduceConfirmedQuantity(int quantity) {
 		setQuantityLeft(getQuantityLeft()+quantity);
 	}
+	
+	@Override
+	public Status getStatus(){
+		if (getQuantityLeft()==0)
+			return Status.CONFIRMED;
+		else return Status.ORDERED;
+	}
 
 }

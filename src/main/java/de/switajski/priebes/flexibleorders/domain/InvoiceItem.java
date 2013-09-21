@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Min;
 
 @RooJavaBean
 @RooToString
@@ -89,4 +90,10 @@ public class InvoiceItem extends Item {
     /**
      */
     private String trackNumber;
+
+    /**
+     */
+    @NotNull
+    @Min(0L)
+    private int quantityLeft;
 }

@@ -121,4 +121,12 @@ privileged aspect ArchiveItem_Roo_JavaBean {
         this.invoiceCountry = invoiceCountry;
     }
     
+    public int ArchiveItem.getQuantityLeft() {
+        return this.quantityLeft;
+    }
+    
+    public void ArchiveItem.setQuantityLeft(int quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
+    
 }

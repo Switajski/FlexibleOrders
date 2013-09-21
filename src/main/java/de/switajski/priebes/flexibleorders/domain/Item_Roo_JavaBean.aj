@@ -44,32 +44,20 @@ privileged aspect Item_Roo_JavaBean {
         return this.orderConfirmationNumber;
     }
     
-    public void Item.setOrderConfirmationNumber(Long orderConfirmationNumber) {
-        this.orderConfirmationNumber = orderConfirmationNumber;
-    }
-    
+        
     public Long Item.getInvoiceNumber() {
         return this.invoiceNumber;
     }
     
-    public void Item.setInvoiceNumber(Long invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
-    }
-    
+        
     public Long Item.getAccountNumber() {
         return this.accountNumber;
     }
     
-    public void Item.setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-    
+        
     public Long Item.getOrderNumber() {
         return this.orderNumber;
     }
     
-    public void Item.setOrderNumber(Long orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-    
+        
 }

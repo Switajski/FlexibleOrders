@@ -5,23 +5,16 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
-
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.persistence.ManyToOne;
-
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
-
 import javax.validation.constraints.Min;
-
 import de.switajski.priebes.flexibleorders.json.CustomerIdDeserializer;
 import de.switajski.priebes.flexibleorders.json.CustomerToIdSerializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
@@ -29,7 +22,6 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.ProductNumberDeserializer;
 import de.switajski.priebes.flexibleorders.json.ProductToProductNumberSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
-
 import javax.persistence.Enumerated;
 
 @JsonAutoDetect
@@ -188,4 +180,37 @@ public abstract class Item implements Comparable<Item> {
         	setOrderConfirmationNumber(null);
         }
 	}
+
+	/**
+	 * @deprecated should not be used - only public because of roo's integration tests
+	 * @param accountNumber
+	 */
+	public void setAccountNumber(Long accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+	
+	/**
+	 * @deprecated should not be used - only public because of roo's integration tests
+	 * @param invoiceNumber
+	 */
+	public void setInvoiceNumber(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+	/**
+	 * @deprecated should not be used - only public because of roo's integration tests
+	 * @param orderConfirmationNumber
+	 */
+	public void setOrderConfirmationNumber(Long orderConfirmationNumber) {
+        this.orderConfirmationNumber = orderConfirmationNumber;
+    }
+
+	/**
+	 * @deprecated should not be used - only public because of roo's integration tests
+	 * @param orderNumber
+	 */
+	public void setOrderNumber(Long orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 }

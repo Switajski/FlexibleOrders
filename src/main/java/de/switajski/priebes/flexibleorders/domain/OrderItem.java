@@ -54,6 +54,8 @@ public class OrderItem extends Item {
         	throw new IllegalArgumentException("quantity provided is more than ordered!");
         if (quantity < 1)
         	throw new IllegalArgumentException("quantity cannot be less than 1");
+        if (orderConfirmationNumber < 1l)
+        	throw new IllegalArgumentException("orderConfirmationNumber must be more than 1");
         this.setQuantityLeft(getQuantityLeft() - quantity);
     	setOrderConfirmationNumber(orderConfirmationNumber);
         ShippingItem si = new ShippingItem(this, quantity, toSupplier, orderConfirmationNumber);
@@ -102,7 +104,7 @@ public class OrderItem extends Item {
     }
 
     /**
-     * adds quantity. Afterwards the quantity left to reach the next CONFIRMED State 
+     * adds quantity to confirm. Afterwards the quantity left to reach the next CONFIRMED State 
      * is more
      * @param quantity amount to add in quantityLeft
      */

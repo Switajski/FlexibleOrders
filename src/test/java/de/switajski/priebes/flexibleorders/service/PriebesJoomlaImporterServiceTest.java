@@ -29,7 +29,7 @@ public class PriebesJoomlaImporterServiceTest {
 	@Autowired ProductRepository productRepository;
 	@Autowired OrderItemRepository orderItemRepository;
 	
-	@Rollback(false)
+	/*@Rollback(false)
 	@Transactional
 	@Test
 	public void shouldImportCustomer(){
@@ -43,7 +43,7 @@ public class PriebesJoomlaImporterServiceTest {
 	public void shouldImportProducts(){
 		pji.importProducts();
 		assertFalse("Product repository is empty!", productRepository.count()==0);
-	}
+	}*/
 	
 	@Rollback(false)
 	@Transactional

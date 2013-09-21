@@ -52,21 +52,41 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/"+PRIEBES_DB+"?"
 			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
 	private Connection connection;
-	private Category rootCategory;
 
-	@Autowired	CustomerRepository customerRepository;
-	@Autowired	CategoryRepository categoryRepo;
-	@Autowired	ProductRepository productRepository;
-	@Autowired	OrderItemRepository orderItemRepository;
-	@Autowired	ShippingItemRepository shippingItemRepo;
-	@Autowired	InvoiceItemRepository invoiceRepo;
-	@Autowired 	ArchiveItemRepository archiveRepo;
+	private	CustomerRepository customerRepository;
+	private	CategoryRepository categoryRepo;
+	private	ProductRepository productRepository;
+	private	OrderItemRepository orderItemRepository;
+	private	ShippingItemRepository shippingItemRepo;
+	private	InvoiceItemRepository invoiceRepo;
+	private ArchiveItemRepository archiveRepo;
+	private TransitionService transitionService;
 
 	private Connection getConnection(){
 		if (this.connection==null)
 			connection = this.init();
 		return this.connection;
 
+	}
+	
+	@Autowired
+	public PriebesJoomlaImporterService(
+			CustomerRepository customerRepository,
+			CategoryRepository categoryRepo,
+			ProductRepository productRepository,
+			OrderItemRepository orderItemRepository,
+			ShippingItemRepository shippingItemRepo,
+			InvoiceItemRepository invoiceRepo,
+			ArchiveItemRepository archiveRepo,
+			TransitionService transitionService) {
+		this.customerRepository = customerRepository;
+		this.categoryRepo = categoryRepo;
+		this.productRepository = productRepository;
+		this.orderItemRepository = orderItemRepository;
+		this.shippingItemRepo = shippingItemRepo;
+		this.invoiceRepo = invoiceRepo;
+		this.archiveRepo = archiveRepo;
+		this.transitionService = transitionService;
 	}
 
 	public Connection init() {
@@ -226,7 +246,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				long a_artikelnummer = as.getLong("artikelnummer");
 				if (category.getName()=="sommerfuﬂs‰cke")
 					System.out.println("Halt!");
-				if (a_artikelnummer==0 || (productRepository.findByProductNumber(a_artikelnummer)!=null)) {
+				if (a_artikelnummer==0 || productRepository.findByProductNumber(a_artikelnummer)==null) {
 					Random gen = new Random();
 					a_artikelnummer = gen.nextInt();
 					a_artikelnummer = Math.abs(a_artikelnummer);
@@ -324,50 +344,38 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				while(orderItems.next()){
 					OrderItem oi = new OrderItem();
 
-					Long orderNumber = orders.getLong("order_id");
-					oi.setOrderNumber(orderNumber);
-					List<OrderItem> orderItemList = orderItemRepository.findByOrderNumber(orderNumber);
-					if (orderItemList.isEmpty()) oi.setOrderItemNumber(1);
-					else oi.setOrderItemNumber(orderItemList.size()+1);
-
-					String product_id = orderItems.getString("product_id");
-					String title = this.getSingleResult("select title from priebesJoomlaDb.jos_k2_items where id="+product_id, "title");
-					if (title==null) continue;
-					Product product = productRepository.findByName(title);
-					oi.setProduct(product);
-
-					oi.setCreated(orders.getDate("created_date"));
-					String email = this.getSingleResult("SELECT email from priebesJoomlaDb.jos_users where id="+orders.getInt("user_id"), "email");
-					Customer customer = customerRepository.findByEmail(email);
-					if (customer==null) continue;
-					oi.setCustomer(customer);
-
-					if (orderItems.getLong("rechnung_id") != 0l)
-					{oi.setAccountNumber(orderItems.getLong("rechnung_id"));
-					oi.setInvoiceNumber(orderItems.getLong("rechnung_id"));}
-					if (orderItems.getLong("ab_id") != 0l)
-						oi.setOrderConfirmationNumber(orderItems.getLong("ab_id"));
-
-					oi.setQuantity(orderItems.getInt("orderitem_quantity"));
-					oi.setQuantityLeft(orderItems.getInt("orderitem_quantity"));
+					if (!idOrderItemValid(orderItems)) continue;
+					if (!isOrderValid(orders)) continue;
+					
+					Product product = productRepository.findByName(getProductTitle(orderItems.getString("product_id")));
+					Customer customer = customerRepository.findByEmail(
+							getEmailOfOiCustomer(orders));				
+					
+					oi.setInitialState(product, 
+							customer, 
+							orderItems.getInt("orderitem_quantity"), 
+							orders.getLong("order_id"));
 					oi.setPriceNet(orderItems.getBigDecimal("orderitem_price"));
-					oi.setStatus(Status.COMPLETED);
 
-					orderItemRepository.save(oi);
+					orderItemRepository.saveAndFlush(oi);
 
-					if (oi.getOrderConfirmationNumber()!=null){
-						ShippingItem si = oi.confirm(false, oi.getQuantity(),oi.getOrderConfirmationNumber());
+					Long ab_id = orderItems.getLong("ab_id");
+					Long rechnung_id = orderItems.getLong("rechnung_id");
+					Long bezahlt_id = orderItems.getLong("bezahlt_id");
+					
+					//TODO: replace Repositories with TransistionService
+					if (ab_id != 0l && ab_id != null){
+						ShippingItem si = oi.confirm(false, oi.getQuantity(), ab_id);
+						orderItemRepository.saveAndFlush(oi);
 						shippingItemRepo.save(si);
-						orderItemRepository.save(oi);
-						if (oi.getInvoiceNumber()!=null){
-							InvoiceItem ii = si.deliver(si.getQuantity(),oi.getInvoiceNumber());
+						if (rechnung_id != 0l && rechnung_id != null){
+							InvoiceItem ii = si.deliver(si.getQuantity(),rechnung_id);
+							shippingItemRepo.save(si);
 							invoiceRepo.save(ii);
-							orderItemRepository.save(oi);
-							if (oi.getAccountNumber()!=null){
-								ArchiveItem ai = ii.complete(si.getQuantity(),oi.getAccountNumber());
-								archiveRepo.save(ai);
+							if (bezahlt_id !=0l && bezahlt_id != null){
+								ArchiveItem ai = ii.complete(si.getQuantity(),bezahlt_id);
 								invoiceRepo.save(ii);
-								orderItemRepository.save(oi);
+								archiveRepo.save(ai);
 							}
 						}
 					}
@@ -379,7 +387,47 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		log.info("Import ended successfully");
 
+	}
+
+	private boolean isOrderValid(ResultSet orders) {
+		String email;
+		try {
+			email = getEmailOfOiCustomer(orders);
+			Customer customer = customerRepository.findByEmail(email);
+			if (customer!=null) return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private String getEmailOfOiCustomer(ResultSet orders) throws SQLException {
+		String email = this.getSingleResult("SELECT email from priebesJoomlaDb.jos_users where id="+orders.getInt("user_id"), "email");
+		return email;
+	}
+
+	private String getProductTitle(String product_id) throws SQLException {
+		String title = this.getSingleResult("select title from priebesJoomlaDb.jos_k2_items where id="+product_id, "title");
+		return title;
+	}
+
+	private boolean idOrderItemValid(ResultSet orderItems) {
+		try {
+			// Rules to Check:
+			if (orderItems.getInt("orderitem_quantity")<1 ||
+				getProductTitle(orderItems.getString("product_id")) == null
+					){				
+				return false;
+			}
+			else return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 
 	private String getSingleResult(String query, String column) throws SQLException{

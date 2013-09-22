@@ -7,7 +7,7 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 				console.log('orderItemGrid - customtransitionfunction');
 				// var secondStore =
 				// Ext.ComponentQuery.query('grid[itemid=secondGrid]')[0].getStore();
-				var ocnr = this.getStore().data.items[0].data.orderNumber;
+				var ocnr = record.data.orderNumber;
 				MyApp.getApplication().getController('MyController').confirm(
 						"ok", ocnr, record);
 

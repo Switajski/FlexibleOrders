@@ -109,7 +109,7 @@ public class TransitionController {
 		Product product = productService.findByProductNumber(productNumber);
 		InvoiceItem invoiceItem = transitionService.deliver(orderConfirmationNumber, product, quantity, 
 				invoiceNumber, trackNumber, packageNumber);
-		invoiceItemService.save(invoiceItem);
+		//invoiceItemService.save(invoiceItem);
 		response.setData(invoiceItem);
 		response.setTotal(1);
 		response.setMessage("invoice item confirmed");

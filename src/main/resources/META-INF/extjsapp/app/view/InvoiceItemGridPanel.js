@@ -5,7 +5,8 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('invoiceItemGrid - customtransitionfunction');
-				var anr = this.getStore().data.items[0].data.invoiceNumber;
+				var anr = record.data.invoiceNumber;
+				
 				MyApp.getApplication().getController('MyController').complete(
 						"ok", anr, record);
 

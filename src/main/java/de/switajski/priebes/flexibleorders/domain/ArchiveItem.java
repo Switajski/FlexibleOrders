@@ -34,7 +34,6 @@ public class ArchiveItem extends Item {
         setAccountNumber(accountNumber);
         historize(invoiceItem);
         setCreated(new Date());
-        setStatus(Status.COMPLETED);
         setQuantity(quantity);
         Customer customer = invoiceItem.getCustomer();
         customer = invoiceItem.getCustomer();

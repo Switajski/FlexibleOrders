@@ -141,7 +141,6 @@ public class ShippingItem extends Item {
         historize(orderItem);
         setTransmitToSupplier(transmitToSupplier);
         setCreated(new Date());
-        setStatus(Status.CONFIRMED);
         setQuantity(quantity);
         setQuantityLeft(quantity);
         Customer customer = orderItem.getCustomer();
@@ -154,17 +153,20 @@ public class ShippingItem extends Item {
         setShippingStreet(customer.getStreet());
     }
 
+    /**
+     * creates an invoice item by delivering a shipping item
+     * @param quantity
+     * @param invoiceNumber
+     * @return
+     */
     public InvoiceItem deliver(int quantity, long invoiceNumber) {
-    	if (quantity > this.getQuantityLeft()) 
-    		throw new IllegalArgumentException("quantity is more than left!");
     	if (quantity < 1)
-        	throw new IllegalArgumentException("quantity cannot be less than 1");
+        	throw new IllegalArgumentException("quantity to deliver cannot be less than 1");
         
-    	this.setQuantityLeft(getQuantity() - quantity);
         this.setInvoiceNumber(invoiceNumber);
         InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
-        if (getQuantityLeft()==0) 
-        	this.setStatus(Status.SHIPPED);
+        this.addConfirmedQuantity(quantity);
+        
         return ii;
     }
 
@@ -186,7 +188,6 @@ public class ShippingItem extends Item {
     
 	public void deconfirm(OrderItem oi) {
 		oi.reduceConfirmedQuantity(getQuantity());
-		oi.setStatus(Status.ORDERED);
 		oi.setOrderConfirmationNumber(null);
 	}
 	
@@ -208,6 +209,7 @@ public class ShippingItem extends Item {
 		setQuantityLeft(getQuantityLeft()+quantity);
 	}
 	
+	//TODO: move to item
 	@Override
 	public Status getStatus(){
 		if (getQuantityLeft()==0)

@@ -68,8 +68,8 @@ public class TransitionServiceImpl implements TransitionService {
 		OrderItem oiToConfirm = orderItems.get(0);
 		ShippingItem si = oiToConfirm.confirm(toSupplier, quantity, orderConfirmationNumber);
 		
-		orderItemRepository.saveAndFlush(oiToConfirm);
-		shippingItemRepository.saveAndFlush(si);
+		orderItemRepository.save(oiToConfirm);
+		shippingItemRepository.save(si);
 		return si;
 	}
 
@@ -95,7 +95,7 @@ public class TransitionServiceImpl implements TransitionService {
 		
 		shippingItemRepository.delete(siToDelete);
 		shippingItemRepository.flush();
-		orderItemRepository.saveAndFlush(orderItemToDeconfirm);
+		orderItemRepository.save(orderItemToDeconfirm);
 		
 		return sis.get(0);
 	}
@@ -112,8 +112,8 @@ public class TransitionServiceImpl implements TransitionService {
 		ShippingItem siToConfirm = shippingItems.get(0);
 		InvoiceItem ii = siToConfirm.deliver(quantity, invoiceNumber);
 		
-		shippingItemRepository.saveAndFlush(siToConfirm);
-		invoiceItemRepository.saveAndFlush(ii);
+		shippingItemRepository.save(siToConfirm);
+		invoiceItemRepository.save(ii);
 		return ii;
 
 	}
@@ -122,6 +122,9 @@ public class TransitionServiceImpl implements TransitionService {
 	public InvoiceItem withdraw(long orderConfirmationNumber, Product product,
 			long invoiceNumber) {
 		log.error("withdraw - not implemented");
+		
+		
+		
 		return null;
 	}
 

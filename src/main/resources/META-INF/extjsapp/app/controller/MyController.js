@@ -464,6 +464,7 @@ Ext.define('MyApp.controller.MyController', {
 	 * @param {} record selected shipping item from a grid
 	 */
 	deliver : function(event, record) {
+		record.data.invoiceNumber = record.data.orderConfirmationNumber;
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					record: record,
 					onSave : function() {

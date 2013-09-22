@@ -56,11 +56,10 @@ public class OrderItem extends Item {
         	throw new IllegalArgumentException("quantity cannot be less than 1");
         if (orderConfirmationNumber < 1l)
         	throw new IllegalArgumentException("orderConfirmationNumber must be more than 1");
-        this.setQuantityLeft(getQuantityLeft() - quantity);
     	setOrderConfirmationNumber(orderConfirmationNumber);
         ShippingItem si = new ShippingItem(this, quantity, toSupplier, orderConfirmationNumber);
-        if (getQuantityLeft()==0) 
-        	this.setStatus(Status.CONFIRMED);
+        this.addConfirmedQuantity(quantity);
+
         return si;
     }
     
@@ -81,7 +80,6 @@ public class OrderItem extends Item {
     	setQuantity(quantity);
     	setOrderNumber(orderNumber);
     	
-    	setStatus(Status.ORDERED);
     	setProduct(product);
     	setCreated(new Date());
     	setQuantityLeft(quantity);

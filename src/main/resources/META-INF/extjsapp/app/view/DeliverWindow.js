@@ -165,12 +165,14 @@ Ext.define('MyApp.view.DeliverWindow', {
 			});
 		});
 	},
+	/**
+	 * this method is to override by the using Component (usually Panel)
+	 */
 	updateRecord : function() {
-		// var window = Ext.ComponentQuery.query('DeliverWindow')[0];
-		// window.down('form').getForm().updateRecord(window.record);
-		console.log('Es funktioniert!');
+		console.log('Override me!');
 	},
 
+	//TODO: remove setter and getter
 	setInvoiceNumber : function(invoiceNumber) {
 		this.down('form').down('invoicenumbercombobox').setValue(invoiceNumber);
 		this.record.data.invoiceNumber = invoiceNumber;
@@ -217,6 +219,10 @@ Ext.define('MyApp.view.DeliverWindow', {
 		this.down('form').down('displayfield[name=customer]')
 				.getValue(customer);
 	},
+	/**
+	 * this method listens to the save button and is usually overridden by a panel.
+	 * see {@Link MyController.deliver}
+	 */
 	onSave : function() {
 		var active = this.activeRecord, form = this.getForm();
 

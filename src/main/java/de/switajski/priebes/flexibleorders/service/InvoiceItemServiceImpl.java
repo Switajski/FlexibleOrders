@@ -15,24 +15,27 @@ import de.switajski.priebes.flexibleorders.repository.ItemRepository;
 
 public class InvoiceItemServiceImpl extends JpaRepositoryToServiceAdapter<InvoiceItem> implements InvoiceItemService {
 
+	private InvoiceItemRepository iir;
+	
 	@Autowired
 	public InvoiceItemServiceImpl(InvoiceItemRepository jpaRepository) {
 		super(jpaRepository);
+		this.iir = jpaRepository;
 	}
 	
-	public Page<InvoiceItem> findShipped(Pageable pageable){
-		return ((ItemRepository<InvoiceItem>) this.jpaRepository).findByStatus(Status.SHIPPED, pageable);
+	public Page<InvoiceItem> findOpen(Pageable pageable){
+		return iir.findOpen(pageable);
 	}
 
 	@Override
 	public Page<InvoiceItem> findByInvoiceNumber(long invoiceNumber,
 			PageRequest pageRequest) {
-		return ((ItemRepository<InvoiceItem>) this.jpaRepository).findByInvoiceNumber(invoiceNumber, pageRequest);
+		return iir.findByInvoiceNumber(invoiceNumber, pageRequest);
 	}
 
 	@Override
 	public List<InvoiceItem> findByInvoiceNumber(Long invoiceNumber) {
-		return ((ItemRepository<InvoiceItem>) this.jpaRepository).findByInvoiceNumber(invoiceNumber);
+		return iir.findByInvoiceNumber(invoiceNumber);
 	}
 	
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,19 +32,19 @@ extends JpaSpecificationExecutor<OrderItem>,
 			+ "from OrderItem oi "
 			+ "where oi.customer = ?1 "
 			+ "group by oi.orderNumber "
-			+ "order by min(oi.created) desc")
+			+ "order by max(oi.created)")
 	Page<Long> getAllOrderNumbers(Customer customer, Pageable pageable);
 	
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
 			+ "group by oi.orderNumber "
-			+ "order by min(oi.created) desc")
+			+ "order by max(oi.created)")
 	Page<Long> getAllOrderNumbers(Pageable pageable);
 	
 	@Query("select oi.orderNumber "
 			+ "from OrderItem oi "
 			+ "group by oi.orderNumber "
-			+ "order by min(oi.created) desc")
+			+ "order by max(oi.created)")
 	List<Long> getAllOrderNumbers();
 	
 	@Query("select count(DISTINCT oi.orderNumber) "
@@ -54,9 +55,34 @@ extends JpaSpecificationExecutor<OrderItem>,
 			+ "from OrderItem oi "
 			+ "where oi.customer = ?1 "
 			+ "group by oi.orderNumber "
-			+ "order by min(oi.created) desc")
+			+ "order by max(oi.created)")
 	List<Long> getAllOrderNumbers(Customer customer);
 	
 	List<OrderItem> findByOrderNumberAndProduct(Long orderNumber, Product product);
+
+	@Query("select i "
+			+ "from OrderItem i "
+			+ "where i.quantityLeft != 0 ")
+	Page<OrderItem> findOpen(Pageable pageable);
+	
+	@Query("select i "
+			+ "from OrderItem i "
+			+ "where i.quantityLeft != 0 "
+			+ "order by i.created")
+	List<OrderItem> findOpen();
+	
+	@Query("select i "
+			+ "from OrderItem i "
+			+ "where i.quantityLeft != 0 "
+			+ "and i.customer = ?1 ")
+	Page<OrderItem> findByCustomerAndOpen(Customer customer,
+			Pageable pageable);
+	
+	@Query("select i "
+			+ "from OrderItem i "
+			+ "where i.quantityLeft != 0 "
+			+ "and i.customer = ?1 "
+			+ "order by i.created")
+	List<OrderItem> findByCustomerAndOpen(Customer customer);
 
 }

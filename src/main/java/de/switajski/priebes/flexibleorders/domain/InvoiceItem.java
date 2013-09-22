@@ -1,12 +1,16 @@
 package de.switajski.priebes.flexibleorders.domain;
 import java.util.Date;
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.validation.constraints.NotNull;
+
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
+
 import javax.persistence.Enumerated;
 import javax.validation.constraints.Min;
 
@@ -44,6 +48,20 @@ public class InvoiceItem extends Item {
     @NotNull
     @Enumerated
     private Country invoiceCountry;
+    
+    /**
+     */
+    private String packageNumber;
+
+    /**
+     */
+    private String trackNumber;
+
+    /**
+     */
+    @NotNull
+    @Min(0L)
+    private int quantityLeft;
 
     /**
      * The only way to create a InvoiceItem is to generate it from a ShippingItem.
@@ -82,18 +100,13 @@ public class InvoiceItem extends Item {
         // TODO Auto-generated method stub
         return 0;
     }
+    
+    @Override
+	public Status getStatus(){
+		if (getQuantityLeft()==0)
+			return Status.COMPLETED;
+		else return Status.SHIPPED;
+	}
 
-    /**
-     */
-    private String packageNumber;
-
-    /**
-     */
-    private String trackNumber;
-
-    /**
-     */
-    @NotNull
-    @Min(0L)
-    private int quantityLeft;
+    
 }

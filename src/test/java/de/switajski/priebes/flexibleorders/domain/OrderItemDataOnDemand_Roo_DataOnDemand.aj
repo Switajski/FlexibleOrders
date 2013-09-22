@@ -9,7 +9,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import java.math.BigDecimal;
@@ -61,7 +60,7 @@ privileged aspect OrderItemDataOnDemand_Roo_DataOnDemand {
         setProductName(obj, index);
         setProductNumber(obj, index);
         setQuantity(obj, index);
-        setStatus(obj, index);
+        setQuantityLeft(obj, index);
         return obj;
     }
     
@@ -130,9 +129,9 @@ privileged aspect OrderItemDataOnDemand_Roo_DataOnDemand {
         obj.setQuantity(quantity);
     }
     
-    public void OrderItemDataOnDemand.setStatus(OrderItem obj, int index) {
-        Status status = Status.class.getEnumConstants()[0];
-        obj.setStatus(status);
+    public void OrderItemDataOnDemand.setQuantityLeft(OrderItem obj, int index) {
+        Integer quantityLeft = new Integer(index);
+        obj.setQuantityLeft(quantityLeft);
     }
     
     public OrderItem OrderItemDataOnDemand.getSpecificOrderItem(int index) {

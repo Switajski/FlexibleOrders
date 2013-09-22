@@ -5,7 +5,7 @@
     <form:create id="fc_de_switajski_priebes_flexibleorders_domain_InvoiceItem" modelAttribute="invoiceItem" path="/invoiceitems" render="${empty dependencies}" z="bZpf+bQWCd6gZaAgUDhF5xwYpnU=">
         <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantity" required="true" z="4Rv8375RY3JajugdnydQnGLgqbE="/>
         <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="CPb4i7ga61Kd4F3conXtFY1enVU="/>
-        <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" items="${statuses}" path="statuses" required="true" z="Rk2j2tr8NLgrqwaGOTz2WJF6FmI="/>
+        <field:input field="status" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_status" z="T2d9sY7WkxjAVO/jtIVAFZ68j/Q="/>
         <field:input field="productName" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productName" required="true" z="7yWCrYNdVLCBhKTbu+wdTiLRMIw="/>
         <field:input field="productNumber" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_productNumber" required="true" validationMessageCode="field_invalid_integer" z="FIEfK6x+m05zJ8Xw8WtwlyhrWeA="/>
         <field:input field="orderConfirmationNumber" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_orderConfirmationNumber" validationMessageCode="field_invalid_integer" z="dW5ZNQin1+aXVGGbt2peV3++kYI="/>
@@ -20,6 +20,9 @@
         <field:select field="invoiceCountry" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCountry" items="${countrys}" path="countrys" required="true" z="bKLyOPZguV0X8+dv5czENfZxsYo="/>
         <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="JmoDrLge7NMvtlkejAqLhvwgmo4="/>
         <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" itemValue="id" items="${products}" path="/products" required="true" z="kSsOmG7uUHwLBoHaersUbGQQkz0="/>
+        <field:input field="packageNumber" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_packageNumber" z="AFGyFrXnp4lpjXN3eviXah0mJS8="/>
+        <field:input field="trackNumber" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_trackNumber" z="9sH7qq4kHui+rWWLnj67nv64ac8="/>
+        <field:input field="quantityLeft" id="c_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantityLeft" min="0" required="true" z="15plfCxB9mKNGQwD0wUWP/ujhaQ="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_de_switajski_priebes_flexibleorders_domain_InvoiceItem" render="${not empty dependencies}" z="Yann8E0ymKAbxiUS1fbElDbg4DQ="/>
 </div>

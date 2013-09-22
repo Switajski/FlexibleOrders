@@ -5,7 +5,7 @@
     <form:update id="fu_de_switajski_priebes_flexibleorders_domain_ArchiveItem" modelAttribute="archiveItem" path="/archiveitems" versionField="Version" z="O32o9FuUCsaw/5y+c3lt+LVQQAE=">
         <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_quantity" required="true" z="ypIzWAqTi/ZdZHd641VtPubATOM="/>
         <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="42OYOBIqtwY55A/ZJ0I27kgG328="/>
-        <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_status" items="${statuses}" path="statuses" required="true" z="4b5FPGWUD09QaUHeH3EcnwVEIHo="/>
+        <field:input field="status" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_status" z="Kuy3ZVD7aLKaWk/Or+mlYBai8UA="/>
         <field:input field="productName" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productName" required="true" z="SijF5WOjWAdw7QhmD3PF870iZxY="/>
         <field:input field="productNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_productNumber" required="true" validationMessageCode="field_invalid_integer" z="8iiKaK2Jlfmwjl6TNtkVjBiJ+us="/>
         <field:input field="orderConfirmationNumber" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_orderConfirmationNumber" validationMessageCode="field_invalid_integer" z="jIBHzIeFERdcW9PZcD349sRAr1s="/>
@@ -28,5 +28,6 @@
         <field:select field="invoiceCountry" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_invoiceCountry" items="${countrys}" path="countrys" required="true" z="Knb/YyJuUIryEcfobgOGk2ZIQOY="/>
         <field:select field="customer" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_customer" itemValue="id" items="${customers}" path="/customers" required="true" z="owU4QJRzrawZ4AvIq4EQkR/3pz4="/>
         <field:select field="product" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_product" itemValue="id" items="${products}" path="/products" required="true" z="aMprIMPAdd3+uaV5WAuReJY22Z0="/>
+        <field:input field="quantityLeft" id="c_de_switajski_priebes_flexibleorders_domain_ArchiveItem_quantityLeft" min="0" required="true" z="G4zBWKVlLbYTQU+ZShXCZZw2bpo="/>
     </form:update>
 </div>

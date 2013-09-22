@@ -9,7 +9,7 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 public interface InvoiceItemService extends CrudServiceAdapter<InvoiceItem>{
-	Page<InvoiceItem> findShipped(Pageable pageable);
+	Page<InvoiceItem> findOpen(Pageable pageable);
 
 	Page<InvoiceItem> findByInvoiceNumber(long parseLong,
 			PageRequest pageRequest);

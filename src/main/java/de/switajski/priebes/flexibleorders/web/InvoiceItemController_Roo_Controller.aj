@@ -7,7 +7,6 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.Country;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.web.InvoiceItemController;
@@ -122,7 +121,6 @@ privileged aspect InvoiceItemController_Roo_Controller {
         uiModel.addAttribute("customers", customerService.findAllCustomers());
         uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("countrys", Arrays.asList(Country.values()));
-        uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }
     
     String InvoiceItemController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

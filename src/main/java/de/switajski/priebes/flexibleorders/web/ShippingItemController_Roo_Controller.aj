@@ -7,7 +7,6 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Country;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
@@ -127,7 +126,6 @@ privileged aspect ShippingItemController_Roo_Controller {
         uiModel.addAttribute("customers", customerService.findAllCustomers());
         uiModel.addAttribute("products", productRepository.findAll());
         uiModel.addAttribute("countrys", Arrays.asList(Country.values()));
-        uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }
     
     String ShippingItemController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

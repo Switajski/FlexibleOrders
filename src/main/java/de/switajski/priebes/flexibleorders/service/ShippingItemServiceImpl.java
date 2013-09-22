@@ -13,33 +13,36 @@ import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 
 public class ShippingItemServiceImpl extends JpaRepositoryToServiceAdapter<ShippingItem> implements ShippingItemService {
 
+	ShippingItemRepository sir;
+	
 	@Autowired
 	public ShippingItemServiceImpl(ShippingItemRepository jpaRepository) {
 		super(jpaRepository);
+		this.sir = jpaRepository;
 	}
 
 	@Override
 	public Page<ShippingItem> findByOrderNumber(Long orderNumber,
 			Pageable pageable) {
-		return ((ShippingItemRepository) this.jpaRepository).findByOrderNumber( orderNumber,
+		return this.sir.findByOrderNumber( orderNumber,
 				pageable);
 		
 	}
 	
-	public Page<ShippingItem> findConfirmed(Pageable pageable){
-		return ((ItemRepository<ShippingItem>) jpaRepository).findByStatus(Status.CONFIRMED, pageable);
+	public Page<ShippingItem> findOpen(Pageable pageable){
+		return sir.findOpen(pageable);
 	}
 
 	@Override
 	public Page<ShippingItem> findByOrderConfirmationNumber(
 			Long orderConfirmationNumber, Pageable pageable) {
-		return ((ItemRepository<ShippingItem>) jpaRepository).findByOrderConfirmationNumber(orderConfirmationNumber, pageable);
+		return sir.findByOrderConfirmationNumber(orderConfirmationNumber, pageable);
 	}
 
 	@Override
 	public List<ShippingItem> findByOrderConfirmationNumber(
 			Long orderConfirmationNumber) {
-		return ((ItemRepository<ShippingItem>) jpaRepository).findByOrderConfirmationNumber(orderConfirmationNumber);
+		return sir.findByOrderConfirmationNumber(orderConfirmationNumber);
 	}
 
 	

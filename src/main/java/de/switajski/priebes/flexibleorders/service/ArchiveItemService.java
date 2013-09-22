@@ -12,6 +12,6 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 public interface ArchiveItemService extends CrudServiceAdapter<ArchiveItem> {
 	List<ArchiveItem> findByOrderNumber(Long orderNumber);
 	Page<ArchiveItem> findByOrderNumber(Long orderNumber, Pageable pageable);
-	Page<ArchiveItem> findCompleted(Pageable pageable);
 	Page<ArchiveItem> findByAccountNumber(Long accountNumber, Pageable pageable);
+	Page<ArchiveItem> findOpen(Pageable pageable);
 }

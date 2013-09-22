@@ -26,10 +26,4 @@ public interface ItemRepository<T extends Item> {
 	List<T> findByCustomer(Customer customer);
 	Page<T> findByCustomer(Customer customer, Pageable pageable);
 	
-	List<T> findByCustomerAndStatus(Customer customer, Status status);
-	Page<T> findByCustomerAndStatus(Customer customer, Status status, Pageable pageable);
-	
-	List<T> findByStatus(Status status);
-	Page<T> findByStatus(Status status, Pageable pageable);
-	
 }

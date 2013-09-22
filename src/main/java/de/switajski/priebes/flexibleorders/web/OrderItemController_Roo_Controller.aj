@@ -6,12 +6,10 @@ package de.switajski.priebes.flexibleorders.web;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ProductRepository;
 import de.switajski.priebes.flexibleorders.web.OrderItemController;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -117,7 +115,6 @@ privileged aspect OrderItemController_Roo_Controller {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("customers", customerService.findAllCustomers());
         uiModel.addAttribute("products", productRepository.findAll());
-        uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }
     
     String OrderItemController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

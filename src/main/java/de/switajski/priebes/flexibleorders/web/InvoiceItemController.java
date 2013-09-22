@@ -65,14 +65,14 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 		if (filter.get("status") != null)
 			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
 				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
-				return customerService.findShippedItems(customer, pageRequest);			
+				return customerService.findOpenInvoiceItems(customer, pageRequest);			
 			}
 		if (filter.get(ID)!=null && filter.get("status")==null) 
 			if (filter.get(ID)!="") 
 				return this.invoiceItemService.findByInvoiceNumber(Long.parseLong(filter.get(ID)), pageRequest);
 		if (filter.get("status")!=null)
 			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<InvoiceItem> items = invoiceItemService.findShipped(pageRequest);
+				Page<InvoiceItem> items = invoiceItemService.findOpen(pageRequest);
 				return items;
 			}
 		return null;

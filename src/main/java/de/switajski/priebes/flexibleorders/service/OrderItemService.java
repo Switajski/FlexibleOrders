@@ -30,6 +30,8 @@ public interface OrderItemService extends CrudServiceAdapter<OrderItem>{
 
 	public abstract OrderItem updateOrderItem(OrderItem orderItem);
 	
-	public abstract Page<OrderItem> findOrdered(Pageable pageable);
+	public abstract Page<OrderItem> findOpen(Pageable pageable);
+	
+	public abstract List<OrderItem> findOpen();
 
 }

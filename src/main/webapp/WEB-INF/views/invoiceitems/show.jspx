@@ -20,5 +20,8 @@
         <field:display field="invoiceCountry" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_invoiceCountry" object="${invoiceitem}" z="shwe2UXrR0MZVjoWoYBeKOw9Z9c="/>
         <field:display field="customer" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_customer" object="${invoiceitem}" z="1zKFmytomUnltHVKi+ZZYw0vpCU="/>
         <field:display field="product" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_product" object="${invoiceitem}" z="FjsQqpc8o7TsRuaKNcxgXmVbKzo="/>
+        <field:display field="packageNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_packageNumber" object="${invoiceitem}" z="OvisSYX1gHa9E5qVuaQy3b8whZw="/>
+        <field:display field="trackNumber" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_trackNumber" object="${invoiceitem}" z="3QCHINgt8JcgSQRDYuU7mOYjYDM="/>
+        <field:display field="quantityLeft" id="s_de_switajski_priebes_flexibleorders_domain_InvoiceItem_quantityLeft" object="${invoiceitem}" z="P2AH0PQNZQFG51ZeoJdllA4R2Vw="/>
     </page:show>
 </div>

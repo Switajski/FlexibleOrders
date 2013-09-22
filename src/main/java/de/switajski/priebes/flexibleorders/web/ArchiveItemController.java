@@ -46,14 +46,14 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 		if (filter.get("status") != null)
 			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
 				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
-				return customerService.findCompletedItems(customer, pageRequest);			
+				return customerService.findOpenArchiveItems(customer, pageRequest);			
 			}
 		if (filter.get(ID)!=null && filter.get("status")==null) 
 			if (filter.get(ID)!="") 
 				return this.archiveItemService.findByAccountNumber(Long.parseLong(filter.get(ID)), pageRequest);
 		if (filter.get("status")!=null)
 			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<ArchiveItem> items = archiveItemService.findCompleted(pageRequest);
+				Page<ArchiveItem> items = archiveItemService.findOpen(pageRequest);
 				return items;
 			}
 		return null;	}

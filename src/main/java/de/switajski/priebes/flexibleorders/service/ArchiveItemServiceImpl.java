@@ -13,31 +13,34 @@ import de.switajski.priebes.flexibleorders.repository.ItemRepository;
 
 public class ArchiveItemServiceImpl extends JpaRepositoryToServiceAdapter<ArchiveItem> implements ArchiveItemService {
 
+	ArchiveItemRepository air;
+	
 	@Autowired
 	public ArchiveItemServiceImpl(ArchiveItemRepository jpaRepository) {
 		super(jpaRepository);
+		this.air = jpaRepository;
 	}
 	
 	@Override
 	public List<ArchiveItem> findByOrderNumber(Long orderNumber) {
-		return ((ItemRepository<ArchiveItem>) this.jpaRepository).findByOrderNumber(orderNumber);
+		return air.findByOrderNumber(orderNumber);
 	}
 
 	@Override
 	public Page<ArchiveItem> findByOrderNumber(Long orderNumber,
 			Pageable pageable) {
-		return ((ItemRepository<ArchiveItem>) this.jpaRepository).findByOrderNumber(orderNumber, pageable);
+		return air.findByOrderNumber(orderNumber, pageable);
 	}
 	
 	@Override
-	public Page<ArchiveItem> findCompleted(Pageable pageable){
-		return ((ItemRepository<ArchiveItem>) this.jpaRepository).findByStatus(Status.COMPLETED, pageable);
+	public Page<ArchiveItem> findOpen(Pageable pageable){
+		return air.findOpen( pageable);
 	}
 
 	@Override
 	public Page<ArchiveItem> findByAccountNumber(Long accountNumber,
 			Pageable pageable) {
-		((ItemRepository<ArchiveItem>) this.jpaRepository).findByAccountNumber(accountNumber, pageable);
+		air.findByAccountNumber(accountNumber, pageable);
 		return null;
 	}
 }

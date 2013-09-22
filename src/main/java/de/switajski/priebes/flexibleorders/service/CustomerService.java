@@ -35,14 +35,14 @@ public interface CustomerService extends CrudServiceAdapter<Customer> {
 	public abstract Customer updateCustomer(Customer customer);
 	
 	
-	public abstract Page<OrderItem> findOrderedItems(Customer customer, Pageable pageable);
-	public abstract Page<ShippingItem> findConfirmedItems(Customer customer, Pageable pageable);
-	public abstract Page<InvoiceItem> findShippedItems(Customer customer, Pageable pageable);
-	public abstract Page<ArchiveItem> findCompletedItems(Customer customer, Pageable pageable);
+	public abstract Page<OrderItem> findOpenOrderItems(Customer customer, Pageable pageable);
+	public abstract Page<ShippingItem> findOpenShippingItems(Customer customer, Pageable pageable);
+	public abstract Page<InvoiceItem> findOpenInvoiceItems(Customer customer, Pageable pageable);
+	public abstract Page<ArchiveItem> findOpenArchiveItems(Customer customer, Pageable pageable);
 
-	public abstract List<OrderItem> findOrderedItems(Customer customer);
-	public abstract List<ShippingItem> findConfirmedItems(Customer customer);
-	public abstract List<InvoiceItem> findShippedItems(Customer customer);
-	public abstract List<ArchiveItem> findCompletedItems(Customer customer);
+	public abstract List<OrderItem> findOpenOrderItems(Customer customer);
+	public abstract List<ShippingItem> findOpenShippingItems(Customer customer);
+	public abstract List<InvoiceItem> findOpenInvoiceItems(Customer customer);
+	public abstract List<ArchiveItem> findOpenArchiveItems(Customer customer);
 
 }

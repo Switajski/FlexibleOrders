@@ -61,25 +61,25 @@ public class CustomerController extends JsonController<Customer>{
 		if (customer==null) throw new IllegalArgumentException("Customer with id:"+ customerId +" not found");
 		itemType = itemType.toLowerCase();
 		if (itemType.contains("ordered")){
-			Page<OrderItem> orderItems = customerService.findOrderedItems(customer, new PageRequest(page-1, limit));
+			Page<OrderItem> orderItems = customerService.findOpenOrderItems(customer, new PageRequest(page-1, limit));
 			if (!orderItems.getContent().isEmpty())
 				response.setData(orderItems.getContent());
 			response.setTotal(orderItems.getTotalElements());
 		}
 		else if (itemType.contains("confirmed")){
-			Page<ShippingItem> shippingItems = customerService.findConfirmedItems(customer, new PageRequest(page-1, limit));
+			Page<ShippingItem> shippingItems = customerService.findOpenShippingItems(customer, new PageRequest(page-1, limit));
 			if (!shippingItems.getContent().isEmpty())
 				response.setData(shippingItems.getContent());
 			response.setTotal(shippingItems.getTotalElements());
 		}
 		else if (itemType.contains("shipped")){
-			Page<InvoiceItem> invoiceItems = customerService.findShippedItems(customer, new PageRequest(page-1, limit));
+			Page<InvoiceItem> invoiceItems = customerService.findOpenInvoiceItems(customer, new PageRequest(page-1, limit));
 			if (!invoiceItems.getContent().isEmpty())
 				response.setData(invoiceItems.getContent());
 			response.setTotal(invoiceItems.getTotalElements());
 		}
 		else if (itemType.contains("completed")){
-			Page<ArchiveItem> archiveItems = customerService.findCompletedItems(customer, new PageRequest(page-1, limit));
+			Page<ArchiveItem> archiveItems = customerService.findOpenArchiveItems(customer, new PageRequest(page-1, limit));
 			if (!archiveItems.getContent().isEmpty())
 				response.setData(archiveItems.getContent());
 			response.setTotal(archiveItems.getTotalElements());

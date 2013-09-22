@@ -86,14 +86,14 @@ public class OrderItemController extends JsonController<OrderItem>{
 		if (filter.get("status") != null)
 			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
 				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
-				return customerService.findOrderedItems(customer, pageRequest);			
+				return customerService.findOpenOrderItems(customer, pageRequest);			
 			}
 		if (filter.get(ID)!=null && filter.get("status")==null) 
 			if (filter.get(ID)!="") 
 				return this.orderItemService.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
 		if (filter.get("status")!=null)
 			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<OrderItem> orderItems = orderItemService.findOrdered(pageRequest);
+				Page<OrderItem> orderItems = orderItemService.findOpen(pageRequest);
 				return orderItems;
 			}
 		return null;

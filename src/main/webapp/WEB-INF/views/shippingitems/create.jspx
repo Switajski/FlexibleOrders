@@ -5,7 +5,7 @@
     <form:create id="fc_de_switajski_priebes_flexibleorders_domain_ShippingItem" modelAttribute="shippingItem" path="/shippingitems" render="${empty dependencies}" z="g/4waMI/Cu+42lXrp7b8eslSeTs=">
         <field:input field="quantity" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_quantity" required="true" z="hT2/Dj0SGqmWZZnOCqjGOkl/lF0="/>
         <field:input field="priceNet" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_priceNet" min="0" required="true" validationMessageCode="field_invalid_number" z="RJ2mf8H2W30P4AvGi3oXxGzCfUI="/>
-        <field:select field="status" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" items="${statuses}" path="statuses" required="true" z="E6F2D/UYC6sbcvud7u7zr6ex9to="/>
+        <field:input field="status" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_status" z="k+h0qGHjhfNHc+iKvilzKcy9aVg="/>
         <field:input field="productName" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productName" required="true" z="Pc6KpvAV05G+FKJS/p6QpT2mu98="/>
         <field:input field="productNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_productNumber" required="true" validationMessageCode="field_invalid_integer" z="OeK6YWSFTi+3WCH3XquDwENKYHI="/>
         <field:input field="orderConfirmationNumber" id="c_de_switajski_priebes_flexibleorders_domain_ShippingItem_orderConfirmationNumber" validationMessageCode="field_invalid_integer" z="QWPUmX3RkICVN7JbraS23jBtevk="/>

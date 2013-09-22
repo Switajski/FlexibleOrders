@@ -20,24 +20,24 @@ import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
-	InvoiceItemRepository invoiceItemRepository;
+	InvoiceItemRepository iir;
 	
 	@Override
 	public long countAll() {
-		return invoiceItemRepository.countAllInvoices();
+		return iir.countAllInvoices();
 	}
 	
 	@Override
 	public Page<Long> getInvoiceNumbersByCustomer(Customer customer, Pageable pageable) {
-		return invoiceItemRepository.getAllInvoiceNumbers(customer, pageable);
+		return iir.getAllInvoiceNumbers(customer, pageable);
 	}
 
 	public Page<Invoice> findAll(Pageable pageable){
-		Page<Long> invoiceNumbers = invoiceItemRepository.getAllInvoiceNumbers(pageable);
+		Page<Long> invoiceNumbers = iir.getAllInvoiceNumbers(pageable);
 		
 		List<Invoice> orders = new ArrayList<Invoice>();
 		for (Long invoiceNumber:invoiceNumbers){
-			orders.add(new Invoice(invoiceItemRepository.findByInvoiceNumber(invoiceNumber)));
+			orders.add(new Invoice(iir.findByInvoiceNumber(invoiceNumber)));
 		}
 		Page<Invoice> invoicesPage = new PageImpl<Invoice>(orders, pageable, invoiceNumbers.getTotalElements());
 		return invoicesPage;
@@ -50,7 +50,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 	
 	private Invoice getInvoice(Long invoiceNumber){
-		List<InvoiceItem> ois = invoiceItemRepository.findByOrderNumber(invoiceNumber);
+		List<InvoiceItem> ois = iir.findByOrderNumber(invoiceNumber);
 		Invoice invoice = new Invoice(ois);
 		return invoice;
 	}
@@ -58,7 +58,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public List<Invoice> findAll() {
 		ArrayList<Invoice> invoices = new ArrayList<Invoice>();
-		for (Long orderNumber: invoiceItemRepository.getAllInvoiceNumbers())
+		for (Long orderNumber: iir.getAllInvoiceNumbers())
 			invoices.add(getInvoice(orderNumber));
 		return invoices;
 	}
@@ -83,7 +83,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public List<Invoice> findByCustomer(Customer customer) {
 		ArrayList<Invoice> orders = new ArrayList<Invoice>();
-		for (Long invoiceNumber: invoiceItemRepository.getAllInvoiceNumbers(customer))
+		for (Long invoiceNumber: iir.getAllInvoiceNumbers(customer))
 			orders.add(getInvoice(invoiceNumber));
 		return orders;
 	}
@@ -91,7 +91,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public Page<Invoice> findByCustomer(Customer customer, Pageable pageable) {
 		ArrayList<Invoice> invoices = new ArrayList<Invoice>();
-		Page<Long> invoiceNumbers = invoiceItemRepository.getAllInvoiceNumbers(customer, pageable);
+		Page<Long> invoiceNumbers = iir.getAllInvoiceNumbers(customer, pageable);
 		for (Long invoiceNumber: invoiceNumbers)
 			invoices.add(getInvoice(invoiceNumber));
 		Page<Invoice> pages = new PageImpl<Invoice>(invoices, pageable, invoiceNumbers.getSize());
@@ -101,7 +101,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public List<Long> findInvoiceNumbersLike(Long invoiceNumber) {
 		ArrayList<Long> orderNumbersToReturn = new ArrayList<Long>();
-		List<Long> orderNumbers = invoiceItemRepository.getAllInvoiceNumbers();
+		List<Long> orderNumbers = iir.getAllInvoiceNumbers();
 		for (Long on:orderNumbers){
 			if (on.toString().startsWith(invoiceNumber.toString()))
 				orderNumbersToReturn.add(on);

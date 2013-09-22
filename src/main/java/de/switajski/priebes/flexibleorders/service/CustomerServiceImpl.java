@@ -79,43 +79,43 @@ extends JpaRepositoryToServiceAdapter<Customer> implements CustomerService {
     }
 
 	@Override
-	public Page<OrderItem> findOrderedItems(Customer customer, Pageable pageable) {
-		return orderItemRepository.findByCustomerAndStatus(customer, Status.ORDERED, pageable);
+	public Page<OrderItem> findOpenOrderItems(Customer customer, Pageable pageable) {
+		return orderItemRepository.findByCustomerAndOpen(customer, pageable);
 	}
 
 	@Override
-	public Page<ShippingItem> findConfirmedItems(Customer customer, Pageable pageable) {
-		return shippingItemRepository.findByCustomerAndStatus(customer, Status.CONFIRMED, pageable);
+	public Page<ShippingItem> findOpenShippingItems(Customer customer, Pageable pageable) {
+		return shippingItemRepository.findByCustomerAndOpen(customer, pageable);
 	}
 
 	@Override
-	public Page<InvoiceItem> findShippedItems(Customer customer, Pageable pageable) {
-		return invoiceItemRepository.findByCustomerAndStatus(customer, Status.SHIPPED, pageable);
+	public Page<InvoiceItem> findOpenInvoiceItems(Customer customer, Pageable pageable) {
+		return invoiceItemRepository.findByCustomerAndOpen(customer, pageable);
 	}
 
 	@Override
-	public Page<ArchiveItem> findCompletedItems(Customer customer, Pageable pageable) {
-		return archiveItemRepository.findByCustomerAndStatus(customer, Status.COMPLETED, pageable);
+	public Page<ArchiveItem> findOpenArchiveItems(Customer customer, Pageable pageable) {
+		return archiveItemRepository.findByCustomerAndCompleted(customer, pageable);
 	}
 
 	@Override
-	public List<OrderItem> findOrderedItems(Customer customer) {
-		return orderItemRepository.findByCustomerAndStatus(customer, Status.ORDERED);
+	public List<OrderItem> findOpenOrderItems(Customer customer) {
+		return orderItemRepository.findByCustomerAndOpen(customer);
 	}
 
 	@Override
-	public List<ShippingItem> findConfirmedItems(Customer customer) {
-		return shippingItemRepository.findByCustomerAndStatus(customer, Status.CONFIRMED);
+	public List<ShippingItem> findOpenShippingItems(Customer customer) {
+		return shippingItemRepository.findByCustomerAndOpen(customer);
 	}
 
 	@Override
-	public List<InvoiceItem> findShippedItems(Customer customer) {
-		return invoiceItemRepository.findByCustomerAndStatus(customer, Status.SHIPPED);
+	public List<InvoiceItem> findOpenInvoiceItems(Customer customer) {
+		return invoiceItemRepository.findByCustomerAndOpen(customer);
 	}
 
 	@Override
-	public List<ArchiveItem> findCompletedItems(Customer customer) {
-		return archiveItemRepository.findByCustomerAndStatus(customer, Status.COMPLETED);
+	public List<ArchiveItem> findOpenArchiveItems(Customer customer) {
+		return archiveItemRepository.findByCustomerAndOpen(customer);
 	}
 
 }

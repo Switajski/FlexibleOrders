@@ -50,14 +50,14 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 		if (filter.get("status") != null)
 			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
 				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
-				return customerService.findConfirmedItems(customer, pageRequest);			
+				return customerService.findOpenShippingItems(customer, pageRequest);			
 			}
 		if (filter.get(ID)!=null && filter.get("status")==null) 
 			if (filter.get(ID)!="") 
 				return this.shippingItemService.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
 		if (filter.get("status")!=null)
 			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<ShippingItem> items = shippingItemService.findConfirmed(pageRequest);
+				Page<ShippingItem> items = shippingItemService.findOpen(pageRequest);
 				return items;
 			}
 		return null;

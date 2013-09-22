@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @Repository
 @RooJpaRepository(domainType = InvoiceItem.class)
@@ -27,19 +28,19 @@ public interface InvoiceItemRepository extends JpaRepository<InvoiceItem, Long>,
 			+ "from InvoiceItem ii "
 			+ "where ii.customer = ?1 "
 			+ "group by ii.invoiceNumber "
-			+ "order by min(ii.created) desc")
+			+ "order by max(ii.created)")
 	Page<Long> getAllInvoiceNumbers(Customer customer, Pageable pageable);
 	
 	@Query("select ii.invoiceNumber "
 			+ "from InvoiceItem ii "
 			+ "group by ii.invoiceNumber "
-			+ "order by min(ii.created) desc")
+			+ "order by max(ii.created)")
 	Page<Long> getAllInvoiceNumbers(Pageable pageable);
 	
 	@Query("select ii.invoiceNumber "
 			+ "from InvoiceItem ii "
 			+ "group by ii.invoiceNumber "
-			+ "order by min(ii.created) desc")
+			+ "order by max(ii.created)")
 	List<Long> getAllInvoiceNumbers();
 	
 	@Query("select count(DISTINCT ii.invoiceNumber) "
@@ -50,7 +51,25 @@ public interface InvoiceItemRepository extends JpaRepository<InvoiceItem, Long>,
 			+ "from InvoiceItem ii "
 			+ "where ii.customer = ?1 "
 			+ "group by ii.invoiceNumber "
-			+ "order by min(ii.created) desc")
+			+ "order by ii.created")
 	List<Long> getAllInvoiceNumbers(Customer customer);
+	
+	@Query("select i "
+			+ "from InvoiceItem i "
+			+ "where i.quantityLeft != 0 ")
+	Page<InvoiceItem> findOpen(Pageable pageable);
+
+	@Query("select i "
+			+ "from InvoiceItem i "
+			+ "where i.quantityLeft != 0 "
+			+ "and i.customer = :customer "
+			+ "order by i.created")
+	List<InvoiceItem> findByCustomerAndOpen(Customer customer);
+	
+	@Query("select i "
+			+ "from InvoiceItem i "
+			+ "where i.quantityLeft != 0 "
+			+ "and i.customer = ?1 ")
+	Page<InvoiceItem> findByCustomerAndOpen(Customer customer, Pageable pageable);
 
 }

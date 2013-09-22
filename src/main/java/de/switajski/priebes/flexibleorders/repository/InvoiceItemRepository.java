@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 
 @Repository
 @RooJpaRepository(domainType = InvoiceItem.class)
@@ -71,5 +72,8 @@ public interface InvoiceItemRepository extends JpaRepository<InvoiceItem, Long>,
 			+ "where i.quantityLeft != 0 "
 			+ "and i.customer = ?1 ")
 	Page<InvoiceItem> findByCustomerAndOpen(Customer customer, Pageable pageable);
+
+	List<InvoiceItem> findByInvoiceNumberAndProduct(long invoiceNr,
+			Product product);
 
 }

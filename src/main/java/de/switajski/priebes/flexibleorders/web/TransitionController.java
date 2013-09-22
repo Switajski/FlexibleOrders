@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import javassist.NotFoundException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -120,20 +122,20 @@ public class TransitionController {
 	
 	@RequestMapping(value="/withdraw/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse withdraw(
-			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
-			@RequestParam(value = "productNumber", required = true) long productNumber, 
-			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
-			@RequestParam(value = "quantity", required = true) int quantity) 
+			@RequestParam(value = "id", required = true) long id) 
 					throws Exception {
 		
-		log.debug("received json withdraw request: orderConfirmationNumber:"+orderConfirmationNumber + " product:"+ productNumber 
-				+ " invoiceNumber:"+invoiceNumber);
+		log.debug("received json withdraw request:" 
+				+ " invoiceItemId:"+id);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Product product = productService.findByProductNumber(productNumber);
-		InvoiceItem invoiceItem = transitionService.withdraw(orderConfirmationNumber, product, invoiceNumber);
+		InvoiceItem item = invoiceItemService.find(id);
+		if (item == null){
+			throw new NotFoundException("Item with given id not found");
+		}
+		item = transitionService.withdraw(item);
 		
-		response.setData(invoiceItem);
+		response.setData(item);
 		response.setTotal(1);
 		response.setMessage("invoice item withdrawed");
 		response.setSuccess(true);
@@ -144,20 +146,21 @@ public class TransitionController {
 	
 	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse complete(
-			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
-			@RequestParam(value = "productNumber", required = true) long productNumber, 
-			@RequestParam(value = "quantity", required = true) int quantity,
-			@RequestParam(value = "accountNumber", required = true) long accountNumber) 
+			@RequestParam(value = "id", required = true) long id,
+			@RequestParam(value = "accountNumber", required = true) Long accountNumber) 
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: invoiceNumber:"+invoiceNumber + " product:"+ productNumber 
-				+ " quantity:" + quantity + " orderConfirmationNumber:"+accountNumber);
+		log.debug("received json confirm request: "
+				+ " id:" + id);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Product product = productService.findByProductNumber(productNumber);
-		ArchiveItem archiveItem = transitionService.complete(invoiceNumber, product, quantity, accountNumber);
-		archiveItemService.save(archiveItem);
+		InvoiceItem item = invoiceItemService.find(id);
+		if (item == null){
+			throw new NotFoundException("Item with given id not found");
+		}
+		ArchiveItem archiveItem = transitionService.complete(item, accountNumber);
+		
 		response.setData(archiveItem);
 		response.setTotal(1);
 		response.setMessage("archiveItem iten confirmed");
@@ -166,5 +169,27 @@ public class TransitionController {
 		return response;
 	}
 
+	@RequestMapping(value="/decomplete/json", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse decomplete(
+			@RequestParam(value = "id", required = true) long id) 
+					throws Exception {
+		
+		log.debug("received json decomplete request:" 
+				+ " archiveItemId:"+id);
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		ArchiveItem item = archiveItemService.find(id);
+		if (item == null){
+			throw new NotFoundException("Item with given id not found");
+		}
+		item = transitionService.decomplete(item);
+		
+		response.setData(item);
+		response.setTotal(1);
+		response.setMessage("archive item decompleted");
+		response.setSuccess(true);
+
+		return response;
+	}
 	
 }

@@ -35,6 +35,7 @@ public class ArchiveItem extends Item {
         historize(invoiceItem);
         setCreated(new Date());
         setQuantity(quantity);
+        setQuantityLeft(quantity);
         Customer customer = invoiceItem.getCustomer();
         customer = invoiceItem.getCustomer();
         setInvoiceCity(customer.getCity());
@@ -136,5 +137,18 @@ public class ArchiveItem extends Item {
     @Override
 	public Status getStatus(){
 		return Status.COMPLETED;
+	}
+    
+    public void addCompletedQuantity(int quantity){
+    	this.setQuantityLeft(getQuantityLeft()-quantity);
+    }
+    
+    public void decomplete(InvoiceItem invoiceItem){
+    	invoiceItem.reduceShippedQuantity(this.getQuantity());
+    	invoiceItem.setAccountNumber(null);
+    }
+    
+    private void reduceCompletedQuantity(int quantity) {
+    	this.setQuantityLeft(getQuantityLeft()+quantity);
 	}
 }

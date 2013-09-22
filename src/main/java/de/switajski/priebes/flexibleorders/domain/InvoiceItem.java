@@ -91,10 +91,19 @@ public class InvoiceItem extends Item {
     public ArchiveItem complete(int quantity, long accountNumber) {
         setAccountNumber(accountNumber);
         ArchiveItem ai = new ArchiveItem(this, quantity, accountNumber);
+        addShippedQuantity(quantity);
         return ai;
     }
 
-    @Override
+    public void addShippedQuantity(int quantity) {
+    	this.setQuantityLeft(getQuantityLeft()-quantity);
+	}
+    
+    public void reduceShippedQuantity(int quantity) {
+    	this.setQuantityLeft(getQuantityLeft()+quantity);
+	}
+
+	@Override
     public int compareTo(Item o) {
         // TODO Auto-generated method stub
         return 0;
@@ -106,6 +115,21 @@ public class InvoiceItem extends Item {
 			return Status.COMPLETED;
 		else return Status.SHIPPED;
 	}
+    
+    /**
+     * sets a shipping item to a non shipped state.</br>
+     * Has two use cases:</br>
+     * 1. One shipping item is completely shipped by one invoice item.
+     * 2. One shipping item is shipped by several invoice items. 
+     * @param shippingItem
+     */
+    public void withdraw(ShippingItem shippingItem){
+    	shippingItem.reduceShippedQuantity(this.getQuantity());
+    	
+    	// delete invoiceNumber only if one shipping item is completely shipped by one invoice item.
+    	if (shippingItem.getQuantity() == shippingItem.getQuantityLeft())
+    		shippingItem.setInvoiceNumber(null);
+    }
 
     
 }

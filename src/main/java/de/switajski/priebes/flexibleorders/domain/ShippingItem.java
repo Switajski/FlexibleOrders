@@ -165,7 +165,7 @@ public class ShippingItem extends Item {
         
         this.setInvoiceNumber(invoiceNumber);
         InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
-        this.addConfirmedQuantity(quantity);
+        this.addShippedQuantity(quantity);
         
         return ii;
     }
@@ -196,7 +196,7 @@ public class ShippingItem extends Item {
      * is more
      * @param quantity amount to add in quantityLeft
      */
-	public void addConfirmedQuantity(int quantity) {
+	public void addShippedQuantity(int quantity) {
 		setQuantityLeft(getQuantityLeft()-quantity);
 	}
 	
@@ -205,7 +205,7 @@ public class ShippingItem extends Item {
 	 * is less
 	 * @param quantity
 	 */
-	public void reduceConfirmedQuantity(int quantity) {
+	public void reduceShippedQuantity(int quantity) {
 		setQuantityLeft(getQuantityLeft()+quantity);
 	}
 	

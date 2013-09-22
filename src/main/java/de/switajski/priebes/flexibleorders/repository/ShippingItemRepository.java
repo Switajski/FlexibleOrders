@@ -3,6 +3,7 @@ import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
@@ -51,4 +52,8 @@ ItemRepository<ShippingItem> {
 			+ "and i.customer = ?1 ")
 	Page<ShippingItem> findByCustomerAndOpen(Customer customer,
 			Pageable pageable);
+
+
+	List<InvoiceItem> findByInvoiceNumberAndProduct(Object invoiceNumber,
+			Product product);
 }

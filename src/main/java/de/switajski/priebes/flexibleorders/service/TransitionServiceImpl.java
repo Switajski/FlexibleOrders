@@ -56,7 +56,7 @@ public class TransitionServiceImpl implements TransitionService {
 		this.archiveItemRepository = archiveItemRepository;
 		this.orderItemService = orderItemService;
 	}
-	
+
 	@Override
 	public ShippingItem confirm(long orderNumber, Product product,
 			int quantity, boolean toSupplier, long orderConfirmationNumber) {
@@ -67,7 +67,7 @@ public class TransitionServiceImpl implements TransitionService {
 			throw new IllegalStateException("Order has order items with same products");
 		OrderItem oiToConfirm = orderItems.get(0);
 		ShippingItem si = oiToConfirm.confirm(toSupplier, quantity, orderConfirmationNumber);
-		
+
 		orderItemRepository.save(oiToConfirm);
 		shippingItemRepository.save(si);
 		return si;
@@ -82,21 +82,21 @@ public class TransitionServiceImpl implements TransitionService {
 				shippingItemRepository.findByOrderConfirmationNumberAndProduct(orderConfirmationNumber, product);
 		List<OrderItem> ois = 
 				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
-		
+
 		if (sis.size()>1)
 			throw new IllegalStateException("Order confirmation has shipping items with same products");
 		if (sis.size()>1)
 			throw new IllegalStateException("Order has order items with same products");
-		
+
 		ShippingItem siToDelete = sis.get(0);
 		OrderItem orderItemToDeconfirm = ois.get(0);
-		
+
 		siToDelete.deconfirm(orderItemToDeconfirm);
-		
+
 		shippingItemRepository.delete(siToDelete);
 		shippingItemRepository.flush();
 		orderItemRepository.save(orderItemToDeconfirm);
-		
+
 		return sis.get(0);
 	}
 
@@ -111,7 +111,7 @@ public class TransitionServiceImpl implements TransitionService {
 			throw new IllegalStateException("Order confirmation has shipping items with same products");
 		ShippingItem siToConfirm = shippingItems.get(0);
 		InvoiceItem ii = siToConfirm.deliver(quantity, invoiceNumber);
-		
+
 		shippingItemRepository.save(siToConfirm);
 		invoiceItemRepository.save(ii);
 		return ii;
@@ -119,29 +119,53 @@ public class TransitionServiceImpl implements TransitionService {
 	}
 
 	@Override
-	public InvoiceItem withdraw(long orderConfirmationNumber, Product product,
-			long invoiceNumber) {
-		log.error("withdraw - not implemented");
+	public InvoiceItem withdraw(InvoiceItem invoiceItem) {
+		log.debug("withdraw");
+
+		List<ShippingItem> shippingItems = 
+				shippingItemRepository.findByOrderConfirmationNumberAndProduct(
+						invoiceItem.getOrderConfirmationNumber(), invoiceItem.getProduct());
 		
+		if (shippingItems.size()!=1)
+			throw new IllegalStateException("An order confirmation should have "
+					+ "only one shipping item with given product and orderConfirmationNumber");
 		
+		ShippingItem shippingItem = shippingItems.get(0);
+		invoiceItem.withdraw(shippingItem);
+		shippingItemRepository.save(shippingItem);
+		invoiceItemRepository.delete(invoiceItem);
 		
-		return null;
+		return invoiceItem;
 	}
 
 	@Override
-	public ArchiveItem complete(long invoiceNumber, Product product,
-			int quantity, long accountNumber) {
-		// TODO Auto-generated method stub
-		log.error("complete - not implemented");
-		return null;
+	public ArchiveItem complete(InvoiceItem invoiceItem, Long accountNumber) {
+		log.debug("complete");
+		ArchiveItem archiveItem = invoiceItem.complete(invoiceItem.getQuantity(), accountNumber);
+		archiveItemRepository.save(archiveItem);
+		invoiceItemRepository.save(invoiceItem);
+		
+		return archiveItem;
 	}
 
 	@Override
-	public ArchiveItem decomplete(long invoiceNumber, Product product,
-			long accountNumber) {
-		// TODO Auto-generated method stub
-		log.error("decomplete - not implemented");
-		return null;
+	public ArchiveItem decomplete(ArchiveItem archiveItem) {
+		log.debug("decomplete");
+		
+		List<InvoiceItem> invoiceItems = 
+				invoiceItemRepository.findByInvoiceNumberAndProduct(
+						archiveItem.getInvoiceNumber(), archiveItem.getProduct());
+		
+		if (invoiceItems.size()!=1)
+			throw new IllegalStateException("An invoice should have "
+					+ "only one invoice item with given product and invoiceNumber");
+		InvoiceItem invoiceItem = invoiceItems.get(0);
+		archiveItem.decomplete(invoiceItem);
+		
+		invoiceItemRepository.save(invoiceItem);
+		archiveItemRepository.delete(archiveItem);
+		
+		return archiveItem;
 	}
 
 

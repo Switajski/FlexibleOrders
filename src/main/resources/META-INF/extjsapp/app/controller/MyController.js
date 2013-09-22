@@ -493,6 +493,7 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/deliver/json',
 						params : {
+							id : record.data.id,
 							trackNumber : record.data.trackNumber,
 							packageNumber : record.data.packageNumber,
 							quantity : record.data.quantity,
@@ -524,11 +525,12 @@ Ext.define('MyApp.controller.MyController', {
 	withdraw : function(event, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.orderNumber);
+					+ record.data.invoiceNumber);
 
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/withdraw/json',
 						params : {
+							id : record.data.id,
 							productNumber : record.data.product,
 							orderConfirmationNumber : record.data.orderConfirmationNumber,
 							invoiceNumber : record.data.invoiceNumber,
@@ -557,10 +559,43 @@ Ext.define('MyApp.controller.MyController', {
 
 
 	decomplete : function(event, record){
-		console.error('implement me!');
+		if (event == "ok") {
+			console.log(record.data.product + " " + record.data.quantity + " "
+					+ record.data.accountNumber);
+
+			var request = Ext.Ajax.request({
+						url : '/FlexibleOrders/transitions/decomplete/json',
+						params : {
+							id : record.data.id,
+							productNumber : record.data.product,
+							orderConfirmationNumber : record.data.orderConfirmationNumber,
+							invoiceNumber : record.data.invoiceNumber,
+							accountNumber : record.data.accountNumber,
+							quantity : record.data.quantity
+						},
+						success : function(response) {
+							var text = response.responseText;
+						},
+						failure : function(response) {
+							// TODO: Fehlerhandling vereinheitlichen
+							Ext.Msg.alert('Fehler', response.status
+											+ response.text);
+						}
+					});
+			if (this.debug)
+				console.log('decomplete archive item');
+// TODO: DRY in Sync
+			// Sync
+			MyApp.getApplication().getController('MyController').sleep(500);
+			var allGrids = Ext.ComponentQuery.query('PositionGrid');
+			allGrids.forEach(function(grid) {
+						grid.getStore().load();
+					});
+		}
 	},
 	
 	complete : function(event, anr, record) {
+		record.data.accountNumber = record.data.invoiceNumber;
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.accountNumber);
@@ -568,10 +603,11 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/complete/json',
 						params : {
+							id : record.data.id,
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
 							invoiceNumber:record.data.invoiceNumber,
-							accountNumber : anr
+							accountNumber : record.data.accountNumber
 						},
 						success : function(response) {
 							var text = response.responseText;

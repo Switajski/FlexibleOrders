@@ -33,17 +33,8 @@ public interface TransitionService {
 			long invoiceNumber, 
 			String trackNumber, 
 			String packageNumber);
-	InvoiceItem withdraw(long orderConfirmationNumber,
-			Product product,
-			long invoiceNumber);
+	InvoiceItem withdraw(InvoiceItem invoiceItem);
 	
-	ArchiveItem complete(
-			long invoiceNumber, 
-			Product product, 
-			int quantity, 
-			long accountNumber);
-	ArchiveItem decomplete(
-			long invoiceNumber, 
-			Product product, 
-			long accountNumber);
+	ArchiveItem complete(InvoiceItem invoiceItem, Long accountNumber);
+	ArchiveItem decomplete(ArchiveItem archiveItem);
 }

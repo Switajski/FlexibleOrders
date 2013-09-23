@@ -68,7 +68,7 @@ Ext.define('MyApp.view.MainPanel', {
 			icon : '/FlexibleOrders/images/add.png',
 			text : 'erstelle Bestellung',
 			scope : this
-		}, {
+		}/*, {
 			id : 'AbBestellungButton',
 			text : 'Auftrag best&auml;tigen',
 			icon : '/FlexibleOrders/images/new_ab.png',
@@ -86,7 +86,7 @@ Ext.define('MyApp.view.MainPanel', {
 			icon : '/FlexibleOrders/images/bezahlt.png',
 			tooltip : 'Bestellung als bezahlt markieren',
 			schope : this
-		}/*, {
+		}*//*, {
 			id : 'StornoBestellungButton',
 			icon : 'images/delete_task.png',
 			text : 'stornieren',

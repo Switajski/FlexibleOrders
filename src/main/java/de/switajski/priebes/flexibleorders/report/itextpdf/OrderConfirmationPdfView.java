@@ -24,9 +24,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		insertHeader(document);
         insertAdresse(document, auftragsbestaetigung.getCustomer().getInvoiceAddress());
         insertSubject(document,"Auftragsbestätigung Nr." 
-        		//TODO: implement OrderConfirmationNumber
-//        		+ auftragsbestaetigung.getAbnr().toString()
-        		);
+        		+ auftragsbestaetigung.getOrderConfirmationNumber());
         insertInfo(document,"Auftragsdatum: " + dateFormat.format(auftragsbestaetigung.getCreated()));
         //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
         this.insertEmptyLines(document, 2);

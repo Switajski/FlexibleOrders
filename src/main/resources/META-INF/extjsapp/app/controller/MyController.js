@@ -574,6 +574,7 @@ Ext.define('MyApp.controller.MyController', {
 							quantity : record.data.quantity
 						},
 						success : function(response) {
+							//TODO: make a responsive design
 							var text = response.responseText;
 						},
 						failure : function(response) {

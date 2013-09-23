@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
+import de.switajski.priebes.flexibleorders.service.TransitionService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
@@ -35,6 +36,8 @@ public class OrderConfirmationPdfViewTest {
 		
 	public static final String RESULT
     = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/ab1234.pdf";
+	private static final long O_NR = 1234l;
+	private static final long OC_NR = 6666l;
 	
 	Order order;
 	OrderConfirmation orderConfirmation;
@@ -42,10 +45,11 @@ public class OrderConfirmationPdfViewTest {
 	@Autowired OrderService orderService;
 	@Autowired OrderItemService orderItemService;
 	@Autowired ShippingItemService shippingItemService;
+	@Autowired TransitionService transitionService;
 	
 	@Before
 	public void initData(){
-		OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
+		/*OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
 		OrderItem oi1 = dod.getRandomOrderItem();
 		OrderItem oi2 = dod.getRandomOrderItem();
 		
@@ -60,13 +64,22 @@ public class OrderConfirmationPdfViewTest {
 		
 		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
 		for (OrderItem orderItem:order.getItems()){
-			ShippingItem si = orderItem.confirm(false, orderItem.getQuantity(), 1234l);
+			ShippingItem si = transitionService.confirm(O_NR, orderItem.getProduct(), orderItem.getQuantity(), false, OC_NR );
 			shippingItemService.saveShippingItem(si);
 			shippingItems.add(si);
-		}
+		}*/
+		List<ShippingItem> shippingItems = new ArrayList<ShippingItem>();
+		shippingItems.add(getShippingItem());
 		orderConfirmation = new OrderConfirmation(shippingItems);
 	}
 	
+	private ShippingItem getShippingItem() {
+		ShippingItem si = new ShippingItem();
+		si.setOrderConfirmationNumber(OC_NR);
+//		si.setProduct(product);
+		return null;
+	}
+
 	@Transactional
 	@Test
 	public void shouldGenerateOrderConfirmation(){

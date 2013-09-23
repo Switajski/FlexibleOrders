@@ -23,6 +23,12 @@ public class Report<T extends Item> {
 	private Customer customer;
 
 	private Long orderNumber;
+	
+	private Long orderConfirmationNumber;
+	
+	private Long invoiceNumber;
+	
+	private Long archiveNumber;
 
 	private HashMap<Status, List<T>> items = new HashMap<Status, List<T>>();
 
@@ -144,6 +150,30 @@ public class Report<T extends Item> {
 
 	public void setTaxRate(double tax) {
 		this.taxRate = tax;
+	}
+	
+	public Long getOrderConfirmationNumber() {
+		return orderConfirmationNumber;
+	}
+
+	public void setOrderConfirmationNumber(Long orderConfirmationNumber) {
+		this.orderConfirmationNumber = orderConfirmationNumber;
+	}
+
+	public Long getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(Long invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public Long getArchiveNumber() {
+		return archiveNumber;
+	}
+
+	public void setArchiveNumber(Long archiveNumber) {
+		this.archiveNumber = archiveNumber;
 	}
 
 	

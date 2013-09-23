@@ -23,12 +23,14 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		Invoice invoice =  (Invoice) model.get("Invoice");
 		insertHeader(document);
         insertAdresse(document, invoice.getCustomer().getInvoiceAddress());
-        insertSubject(document, "Rechnung Nr."
+        insertSubject(document, "Rechnung Nr." + invoice.getInvoiceNumber()
         		//TODO: implement Invoice nr.
 //        		+ invoice.getInvoiceNumber().toString()
         		);
         this.insertEmptyLines(document, 2);
-        document.add(new InvoicePdfTable(invoice, invoice.getItems()));
+        InvoicePdfTable invoicePdfTable = new InvoicePdfTable(invoice, invoice.getItems());
+        invoicePdfTable.setFirstColumnName("Bestellnr.");
+        document.add(invoicePdfTable.build());
 
 	}
 

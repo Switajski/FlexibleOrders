@@ -16,61 +16,91 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.Item;
 
-public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
+/**
+ * TODO: implement decorator patter or an other
+ * @author Marek
+ *
+ * @param <T>
+ */
+public abstract class ItemPdfTable<T extends Item> {
 
 	protected final static int COLUMNS = 4;
 	public ArrayList<T> bpList;
-	public final static DecimalFormat decimalFormat = new DecimalFormat(",##0.00");
-	private static final float TOTAL_WIDTH = 500;
+	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
+	public static final float TOTAL_WIDTH = 500;
+
+	private String firstColumnName = "Bestellpos.";
+	private String secondColumnName = "Artikel";
+	private String thirdColumnName = "Menge x Preis";
+	private String forthColumnName = "Betrag";
+	
+	private PdfPTable pdfPTable;
 	
 	public ItemPdfTable(List<T> bestellpositionen) {
-		super(COLUMNS);
+		pdfPTable = new PdfPTable(COLUMNS);
 		try {
-			this.setWidths(new int[]{100, 245, 90, 65});
+			pdfPTable.setWidths(new int[]{100, 245, 90, 65});
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}        
-		this.setTotalWidth(TOTAL_WIDTH);
-		this.setLockedWidth(true);
+		pdfPTable.setTotalWidth(TOTAL_WIDTH);
+		pdfPTable.setLockedWidth(true);
 //		this.getDefaultCell().setFixedHeight(20);
 		bpList = getSortedItemen(bestellpositionen);
 		
-		createHeader();
-		createBody();
 	}
 	
+	public PdfPTable build(){
+		createHeader();
+		createBody();
+		createFooter();
+		return pdfPTable;
+	}
+	
+	/**
+	 * creates the header of the table
+	 */
 	private void createHeader() {
 		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
-		PdfPCell bposHeader = new PdfPCell(new Phrase("Bestellpos."));
+		PdfPCell bposHeader = new PdfPCell(new Phrase(firstColumnName));
 		bposHeader.setFixedHeight(25f);
 		bposHeader.setHorizontalAlignment(Element.ALIGN_LEFT);
 		header.add(bposHeader);
 
-		PdfPCell artikelHeader = new PdfPCell(new Phrase("Artikel"));
+		PdfPCell artikelHeader = new PdfPCell(new Phrase(secondColumnName));
 		artikelHeader.setHorizontalAlignment(Element.ALIGN_LEFT);
 		header.add(artikelHeader);
 
-		PdfPCell mengeHeader = new PdfPCell(new Phrase("Menge x Preis"));
+		PdfPCell mengeHeader = new PdfPCell(new Phrase(thirdColumnName));
 		mengeHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		header.add(mengeHeader);
 
-		PdfPCell betragHeader = new PdfPCell(new Phrase("Betrag"));
+		PdfPCell betragHeader = new PdfPCell(new Phrase(forthColumnName));
 		betragHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		header.add(betragHeader);
 
 		for (PdfPCell cell:header){
 			cell.setBorder(Rectangle.BOTTOM);
-			this.addCell(cell);
+			pdfPTable.addCell(cell);
 		}
 	}
 	
+	/**
+	 * create the body of the table
+	 */
 	private void createBody() {
 		
 		int bPos = 1;
 		for (T bp:bpList){
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
-
-			PdfPCell bestellpos = new PdfPCell(new Phrase(String.valueOf(bPos)));
+			
+			String firstColumnContent = null;
+			// if getFirstColumnContent is not overriden by sublasses enumerate positions
+			if (getFirstColumnContent(bp)==null) 
+				firstColumnContent = String.valueOf(bPos);
+			else 
+				firstColumnContent = getFirstColumnContent(bp);
+			PdfPCell bestellpos = new PdfPCell(new Phrase(firstColumnContent));
 			bestellpos.setFixedHeight(20f);
 			cells.add(bestellpos);
 			
@@ -86,7 +116,7 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 			PdfPCell preis = new PdfPCell(new Phrase(
 					bp.getQuantity()
 					+ " x "
-					+ decimalFormat.format(bp.getPriceNet())
+					+ DECIMAL_FORMAT.format(bp.getPriceNet())
 					+ " €"
 					));
 			preis.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -94,7 +124,7 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 
 			BigDecimal betragValue = bp.getPriceNet().multiply(new BigDecimal(bp.getQuantity()));
 			PdfPCell betrag = new PdfPCell(new Phrase(
-					decimalFormat.format(betragValue)
+					DECIMAL_FORMAT.format(betragValue)
 					+ " €"
 					));
 			betrag.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -102,7 +132,7 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 
 			for (PdfPCell cell:cells){
 				cell.setBorder(Rectangle.NO_BORDER);
-				this.addCell(cell);
+				pdfPTable.addCell(cell);
 			}
 			bPos++;
 		}
@@ -110,9 +140,12 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 	}
 
 
-	protected String getItemNumber(T bp) {
-		return String.valueOf(
-				bp.getOrderNumber());
+	/** 
+	 * Method to override for invoice and archive 
+	 * @return
+	 */
+	public String getFirstColumnContent(Item item) {
+		return null;
 	}
 
 	/**
@@ -130,6 +163,42 @@ public abstract class ItemPdfTable<T extends Item> extends PdfPTable{
 		}
 		Collections.sort(bps);
 		return bps;
+	}
+	
+	public String getFirstColumnName() {
+		return firstColumnName;
+	}
+
+	public void setFirstColumnName(String firstColumnName) {
+		this.firstColumnName = firstColumnName;
+	}
+
+	public String getSecondColumnName() {
+		return secondColumnName;
+	}
+
+	public void setSecondColumnName(String secondColumnName) {
+		this.secondColumnName = secondColumnName;
+	}
+
+	public String getThirdColumnName() {
+		return thirdColumnName;
+	}
+
+	public void setThirdColumnName(String thirdColumnName) {
+		this.thirdColumnName = thirdColumnName;
+	}
+
+	public String getForthColumnName() {
+		return forthColumnName;
+	}
+
+	public void setForthColumnName(String forthColumnName) {
+		this.forthColumnName = forthColumnName;
+	}
+	
+	public PdfPTable getTable(){
+		return pdfPTable;
 	}
 	
 

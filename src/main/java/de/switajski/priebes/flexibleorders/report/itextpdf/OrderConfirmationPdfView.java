@@ -20,15 +20,17 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		OrderConfirmation auftragsbestaetigung =  (OrderConfirmation) model.get("OrderConfirmation");
+		OrderConfirmation orderConfirmation =  (OrderConfirmation) model.get("OrderConfirmation");
 		insertHeader(document);
-        insertAdresse(document, auftragsbestaetigung.getCustomer().getInvoiceAddress());
+        insertAdresse(document, orderConfirmation.getCustomer().getInvoiceAddress());
         insertSubject(document,"Auftragsbestätigung Nr." 
-        		+ auftragsbestaetigung.getOrderConfirmationNumber());
-        insertInfo(document,"Auftragsdatum: " + dateFormat.format(auftragsbestaetigung.getCreated()));
+        		+ orderConfirmation.getOrderConfirmationNumber());
+        insertInfo(document,"Auftragsdatum: " + dateFormat.format(orderConfirmation.getCreated()));
         //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
         this.insertEmptyLines(document, 2);
-        document.add(new OrderConfirmationPdfTable(auftragsbestaetigung, auftragsbestaetigung.getItems()));
+        OrderConfirmationPdfTable table = new OrderConfirmationPdfTable(orderConfirmation, orderConfirmation.getItems());
+        table.setFirstColumnName("Bestellnr.");
+        document.add(table.build());
 
 	}
 

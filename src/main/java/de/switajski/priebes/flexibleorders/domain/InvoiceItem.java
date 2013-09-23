@@ -71,6 +71,8 @@ public class InvoiceItem extends Item {
      * @param transmitToSupplier
      */
     public InvoiceItem(ShippingItem shippingItem, int quantity, long invoiceNumber) {
+    	if (shippingItem.getInvoiceNumber()==null) 
+        	throw new IllegalArgumentException("Set the invoiceNumber of the Shipping Item before delivering! Use ShippingItem.deliver()");
         setInvoiceNumber(invoiceNumber);
         historize(shippingItem);
         setCreated(new Date());

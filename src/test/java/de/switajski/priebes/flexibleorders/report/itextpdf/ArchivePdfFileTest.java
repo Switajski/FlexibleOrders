@@ -16,48 +16,52 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
-import de.switajski.priebes.flexibleorders.report.Order;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.domain.ArchiveItemDataOnDemand;
+import de.switajski.priebes.flexibleorders.report.Archive;
+import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
+/**
+ * The need of a pdf for archive is questionable
+ * @author Marek
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class OrderPdfFileTest {
+public class ArchivePdfFileTest {
 	
-	@Autowired OrderItemService orderItemService;
+	@Autowired ArchiveItemService archiveItemService;
 	@Autowired ShippingItemService shippingItemService;
 	
-	Order order;
+	Archive archive;
 	
 	@Before
 	public void initData(){
-		OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
-		OrderItem oi1 = dod.getRandomOrderItem();
-		OrderItem oi2 = dod.getRandomOrderItem();
+		ArchiveItemDataOnDemand dod = new ArchiveItemDataOnDemand();
+		ArchiveItem oi1 = dod.getRandomArchiveItem();
+		ArchiveItem oi2 = dod.getRandomArchiveItem();
 		
-		oi2.setOrderNumber(oi1.getOrderNumber());
-		OrderItem merged = (OrderItem) orderItemService.updateOrderItem(oi2);
+		oi2.setAccountNumber(oi1.getAccountNumber());
+		ArchiveItem merged = (ArchiveItem) archiveItemService.updateArchiveItem(oi2);
 		
-		ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
-		orderItems.add(oi1);
-		orderItems.add(merged);
+		ArrayList<ArchiveItem> archiveItems = new ArrayList<ArchiveItem>();
+		archiveItems.add(oi1);
+		archiveItems.add(merged);
 		
-		order = new Order(orderItems);
+		archive = new Archive(archiveItems);
 	}
 	
 	@Transactional
 	@Test
-	public void shouldGenerateOrder(){
+	public void shouldGenerateArchive(){
 
 		
-		OrderPdfFile bpf = new OrderPdfFile();
+		ArchivePdfFile bpf = new ArchivePdfFile();
         
 		try {
 			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("Order", order);
+			model.put("Archive", archive);
 			
 			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 

@@ -136,7 +136,10 @@ public class ShippingItem extends Item {
      * @param transmitToSupplier
      */
     public ShippingItem(OrderItem orderItem, int quantity, Boolean transmitToSupplier, long orderConfirmationNumber) {
-        if (transmitToSupplier) throw new UnsupportedOperationException("Implement me!");
+        if (transmitToSupplier) 
+        	throw new UnsupportedOperationException("Implement me!");
+        if (orderItem.getOrderConfirmationNumber()==null) 
+        	throw new IllegalArgumentException("Set the orderConfirmationNumber of the OrderItem before confirming! Use OrderItem.confirm()");
         this.setOrderConfirmationNumber(orderConfirmationNumber);
         historize(orderItem);
         setTransmitToSupplier(transmitToSupplier);

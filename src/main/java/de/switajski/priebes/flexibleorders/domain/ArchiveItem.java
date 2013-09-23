@@ -31,6 +31,8 @@ public class ArchiveItem extends Item {
      * @param transmitToSupplier
      */
     public ArchiveItem(InvoiceItem invoiceItem, int quantity, long accountNumber) {
+    	if (invoiceItem.getAccountNumber()==null) 
+        	throw new IllegalArgumentException("Set the accountNumber of the Invoice Item before delivering! Use InvoiceItem.complete()");
         setAccountNumber(accountNumber);
         historize(invoiceItem);
         setCreated(new Date());

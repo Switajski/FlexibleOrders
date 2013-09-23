@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import de.switajski.priebes.flexibleorders.report.Archive;
 import de.switajski.priebes.flexibleorders.report.Order;
 
 @Component
@@ -20,12 +21,13 @@ public class ArchivePdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		Order bestellung =  (Order) model.get("Order");
+		//TODO: Archiv dokument erstellen
+		/*Archive bestellung =  (Archive) model.get("Archive");
         insertAdresse(document, bestellung.getCustomer().getInvoiceAddress());
-        insertSubject(document,"Bestellung Nr." + bestellung.getOrderNumber());
-        insertInfo(document,"Bestelldatum: " + dateFormat.format(bestellung.getCreated()));
+        insertSubject(document,"Archiv Nr." + bestellung.getOrderNumber());
+        insertInfo(document,"Archiviert am: " + dateFormat.format(bestellung.getCreated()));
         this.insertEmptyLines(document, 1);
-        document.add(new OrderPdfTable(bestellung));
+        document.add(new ArchivPdfTable(bestellung));*/
 
 	}
 

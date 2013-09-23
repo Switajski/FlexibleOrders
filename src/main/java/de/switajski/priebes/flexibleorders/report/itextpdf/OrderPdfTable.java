@@ -17,36 +17,35 @@ public class OrderPdfTable extends ItemPdfTable<OrderItem> {
 	public OrderPdfTable(Order bestellung) {
 		super(bestellung.getItems());
 		this.bestellung = bestellung;
-		createFooter();
 	}
 
 	@Override
 	protected void createFooter() {
 		PdfPCell warenwertNetto = new PdfPCell(new Phrase(
 				"Warenwert Netto:   "
-						+ decimalFormat.format(bestellung.getNetAmount())
+						+ DECIMAL_FORMAT.format(bestellung.getNetAmount())
 				));
 		warenwertNetto.setBorder(Rectangle.TOP);
 		warenwertNetto.setColspan(6);
 		warenwertNetto.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		this.addCell(warenwertNetto);
+		getTable().addCell(warenwertNetto);
 		
 		PdfPCell steuer = new PdfPCell(new Phrase(
-				"zzgl. 19% MwSt.   "+ decimalFormat.format(bestellung.getTax())));
+				"zzgl. 19% MwSt.   "+ DECIMAL_FORMAT.format(bestellung.getTax())));
 		steuer.setColspan(6);
 		steuer.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		steuer.setBorder(Rectangle.NO_BORDER);
-		this.addCell(steuer);
+		getTable().addCell(steuer);
 		
 		Phrase betragBruttoPhrase = new Phrase(
 				"Gesamtbetrag Brutto:   "
-					+ decimalFormat.format(bestellung.getGrossAmount()));
+					+ DECIMAL_FORMAT.format(bestellung.getGrossAmount()));
 		betragBruttoPhrase.setFont(FontFactory.getFont(PriebesIText5PdfView.FONT,10,Font.BOLD));
 		PdfPCell betragBrutto = new PdfPCell(betragBruttoPhrase);
 		betragBrutto.setColspan(6);
 		betragBrutto.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		betragBrutto.setBorder(Rectangle.NO_BORDER);
-		this.addCell(betragBrutto);
+		getTable().addCell(betragBrutto);
 		
 	}
 

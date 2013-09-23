@@ -10,9 +10,12 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.report.Invoice;
 
 public class InvoicePdfTable extends ItemPdfTable<InvoiceItem> {
+	
+	protected static final String FIRST_COLUMN_NAME = "Bestellnr.";
 	
 	private Invoice invoice;
 	
@@ -21,19 +24,18 @@ public class InvoicePdfTable extends ItemPdfTable<InvoiceItem> {
 			List<InvoiceItem> abPositions) {
 		super(abPositions);
 		this.invoice = invoice;
-		createFooter();
 	}
 
 	@Override
 	protected void createFooter() {
 		PdfPCell warenwertNetto = new PdfPCell(new Phrase(
 				"Warenwert netto:   "
-						+ decimalFormat.format(invoice.getNetAmount())
+						+ DECIMAL_FORMAT.format(invoice.getNetAmount())
 				));
 		warenwertNetto.setBorder(Rectangle.TOP);
 		warenwertNetto.setColspan(6);
 		warenwertNetto.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		this.addCell(warenwertNetto);
+		getTable().addCell(warenwertNetto);
 		
 		/*PdfPCell versandNetto = new PdfPCell(new Phrase(
 				"Versand netto   "
@@ -46,22 +48,27 @@ public class InvoicePdfTable extends ItemPdfTable<InvoiceItem> {
 		
 		PdfPCell steuer = new PdfPCell(new Phrase(
 				"zzgl. "+invoice.getTaxRate()+"% MwSt.   "
-						+ decimalFormat.format(invoice.getTax())));
+						+ DECIMAL_FORMAT.format(invoice.getTax())));
 		steuer.setColspan(6);
 		steuer.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		steuer.setBorder(Rectangle.NO_BORDER);
-		this.addCell(steuer);
+		getTable().addCell(steuer);
 		
 		Phrase betragBruttoPhrase = new Phrase(
 				"Gesamtbetrag brutto:   "
-					+ decimalFormat.format(invoice.getGrossAmount()));
+					+ DECIMAL_FORMAT.format(invoice.getGrossAmount()));
 		betragBruttoPhrase.setFont(FontFactory.getFont(PriebesIText5PdfView.FONT,10,Font.BOLD));
 		PdfPCell betragBrutto = new PdfPCell(betragBruttoPhrase);
 		betragBrutto.setColspan(6);
 		betragBrutto.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		betragBrutto.setBorder(Rectangle.NO_BORDER);
-		this.addCell(betragBrutto);
+		getTable().addCell(betragBrutto);
 		
+	}
+	
+	@Override
+	public String getFirstColumnContent(Item item) {
+		return item.getOrderNumber().toString();
 	}
 
 }

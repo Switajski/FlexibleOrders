@@ -12,6 +12,12 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.report.Order;
 
+/**
+ * Pdf view customized for the display of an order
+ * 
+ * @author Marek
+ *
+ */
 @Component
 public class OrderPdfView extends PriebesIText5PdfView {
 
@@ -25,7 +31,8 @@ public class OrderPdfView extends PriebesIText5PdfView {
         insertSubject(document,"Bestellung Nr." + bestellung.getOrderNumber());
         insertInfo(document,"Bestelldatum: " + dateFormat.format(bestellung.getCreated()));
         this.insertEmptyLines(document, 1);
-        document.add(new OrderPdfTable(bestellung));
+        OrderPdfTable table = new OrderPdfTable(bestellung);
+        document.add(table.build());
 
 	}
 

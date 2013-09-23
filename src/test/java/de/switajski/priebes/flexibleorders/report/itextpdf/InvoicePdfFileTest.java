@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,48 +16,45 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
-import de.switajski.priebes.flexibleorders.report.Order;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.domain.EntityBuilder;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItemDataOnDemand;
+import de.switajski.priebes.flexibleorders.report.Invoice;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class OrderPdfFileTest {
+public class InvoicePdfFileTest {
 	
-	@Autowired OrderItemService orderItemService;
-	@Autowired ShippingItemService shippingItemService;
+	Invoice invoice;
 	
-	Order order;
+	private static final long OC_NR = 98732645l;
+	private static final Long O_NR = 3465897l;
+	private static final Long I_NR = 13456l;
 	
 	@Before
 	public void initData(){
-		OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
-		OrderItem oi1 = dod.getRandomOrderItem();
-		OrderItem oi2 = dod.getRandomOrderItem();
+		EntityBuilder eb = new EntityBuilder();
+		InvoiceItem i1 = eb.getInvoiceItem(15.59, O_NR, OC_NR, I_NR);
+		InvoiceItem i2 = eb.getInvoiceItem(25.59, O_NR, OC_NR, I_NR);
 		
-		oi2.setOrderNumber(oi1.getOrderNumber());
-		OrderItem merged = (OrderItem) orderItemService.updateOrderItem(oi2);
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
+		invoiceItems.add(i1);
+		invoiceItems.add(i2);
 		
-		ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
-		orderItems.add(oi1);
-		orderItems.add(merged);
-		
-		order = new Order(orderItems);
+		invoice = new Invoice(invoiceItems);
 	}
 	
 	@Transactional
 	@Test
-	public void shouldGenerateOrder(){
-
+	public void shouldGenerateInvoice(){
 		
-		OrderPdfFile bpf = new OrderPdfFile();
+		InvoicePdfFile bpf = new InvoicePdfFile();
         
 		try {
 			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("Order", order);
+			model.put("Invoice", invoice);
 			
 			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 

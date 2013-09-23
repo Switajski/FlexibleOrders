@@ -38,6 +38,11 @@ import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 import de.switajski.priebes.flexibleorders.domain.parameter.Address;
 
+/**
+ * This class generates PDF views and files in DIN A4 and methods to create a letter.
+ * @author Marek
+ *
+ */
 public abstract class PriebesIText5PdfView extends AbstractView implements PdfPageEvent {
 
 	public final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
@@ -120,6 +125,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 				}
 		
 		/**
+		 * inserts the address
 		 * 
 		 * @param doc
 		 * @param adresse die EmpfängerAdresse
@@ -163,7 +169,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		 
 
 		/**
-		 * Einfügen eines Betreffs / Titels des Dokuments
+		 * Einf�gen eines Betreffs / Titels des Dokuments
 		 * @param doc
 		 * @param title Der Dokumententitel wie z.B. "Rechnung"
 		 * @throws MalformedURLException

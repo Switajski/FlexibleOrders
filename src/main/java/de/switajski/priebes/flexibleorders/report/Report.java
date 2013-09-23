@@ -28,7 +28,7 @@ public class Report<T extends Item> {
 	
 	private Long invoiceNumber;
 	
-	private Long archiveNumber;
+	private Long accountNumber;
 
 	private HashMap<Status, List<T>> items = new HashMap<Status, List<T>>();
 
@@ -37,8 +37,35 @@ public class Report<T extends Item> {
 	private double taxRate = 0.19;
 	
 	public Report(List<T> items) {
+		Item item = items.get(0);
+		if (items.isEmpty()) throw new IllegalArgumentException("items are empty!");
 		setItems(items);
+		setCreated(getLastCreated(items));
+		this.orderNumber = item.getOrderNumber();
+		this.orderConfirmationNumber = item.getOrderConfirmationNumber();
+		this.invoiceNumber = item.getInvoiceNumber();
+		this.accountNumber = item.getAccountNumber();
 	}
+
+	/**
+	 * gets the first created date from a List of Items
+	 * @param items2
+	 * @return
+	 */
+	private Date getLastCreated(List<T> items2) {
+		Date lastCreated = null;
+		for (Item item:items2){
+			if (lastCreated==null)
+				lastCreated = item.getCreated();
+			else {
+				if (lastCreated.after(item.getCreated()))
+					item.setCreated(item.getCreated());
+			}
+				
+		}
+		return lastCreated;
+	}
+
 
 	@JsonSerialize(using=CustomerToIdSerializer.class)
 	public Customer getCustomer() {
@@ -168,12 +195,12 @@ public class Report<T extends Item> {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public Long getArchiveNumber() {
-		return archiveNumber;
+	public Long getAccountNumber() {
+		return accountNumber;
 	}
 
-	public void setArchiveNumber(Long archiveNumber) {
-		this.archiveNumber = archiveNumber;
+	public void setAccountNumber(Long archiveNumber) {
+		this.accountNumber = archiveNumber;
 	}
 
 	

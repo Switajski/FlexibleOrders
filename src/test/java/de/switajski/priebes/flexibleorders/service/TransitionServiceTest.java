@@ -1,11 +1,13 @@
 package de.switajski.priebes.flexibleorders.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import javax.validation.constraints.AssertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +23,6 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.CustomerDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
@@ -69,7 +70,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldConfirmOrderItem(){
-		OrderItem oi = getGivenOrderItem();
+		OrderItem oi = createGivenOrderItem();
 		orderItemRepository.saveAndFlush(oi);
 
 		ShippingItem si = transitionService.confirm(ORDER_NR, 
@@ -84,7 +85,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldConfirmOrderItemPartially(){
-		OrderItem oi = getGivenOrderItem();
+		OrderItem oi = createGivenOrderItem();
 
 		ShippingItem si = transitionService.confirm(ORDER_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -98,7 +99,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldDeconfirmShippingItem(){
-		OrderItem oi = getGivenOrderItem();
+		OrderItem oi = createGivenOrderItem();
 
 		ShippingItem si = transitionService.confirm(ORDER_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -114,7 +115,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldDeliverShippingItem(){
-		ShippingItem si = getGivenShippingItem();
+		ShippingItem si = createGivenShippingItem();
 
 		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -129,7 +130,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldWithdrawShippingItem(){
-		ShippingItem si = getGivenShippingItem();
+		ShippingItem si = createGivenShippingItem();
 
 		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -146,7 +147,7 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldPartialWithdrawShippingItem(){
-		ShippingItem si = getGivenShippingItem();
+		ShippingItem si = createGivenShippingItem();
 
 		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -154,7 +155,7 @@ public class TransitionServiceTest {
 				INVOICE_NR, 
 				"DP-123", "3");
 
-		InvoiceItem ii2 = transitionService.deliver(ORDER_CONFIRMATION_NR, 
+		transitionService.deliver(ORDER_CONFIRMATION_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
 				QUANTITY_INITIAL - QUANTITY_IN_NEXT_STATE, 
 				INVOICE_NR, 
@@ -281,8 +282,8 @@ public class TransitionServiceTest {
 		assertEquals("invoice item's Status wrong", statusShouldBe, invoiceItem.getStatus());
 	}
 
-	private ShippingItem getGivenShippingItem() { 
-		OrderItem oi = getGivenOrderItem();
+	private ShippingItem createGivenShippingItem() { 
+		createGivenOrderItem();
 
 		ShippingItem si = transitionService.confirm(ORDER_NR, 
 				productService.findByProductNumber(PRODUCT_NR), 
@@ -293,7 +294,7 @@ public class TransitionServiceTest {
 	}
 
 	private InvoiceItem getGivenInvoiceItem() { 
-		ShippingItem si = getGivenShippingItem();
+		createGivenShippingItem();
 
 		InvoiceItem ii = transitionService.deliver(
 				ORDER_CONFIRMATION_NR, productService.findByProductNumber(PRODUCT_NR), 
@@ -302,7 +303,7 @@ public class TransitionServiceTest {
 		return ii;
 	}
 
-	private ArchiveItem getGivenArchiveItem() { 
+	private ArchiveItem createGivenArchiveItem() { 
 		InvoiceItem si = getGivenInvoiceItem();
 
 		ArchiveItem ai = transitionService.complete(si, ACCOUNT_NR);
@@ -356,7 +357,7 @@ public class TransitionServiceTest {
 
 	}
 
-	private OrderItem getGivenOrderItem() {
+	private OrderItem createGivenOrderItem() {
 		Product product = pDod.getSpecificProduct(Integer.valueOf(PRODUCT_NR.toString()));
 		product.setPriceNet(BigDecimal.TEN);
 		product.setProductNumber(PRODUCT_NR);

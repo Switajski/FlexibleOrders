@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.domain;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.Iterator;
@@ -51,7 +50,7 @@ public class ShippingItemIntegrationTest {
     	int id = 72;
     	ShippingItem si = dod.getNewTransientShippingItem(id);
         try {
-            shippingItemService.saveShippingItem(si);
+            shippingItemRepository.save(si);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {

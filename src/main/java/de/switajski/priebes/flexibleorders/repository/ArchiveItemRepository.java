@@ -1,12 +1,6 @@
 package de.switajski.priebes.flexibleorders.repository;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.reference.Status;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 import org.springframework.stereotype.Repository;
+
+import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 
 @Repository
 @RooJpaRepository(domainType = ArchiveItem.class)

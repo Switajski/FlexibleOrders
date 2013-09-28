@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
 
 @RequestMapping("/archiveitems")
 @Controller

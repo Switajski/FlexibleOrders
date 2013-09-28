@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.report.Invoice;
-import de.switajski.priebes.flexibleorders.report.Order;
 
 /**
  * Orders are reports. Consequently read-only.

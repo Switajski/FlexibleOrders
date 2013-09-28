@@ -2,17 +2,6 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.HashMap;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.json.JsonFilter;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.service.ProductService;
+import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 @RequestMapping("/shippingitems")
 @Controller

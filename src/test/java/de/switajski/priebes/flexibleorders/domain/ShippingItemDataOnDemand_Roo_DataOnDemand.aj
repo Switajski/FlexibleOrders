@@ -10,10 +10,7 @@ import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.reference.Country;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
-
 import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -23,10 +20,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,9 +40,6 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
     ProductDataOnDemand ShippingItemDataOnDemand.productDataOnDemand;
     
     @Autowired
-    ShippingItemService ShippingItemDataOnDemand.shippingItemService;
-    
-    @Autowired
     ShippingItemRepository ShippingItemDataOnDemand.shippingItemRepository;
     
     public ShippingItem ShippingItemDataOnDemand.getNewTransientShippingItem(int index) {
@@ -55,6 +47,7 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         setAccountNumber(obj, index);
         setCreated(obj, index);
         setCustomer(obj, index);
+        setExpectedDelivery(obj, index);
         setInvoiceNumber(obj, index);
         setOrderConfirmationNumber(obj, index);
         setOrderNumber(obj, index);
@@ -63,13 +56,13 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         setProductName(obj, index);
         setProductNumber(obj, index);
         setQuantity(obj, index);
+        setQuantityLeft(obj, index);
         setShippingCity(obj, index);
         setShippingCountry(obj, index);
         setShippingName1(obj, index);
         setShippingName2(obj, index);
         setShippingPostalCode(obj, index);
         setShippingStreet(obj, index);
-        setStatus(obj, index);
         setTransmitToSupplier(obj, index);
         return obj;
     }
@@ -87,6 +80,11 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
     public void ShippingItemDataOnDemand.setCustomer(ShippingItem obj, int index) {
         Customer customer = customerDataOnDemand.getRandomCustomer();
         obj.setCustomer(customer);
+    }
+    
+    public void ShippingItemDataOnDemand.setExpectedDelivery(ShippingItem obj, int index) {
+        Date expectedDelivery = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+        obj.setExpectedDelivery(expectedDelivery);
     }
     
     public void ShippingItemDataOnDemand.setInvoiceNumber(ShippingItem obj, int index) {
@@ -129,6 +127,11 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         obj.setQuantity(quantity);
     }
     
+    public void ShippingItemDataOnDemand.setQuantityLeft(ShippingItem obj, int index) {
+        Integer quantityLeft = new Integer(index);
+        obj.setQuantityLeft(quantityLeft);
+    }
+    
     public void ShippingItemDataOnDemand.setShippingCity(ShippingItem obj, int index) {
         String shippingCity = "shippingCity_" + index;
         obj.setShippingCity(shippingCity);
@@ -159,11 +162,6 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         obj.setShippingStreet(shippingStreet);
     }
     
-    public void ShippingItemDataOnDemand.setStatus(ShippingItem obj, int index) {
-        Status status = Status.class.getEnumConstants()[0];
-        obj.setStatus(status);
-    }
-    
     public void ShippingItemDataOnDemand.setTransmitToSupplier(ShippingItem obj, int index) {
         Boolean transmitToSupplier = Boolean.TRUE;
         obj.setTransmitToSupplier(transmitToSupplier);
@@ -179,14 +177,14 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         }
         ShippingItem obj = data.get(index);
         Long id = obj.getId();
-        return shippingItemService.findShippingItem(id);
+        return shippingItemRepository.findOne(id);
     }
     
     public ShippingItem ShippingItemDataOnDemand.getRandomShippingItem() {
         init();
         ShippingItem obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return shippingItemService.findShippingItem(id);
+        return shippingItemRepository.findOne(id);
     }
     
     public boolean ShippingItemDataOnDemand.modifyShippingItem(ShippingItem obj) {
@@ -196,7 +194,7 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
     public void ShippingItemDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = shippingItemService.findShippingItemEntries(from, to);
+        data = shippingItemRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'ShippingItem' illegally returned null");
         }
@@ -208,7 +206,7 @@ privileged aspect ShippingItemDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             ShippingItem obj = getNewTransientShippingItem(i);
             try {
-                shippingItemService.saveShippingItem(obj);
+                shippingItemRepository.save(obj);
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {

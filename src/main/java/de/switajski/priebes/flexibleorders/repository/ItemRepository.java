@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.reference.Status;
 
 public interface ItemRepository<T extends Item> {
 	List<T> findByOrderNumber(Long orderNumber);

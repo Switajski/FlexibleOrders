@@ -7,9 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
 
 public class ArchiveItemServiceImpl extends JpaRepositoryToServiceAdapter<ArchiveItem> implements ArchiveItemService {
 

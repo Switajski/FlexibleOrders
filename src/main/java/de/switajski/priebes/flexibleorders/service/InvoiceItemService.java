@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 public interface InvoiceItemService extends CrudServiceAdapter<InvoiceItem>{
 	Page<InvoiceItem> findOpen(Pageable pageable);

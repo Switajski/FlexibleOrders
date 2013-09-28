@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.roo.addon.layers.service.RooService;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 @RooService(domainTypes = { de.switajski.priebes.flexibleorders.domain.OrderItem.class })
 public interface OrderItemService extends CrudServiceAdapter<OrderItem>{

@@ -4,15 +4,18 @@
     <jsp:output omit-xml-declaration="yes"/>
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
         <menu:category id="c_orderitem" z="GhqzxV1aYjPOUg7hl+4kei/yyy4=">
-            <menu:item id="i_orderitem_confirm" messageCode="global_menu_confirm" url="/orderitems/confirm" />
+            <menu:item id="i_orderitem_confirm" messageCode="global_menu_confirm" url="/orderitems/confirm"/>
             <menu:item id="i_orderitem_list" messageCode="global_menu_list" url="/orderitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jS1M6iwPehtSkvm7aJSFb6Pw9/Y="/>
+            <menu:item id="i_orderitem_new" messageCode="global_menu_new" url="/orderitems?form" z="ykmCDiknORyKBokHMxCvTtTSsD0="/>
         </menu:category>
         <menu:category id="c_shippingitem" z="PQsaZGWS91xAZdfKj5chiAeBGDg=">
-            <menu:item id="i_shippingitem_deliver" messageCode="global_menu_deliver" url="/shippingitems/deliver" />
+            <menu:item id="i_shippingitem_deliver" messageCode="global_menu_deliver" url="/shippingitems/deliver"/>
             <menu:item id="i_shippingitem_list" messageCode="global_menu_list" url="/shippingitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jBmCDwiCaRzsQrtQqA8WmpsVyrg="/>
+            <menu:item id="i_shippingitem_new" messageCode="global_menu_new" url="/shippingitems?form" z="j9T2atXSxXL+E2p5jo1JU6ohqUQ="/>
         </menu:category>
         <menu:category id="c_invoiceitem" z="4uyH+wMUSjWVLV28xRX+6qU1kE0=">
             <menu:item id="i_invoiceitem_list" messageCode="global_menu_list" url="/invoiceitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="OevGAnJk8jKqKr2vZGLAcOCgcuQ="/>
+            <menu:item id="i_invoiceitem_new" messageCode="global_menu_new" url="/invoiceitems?form" z="oPsJWy1j3xbp9ebvPufmos/S1ds="/>
         </menu:category>
         <menu:category id="c_archiveitem" z="ldz98uwjDBKWdHmhqqNeryY0wIs=">
             <menu:item id="i_archiveitem_new" messageCode="global_menu_new" url="/archiveitems?form" z="80L55kphcv95P+bop50GsTgH5a4="/>
@@ -25,7 +28,7 @@
         <menu:category id="c_customer" z="Wa+bVSiDyYo/wX1nGU1B/z+OKhE=">
             <menu:item id="i_customer_new" messageCode="global_menu_new" url="/customers?form" z="d9+YIotZHp6KZLGKwwnMVzPvh8k="/>
             <menu:item id="i_customer_list" messageCode="global_menu_list" url="/customers?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Yo9cUtyc7EUvbxwQ7EoeqXWaVJM="/>
-            <menu:item id="i_customer_itemlist" messageCode="global_menu_itemlist" url="/customers/listitems" />
+            <menu:item id="i_customer_itemlist" messageCode="global_menu_itemlist" url="/customers/listitems"/>
         </menu:category>
     </menu:menu>
 </div>

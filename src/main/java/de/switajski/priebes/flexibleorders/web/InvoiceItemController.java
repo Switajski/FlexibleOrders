@@ -2,25 +2,21 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.HashMap;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.json.JsonFilter;
-import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
-import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
+import de.switajski.priebes.flexibleorders.service.ProductService;
 
 @RequestMapping("/invoiceitems")
 @Controller
@@ -50,6 +46,7 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 	protected void resolveDependencies(InvoiceItem entity) {
 		long productNumber = entity.getProduct().getProductNumber();
 		Product p = productService.findByProductNumber(productNumber);
+		entity.setProduct(p);
 		
 		if (hasConflictingCustomer(entity))
 			throw new IllegalArgumentException("An order item with same order number exists, but has a different customer!");

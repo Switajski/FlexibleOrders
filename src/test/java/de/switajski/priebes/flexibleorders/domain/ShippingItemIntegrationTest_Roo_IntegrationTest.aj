@@ -5,14 +5,10 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import de.switajski.priebes.flexibleorders.domain.ShippingItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItemIntegrationTest;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
-
 import java.util.Iterator;
 import java.util.List;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,45 +28,42 @@ privileged aspect ShippingItemIntegrationTest_Roo_IntegrationTest {
     @Autowired
     ShippingItemDataOnDemand ShippingItemIntegrationTest.dod;
     
-    @Autowired
-    ShippingItemService ShippingItemIntegrationTest.shippingItemService;
-    
     @Test
-    public void ShippingItemIntegrationTest.testCountAllShippingItems() {
+    public void ShippingItemIntegrationTest.testCount() {
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", dod.getRandomShippingItem());
-        long count = shippingItemService.countAllShippingItems();
+        long count = shippingItemRepository.count();
         Assert.assertTrue("Counter for 'ShippingItem' incorrectly reported there were no entries", count > 0);
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testFindShippingItem() {
+    public void ShippingItemIntegrationTest.testFind() {
         ShippingItem obj = dod.getRandomShippingItem();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to provide an identifier", id);
-        obj = shippingItemService.findShippingItem(id);
+        obj = shippingItemRepository.findOne(id);
         Assert.assertNotNull("Find method for 'ShippingItem' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'ShippingItem' returned the incorrect identifier", id, obj.getId());
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testFindAllShippingItems() {
+    public void ShippingItemIntegrationTest.testFindAll() {
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", dod.getRandomShippingItem());
-        long count = shippingItemService.countAllShippingItems();
+        long count = shippingItemRepository.count();
         Assert.assertTrue("Too expensive to perform a find all test for 'ShippingItem', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<ShippingItem> result = shippingItemService.findAllShippingItems();
+        List<ShippingItem> result = shippingItemRepository.findAll();
         Assert.assertNotNull("Find all method for 'ShippingItem' illegally returned null", result);
         Assert.assertTrue("Find all method for 'ShippingItem' failed to return any data", result.size() > 0);
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testFindShippingItemEntries() {
+    public void ShippingItemIntegrationTest.testFindEntries() {
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", dod.getRandomShippingItem());
-        long count = shippingItemService.countAllShippingItems();
+        long count = shippingItemRepository.count();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<ShippingItem> result = shippingItemService.findShippingItemEntries(firstResult, maxResults);
+        List<ShippingItem> result = shippingItemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
         Assert.assertNotNull("Find entries method for 'ShippingItem' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'ShippingItem' returned an incorrect number of entries", count, result.size());
     }
@@ -81,7 +74,7 @@ privileged aspect ShippingItemIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to provide an identifier", id);
-        obj = shippingItemService.findShippingItem(id);
+        obj = shippingItemRepository.findOne(id);
         Assert.assertNotNull("Find method for 'ShippingItem' illegally returned null for id '" + id + "'", obj);
         boolean modified =  dod.modifyShippingItem(obj);
         Integer currentVersion = obj.getVersion();
@@ -90,28 +83,28 @@ privileged aspect ShippingItemIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testUpdateShippingItemUpdate() {
+    public void ShippingItemIntegrationTest.testSaveUpdate() {
         ShippingItem obj = dod.getRandomShippingItem();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to provide an identifier", id);
-        obj = shippingItemService.findShippingItem(id);
+        obj = shippingItemRepository.findOne(id);
         boolean modified =  dod.modifyShippingItem(obj);
         Integer currentVersion = obj.getVersion();
-        ShippingItem merged = (ShippingItem)shippingItemService.updateShippingItem(obj);
+        ShippingItem merged = (ShippingItem)shippingItemRepository.save(obj);
         shippingItemRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'ShippingItem' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testSaveShippingItem() {
+    public void ShippingItemIntegrationTest.testSave() {
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", dod.getRandomShippingItem());
         ShippingItem obj = dod.getNewTransientShippingItem(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'ShippingItem' identifier to be null", obj.getId());
         try {
-            shippingItemService.saveShippingItem(obj);
+            shippingItemRepository.save(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -125,15 +118,15 @@ privileged aspect ShippingItemIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void ShippingItemIntegrationTest.testDeleteShippingItem() {
+    public void ShippingItemIntegrationTest.testDelete() {
         ShippingItem obj = dod.getRandomShippingItem();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'ShippingItem' failed to provide an identifier", id);
-        obj = shippingItemService.findShippingItem(id);
-        shippingItemService.deleteShippingItem(obj);
+        obj = shippingItemRepository.findOne(id);
+        shippingItemRepository.delete(obj);
         shippingItemRepository.flush();
-        Assert.assertNull("Failed to remove 'ShippingItem' with identifier '" + id + "'", shippingItemService.findShippingItem(id));
+        Assert.assertNull("Failed to remove 'ShippingItem' with identifier '" + id + "'", shippingItemRepository.findOne(id));
     }
     
 }

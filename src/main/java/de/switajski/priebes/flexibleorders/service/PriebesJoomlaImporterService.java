@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -25,7 +24,6 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;

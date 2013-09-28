@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 
 @RunWith(SpringJUnit4ClassRunner.class)

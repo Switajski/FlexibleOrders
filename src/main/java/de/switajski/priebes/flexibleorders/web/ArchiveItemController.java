@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 
@@ -25,17 +22,14 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 	private static final String ID = "accountNumber";
 	private ArchiveItemService archiveItemService;
 	private CustomerService customerService;
-	private InvoiceItemRepository invoiceItemRepository;
 
 	@Autowired
 	public ArchiveItemController(
 			ArchiveItemService crudServiceAdapter,
-			CustomerService customerService,
-			InvoiceItemRepository invoiceItemRepository) {
+			CustomerService customerService) {
 		super(crudServiceAdapter);
 		this.archiveItemService = crudServiceAdapter;
 		this.customerService = customerService;
-		this.invoiceItemRepository = invoiceItemRepository;
 	}
 
 	@Override
@@ -62,17 +56,4 @@ public class ArchiveItemController extends JsonController<ArchiveItem> {
 
 	}
 
-	@Override
-	void deleteStepBackward(ArchiveItem item) {
-		List<InvoiceItem> ois = invoiceItemRepository.findByOrderNumber(item.getOrderNumber());
-		for (InvoiceItem oi:ois){
-			if(oi.getProduct().equals(item.getProduct())){
-				oi.stepBackward();
-				invoiceItemRepository.delete(oi);
-				invoiceItemRepository.saveAndFlush(oi);
-				
-			}
-
-		}
-	}
 }

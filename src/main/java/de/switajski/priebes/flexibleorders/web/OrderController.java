@@ -116,12 +116,6 @@ public class OrderController extends JsonController<Order> {
 		
         return new ModelAndView("OrderPdfView","Order",null);
     }
-
-	@Override
-	void deleteStepBackward(Order item) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public class orderNumber {
 

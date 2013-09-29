@@ -75,19 +75,6 @@ public class InvoiceItemController extends JsonController<InvoiceItem>{
 		return null;
 	}
 
-	@Override
-	void deleteStepBackward(InvoiceItem item) {
-		List<ShippingItem> ois = shippingItemRepository.findByOrderNumber(item.getOrderNumber());
-		for (ShippingItem oi:ois){
-			if(oi.getProduct().equals(item.getProduct())){
-				oi.stepBackward();
-				shippingItemRepository.delete(oi);
-				shippingItemRepository.saveAndFlush(oi);
-			}
-
-		}
-	}
-
 	//TODO: DRY in OrderItemController - same Method, but different Entity
 	/**
 	 * verifies, that an order has not different customers

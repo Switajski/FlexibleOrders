@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.component.ItemTransition;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -54,7 +58,9 @@ public class TransitionServiceImpl implements TransitionService {
 		if (orderItems.size()>1) 
 			throw new IllegalStateException("Order has order items with same products");
 		OrderItem oiToConfirm = orderItems.get(0);
-		ShippingItem si = oiToConfirm.confirm(toSupplier, quantity, orderConfirmationNumber);
+
+		ConfirmationParameter parameter = new ConfirmationParameter(toSupplier, orderConfirmationNumber);
+		ShippingItem si = new ItemTransition().confirm(oiToConfirm, parameter);
 
 		orderItemRepository.save(oiToConfirm);
 		shippingItemRepository.save(si);
@@ -98,7 +104,12 @@ public class TransitionServiceImpl implements TransitionService {
 		if (shippingItems.size()>1) 
 			throw new IllegalStateException("Order confirmation has shipping items with same products");
 		ShippingItem siToConfirm = shippingItems.get(0);
-		InvoiceItem ii = siToConfirm.deliver(quantity, invoiceNumber);
+		InvoiceItem ii = new ItemTransition().
+				deliver(
+						siToConfirm, 
+						new ShippingParameter(
+								quantity, invoiceNumber, siToConfirm.getCustomer().getShippingAddress())
+						);
 
 		shippingItemRepository.save(siToConfirm);
 		invoiceItemRepository.save(ii);
@@ -113,46 +124,46 @@ public class TransitionServiceImpl implements TransitionService {
 		List<ShippingItem> shippingItems = 
 				shippingItemRepository.findByOrderConfirmationNumberAndProduct(
 						invoiceItem.getOrderConfirmationNumber(), invoiceItem.getProduct());
-		
+
 		if (shippingItems.size()!=1)
 			throw new IllegalStateException("An order confirmation should have "
 					+ "only one shipping item with given product and orderConfirmationNumber");
-		
+
 		ShippingItem shippingItem = shippingItems.get(0);
 		invoiceItem.withdraw(shippingItem);
 		shippingItemRepository.save(shippingItem);
 		invoiceItemRepository.delete(invoiceItem);
-		
+
 		return invoiceItem;
 	}
 
 	@Override
 	public ArchiveItem complete(InvoiceItem invoiceItem, Long accountNumber) {
 		log.debug("complete");
-		ArchiveItem archiveItem = invoiceItem.complete(invoiceItem.getQuantity(), accountNumber);
+		ArchiveItem archiveItem = new ItemTransition().complete(invoiceItem, new AccountParameter(accountNumber));
 		archiveItemRepository.save(archiveItem);
 		invoiceItemRepository.save(invoiceItem);
-		
+
 		return archiveItem;
 	}
 
 	@Override
 	public ArchiveItem decomplete(ArchiveItem archiveItem) {
 		log.debug("decomplete");
-		
+
 		List<InvoiceItem> invoiceItems = 
 				invoiceItemRepository.findByInvoiceNumberAndProduct(
 						archiveItem.getInvoiceNumber(), archiveItem.getProduct());
-		
+
 		if (invoiceItems.size()!=1)
 			throw new IllegalStateException("An invoice should have "
 					+ "only one invoice item with given product and invoiceNumber");
 		InvoiceItem invoiceItem = invoiceItems.get(0);
 		archiveItem.decomplete(invoiceItem);
-		
+
 		invoiceItemRepository.save(invoiceItem);
 		archiveItemRepository.delete(archiveItem);
-		
+
 		return archiveItem;
 	}
 

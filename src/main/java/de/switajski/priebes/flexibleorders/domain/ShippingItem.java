@@ -124,52 +124,6 @@ public class ShippingItem extends Item {
     @Enumerated
     private Country shippingCountry;
 
-    /**
-     * The only way to create a ShippingItem is to generate it from a OrderItem.
-     * This is done by {@link OrderItem#confirm}
-     *
-     * @param orderItem
-     * @param quantity
-     * @param transmitToSupplier
-     */
-    public ShippingItem(OrderItem orderItem, int quantity, Boolean transmitToSupplier, long orderConfirmationNumber) {
-        if (transmitToSupplier) 
-        	throw new UnsupportedOperationException("Implement me!");
-        if (orderItem.getOrderConfirmationNumber()==null) 
-        	throw new IllegalArgumentException("Set the orderConfirmationNumber of the OrderItem before confirming! Use OrderItem.confirm()");
-        this.setOrderConfirmationNumber(orderConfirmationNumber);
-        historize(orderItem);
-        setTransmitToSupplier(transmitToSupplier);
-        setCreated(new Date());
-        setQuantity(quantity);
-        setQuantityLeft(quantity);
-        Customer customer = orderItem.getCustomer();
-        //TODO: Create @Embedded class shippingAddress
-        setShippingCity(customer.getCity());
-        setShippingCountry(customer.getCountry());
-        setShippingName1(customer.getName1());
-        setShippingName2(customer.getName2());
-        setShippingPostalCode(customer.getPostalCode());
-        setShippingStreet(customer.getStreet());
-    }
-
-    /**
-     * creates an invoice item by delivering a shipping item
-     * @param quantity
-     * @param invoiceNumber
-     * @return
-     */
-    public InvoiceItem deliver(int quantity, long invoiceNumber) {
-    	if (quantity < 1)
-        	throw new IllegalArgumentException("quantity to deliver cannot be less than 1");
-        
-        this.setInvoiceNumber(invoiceNumber);
-        InvoiceItem ii = new InvoiceItem(this, quantity, invoiceNumber);
-        this.addShippedQuantity(quantity);
-        
-        return ii;
-    }
-
     @Override
     public int compareTo(Item o) {
         return 0;

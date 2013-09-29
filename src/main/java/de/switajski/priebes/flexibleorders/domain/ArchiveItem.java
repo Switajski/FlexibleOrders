@@ -23,39 +23,6 @@ import javax.validation.constraints.Min;
 public class ArchiveItem extends Item {
 
     /**
-     * The only way to create a ArchiveItem is to generate it from a IvoiceItem.
-     * This is done by {@link IvoiceItem#complete}
-     * @param quantity
-     *
-     * @param orderItem
-     * @param transmitToSupplier
-     */
-    public ArchiveItem(InvoiceItem invoiceItem, int quantity, long accountNumber) {
-    	if (invoiceItem.getAccountNumber()==null) 
-        	throw new IllegalArgumentException("Set the accountNumber of the Invoice Item before delivering! Use InvoiceItem.complete()");
-        setAccountNumber(accountNumber);
-        historize(invoiceItem);
-        setCreated(new Date());
-        setQuantity(quantity);
-        setQuantityLeft(quantity);
-        Customer customer = invoiceItem.getCustomer();
-        customer = invoiceItem.getCustomer();
-        setInvoiceCity(customer.getCity());
-        setInvoiceCountry(customer.getCountry());
-        setInvoiceName1(customer.getName1());
-        setInvoiceName2(customer.getName2());
-        setInvoicePostalCode(customer.getPostalCode());
-        setInvoiceStreet(customer.getStreet());
-        setShippingCity(customer.getCity());
-        setShippingCountry(customer.getCountry());
-        setShippingName1(customer.getName1());
-        setShippingName2(customer.getName2());
-        setShippingPostalCode(customer.getPostalCode());
-        setShippingStreet(customer.getStreet());
-        setAnNaeherei(false);
-    }
-
-    /**
      */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
@@ -153,4 +120,5 @@ public class ArchiveItem extends Item {
     private void reduceCompletedQuantity(int quantity) {
     	this.setQuantityLeft(getQuantityLeft()+quantity);
 	}
+
 }

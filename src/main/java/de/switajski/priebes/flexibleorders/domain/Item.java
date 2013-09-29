@@ -33,186 +33,147 @@ import de.switajski.priebes.flexibleorders.reference.Status;
 @RooJpaEntity(inheritanceType = "TABLE_PER_CLASS")
 public abstract class Item implements Comparable<Item> {
 
-    /**
-     */
-    @NotNull
-    @OneToOne
-    private Product product;
+	/**
+	 */
+	@NotNull
+	@OneToOne
+	private Product product;
 
-    /**
-     */
-    @NotNull
-    @ManyToOne
-    private Customer customer;
+	/**
+	 */
+	@NotNull
+	@ManyToOne
+	private Customer customer;
 
-    /**
-     */
-    @NotNull
-    @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date created = new Date();
+	/**
+	 */
+	@NotNull
+	@Column(updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date created = new Date();
 
-    /**
-     */
-    @NotNull
-    private int quantity;
+	/**
+	 */
+	@NotNull
+	private int quantity;
 
-    /**
-     */
-    @Min(0L)
-    @NotNull
-    private BigDecimal priceNet;
+	/**
+	 */
+	@Min(0L)
+	@NotNull
+	private BigDecimal priceNet;
 
-    /**
-     */
-    @Transient
-    private Status status;
+	/**
+	 */
+	@Transient
+	private Status status;
 
-    /**
-     */
-    @NotNull
-    private String productName;
+	/**
+	 */
+	@NotNull
+	private String productName;
 
-    /**
-     */
-    @NotNull
-    private Long productNumber;
+	/**
+	 */
+	@NotNull
+	private Long productNumber;
 
-    /**
-     */
-    private Long orderConfirmationNumber;
+	/**
+	 */
+	private Long orderConfirmationNumber;
 
-    /**
-     */
-    private Long invoiceNumber;
+	/**
+	 */
+	private Long invoiceNumber;
 
-    /**
-     */
-    private Long accountNumber;
+	/**
+	 */
+	private Long accountNumber;
 
-    /**
-     */
-    @NotNull
-    private Long orderNumber;
-    
-    
-    /**
-     * Data like productnumber can change over time. 
-     * In order to get time-specific data it is nessecary to historize it.
-     * 
-     * @param item from which data will be copied
-     */
-    public void historize(Item item){
-    	setAccountNumber(item.getAccountNumber());
-    	setCustomer(item.getCustomer());
-    	setInvoiceNumber(item.getInvoiceNumber());
-    	setOrderNumber(item.getOrderNumber());
-    	setAccountNumber(item.getAccountNumber());
-    	setOrderConfirmationNumber(item.getOrderConfirmationNumber());
-    	setPriceNet(item.getPriceNet());
-    	setProduct(item.getProduct());
-    	setProductName(item.getProductName());
-    	setProductNumber(item.getProductNumber());
-    	setQuantity(item.getQuantity());
-    }
+	/**
+	 */
+	@NotNull
+	private Long orderNumber;
+
+
+	/**
+	 * Data like productnumber can change over time. 
+	 * In order to get time-specific data it is nessecary to historize it.
+	 * 
+	 * @param item from which data will be copied
+	 */
+	public void historize(Item item){
+		setAccountNumber(item.getAccountNumber());
+		setCustomer(item.getCustomer());
+		setInvoiceNumber(item.getInvoiceNumber());
+		setOrderNumber(item.getOrderNumber());
+		setAccountNumber(item.getAccountNumber());
+		setOrderConfirmationNumber(item.getOrderConfirmationNumber());
+		setPriceNet(item.getPriceNet());
+		setProduct(item.getProduct());
+		setProductName(item.getProductName());
+		setProductNumber(item.getProductNumber());
+		setQuantity(item.getQuantity());
+	}
 
 	public void setStatus(Status status) {
-        this.status = status;
-    }
+		this.status = status;
+	}
 
 	@JsonDeserialize(using=ProductNumberDeserializer.class)
 	public void setProduct(Product product) {
-        this.product = product;
-        this.productNumber = product.getProductNumber();
-        this.productName = product.getName();
-        if (getPriceNet()==null){
-        	this.setPriceNet(product.getPriceNet());
-        }
+		this.product = product;
+		this.productNumber = product.getProductNumber();
+		this.productName = product.getName();
+		if (getPriceNet()==null){
+			this.setPriceNet(product.getPriceNet());
+		}
 
-    }
-	
+	}
+
 	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getCreated() {
-        return this.created;
-    }
+		return this.created;
+	}
 
 	@JsonDeserialize(using=JsonDateDeserializer.class)
 	public void setCreated(Date created) {
-        this.created = created;
-    }
+		this.created = created;
+	}
 
 	@JsonSerialize(using=CustomerToIdSerializer.class)
 	public Customer getCustomer() {
-        return this.customer;
-    }
+		return this.customer;
+	}
 
 	@JsonDeserialize(using=CustomerIdDeserializer.class)
 	public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+		this.customer = customer;
+	}
 
 	@JsonSerialize(using=ProductToProductNumberSerializer.class)
 	public Product getProduct() {
-        return this.product;
-    }
-
-	public Status getStatus() {
-        return this.status;
-		/*TODO: Status von Ids abhängig machen
-		 * if (this.accountNumber!=null) return Status.COMPLETED;
-        if (this.invoiceNumber!=null) return Status.SHIPPED;
-        if (this.orderConfirmationNumber!=null) return Status.CONFIRMED;
-        if (this.orderNumber!=null) return Status.ORDERED;
-		return null;*/
-    }
-	
-	@Deprecated
-	public void stepBackward(){
-		if (this.accountNumber!=null){
-			setStatus(Status.SHIPPED);
-			setAccountNumber(null);
-		}
-        if (this.invoiceNumber!=null){
-        	setStatus(Status.CONFIRMED);
-        	setInvoiceNumber(null);
-        }
-        if (this.orderConfirmationNumber!=null){
-        	setStatus(Status.ORDERED);
-        	setOrderConfirmationNumber(null);
-        }
+		return this.product;
 	}
 
-	/**
-	 * @deprecated should not be used - only public because of roo's integration tests
-	 * @param accountNumber
-	 */
+	public Status getStatus() {
+		return this.status;
+	}
+
 	public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
+		this.accountNumber = accountNumber;
+	}
 
-	
-	/**
-	 * @deprecated should not be used - only public because of roo's integration tests
-	 * @param invoiceNumber
-	 */
 	public void setInvoiceNumber(Long invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
-    }
+		this.invoiceNumber = invoiceNumber;
+	}
 
-	/**
-	 * @deprecated should not be used - only public because of roo's integration tests
-	 * @param orderConfirmationNumber
-	 */
 	public void setOrderConfirmationNumber(Long orderConfirmationNumber) {
-        this.orderConfirmationNumber = orderConfirmationNumber;
-    }
+		this.orderConfirmationNumber = orderConfirmationNumber;
+	}
 
-	/**
-	 * @deprecated should not be used - only public because of roo's integration tests
-	 * @param orderNumber
-	 */
 	public void setOrderNumber(Long orderNumber) {
-        this.orderNumber = orderNumber;
-    }
+		this.orderNumber = orderNumber;
+	}
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.component.ItemTransition;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Category;
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -22,6 +23,9 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
@@ -66,7 +70,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		return this.connection;
 
 	}
-	
+
 	@Autowired
 	public PriebesJoomlaImporterService(
 			CustomerRepository customerRepository,
@@ -344,11 +348,11 @@ public class PriebesJoomlaImporterService implements ImporterService {
 
 					if (!idOrderItemValid(orderItems)) continue;
 					if (!isOrderValid(orders)) continue;
-					
+
 					Product product = productRepository.findByName(getProductTitle(orderItems.getString("product_id")));
 					Customer customer = customerRepository.findByEmail(
 							getEmailOfOiCustomer(orders));				
-					
+
 					oi.setInitialState(product, 
 							customer, 
 							orderItems.getInt("orderitem_quantity"), 
@@ -360,20 +364,23 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					Long ab_id = orderItems.getLong("ab_id");
 					Long rechnung_id = orderItems.getLong("rechnung_id");
 					Long bezahlt_id = orderItems.getLong("bezahlt_id");
-					
+
 					//TODO: replace Repositories with TransistionService
 					if (ab_id != 0l && ab_id != null){
-						ShippingItem si = oi.confirm(false, oi.getQuantity(), ab_id);
+						ShippingItem si = new ItemTransition().confirm(oi, new ConfirmationParameter(false, ab_id));
 						orderItemRepository.saveAndFlush(oi);
-						shippingItemRepo.save(si);
+						shippingItemRepo.saveAndFlush(si);
 						if (rechnung_id != 0l && rechnung_id != null){
-							InvoiceItem ii = si.deliver(si.getQuantity(),rechnung_id);
-							shippingItemRepo.save(si);
-							invoiceRepo.save(ii);
+							InvoiceItem ii = new ItemTransition().deliver(si, 
+									new ShippingParameter(
+											si.getQuantity(),rechnung_id, customer.getShippingAddress())
+									);
+							shippingItemRepo.saveAndFlush(si);
+							invoiceRepo.saveAndFlush(ii);
 							if (bezahlt_id !=0l && bezahlt_id != null){
-								ArchiveItem ai = ii.complete(si.getQuantity(),bezahlt_id);
-								invoiceRepo.save(ii);
-								archiveRepo.save(ai);
+								ArchiveItem ai = new ItemTransition().complete(ii, new AccountParameter(bezahlt_id));
+								invoiceRepo.saveAndFlush(ii);
+								archiveRepo.saveAndFlush(ai);
 							}
 						}
 					}
@@ -416,7 +423,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		try {
 			// Rules to Check:
 			if (orderItems.getInt("orderitem_quantity")<1 ||
-				getProductTitle(orderItems.getString("product_id")) == null
+					getProductTitle(orderItems.getString("product_id")) == null
 					){				
 				return false;
 			}
@@ -425,7 +432,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 	private String getSingleResult(String query, String column) throws SQLException{

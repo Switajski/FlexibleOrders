@@ -87,12 +87,6 @@ public class CustomerController extends JsonController<Customer>{
 
 		return response;
     }
-
-	@Override
-	void deleteStepBackward(Customer item) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@RequestMapping(value = "listitems", produces = "text/html")
     public String confirm(Model uiModel) {

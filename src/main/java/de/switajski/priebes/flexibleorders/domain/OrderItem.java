@@ -34,31 +34,6 @@ public class OrderItem extends Item {
     /**
      */
     private Integer quantityLeft;
-
-    /**
-     * this method represents the second transistion of the order process.
-     * The first one is to create an order item: </br>
-     * 1. new Orderitem </br>
-     * 2. orderItem.confirm </br>
-     * 3. shippingItem.deliver </br>
-     * ...
-     *
-     * @param toSupplier
-     * @return
-     */
-    public ShippingItem confirm(boolean toSupplier, int quantity, long orderConfirmationNumber) {
-        if (quantity > this.getQuantity()) 
-        	throw new IllegalArgumentException("quantity provided is more than ordered!");
-        if (quantity < 1)
-        	throw new IllegalArgumentException("quantity cannot be less than 1");
-        if (orderConfirmationNumber < 1l)
-        	throw new IllegalArgumentException("orderConfirmationNumber must be more than 1");
-    	setOrderConfirmationNumber(orderConfirmationNumber);
-        ShippingItem si = new ShippingItem(this, quantity, toSupplier, orderConfirmationNumber);
-        this.addConfirmedQuantity(quantity);
-
-        return si;
-    }
     
     /**
      * method to create set the initial state of an order item. These parameters are required to

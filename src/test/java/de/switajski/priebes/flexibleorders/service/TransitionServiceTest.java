@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,7 @@ public class TransitionServiceTest {
 		assertConfirmedState(oi, si);
 	}
 
+	@Ignore("Feature disabled - order items can just be confirmed completely")
 	@Transactional
 	@Rollback
 	@Test
@@ -216,8 +218,8 @@ public class TransitionServiceTest {
 		assertEquals("should find only one shippingItem with given Product and OrderConfirmationNumber", 1, iis.size());
 		InvoiceItem invoiceItem = iis.get(0);
 
-		assertEquals("invoice item's quantity left should be 0", 0, invoiceItem.getQuantityLeft());
-		assertEquals("invoice item's quantity should be "+QUANTITY_INITIAL, QUANTITY_INITIAL, invoiceItem.getQuantity());
+		assertEquals("invoice item's quantity left wrong", 0, invoiceItem.getQuantityLeft());
+		assertEquals("invoice item's quantity wrong "+QUANTITY_INITIAL, QUANTITY_INITIAL, invoiceItem.getQuantity());
 		assertEquals("invoice item's Status wrong",  statusShouldBe, invoiceItem.getStatus());
 
 		//assert given invoice item State
@@ -225,7 +227,7 @@ public class TransitionServiceTest {
 		assertFalse(ais.isEmpty());
 		ArchiveItem archiveItem = ais.get(0);
 
-		assertEquals("archive item's quantity wrong", QUANTITY_INITIAL, archiveItem.getQuantityLeft());
+		assertEquals("archive item's quantity Left wrong", QUANTITY_INITIAL, archiveItem.getQuantityLeft());
 		assertEquals("archive item's quantity wrong", QUANTITY_INITIAL, archiveItem.getQuantity());
 		assertEquals("archive item's Status wrong", statusShouldBe, archiveItem.getStatus());
 

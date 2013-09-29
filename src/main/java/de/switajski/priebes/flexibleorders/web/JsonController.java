@@ -107,8 +107,6 @@ public abstract class JsonController<T> {
 		return response;
 	}
 
-	abstract void deleteStepBackward(T item) ;
-
 	protected abstract Page<T> findByFilterable(PageRequest pageRequest, HashMap<String, String> filterList);
 
 	private HashMap<String, String> deserializeFiltersJson(String filters) throws Exception {

@@ -70,20 +70,6 @@ public class ShippingItemController extends JsonController<ShippingItem> {
 		entity.setQuantityLeft(entity.getQuantity());
 	}
 
-	@Override
-	void deleteStepBackward(ShippingItem item) {
-		List<OrderItem> ois = orderItemRepository.findByOrderNumber(item.getOrderNumber());
-		for (OrderItem oi:ois){
-			if(oi.getProduct().equals(item.getProduct())){
-				oi.stepBackward();
-				orderItemRepository.delete(oi);
-				orderItemRepository.saveAndFlush(oi);
-				
-			}
-		}
-		
-	}
-	
 	/**
 	 * Site is created by Extjs and JSON
 	 * @param page

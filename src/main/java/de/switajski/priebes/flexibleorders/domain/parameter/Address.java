@@ -3,18 +3,19 @@ package de.switajski.priebes.flexibleorders.domain.parameter;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class Address {
+
+	private String name1;
 	
 	private String name2;
 
     private String street;
 
-    private String city;
-
     private int postalCode;
+
+    private String city;
 
     private Country country;
 
-	private String name1;
 
 	public Address(String name1, 
 			String name2, 

@@ -63,38 +63,7 @@ public class InvoiceItem extends Item {
     @Min(0L)
     private int quantityLeft;
 
-    /**
-     * The only way to create a InvoiceItem is to generate it from a ShippingItem.
-     * It is protected, because only {@link ShippingItem#deliver} should have access to it.
-     * @param quantity
-     * @param shippingItem the entity to deliver (used to historize)
-     * @param transmitToSupplier
-     */
-    public InvoiceItem(ShippingItem shippingItem, int quantity, long invoiceNumber) {
-    	if (shippingItem.getInvoiceNumber()==null) 
-        	throw new IllegalArgumentException("Set the invoiceNumber of the Shipping Item before delivering! Use ShippingItem.deliver()");
-        setInvoiceNumber(invoiceNumber);
-        historize(shippingItem);
-        setCreated(new Date());
-        setQuantity(quantity);
-        setQuantityLeft(quantity);
-        Customer customer = shippingItem.getCustomer();
-        setInvoiceCity(customer.getCity());
-        setInvoiceCountry(customer.getCountry());
-        setInvoiceName1(customer.getName1());
-        setInvoiceName2(customer.getName2());
-        setInvoicePostalCode(customer.getPostalCode());
-        setInvoiceStreet(customer.getStreet());
-    }
-
     public InvoiceItem() {
-    }
-
-    public ArchiveItem complete(int quantity, long accountNumber) {
-        setAccountNumber(accountNumber);
-        ArchiveItem ai = new ArchiveItem(this, quantity, accountNumber);
-        addShippedQuantity(quantity);
-        return ai;
     }
 
     public void addShippedQuantity(int quantity) {
@@ -131,7 +100,13 @@ public class InvoiceItem extends Item {
     	// delete invoiceNumber only if one shipping item is completely shipped by one invoice item.
     	if (shippingItem.getQuantity() == shippingItem.getQuantityLeft())
     		shippingItem.setInvoiceNumber(null);
+    }    
+
+	public int getQuantityLeft() {
+        return this.quantityLeft;
     }
 
-    
+	public void setQuantityLeft(int quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
 }

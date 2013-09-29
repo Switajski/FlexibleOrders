@@ -28,9 +28,7 @@ public class TransitionServiceImpl implements TransitionService {
 	private OrderItemRepository orderItemRepository;
 	private ShippingItemRepository shippingItemRepository;
 	private InvoiceItemRepository invoiceItemRepository;
-	private CustomerService customerService;
 	private ArchiveItemRepository archiveItemRepository;
-	private OrderItemService orderItemService;
 	private static Logger log = Logger.getLogger(TransitionServiceImpl.class);
 
 	@Autowired
@@ -38,80 +36,53 @@ public class TransitionServiceImpl implements TransitionService {
 			OrderItemRepository orderItemRepo,
 			ShippingItemRepository shippingItemRepo,
 			InvoiceItemRepository invoiceItemRepo,
-			CustomerService customerService,
-			ArchiveItemRepository archiveItemRepository,
-			OrderItemService orderItemService) {
+			ArchiveItemRepository archiveItemRepository) {
 		this.orderItemRepository = orderItemRepo;
 		this.shippingItemRepository = shippingItemRepo;
 		this.invoiceItemRepository = invoiceItemRepo;
-		this.customerService = customerService;
 		this.archiveItemRepository = archiveItemRepository;
-		this.orderItemService = orderItemService;
 	}
 
 	@Override
-	public ShippingItem confirm(long orderNumber, Product product,
-			int quantity, boolean toSupplier, long orderConfirmationNumber) {
+	public ShippingItem confirm(OrderItem orderItemToConfirm, ConfirmationParameter confirmationParameter) {
 		log.debug("confirm");
-		List<OrderItem> orderItems = 
-				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
-		if (orderItems.size()>1) 
-			throw new IllegalStateException("Order has order items with same products");
-		OrderItem oiToConfirm = orderItems.get(0);
 
-		ConfirmationParameter parameter = new ConfirmationParameter(toSupplier, orderConfirmationNumber);
-		ShippingItem si = new ItemTransition().confirm(oiToConfirm, parameter);
+		ShippingItem si = new ItemTransition().confirm(orderItemToConfirm, confirmationParameter);
 
-		orderItemRepository.save(oiToConfirm);
+		orderItemRepository.save(orderItemToConfirm);
 		shippingItemRepository.save(si);
 		return si;
 	}
 
 	@Override
-	public ShippingItem deconfirm(long orderNumber, 
-			Product product,
-			long orderConfirmationNumber) {
+	public ShippingItem deconfirm(ShippingItem shippingItem) {
 		log.debug("deconfirm");
-		List<ShippingItem> sis = 
-				shippingItemRepository.findByOrderConfirmationNumberAndProduct(orderConfirmationNumber, product);
-		List<OrderItem> ois = 
-				orderItemRepository.findByOrderNumberAndProduct(orderNumber, product);
 
-		if (sis.size()>1)
-			throw new IllegalStateException("Order confirmation has shipping items with same products");
-		if (sis.size()>1)
-			throw new IllegalStateException("Order has order items with same products");
-
-		ShippingItem siToDelete = sis.get(0);
-		OrderItem orderItemToDeconfirm = ois.get(0);
-
-		siToDelete.deconfirm(orderItemToDeconfirm);
-
-		shippingItemRepository.delete(siToDelete);
+		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(shippingItem.getOrderNumber(), 
+				shippingItem.getProduct());
+		if (orderItems.size()==0)
+			throw new IllegalStateException("no shipping item found!");
+		if (orderItems.size()!=1)
+			throw new IllegalStateException("shipping item has more than one equivalent order item");
+		
+		new ItemTransition().deconfirm(shippingItem, orderItems.get(0));
+		shippingItemRepository.delete(shippingItem);
 		shippingItemRepository.flush();
-		orderItemRepository.save(orderItemToDeconfirm);
+		orderItemRepository.save(orderItems.get(0));
 
-		return sis.get(0);
+		return shippingItem;
 	}
 
 	@Override
-	public InvoiceItem deliver(long orderConfirmationNumber, Product product,
-			int quantity, long invoiceNumber, String trackNumber,
-			String packageNumber) {
+	public InvoiceItem deliver(ShippingItem shippingItemToDeliver, ShippingParameter parameter) {
 		log.debug("deliver");
-		List<ShippingItem> shippingItems = 
-				shippingItemRepository.findByOrderConfirmationNumberAndProduct(orderConfirmationNumber, product);
-		if (shippingItems.size()>1) 
-			throw new IllegalStateException("Order confirmation has shipping items with same products");
-		ShippingItem siToConfirm = shippingItems.get(0);
 		InvoiceItem ii = new ItemTransition().
 				deliver(
-						siToConfirm, 
-						new ShippingParameter(
-								quantity, invoiceNumber, siToConfirm.getCustomer().getShippingAddress())
+						shippingItemToDeliver, 
+						parameter
 						);
 
-		shippingItemRepository.save(siToConfirm);
+		shippingItemRepository.save(shippingItemToDeliver);
 		invoiceItemRepository.save(ii);
 		return ii;
 
@@ -130,7 +101,7 @@ public class TransitionServiceImpl implements TransitionService {
 					+ "only one shipping item with given product and orderConfirmationNumber");
 
 		ShippingItem shippingItem = shippingItems.get(0);
-		invoiceItem.withdraw(shippingItem);
+		new ItemTransition().withdraw(shippingItem, invoiceItem);
 		shippingItemRepository.save(shippingItem);
 		invoiceItemRepository.delete(invoiceItem);
 
@@ -138,9 +109,9 @@ public class TransitionServiceImpl implements TransitionService {
 	}
 
 	@Override
-	public ArchiveItem complete(InvoiceItem invoiceItem, Long accountNumber) {
+	public ArchiveItem complete(InvoiceItem invoiceItem, AccountParameter accountParameter) {
 		log.debug("complete");
-		ArchiveItem archiveItem = new ItemTransition().complete(invoiceItem, new AccountParameter(accountNumber));
+		ArchiveItem archiveItem = new ItemTransition().complete(invoiceItem, accountParameter);
 		archiveItemRepository.save(archiveItem);
 		invoiceItemRepository.save(invoiceItem);
 
@@ -159,7 +130,7 @@ public class TransitionServiceImpl implements TransitionService {
 			throw new IllegalStateException("An invoice should have "
 					+ "only one invoice item with given product and invoiceNumber");
 		InvoiceItem invoiceItem = invoiceItems.get(0);
-		archiveItem.decomplete(invoiceItem);
+		new ItemTransition().decomplete(archiveItem, invoiceItem);
 
 		invoiceItemRepository.save(invoiceItem);
 		archiveItemRepository.delete(archiveItem);

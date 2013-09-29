@@ -12,6 +12,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
@@ -60,7 +61,7 @@ public class OrderItem extends Item {
     @Override
     public int compareTo(Item o) {
         // TODO Auto-generated method stub
-        return 0;
+    	throw new NotImplementedException();
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
@@ -91,6 +92,7 @@ public class OrderItem extends Item {
 		setQuantityLeft(getQuantityLeft()+quantity);
 	}
 	
+	//TODO: move to item
 	@Override
 	public Status getStatus(){
 		if (getQuantityLeft()==0)

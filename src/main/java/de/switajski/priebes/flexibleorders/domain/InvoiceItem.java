@@ -1,18 +1,15 @@
 package de.switajski.priebes.flexibleorders.domain;
-import java.util.Date;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 
-import javax.validation.constraints.NotNull;
-
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
-
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Min;
 
 @RooJavaBean
 @RooToString
@@ -66,11 +63,11 @@ public class InvoiceItem extends Item {
     public InvoiceItem() {
     }
 
-    public void addShippedQuantity(int quantity) {
+    public void addCompletedQuantity(int quantity) {
     	this.setQuantityLeft(getQuantityLeft()-quantity);
 	}
     
-    public void reduceShippedQuantity(int quantity) {
+    public void reduceCompletedQuantity(int quantity) {
     	this.setQuantityLeft(getQuantityLeft()+quantity);
 	}
 
@@ -86,21 +83,6 @@ public class InvoiceItem extends Item {
 			return Status.COMPLETED;
 		else return Status.SHIPPED;
 	}
-    
-    /**
-     * sets a shipping item to a non shipped state.</br>
-     * Has two use cases:</br>
-     * 1. One shipping item is completely shipped by one invoice item.
-     * 2. One shipping item is shipped by several invoice items. 
-     * @param shippingItem
-     */
-    public void withdraw(ShippingItem shippingItem){
-    	shippingItem.reduceShippedQuantity(this.getQuantity());
-    	
-    	// delete invoiceNumber only if one shipping item is completely shipped by one invoice item.
-    	if (shippingItem.getQuantity() == shippingItem.getQuantityLeft())
-    		shippingItem.setInvoiceNumber(null);
-    }    
 
 	public int getQuantityLeft() {
         return this.quantityLeft;

@@ -8,6 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.Address;
 import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Status;
@@ -69,12 +70,14 @@ public class ItemTransition {
 		si.setQuantityLeft(orderItem.getQuantity());
 		Customer customer = orderItem.getCustomer();
 		//TODO: Create @Embedded class shippingAddress
-		si.setShippingCity(customer.getCity());
-		si.setShippingCountry(customer.getCountry());
-		si.setShippingName1(customer.getName1());
-		si.setShippingName2(customer.getName2());
-		si.setShippingPostalCode(customer.getPostalCode());
-		si.setShippingStreet(customer.getStreet());
+		si.setShippingAddress(new Address(
+				customer.getName1(),
+				customer.getName2(),
+				customer.getStreet(),
+				customer.getPostalCode(),
+				customer.getCity(),
+				customer.getCountry()
+				));
 
 		return si;
 	}
@@ -138,7 +141,7 @@ public class ItemTransition {
 	public ArchiveItem complete(InvoiceItem invoiceItem, AccountParameter accountParameter){
 		invoiceItem.setAccountNumber(accountParameter.getAccountNumber());
 		ArchiveItem ai = createArchiveItem(invoiceItem, accountParameter);
-		ai.addCompletedQuantity(invoiceItem.getQuantity());
+		invoiceItem.addCompletedQuantity(invoiceItem.getQuantity());
 		return ai;
 	}
 
@@ -171,4 +174,50 @@ public class ItemTransition {
 		ai.setAnNaeherei(false);
 		return ai;
 	}
+
+
+	/**
+	 * Rolls back the item transition "confirm"
+	 * @param siToDelete
+	 * @param orderItemToDeconfirm
+	 */
+	public void deconfirm(ShippingItem siToDelete,
+			OrderItem orderItemToDeconfirm) {
+		
+		orderItemToDeconfirm.reduceConfirmedQuantity(siToDelete.getQuantity());
+		orderItemToDeconfirm.setOrderConfirmationNumber(null);
+		
+		
+	}
+
+	/**
+	 * Rolls back the item transition "deliver". Given roll back has two use cases: 
+	 * </br>
+	 * 1. One shipping item is completely shipped by one invoice item.</br>
+     * 2. One shipping item is shipped by several invoice items. 
+	 * @param shippingItemToWithdraw
+	 * @param invoiceItemToDelete
+	 */
+	public void withdraw(ShippingItem shippingItemToWithdraw, 
+			InvoiceItem invoiceItemToDelete) {
+		shippingItemToWithdraw.reduceShippedQuantity(
+				invoiceItemToDelete.getQuantity());		
+		
+		//for the second use case:
+		if (shippingItemToWithdraw.getQuantity() == shippingItemToWithdraw.getQuantityLeft())
+			shippingItemToWithdraw.setInvoiceNumber(null);
+		
+	}
+
+
+	/**
+	 * Rolls back the item transition "complete"
+	 * @param archiveItemToDelete
+	 * @param invoiceItemToDecomplete
+	 */
+	public void decomplete(ArchiveItem archiveItemToDelete, InvoiceItem invoiceItem) {
+		invoiceItem.reduceCompletedQuantity(invoiceItem.getQuantity());
+		invoiceItem.setAccountNumber(null);
+	}
+	
 }

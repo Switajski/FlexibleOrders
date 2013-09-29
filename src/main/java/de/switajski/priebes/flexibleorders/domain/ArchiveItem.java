@@ -111,13 +111,8 @@ public class ArchiveItem extends Item {
     public void addCompletedQuantity(int quantity){
     	this.setQuantityLeft(getQuantityLeft()-quantity);
     }
-    
-    public void decomplete(InvoiceItem invoiceItem){
-    	invoiceItem.reduceShippedQuantity(this.getQuantity());
-    	invoiceItem.setAccountNumber(null);
-    }
-    
-    private void reduceCompletedQuantity(int quantity) {
+ 
+    public void reduceCompletedQuantity(int quantity) {
     	this.setQuantityLeft(getQuantityLeft()+quantity);
 	}
 

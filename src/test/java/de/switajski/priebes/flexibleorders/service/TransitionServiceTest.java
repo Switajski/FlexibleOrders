@@ -27,6 +27,9 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
@@ -74,10 +77,9 @@ public class TransitionServiceTest {
 		OrderItem oi = createGivenOrderItem();
 		orderItemRepository.saveAndFlush(oi);
 
-		ShippingItem si = transitionService.confirm(ORDER_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, 
-				false, ORDER_CONFIRMATION_NR);
+		ShippingItem si = transitionService.confirm(oi,
+				new ConfirmationParameter(
+						false, ORDER_CONFIRMATION_NR));
 
 		assertConfirmedState(oi, si);
 	}
@@ -89,10 +91,9 @@ public class TransitionServiceTest {
 	public void shouldConfirmOrderItemPartially(){
 		OrderItem oi = createGivenOrderItem();
 
-		ShippingItem si = transitionService.confirm(ORDER_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_IN_NEXT_STATE, 
-				false, ORDER_CONFIRMATION_NR);
+		ShippingItem si = transitionService.confirm(oi,
+				new ConfirmationParameter(
+						false, ORDER_CONFIRMATION_NR));
 
 		assertPartialConfirmedState(oi, si);
 	}
@@ -103,14 +104,41 @@ public class TransitionServiceTest {
 	public void shouldDeconfirmShippingItem(){
 		OrderItem oi = createGivenOrderItem();
 
-		ShippingItem si = transitionService.confirm(ORDER_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, 
-				false, ORDER_CONFIRMATION_NR);
+		ShippingItem si = transitionService.confirm(oi,
+				new ConfirmationParameter(
+						false, ORDER_CONFIRMATION_NR));
 
-		si = transitionService.deconfirm(ORDER_NR, productService.findByProductNumber(PRODUCT_NR), ORDER_CONFIRMATION_NR);
+		si = transitionService.deconfirm(si);
 
 		assertDeconfirmedState(oi, si);
+	}
+
+	@Transactional
+	@Rollback
+	@Test
+	public void shouldDeliverShippingItemPartially(){
+		ShippingItem si = createGivenShippingItem();
+
+		InvoiceItem ii = transitionService.deliver(
+				si,
+				new ShippingParameter(
+						QUANTITY_IN_NEXT_STATE,
+						INVOICE_NR,
+						si.getShippingAddress()
+						)
+				);
+		assertPartiallyShippedState(si, ii);
+	}
+	
+	private void assertPartiallyShippedState(ShippingItem si, InvoiceItem ii) {
+		assertEquals("Quantity left of shipping item wrong", 
+				new Integer(QUANTITY_INITIAL-QUANTITY_IN_NEXT_STATE), 
+				si.getQuantityLeft());
+		assertEquals("Quantity of invoice item wrong",QUANTITY_IN_NEXT_STATE,
+				ii.getQuantity());
+		assertEquals("Quantity left of invoice item wrong",
+				ii.getQuantity(), ii.getQuantityLeft());
+		
 	}
 
 	@Transactional
@@ -119,11 +147,14 @@ public class TransitionServiceTest {
 	public void shouldDeliverShippingItem(){
 		ShippingItem si = createGivenShippingItem();
 
-		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, 
-				INVOICE_NR, 
-				"DP-123", "3");
+		InvoiceItem ii = transitionService.deliver(
+				si,
+				new ShippingParameter(
+						QUANTITY_INITIAL,
+						INVOICE_NR,
+						si.getShippingAddress()
+						)
+				);
 
 		assertShippedState(si, ii);
 	}
@@ -134,11 +165,14 @@ public class TransitionServiceTest {
 	public void shouldWithdrawShippingItem(){
 		ShippingItem si = createGivenShippingItem();
 
-		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, 
-				INVOICE_NR, 
-				"DP-123", "3");
+		InvoiceItem ii = transitionService.deliver(
+				si,
+				new ShippingParameter(
+						QUANTITY_INITIAL,
+						INVOICE_NR,
+						si.getShippingAddress()
+						)
+				);
 
 		ii = transitionService.withdraw(ii);
 
@@ -148,20 +182,26 @@ public class TransitionServiceTest {
 	@Transactional
 	@Rollback
 	@Test
-	public void shouldPartialWithdrawShippingItem(){
+	public void shouldWithdrawShippingItemPartially(){
 		ShippingItem si = createGivenShippingItem();
 
-		InvoiceItem ii = transitionService.deliver(ORDER_CONFIRMATION_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_IN_NEXT_STATE, 
-				INVOICE_NR, 
-				"DP-123", "3");
+		InvoiceItem ii = transitionService.deliver(
+				si,
+				new ShippingParameter(
+						QUANTITY_IN_NEXT_STATE,
+						INVOICE_NR,
+						si.getShippingAddress()
+						)
+				);
 
-		transitionService.deliver(ORDER_CONFIRMATION_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL - QUANTITY_IN_NEXT_STATE, 
-				INVOICE_NR, 
-				"DP-123", "3");
+		transitionService.deliver(
+				si,
+				new ShippingParameter(
+						QUANTITY_IN_NEXT_STATE,
+						INVOICE_NR,
+						si.getShippingAddress()
+						)
+				);
 
 		ii = transitionService.withdraw(ii);
 
@@ -174,7 +214,7 @@ public class TransitionServiceTest {
 	public void shouldCompleteInvoiceItem(){
 		InvoiceItem ii = getGivenInvoiceItem();
 
-		ArchiveItem ai = transitionService.complete(ii, ACCOUNT_NR);
+		ArchiveItem ai = transitionService.complete(ii, new AccountParameter(ACCOUNT_NR));
 
 		assertCompletedState(ii, ai);
 	}
@@ -185,7 +225,7 @@ public class TransitionServiceTest {
 	public void shouldDecompleteArchiveItem(){
 		InvoiceItem ii = getGivenInvoiceItem();
 
-		ArchiveItem ai = transitionService.complete(ii, ACCOUNT_NR);
+		ArchiveItem ai = transitionService.complete(ii, new AccountParameter(ACCOUNT_NR));
 
 		ai = transitionService.decomplete(ai);
 
@@ -285,32 +325,23 @@ public class TransitionServiceTest {
 	}
 
 	private ShippingItem createGivenShippingItem() { 
-		createGivenOrderItem();
+		OrderItem orderItem = createGivenOrderItem();
 
-		ShippingItem si = transitionService.confirm(ORDER_NR, 
-				productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, 
-				false, ORDER_CONFIRMATION_NR);
+		ShippingItem si = transitionService.confirm(
+					orderItem,
+					new ConfirmationParameter(false,
+							ORDER_CONFIRMATION_NR)
+				);
 
 		return si;
 	}
 
 	private InvoiceItem getGivenInvoiceItem() { 
-		createGivenShippingItem();
+		ShippingItem si = createGivenShippingItem();
 
-		InvoiceItem ii = transitionService.deliver(
-				ORDER_CONFIRMATION_NR, productService.findByProductNumber(PRODUCT_NR), 
-				QUANTITY_INITIAL, INVOICE_NR, "tracky backy", "package in the lavage");
-
+		InvoiceItem ii = transitionService.deliver(si, new ShippingParameter(QUANTITY_INITIAL, INVOICE_NR, si.getShippingAddress()));
+				
 		return ii;
-	}
-
-	private ArchiveItem createGivenArchiveItem() { 
-		InvoiceItem si = getGivenInvoiceItem();
-
-		ArchiveItem ai = transitionService.complete(si, ACCOUNT_NR);
-
-		return ai;
 	}
 
 	private void assertDeconfirmedState(OrderItem oi, ShippingItem si) {

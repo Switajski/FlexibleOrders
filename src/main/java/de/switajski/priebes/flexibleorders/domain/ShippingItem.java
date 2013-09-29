@@ -13,6 +13,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
 
+import de.switajski.priebes.flexibleorders.domain.parameter.Address;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
@@ -29,65 +30,10 @@ public class ShippingItem extends Item {
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;
 
-    public Boolean getTransmitToSupplier() {
-        return transmitToSupplier;
-    }
-
-    public void setTransmitToSupplier(Boolean transmitToSupplier) {
-        this.transmitToSupplier = transmitToSupplier;
-    }
-
-    public String getShippingName1() {
-        return shippingName1;
-    }
-
-    public void setShippingName1(String shippingName1) {
-        this.shippingName1 = shippingName1;
-    }
-
-    public String getShippingName2() {
-        return shippingName2;
-    }
-
-    public void setShippingName2(String shippingName2) {
-        this.shippingName2 = shippingName2;
-    }
-
-    public String getShippingStreet() {
-        return shippingStreet;
-    }
-
-    public void setShippingStreet(String shippingStreet) {
-        this.shippingStreet = shippingStreet;
-    }
-
-    public String getShippingCity() {
-        return shippingCity;
-    }
-
-    public void setShippingCity(String shippingCity) {
-        this.shippingCity = shippingCity;
-    }
-
-    public int getShippingPostalCode() {
-        return shippingPostalCode;
-    }
-
-    public void setShippingPostalCode(int shippingPostalCode) {
-        this.shippingPostalCode = shippingPostalCode;
-    }
-
-    public Country getShippingCountry() {
-        return shippingCountry;
-    }
-
-    public void setShippingCountry(Country shippingCountry) {
-        this.shippingCountry = shippingCountry;
-    }
-    
     /**
      */
     private Integer quantityLeft;
+
 
 
     /**
@@ -138,12 +84,6 @@ public class ShippingItem extends Item {
     public void setExpectedDelivery(Date expectedDelivery) {
         this.expectedDelivery = expectedDelivery;
     }
-
-    
-	public void deconfirm(OrderItem oi) {
-		oi.reduceConfirmedQuantity(getQuantity());
-		oi.setOrderConfirmationNumber(null);
-	}
 	
 	/**
      * adds quantity. Afterwards the quantity left to reach the next SHIPPED State 
@@ -170,4 +110,31 @@ public class ShippingItem extends Item {
 			return Status.SHIPPED;
 		else return Status.CONFIRMED;
 	}
+
+	public Boolean getTransmitToSupplier() {
+		return transmitToSupplier;
+	}
+	
+	public void setTransmitToSupplier(Boolean transmitToSupplier) {
+		this.transmitToSupplier = transmitToSupplier;
+	}
+	
+	public void setShippingAddress(Address address){
+		shippingName1 = address.getName1();
+		shippingName2 = address.getName2();
+		shippingStreet = address.getStreet();
+		shippingPostalCode = address.getPostalCode();
+		shippingCity = address.getCity();
+		shippingCountry = address.getCountry();
+	}
+	
+	public Address getShippingAddress(){
+		return new Address(shippingName1,
+				shippingName2,
+				shippingStreet,
+				shippingPostalCode,
+				shippingCity,
+				shippingCountry);
+	}
 }
+

@@ -14,7 +14,7 @@ public class ShippingParameter {
 	private Address address;
 	
 	/**
-	 * 
+	 * TODO: add TrackNumber and PackageNumber to parameters
 	 * @param quantity how many pieces should be shipped
 	 * @param invoiceNumber the number of the created invoice
 	 * @param shippingDestinationAddress

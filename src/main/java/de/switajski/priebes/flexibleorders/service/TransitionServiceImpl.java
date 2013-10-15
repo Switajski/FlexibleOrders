@@ -11,7 +11,6 @@ import de.switajski.priebes.flexibleorders.component.ItemTransition;
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
@@ -138,5 +137,16 @@ public class TransitionServiceImpl implements TransitionService {
 		return archiveItem;
 	}
 
+	@Override
+	public OrderItem delete(OrderItem orderItem){
+		log.debug("delete orderItem");
+		
+		if (orderItem.getQuantityLeft().equals(orderItem.getQuantity())){
+			orderItemRepository.delete(orderItem);
+			return null;
+		} else 
+			return orderItem;
+
+	}
 
 }

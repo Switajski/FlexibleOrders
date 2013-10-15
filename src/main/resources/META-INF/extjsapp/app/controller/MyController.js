@@ -396,6 +396,7 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/confirm/json',
 						params : {
+							id : record.data.id,
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
 							orderConfirmationNumber : ocnr,
@@ -431,6 +432,7 @@ Ext.define('MyApp.controller.MyController', {
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/deconfirm/json',
 						params : {
+							id : record.data.id,
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
 							orderNumber : record.data.orderNumber,

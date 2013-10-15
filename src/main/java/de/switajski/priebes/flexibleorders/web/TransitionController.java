@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
 import de.switajski.priebes.flexibleorders.service.TransitionService;
 
@@ -27,42 +31,47 @@ public class TransitionController {
 	
 	private static Logger log = Logger.getLogger(TransitionController.class);
 	private TransitionService transitionService;
-	private ProductService productService;
 	private ShippingItemService shippingItemService;
 	private InvoiceItemService invoiceItemService;
 	private ArchiveItemService archiveItemService;
+	private OrderItemRepository orderItemRepository;
+	private ShippingItemRepository shippingItemRepository;
 
 	@Autowired
 	public TransitionController(
 			TransitionService transitionService,
-			ProductService productService,
 			ShippingItemService shippingItemService,
 			InvoiceItemService invoiceItemService,
-			ArchiveItemService archiveItemService) {
+			ArchiveItemService archiveItemService,
+			OrderItemRepository orderItemRepository,
+			ShippingItemRepository shippingItemRepository) {
 		this.transitionService = transitionService;
-		this.productService = productService;
 		this.shippingItemService = shippingItemService;
 		this.invoiceItemService = invoiceItemService;
 		this.archiveItemService = archiveItemService;
+		this.orderItemRepository = orderItemRepository;
+		this.shippingItemRepository = shippingItemRepository;
 	}
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse confirm(
-			@RequestParam(value = "orderNumber", required = true) long orderNumber,
-			@RequestParam(value = "productNumber", required = true) long productNumber, 
-			@RequestParam(value = "quantity", required = true) int quantity,
+			@RequestParam(value = "id", required = true) long orderItemId,
+//			@RequestParam(value = "orderNumber", required = true) long orderNumber,
+//			@RequestParam(value = "productNumber", required = true) long productNumber, 
+//			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
 			@RequestParam(value = "toSupplier", required = false, defaultValue="false") boolean toSupplier) 
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: orderNumber:"+orderNumber + " product:"+ productNumber 
-				+ " quantity:" + quantity + " orderConfirmationNumber:"+orderConfirmationNumber);
+		log.debug("received json confirm request:  orderConfirmationNumber:"+orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Product product = productService.findByProductNumber(productNumber);
-		ShippingItem shippingItem = transitionService.confirm(orderNumber, product, quantity, toSupplier, orderConfirmationNumber);
-			shippingItemService.save(shippingItem);
+		OrderItem orderItemToConfirm = orderItemRepository.findOne(orderItemId);
+		
+		ShippingItem shippingItem = transitionService.confirm(
+				orderItemToConfirm, new ConfirmationParameter(toSupplier, orderConfirmationNumber));
+
 		response.setData(shippingItem);
 		response.setTotal(1);
 		response.setMessage("order item(s) confirmed");
@@ -73,17 +82,24 @@ public class TransitionController {
 	
 	@RequestMapping(value="/deconfirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deconfirm(
-			@RequestParam(value = "orderNumber", required = true) long orderNumber,
-			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "id", required = true) long shippingItemId,
+//			@RequestParam(value = "orderNumber", required = true) long orderNumber,
+//			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber) 
 					throws Exception {
 		
-		log.debug("received json deconfirm request: orderNumber:"+orderNumber + " product:"+ productNumber 
-				+ " orderConfirmationNumber:"+orderConfirmationNumber);
+		log.debug("received json deconfirm request: " 
+				+ " orderConfirmationNumber:" + orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Product product = productService.findByProductNumber(productNumber);
-		ShippingItem shippingItem = transitionService.deconfirm(orderNumber, product, orderConfirmationNumber);
+		if (!shippingItemRepository.exists(shippingItemId))
+			throw new NotFoundException("Shipping Item with given Id not found!");
+		
+		ShippingItem shippingItemToDeconfirm =
+				shippingItemService.find(shippingItemId);
+		
+		ShippingItem shippingItem = transitionService.deconfirm(
+				shippingItemToDeconfirm);
 		
 		response.setData(shippingItem);
 		response.setTotal(1);
@@ -95,8 +111,9 @@ public class TransitionController {
 	
 	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deliver(
-			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
-			@RequestParam(value = "productNumber", required = true) long productNumber, 
+			@RequestParam(value = "id", required = true) long shippingItemId,
+//			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
+//			@RequestParam(value = "productNumber", required = true) long productNumber, 
 			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "invoiceNumber", required = true) long invoiceNumber,
 			@RequestParam(value = "trackNumber", required = false) String trackNumber,
@@ -104,14 +121,18 @@ public class TransitionController {
 					throws Exception {
 		
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: orderConfirmationNumber:"+orderConfirmationNumber + " product:"+ productNumber 
+		log.debug("received json confirm request: orderConfirmationNumber:" 
 				+ " quantity:" + quantity + " orderConfirmationNumber:"+invoiceNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		Product product = productService.findByProductNumber(productNumber);
-		InvoiceItem invoiceItem = transitionService.deliver(orderConfirmationNumber, product, quantity, 
-				invoiceNumber, trackNumber, packageNumber);
-		//invoiceItemService.save(invoiceItem);
+		if (!shippingItemRepository.exists(shippingItemId))
+			throw new NotFoundException("ShippingItem with given id not found!");
+		ShippingItem shippingItemToDeliver = shippingItemRepository.findOne(shippingItemId);
+		InvoiceItem invoiceItem = transitionService.deliver(
+				shippingItemToDeliver, new ShippingParameter(
+						quantity, invoiceNumber, 
+						shippingItemToDeliver.getCustomer().getShippingAddress()));
+		
 		response.setData(invoiceItem);
 		response.setTotal(1);
 		response.setMessage("invoice item confirmed");
@@ -159,7 +180,7 @@ public class TransitionController {
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		ArchiveItem archiveItem = transitionService.complete(item, accountNumber);
+		ArchiveItem archiveItem = transitionService.complete(item, new AccountParameter(accountNumber));
 		
 		response.setData(archiveItem);
 		response.setTotal(1);
@@ -189,6 +210,24 @@ public class TransitionController {
 		response.setMessage("archive item decompleted");
 		response.setSuccess(true);
 
+		return response;
+	}
+	
+	@RequestMapping(value="/delete/json", method=RequestMethod.DELETE)
+	public @ResponseBody JsonObjectResponse delete(
+			@RequestParam(value = "id", required = true) long id) 
+					throws NotFoundException {
+		JsonObjectResponse response = new JsonObjectResponse();
+		
+		if (orderItemRepository.exists(id))
+			orderItemRepository.delete(orderItemRepository.findOne(id));
+		else 
+			throw new NotFoundException("order item with given id not found!");
+		
+		response.setTotal(1);
+		response.setMessage("order item decompleted");
+		response.setSuccess(true);
+		
 		return response;
 	}
 	

@@ -15,6 +15,7 @@ import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
  *
  */
 public interface TransitionService {
+	OrderItem delete(OrderItem orderItem);
 
 	ShippingItem confirm(OrderItem orderItemToConfirm, ConfirmationParameter confirmationParameter);
 	ShippingItem deconfirm(ShippingItem shippingItem);

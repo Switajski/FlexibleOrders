@@ -25,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -344,7 +345,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 
 				//Loop for OrderItems
 				while(orderItems.next()){
-					OrderItem oi = new OrderItem();
+					
 
 					if (!idOrderItemValid(orderItems)) continue;
 					if (!isOrderValid(orders)) continue;
@@ -353,10 +354,15 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					Customer customer = customerRepository.findByEmail(
 							getEmailOfOiCustomer(orders));				
 
-					oi.setInitialState(product, 
-							customer, 
-							orderItems.getInt("orderitem_quantity"), 
-							orders.getLong("order_id"));
+					OrderItem oi = new OrderItem( 
+							new OrderParameter(
+									product, 
+									customer, 
+									orderItems.getInt("orderitem_quantity"), 
+									orders.getLong("order_id"),
+									null
+									)
+							);
 					oi.setPriceNet(orderItems.getBigDecimal("orderitem_price"));
 
 					orderItemRepository.saveAndFlush(oi);

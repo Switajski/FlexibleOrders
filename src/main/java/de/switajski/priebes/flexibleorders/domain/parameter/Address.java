@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.parameter;
 
+import javax.validation.constraints.NotNull;
+
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class Address {
@@ -14,21 +16,22 @@ public class Address {
 
     private String city;
 
-    private Country country;
+    private Country country = Country.GERMANY;
 
 
-	public Address(String name1, 
-			String name2, 
-			String street, 
-			int postalCode, 
-			String city, 
+	public Address(
+			@NotNull String name1, 
+			@NotNull String name2, 
+			@NotNull String street, 
+			@NotNull int postalCode, 
+			@NotNull String city,
 			Country country) {
 		setName1(name1);
 		setName2(name2);
 		setStreet(street);
 		setPostalCode(postalCode);
 		setCity(city);
-		setCountry(country);
+		if (country!=null) setCountry(country); 
 	}
 
     public String getName1() {

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
+import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,9 +63,21 @@ public class OrderIntegrationTest {
 	
 	@Test
 	public void shouldCreateOrders(){
-		OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
-		OrderItem oi1 = dod.getRandomOrderItem();
-		OrderItem oi2 = dod.getRandomOrderItem();
+		
+		OrderItem oi1 = new OrderItemBuilder(new OrderParameter(
+				ProductBuilder.buildWithGeneratedAttributes(1),
+				CustomerBuilder.buildWithGeneratedAttributes(2),
+				3,
+				1234L,
+				new Date()
+				)).build();
+		OrderItem oi2 = new OrderItemBuilder(new OrderParameter(
+				ProductBuilder.buildWithGeneratedAttributes(4),
+				CustomerBuilder.buildWithGeneratedAttributes(2),
+				3,
+				1234L,
+				new Date()
+				)).build();
 		
 		oi2.setOrderNumber(oi1.getOrderNumber());
 		OrderItem merged = (OrderItem)orderItemService.updateOrderItem(oi2);

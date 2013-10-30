@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -11,13 +12,12 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
-import org.springframework.roo.addon.tostring.RooToString;
 
 import de.switajski.priebes.flexibleorders.json.CustomerIdDeserializer;
 import de.switajski.priebes.flexibleorders.json.CustomerToIdSerializer;
@@ -27,23 +27,21 @@ import de.switajski.priebes.flexibleorders.json.ProductNumberDeserializer;
 import de.switajski.priebes.flexibleorders.json.ProductToProductNumberSerializer;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
+@Entity
 @JsonAutoDetect
-@RooJavaBean
-@RooToString
-@RooJpaEntity(inheritanceType = "TABLE_PER_CLASS")
-public abstract class Item implements Comparable<Item> {
+public abstract class Item extends GenericEntity implements Comparable<Item> {
 
 	/**
 	 */
 	@NotNull
 	@OneToOne
-	private Product product;
+	protected Product product;
 
 	/**
 	 */
 	@NotNull
 	@ManyToOne
-	private Customer customer;
+	protected Customer customer;
 
 	/**
 	 */
@@ -51,50 +49,50 @@ public abstract class Item implements Comparable<Item> {
 	@Column(updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
-	private Date created = new Date();
+	protected Date created = new Date();
 
 	/**
 	 */
 	@NotNull
-	private int quantity;
+	protected int quantity;
 
 	/**
 	 */
 	@Min(0L)
 	@NotNull
-	private BigDecimal priceNet;
+	protected BigDecimal priceNet;
 
 	/**
 	 */
 	@Transient
-	private Status status;
+	protected Status status;
 
 	/**
 	 */
 	@NotNull
-	private String productName;
+	protected String productName;
 
 	/**
 	 */
 	@NotNull
-	private Long productNumber;
+	protected Long productNumber;
 
 	/**
 	 */
-	private Long orderConfirmationNumber;
+	protected Long orderConfirmationNumber;
 
 	/**
 	 */
-	private Long invoiceNumber;
+	protected Long invoiceNumber;
 
 	/**
 	 */
-	private Long accountNumber;
+	protected Long accountNumber;
 
 	/**
 	 */
 	@NotNull
-	private Long orderNumber;
+	protected Long orderNumber;
 
 
 	/**
@@ -176,4 +174,56 @@ public abstract class Item implements Comparable<Item> {
 	public void setOrderNumber(Long orderNumber) {
 		this.orderNumber = orderNumber;
 	}
+
+	public int getQuantity() {
+        return this.quantity;
+    }
+
+	public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+	public BigDecimal getPriceNet() {
+        return this.priceNet;
+    }
+
+	public void setPriceNet(BigDecimal priceNet) {
+        this.priceNet = priceNet;
+    }
+
+	public String getProductName() {
+        return this.productName;
+    }
+
+	public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+	public Long getProductNumber() {
+        return this.productNumber;
+    }
+
+	public void setProductNumber(Long productNumber) {
+        this.productNumber = productNumber;
+    }
+
+	public Long getOrderConfirmationNumber() {
+        return this.orderConfirmationNumber;
+    }
+
+	public Long getInvoiceNumber() {
+        return this.invoiceNumber;
+    }
+
+	public Long getAccountNumber() {
+        return this.accountNumber;
+    }
+
+	public Long getOrderNumber() {
+        return this.orderNumber;
+    }
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

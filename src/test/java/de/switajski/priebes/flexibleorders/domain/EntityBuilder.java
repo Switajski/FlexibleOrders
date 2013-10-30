@@ -6,23 +6,35 @@ import java.util.Date;
 import de.switajski.priebes.flexibleorders.component.ItemTransition;
 import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 
 /**
  * Created for Unit Testing. Returns ready to use Entities with its given 
  * dependencies. The Entities are not persisted (Unit Tests).
- * 
+ * @deprecated
  * @author Marek
  *
  */
 public class EntityBuilder {
 
+	Integer random = 34;
+	
 	public ShippingItem getShippingItem(Double nr, Long orderNumber, Long orderConfirmationNumber){
-		OrderItemBuilder oib = new OrderItemBuilder(); 
-		OrderItem oi = oib.build();		
+		OrderItem oi = new OrderItemBuilder(
+				new OrderParameter(
+						ProductBuilder.buildWithGeneratedAttributes(random),
+						CustomerBuilder.buildWithGeneratedAttributes(random),
+						random,
+						orderNumber,
+						new Date())
+				)
+		.build();		
 		ConfirmationParameter parameter = new ConfirmationParameter(false, orderConfirmationNumber);
 		ItemTransition it = new ItemTransition();
 		ShippingItem si = it.confirm(oi, parameter);

@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,20 +20,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ProductDataOnDemand;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
+import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
 import de.switajski.priebes.flexibleorders.reference.Status;
 import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
+import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 
 
 @Transactional
@@ -50,9 +51,7 @@ public class TransitionServiceTest {
 	@Autowired ProductService productService;
 	@Autowired ShippingItemRepository shippingItemRepository;
 	@Autowired TransitionService transitionService;
-
-	private CustomerDataOnDemand cDod;
-	private ProductDataOnDemand pDod;
+	@Autowired CategoryRepository categoryService;
 
 	private final static Long PRODUCT_NR = 98134756l;
 	private final static int CUSTOMER_NR = 1234;
@@ -63,12 +62,6 @@ public class TransitionServiceTest {
 	private static final long INVOICE_NR = 785439987l;
 	private static final Long ACCOUNT_NR = 13794058l;
 
-
-	@Before
-	public void initDataOnDemand(){
-		pDod = new ProductDataOnDemand();
-		cDod = new CustomerDataOnDemand();
-	}
 
 	@Transactional
 	@Rollback
@@ -391,15 +384,16 @@ public class TransitionServiceTest {
 	}
 
 	private OrderItem createGivenOrderItem() {
-		Product product = pDod.getSpecificProduct(Integer.valueOf(PRODUCT_NR.toString()));
+		Product product = ProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NR.toString()));
 		product.setPriceNet(BigDecimal.TEN);
 		product.setProductNumber(PRODUCT_NR);
+		categoryService.save(product.getCategory());
 		productService.saveProduct(product);
 
-		Customer customer = cDod.getSpecificCustomer(CUSTOMER_NR);
-
-		OrderItem oi = new OrderItem(); 
-		oi.setInitialState(product, customer, QUANTITY_INITIAL, ORDER_NR);
+		Customer customer = CustomerBuilder.buildWithGeneratedAttributes(CUSTOMER_NR);
+		customerService.save(customer);
+		
+		OrderItem oi = new OrderItem(new OrderParameter(product, customer, QUANTITY_INITIAL, ORDER_NR, null)); 
 		orderItemRepository.saveAndFlush(oi);
 		return oi;
 	}

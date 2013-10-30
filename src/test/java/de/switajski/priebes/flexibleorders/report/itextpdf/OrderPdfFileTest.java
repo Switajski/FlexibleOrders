@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.report.itextpdf;
 
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.OrderItemService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
@@ -33,18 +30,18 @@ public class OrderPdfFileTest {
 	
 	@Before
 	public void initData(){
-		OrderItemDataOnDemand dod = new OrderItemDataOnDemand();
-		OrderItem oi1 = dod.getRandomOrderItem();
-		OrderItem oi2 = dod.getRandomOrderItem();
-		
-		oi2.setOrderNumber(oi1.getOrderNumber());
-		OrderItem merged = (OrderItem) orderItemService.updateOrderItem(oi2);
-		
-		ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
-		orderItems.add(oi1);
-		orderItems.add(merged);
-		
-		order = new Order(orderItems);
+		//TODO: create a mock
+//		OrderItem oi1 = OrderItemTestFixture.createRandom();
+//		OrderItem oi2 = OrderItemTestFixture.createRandom();
+//		
+//		oi2.setOrderNumber(oi1.getOrderNumber());
+//		OrderItem merged = (OrderItem) orderItemService.updateOrderItem(oi2);
+//		
+//		ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
+//		orderItems.add(oi1);
+//		orderItems.add(merged);
+//		
+//		order = new Order(orderItems);
 	}
 	
 	@Transactional

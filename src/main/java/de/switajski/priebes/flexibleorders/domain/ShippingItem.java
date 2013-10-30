@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 import java.util.Date;
 
+import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -9,9 +10,6 @@ import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
-import org.springframework.roo.addon.tostring.RooToString;
 
 import de.switajski.priebes.flexibleorders.domain.parameter.Address;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
@@ -19,9 +17,7 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.Status;
 
-@RooJavaBean
-@RooToString
-@RooJpaEntity
+@Entity
 public class ShippingItem extends Item {
 
     /**
@@ -30,11 +26,57 @@ public class ShippingItem extends Item {
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;
 
-    /**
+    public String getShippingName1() {
+		return shippingName1;
+	}
+
+	public void setShippingName1(String shippingName1) {
+		this.shippingName1 = shippingName1;
+	}
+
+	public String getShippingName2() {
+		return shippingName2;
+	}
+
+	public void setShippingName2(String shippingName2) {
+		this.shippingName2 = shippingName2;
+	}
+
+	public String getShippingStreet() {
+		return shippingStreet;
+	}
+
+	public void setShippingStreet(String shippingStreet) {
+		this.shippingStreet = shippingStreet;
+	}
+
+	public String getShippingCity() {
+		return shippingCity;
+	}
+
+	public void setShippingCity(String shippingCity) {
+		this.shippingCity = shippingCity;
+	}
+
+	public int getShippingPostalCode() {
+		return shippingPostalCode;
+	}
+
+	public void setShippingPostalCode(int shippingPostalCode) {
+		this.shippingPostalCode = shippingPostalCode;
+	}
+
+	public Country getShippingCountry() {
+		return shippingCountry;
+	}
+
+	public void setShippingCountry(Country shippingCountry) {
+		this.shippingCountry = shippingCountry;
+	}
+
+	/**
      */
     private Integer quantityLeft;
-
-
 
     /**
      */
@@ -136,5 +178,15 @@ public class ShippingItem extends Item {
 				shippingCity,
 				shippingCountry);
 	}
+
+	public Integer getQuantityLeft() {
+        return this.quantityLeft;
+    }
+
+	public void setQuantityLeft(Integer quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
+	
+	
 }
 

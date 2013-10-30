@@ -7,33 +7,51 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class CustomerBuilder implements Builder<Customer> {
 
-	private Long id = 1l;
-    private String shortName = "shortName";
-    private String name1 = "name1 ";
-    private String name2 = "name2 ";
-    private String street = "street ";
-    private String city = "city";
-    private int postalCode = 1;
+	private Long id;
+    private String shortName;
+    private String name1;
+    private String name2;
+    private String street;
+    private String city;
+    private int postalCode;
     private Country country = Country.GERMANY;
     private Date created = new Date();
-    private String email = "name@somewhere.com";
-    private String password = "password";
-    private String phone = "0049";
+    private String email;
+    private String password;
+    private String phone;
 	
-    public CustomerBuilder() {}
+    public CustomerBuilder(
+    		String street,
+    		String city,
+    		int postalCode,
+    		String email) {
+    	this.street = street;
+    	this.city = city;
+    	this.postalCode = postalCode;
+    	this.email = email;
+    }
     
-    public CustomerBuilder withAttributes(Integer i){
+    public CustomerBuilder generateAttributes(Integer i){
     	id = i.longValue();
-    	shortName = shortName.concat(i.toString());
-    	name1 = name1.concat(i.toString());
-    	name2 = name2.concat(i.toString());
-    	street = street.concat(i.toString());
-    	city = city.concat(i.toString());
+    	shortName = "shortName".concat(i.toString());
+    	name1 = "name1 ".concat(i.toString());
+    	name2 = "name2 ".concat(i.toString());
+    	street = "street ".concat(i.toString());
+    	city = "city".concat(i.toString());
     	postalCode = i;
-    	email = email.concat(i.toString());
-    	password = password.concat(i.toString());
-    	phone = phone.concat(i.toString());
+    	email = "name@somewhere.com".concat(i.toString());
+    	password = "password".concat(i.toString());
+    	phone = "0049".concat(i.toString());
     	return this;
+    }
+    
+    public static Customer buildWithGeneratedAttributes(Integer i){
+    	return new CustomerBuilder(
+    			"street ".concat(i.toString()),
+    			"city".concat(i.toString()),
+    			i,
+    			"name@somewhere.com".concat(i.toString()))
+    	.build();
     }
     
 	@Override
@@ -54,5 +72,6 @@ public class CustomerBuilder implements Builder<Customer> {
 		
 		return c;
 	}
+	
 
 }

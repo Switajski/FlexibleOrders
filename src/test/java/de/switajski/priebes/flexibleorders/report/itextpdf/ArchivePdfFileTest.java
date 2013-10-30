@@ -1,12 +1,10 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.ArchiveItemDataOnDemand;
 import de.switajski.priebes.flexibleorders.report.Archive;
 import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
 import de.switajski.priebes.flexibleorders.service.ShippingItemService;
@@ -36,21 +32,21 @@ public class ArchivePdfFileTest {
 	
 	Archive archive;
 	
-	@Before
-	public void initData(){
-		ArchiveItemDataOnDemand dod = new ArchiveItemDataOnDemand();
-		ArchiveItem oi1 = dod.getRandomArchiveItem();
-		ArchiveItem oi2 = dod.getRandomArchiveItem();
-		
-		oi2.setAccountNumber(oi1.getAccountNumber());
-		ArchiveItem merged = (ArchiveItem) archiveItemService.updateArchiveItem(oi2);
-		
-		ArrayList<ArchiveItem> archiveItems = new ArrayList<ArchiveItem>();
-		archiveItems.add(oi1);
-		archiveItems.add(merged);
-		
-		archive = new Archive(archiveItems);
-	}
+//	@Before
+//	public void initData(){
+//		//TODO: create a mock!
+//		ArchiveItem oi1 = ArchiveItemTestFixture.createRandom();;
+//		ArchiveItem oi2 = ArchiveItemTestFixture.createRandom();;
+//		
+//		oi2.setAccountNumber(oi1.getAccountNumber());
+//		ArchiveItem merged = (ArchiveItem) archiveItemService.updateArchiveItem(oi2);
+//		
+//		ArrayList<ArchiveItem> archiveItems = new ArrayList<ArchiveItem>();
+//		archiveItems.add(oi1);
+//		archiveItems.add(merged);
+//		
+//		archive = new Archive(archiveItems);
+//	}
 	
 	@Transactional
 	@Test

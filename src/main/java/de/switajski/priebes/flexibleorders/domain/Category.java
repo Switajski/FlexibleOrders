@@ -1,14 +1,13 @@
 package de.switajski.priebes.flexibleorders.domain;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
-import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
-@RooJavaBean
-@RooToString
-@RooJpaEntity
-public class Category {
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+@Entity
+public class Category extends GenericEntity{
 
     /**
      */
@@ -40,4 +39,64 @@ public class Category {
      */
     @NotNull
     private Boolean activated;
+
+	public String getName() {
+        return this.name;
+    }
+
+	public void setName(String name) {
+        this.name = name;
+    }
+
+	public String getIntro() {
+        return this.intro;
+    }
+
+	public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+	public String getDescription() {
+        return this.description;
+    }
+
+	public void setDescription(String description) {
+        this.description = description;
+    }
+
+	public String getImage() {
+        return this.image;
+    }
+
+	public void setImage(String image) {
+        this.image = image;
+    }
+
+	public String getImageGalery() {
+        return this.imageGalery;
+    }
+
+	public void setImageGalery(String imageGalery) {
+        this.imageGalery = imageGalery;
+    }
+
+	public int getSortOrder() {
+        return this.sortOrder;
+    }
+
+	public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+	public Boolean getActivated() {
+        return this.activated;
+    }
+
+	public void setActivated(Boolean activated) {
+        this.activated = activated;
+    }
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

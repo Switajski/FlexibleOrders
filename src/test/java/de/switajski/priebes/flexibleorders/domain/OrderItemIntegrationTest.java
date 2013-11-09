@@ -74,7 +74,7 @@ public class OrderItemIntegrationTest extends AbstractIntegrationTest<OrderItem>
 	}
 
 	@Override
-	protected JpaRepository<OrderItem, ?> getRepository() {
+	protected JpaRepository<OrderItem, Long> getRepository() {
 		return orderItemRepository;
 	}
 	

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.domain.parameter.Address;
@@ -24,6 +25,20 @@ public class ShippingItemBuilder extends ItemBuilder<ShippingItem>{
 	private Country shippingCountry;
 
 
+	/**
+	 * 
+	 * @param customer
+	 * @param product
+	 * @param orderNumber
+	 * @param productNumber
+	 * @param productName
+	 * @param priceNet
+	 * @param expectedDelivery
+	 * @param transmitToSupplier
+	 * @param shippingStreet
+	 * @param shippingCity
+	 * @param shippingCountry
+	 */
 	public ShippingItemBuilder(
 			Customer customer, Product product, 
 			Long orderNumber, Long productNumber, 
@@ -62,6 +77,11 @@ public class ShippingItemBuilder extends ItemBuilder<ShippingItem>{
 					shippingCountry
 				));
 		return si;
+	}
+	
+	public static withOrderItem(OrderItem orderItem){
+		ShippingItemBuilder builder = new ShippingItemBuilder();
+		return builder;
 	}
 
 	public ShippingItemBuilder setExpectedDelivery(Date expectedDelivery) {

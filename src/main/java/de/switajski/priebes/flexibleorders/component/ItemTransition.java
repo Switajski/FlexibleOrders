@@ -44,7 +44,8 @@ public class ItemTransition {
 			orderItem.addConfirmedQuantity(orderItem.getQuantity());		
 
 			return si;
-		} else return null;
+		} else 
+			return null;
 	}
 
 

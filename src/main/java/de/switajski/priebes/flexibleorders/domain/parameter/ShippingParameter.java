@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.parameter;
 
+
 /**
  * encapsulates and validates parameters for the "deliver" transition 
  * {@link ItemTransition#deliver}

@@ -16,7 +16,7 @@ public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer>{
 	}
 
 	@Override
-	protected JpaRepository<Customer, ?> getRepository() {
+	protected JpaRepository<Customer, Long> getRepository() {
 		return customerRepository;
 	}
 }

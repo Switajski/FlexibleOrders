@@ -20,6 +20,20 @@ public class InvoiceItemBuilder extends ItemBuilder<InvoiceItem> {
 	private int quantityLeft;
 
 
+	/**
+	 * 
+	 * @param customer
+	 * @param product
+	 * @param orderNumber
+	 * @param productNumber
+	 * @param productName
+	 * @param priceNet
+	 * @param quantityLeft
+	 * @param invoiceCountry
+	 * @param invoicePostalCode
+	 * @param invoiceCity
+	 * @param invoiceStreet
+	 */
 	public InvoiceItemBuilder(Customer customer, Product product, 
 			Long orderNumber, Long productNumber, 
 			String productName, BigDecimal priceNet,

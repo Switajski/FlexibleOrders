@@ -9,9 +9,9 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 
+import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.report.Invoice;
 
 public class InvoicePdfTable extends ItemPdfTable<InvoiceItem> {
 	

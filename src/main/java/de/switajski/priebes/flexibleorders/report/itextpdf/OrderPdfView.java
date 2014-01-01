@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.report.Order;
+import de.switajski.priebes.flexibleorders.domain.Order;
 
 /**
  * Pdf view customized for the display of an order

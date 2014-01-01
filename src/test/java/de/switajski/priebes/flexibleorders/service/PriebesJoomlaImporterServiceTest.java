@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.repository.ProductRepository;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,7 +21,7 @@ public class PriebesJoomlaImporterServiceTest {
 	
 	@Autowired ImporterService pji;
 	@Autowired CustomerRepository customerRepository;
-	@Autowired ProductRepository productRepository;
+	@Autowired CatalogProductRepository productRepository;
 	@Autowired OrderItemRepository orderItemRepository;
 	
 	@Rollback(false)

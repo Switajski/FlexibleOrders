@@ -18,24 +18,19 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
+import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
-import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
-import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
-import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
+import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.PayedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.reference.Status;
-import de.switajski.priebes.flexibleorders.repository.ArchiveItemRepository;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.repository.InvoiceItemRepository;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
+import de.switajski.priebes.flexibleorders.repository.ItemRepository;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 
 
 @Transactional
@@ -43,14 +38,11 @@ import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class TransitionServiceTest {
 
-	@Autowired ArchiveItemRepository archiveItemRepository;
 	@Autowired CustomerService customerService;
-	@Autowired InvoiceItemRepository invoiceItemRepository;
-	@Autowired OrderItemService orderItemService;
-	@Autowired OrderItemRepository orderItemRepository;
-	@Autowired ProductService productService;
-	@Autowired ShippingItemRepository shippingItemRepository;
-	@Autowired TransitionService transitionService;
+	@Autowired ItemServiceImpl itemService;
+	@Autowired ItemRepository itemRepo;
+	@Autowired CatalogProductRepository productService;
+	@Autowired HandlingEventService transitionService;
 	@Autowired CategoryRepository categoryService;
 
 	private final static Long PRODUCT_NR = 98134756l;
@@ -67,11 +59,11 @@ public class TransitionServiceTest {
 	@Rollback
 	@Test
 	public void shouldConfirmOrderItem(){
-		OrderItem oi = createGivenOrderItem();
-		orderItemRepository.saveAndFlush(oi);
+		Item oi = createGivenOrderItem();
+		itemRepo.saveAndFlush(oi);
 
-		ShippingItem si = transitionService.confirm(oi,
-				new ConfirmationParameter(
+		Item si = transitionService.confirm(oi,
+				new ConfirmedSpecification(
 						false, ORDER_CONFIRMATION_NR));
 
 		assertConfirmedState(oi, si);
@@ -85,7 +77,7 @@ public class TransitionServiceTest {
 		OrderItem oi = createGivenOrderItem();
 
 		ShippingItem si = transitionService.confirm(oi,
-				new ConfirmationParameter(
+				new ConfirmationSpecification(
 						false, ORDER_CONFIRMATION_NR));
 
 		assertPartialConfirmedState(oi, si);
@@ -98,7 +90,7 @@ public class TransitionServiceTest {
 		OrderItem oi = createGivenOrderItem();
 
 		ShippingItem si = transitionService.confirm(oi,
-				new ConfirmationParameter(
+				new ConfirmationSpecification(
 						false, ORDER_CONFIRMATION_NR));
 
 		si = transitionService.deconfirm(si);
@@ -114,7 +106,7 @@ public class TransitionServiceTest {
 
 		InvoiceItem ii = transitionService.deliver(
 				si,
-				new ShippingParameter(
+				new ShippedSpecification(
 						QUANTITY_IN_NEXT_STATE,
 						INVOICE_NR,
 						si.getShippingAddress()
@@ -142,7 +134,7 @@ public class TransitionServiceTest {
 
 		InvoiceItem ii = transitionService.deliver(
 				si,
-				new ShippingParameter(
+				new ShippedSpecification(
 						QUANTITY_INITIAL,
 						INVOICE_NR,
 						si.getShippingAddress()
@@ -160,7 +152,7 @@ public class TransitionServiceTest {
 
 		InvoiceItem ii = transitionService.deliver(
 				si,
-				new ShippingParameter(
+				new ShippedSpecification(
 						QUANTITY_INITIAL,
 						INVOICE_NR,
 						si.getShippingAddress()
@@ -180,7 +172,7 @@ public class TransitionServiceTest {
 
 		InvoiceItem ii = transitionService.deliver(
 				si,
-				new ShippingParameter(
+				new ShippedSpecification(
 						QUANTITY_IN_NEXT_STATE,
 						INVOICE_NR,
 						si.getShippingAddress()
@@ -189,7 +181,7 @@ public class TransitionServiceTest {
 
 		transitionService.deliver(
 				si,
-				new ShippingParameter(
+				new ShippedSpecification(
 						QUANTITY_IN_NEXT_STATE,
 						INVOICE_NR,
 						si.getShippingAddress()
@@ -207,7 +199,7 @@ public class TransitionServiceTest {
 	public void shouldCompleteInvoiceItem(){
 		InvoiceItem ii = getGivenInvoiceItem();
 
-		ArchiveItem ai = transitionService.complete(ii, new AccountParameter(ACCOUNT_NR));
+		ArchiveItem ai = transitionService.complete(ii, new PayedSpecification(ACCOUNT_NR));
 
 		assertCompletedState(ii, ai);
 	}
@@ -218,7 +210,7 @@ public class TransitionServiceTest {
 	public void shouldDecompleteArchiveItem(){
 		InvoiceItem ii = getGivenInvoiceItem();
 
-		ArchiveItem ai = transitionService.complete(ii, new AccountParameter(ACCOUNT_NR));
+		ArchiveItem ai = transitionService.complete(ii, new PayedSpecification(ACCOUNT_NR));
 
 		ai = transitionService.decomplete(ai);
 
@@ -308,56 +300,57 @@ public class TransitionServiceTest {
 		assertEquals("shipping item's Status should be SHIPPED",  statusShouldBe, shippingItem.getStatus());
 
 		//assert given invoice item State
-		List<InvoiceItem> iis = invoiceItemRepository.findByInvoiceNumber(INVOICE_NR);
+		List<Item> iis = itemRepo.findByInvoiceNumber(INVOICE_NR);
 		assertFalse(iis.isEmpty());
-		InvoiceItem invoiceItem = iis.get(0);
+		Item invoiceItem = iis.get(0);
 
 		assertEquals("invoice item's quantity wrong", QUANTITY_INITIAL, invoiceItem.getQuantityLeft());
 		assertEquals("invoice item's quantity wrong", QUANTITY_INITIAL, invoiceItem.getQuantity());
 		assertEquals("invoice item's Status wrong", statusShouldBe, invoiceItem.getStatus());
 	}
 
-	private ShippingItem createGivenShippingItem() { 
-		OrderItem orderItem = createGivenOrderItem();
+	private Item createGivenShippingItem() { 
+		Item orderItem = createGivenOrderItem();
 
-		ShippingItem si = transitionService.confirm(
+		Item si = transitionService.confirm(
 					orderItem,
-					new ConfirmationParameter(false,
+					new ConfirmationSpecification(false,
 							ORDER_CONFIRMATION_NR)
 				);
 
 		return si;
 	}
 
-	private InvoiceItem getGivenInvoiceItem() { 
-		ShippingItem si = createGivenShippingItem();
+	private Item getGivenInvoiceItem() { 
+		Item si = createGivenShippingItem();
 
-		InvoiceItem ii = transitionService.deliver(si, new ShippingParameter(QUANTITY_INITIAL, INVOICE_NR, si.getShippingAddress()));
+		Item ii = transitionService.deliver(
+				si, new ShippedSpecification(QUANTITY_INITIAL, INVOICE_NR, si.getShippingAddress()));
 				
 		return ii;
 	}
 
-	private void assertDeconfirmedState(OrderItem oi, ShippingItem si) {
+	private void assertDeconfirmedState(Item oi, Item si) {
 		// assert proper order item state
-		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
+		List<Item> orderItems = itemRepo.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
 		assertEquals("should find only one orderItem with given product and OrderNumber", 1, orderItems.size());
-		OrderItem oiIs = orderItems.get(0);
+		Item oiIs = orderItems.get(0);
 		assertEquals("Status not set to ORDERED", oiIs.getStatus(), Status.ORDERED);
 		assertEquals("OrderNumber changed", oi.getOrderNumber(), oiIs.getOrderNumber());
 		assertEquals("orderConfirmation number of a deconfirmed orderItem should be null", null, oi.getOrderConfirmationNumber());
 		assertTrue(oiIs.getQuantityLeft() == QUANTITY_INITIAL);
 
 		// assert proper shipping item state
-		List<ShippingItem> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
+		List<Item> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
 		assertEquals("should not find shippingItem with given orderConfirmationNumber and productNumber", siItems.isEmpty(), true);
 
 	}
 
-	private void assertConfirmedState(OrderItem oi, ShippingItem si) {
+	private void assertConfirmedState(Item oi, Item si) {
 		// assert proper order item state
-		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
+		List<Item> orderItems = itemRepo.findByOrderNumberAndProductNumber(ORDER_NR, oi.getProductNumber());
 		assertEquals("should find only one order item with given product and orderNumber", 1,  orderItems.size());
-		OrderItem equivalentOi = orderItems.get(0);
+		Item equivalentOi = orderItems.get(0);
 		assertEquals("Status not set to CONFIRMED", equivalentOi.getStatus(), Status.CONFIRMED);
 		assertEquals("OrderNumber of orderItem should be same as given", oi.getOrderNumber(), equivalentOi.getOrderNumber());
 		assertEquals("OrderConfirmation of orderItem should be same as given", oi.getOrderConfirmationNumber(), equivalentOi.getOrderConfirmationNumber());
@@ -365,16 +358,16 @@ public class TransitionServiceTest {
 		assertEquals((oi.getQuantityLeft() == 0), true);
 
 		// assert proper shipping item state
-		List<ShippingItem> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
+		List<Item> siItems = shippingItemRepository.findByOrderConfirmationNumber(ORDER_CONFIRMATION_NR);
 		assertFalse("no shipping item with given orderConfirmationNumber found!", siItems.isEmpty());
 		assertEquals("shipping item in repository should be the same as the one returned in OrderItem.confirm()", si, siItems.get(0));
 	}
 
-	private void assertPartialConfirmedState(OrderItem oi, ShippingItem si){
+	private void assertPartialConfirmedState(Item oi, Item si){
 		// assert proper order item state
-		List<OrderItem> orderItems = orderItemRepository.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
+		List<Item> orderItems = itemRepo.findByOrderNumberAndProduct(ORDER_NR, oi.getProduct());
 		assertFalse("no order item with given orderNumber found!", orderItems.isEmpty());
-		OrderItem equivalentOi = orderItems.get(0);
+		Item equivalentOi = orderItems.get(0);
 
 		// Status should not be the next one. Quantity Left should be not null
 		assertEquals("Status should be only confirmed when quantity_left equals quantity", 
@@ -383,8 +376,8 @@ public class TransitionServiceTest {
 
 	}
 
-	private OrderItem createGivenOrderItem() {
-		Product product = ProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NR.toString()));
+	private Item createGivenOrderItem() {
+		CatalogProduct product = CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NR.toString()));
 		product.setPriceNet(BigDecimal.TEN);
 		product.setProductNumber(PRODUCT_NR);
 		categoryService.save(product.getCategory());
@@ -393,8 +386,8 @@ public class TransitionServiceTest {
 		Customer customer = CustomerBuilder.buildWithGeneratedAttributes(CUSTOMER_NR);
 		customerService.save(customer);
 		
-		OrderItem oi = new OrderItem(new OrderParameter(product, customer, QUANTITY_INITIAL, ORDER_NR, null)); 
-		orderItemRepository.saveAndFlush(oi);
+		Item oi = new Item(new DeliverySpecification(product, customer, QUANTITY_INITIAL, ORDER_NR, null)); 
+		itemRepo.saveAndFlush(oi);
 		return oi;
 	}
 

@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.math.BigDecimal;
+
 import javassist.NotFoundException;
 
 import org.apache.log4j.Logger;
@@ -10,47 +12,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.ArchiveItem;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.domain.parameter.AccountParameter;
-import de.switajski.priebes.flexibleorders.domain.parameter.ConfirmationParameter;
-import de.switajski.priebes.flexibleorders.domain.parameter.ShippingParameter;
+import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.Currency;
+import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.PayedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.repository.ShippingItemRepository;
-import de.switajski.priebes.flexibleorders.service.ArchiveItemService;
-import de.switajski.priebes.flexibleorders.service.InvoiceItemService;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
-import de.switajski.priebes.flexibleorders.service.TransitionService;
+import de.switajski.priebes.flexibleorders.repository.ItemRepository;
+import de.switajski.priebes.flexibleorders.service.HandlingEventService;
 
 @Controller
 @RequestMapping("/transitions")
 public class TransitionController {
 	
 	private static Logger log = Logger.getLogger(TransitionController.class);
-	private TransitionService transitionService;
-	private ShippingItemService shippingItemService;
-	private InvoiceItemService invoiceItemService;
-	private ArchiveItemService archiveItemService;
-	private OrderItemRepository orderItemRepository;
-	private ShippingItemRepository shippingItemRepository;
+	private ItemRepository itemRepo;
+	private HandlingEventService heService;
 
 	@Autowired
 	public TransitionController(
-			TransitionService transitionService,
-			ShippingItemService shippingItemService,
-			InvoiceItemService invoiceItemService,
-			ArchiveItemService archiveItemService,
-			OrderItemRepository orderItemRepository,
-			ShippingItemRepository shippingItemRepository) {
-		this.transitionService = transitionService;
-		this.shippingItemService = shippingItemService;
-		this.invoiceItemService = invoiceItemService;
-		this.archiveItemService = archiveItemService;
-		this.orderItemRepository = orderItemRepository;
-		this.shippingItemRepository = shippingItemRepository;
+			HandlingEventService transitionService,
+			ItemRepository itemRepo) {
+		this.heService = transitionService;
+		this.itemRepo = itemRepo;
 	}
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
@@ -58,7 +44,7 @@ public class TransitionController {
 			@RequestParam(value = "id", required = true) long orderItemId,
 //			@RequestParam(value = "orderNumber", required = true) long orderNumber,
 //			@RequestParam(value = "productNumber", required = true) long productNumber, 
-//			@RequestParam(value = "quantity", required = true) int quantity,
+			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "orderConfirmationNumber", required = true) long orderConfirmationNumber,
 			@RequestParam(value = "toSupplier", required = false, defaultValue="false") boolean toSupplier) 
 					throws Exception {
@@ -67,12 +53,13 @@ public class TransitionController {
 		log.debug("received json confirm request:  orderConfirmationNumber:"+orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		OrderItem orderItemToConfirm = orderItemRepository.findOne(orderItemId);
+		Item orderItemToConfirm = itemRepo.findOne(orderItemId);
 		
-		ShippingItem shippingItem = transitionService.confirm(
-				orderItemToConfirm, new ConfirmationParameter(toSupplier, orderConfirmationNumber));
+		HandlingEvent he = heService.confirm(
+				orderItemToConfirm, quantity, 
+				new ConfirmedSpecification(orderConfirmationNumber, null, new Amount(BigDecimal.TEN, Currency.EUR), null));
 
-		response.setData(shippingItem);
+		response.setData(he);
 		response.setTotal(1);
 		response.setMessage("order item(s) confirmed");
 		response.setSuccess(true);
@@ -92,13 +79,13 @@ public class TransitionController {
 				+ " orderConfirmationNumber:" + orderConfirmationNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		if (!shippingItemRepository.exists(shippingItemId))
+		if (!itemRepo.exists(shippingItemId))
 			throw new NotFoundException("Shipping Item with given Id not found!");
 		
-		ShippingItem shippingItemToDeconfirm =
-				shippingItemService.find(shippingItemId);
+		Item shippingItemToDeconfirm =
+				itemRepo.findOne(shippingItemId);
 		
-		ShippingItem shippingItem = transitionService.deconfirm(
+		HandlingEvent shippingItem = heService.deconfirm(
 				shippingItemToDeconfirm);
 		
 		response.setData(shippingItem);
@@ -125,13 +112,12 @@ public class TransitionController {
 				+ " quantity:" + quantity + " orderConfirmationNumber:"+invoiceNumber);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		if (!shippingItemRepository.exists(shippingItemId))
+		if (!itemRepo.exists(shippingItemId))
 			throw new NotFoundException("ShippingItem with given id not found!");
-		ShippingItem shippingItemToDeliver = shippingItemRepository.findOne(shippingItemId);
-		InvoiceItem invoiceItem = transitionService.deliver(
-				shippingItemToDeliver, new ShippingParameter(
-						quantity, invoiceNumber, 
-						shippingItemToDeliver.getCustomer().getShippingAddress()));
+		Item shippingItemToDeliver = itemRepo.findOne(shippingItemId);
+		HandlingEvent invoiceItem = heService.deliver(
+				shippingItemToDeliver, quantity, new ShippedSpecification(
+						invoiceNumber));
 		
 		response.setData(invoiceItem);
 		response.setTotal(1);
@@ -150,13 +136,13 @@ public class TransitionController {
 				+ " invoiceItemId:"+id);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		InvoiceItem item = invoiceItemService.find(id);
+		Item item = itemRepo.findOne(id);
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		item = transitionService.withdraw(item);
+		HandlingEvent he= heService.withdraw(item);
 		
-		response.setData(item);
+		response.setData(he);
 		response.setTotal(1);
 		response.setMessage("invoice item withdrawed");
 		response.setSuccess(true);
@@ -168,6 +154,7 @@ public class TransitionController {
 	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse complete(
 			@RequestParam(value = "id", required = true) long id,
+			@RequestParam(value = "quantity", required = true) int quantity,
 			@RequestParam(value = "accountNumber", required = true) Long accountNumber) 
 					throws Exception {
 		
@@ -176,11 +163,11 @@ public class TransitionController {
 				+ " id:" + id);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		InvoiceItem item = invoiceItemService.find(id);
+		Item item = itemRepo.findOne(id);
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		ArchiveItem archiveItem = transitionService.complete(item, new AccountParameter(accountNumber));
+		HandlingEvent archiveItem = heService.complete(item, quantity, new PayedSpecification(accountNumber));
 		
 		response.setData(archiveItem);
 		response.setTotal(1);
@@ -199,13 +186,13 @@ public class TransitionController {
 				+ " archiveItemId:"+id);
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		ArchiveItem item = archiveItemService.find(id);
+		Item item = itemRepo.findOne(id);
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		item = transitionService.decomplete(item);
+		HandlingEvent he = heService.decomplete(item);
 		
-		response.setData(item);
+		response.setData(he);
 		response.setTotal(1);
 		response.setMessage("archive item decompleted");
 		response.setSuccess(true);
@@ -219,8 +206,8 @@ public class TransitionController {
 					throws NotFoundException {
 		JsonObjectResponse response = new JsonObjectResponse();
 		
-		if (orderItemRepository.exists(id))
-			orderItemRepository.delete(orderItemRepository.findOne(id));
+		if (itemRepo.exists(id))
+			itemRepo.delete(itemRepo.findOne(id));
 		else 
 			throw new NotFoundException("order item with given id not found!");
 		

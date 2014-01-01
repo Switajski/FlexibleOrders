@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,28 +16,27 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.parameter.OrderParameter;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class OrderIntegrationTest {
 
-	@Autowired OrderItemService orderItemService;
+	@Autowired ItemServiceImpl orderItemService;
 	@Autowired CustomerService customerService;
 	@Autowired OrderService orderService;
 	
 	@Test
 	public void shouldGetPageableOrders(){
-		Page<OrderItem> pages = orderItemService.findAll(new PageRequest(0,20));
+		Page<Item> pages = orderItemService.findAll(new PageRequest(0,20));
 		assertEquals(pages.getSize(), 20);
 	}
 	
@@ -64,19 +62,19 @@ public class OrderIntegrationTest {
 	@Test
 	public void shouldCreateOrders(){
 		
-		OrderItem oi1 = new OrderItemBuilder(new OrderParameter(
-				ProductBuilder.buildWithGeneratedAttributes(1),
+		OrderItem oi1 = new OrderItemBuilder(new DeliverySpecification(
+				CatalogProductBuilder.buildWithGeneratedAttributes(1),
 				CustomerBuilder.buildWithGeneratedAttributes(2),
 				3,
 				1234L,
-				new Date()
+				new Amount(new BigDecimal("123.12"), Currency.EUR)
 				)).build();
-		OrderItem oi2 = new OrderItemBuilder(new OrderParameter(
-				ProductBuilder.buildWithGeneratedAttributes(4),
+		OrderItem oi2 = new OrderItemBuilder(new DeliverySpecification(
+				CatalogProductBuilder.buildWithGeneratedAttributes(4),
 				CustomerBuilder.buildWithGeneratedAttributes(2),
 				3,
 				1234L,
-				new Date()
+				new Amount(new BigDecimal("123.12"), Currency.EUR)
 				)).build();
 		
 		oi2.setOrderNumber(oi1.getOrderNumber());

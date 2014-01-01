@@ -5,17 +5,11 @@ import de.switajski.priebes.flexibleorders.domain.Category;
 public class CategoryBuilder implements Builder<Category> {
 
 	private String name;
-
 	private String intro;
-
 	private String description;
-
 	private String image;
-
 	private String imageGalery;
-
 	private int sortOrder;
-
 	private Boolean activated;
 	
 	public CategoryBuilder(String name, boolean activated) {
@@ -35,11 +29,6 @@ public class CategoryBuilder implements Builder<Category> {
 		image = "Image"+i.toString();
 		imageGalery = "ImageGallery"+i.toString();
 		sortOrder = i;
-		return this;
-	}
-	
-	public CategoryBuilder withActivated(boolean active){
-		this.activated = active;
 		return this;
 	}
 	

@@ -11,27 +11,28 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.ProductService;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
+import de.switajski.priebes.flexibleorders.repository.ItemRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.HandlingEventService;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class OrderItemControllerTest {
 	
-	@Autowired OrderItemService orderItemService;
-	@Autowired ProductService productService;
-	@Autowired OrderItemRepository orderItemRepository;
 
+	private ItemRepository itemRepo;
+	private CustomerService customerService;
+	private HandlingEventService heService;
+	private CatalogProductRepository productRepository;
+	
 	public static final String CREATE_ORDERITEM_REQUEST_JSON = ""
 			+ "{\"product\":29026,"
 			+ "\"orderNumber\":\"1234\","
@@ -78,10 +79,9 @@ public class OrderItemControllerTest {
 	public void shouldDeserializeOrderItem() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		OrderItem oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
-				OrderItem.class);
-		Product product = oi.getProduct();
-		assertTrue(product.getProductNumber().equals(29026l));
+		Item oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
+				Item.class);
+		assertTrue(oi.getProductNumber().equals(29026l));
 
 	}
 
@@ -90,22 +90,20 @@ public class OrderItemControllerTest {
 	public void shouldDeserializeOrderItems() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		OrderItem[] ois = mapper.readValue(CREATE_ORDERITEMS_REQUEST_JSON, 
-				OrderItem[].class);
+		Item[] ois = mapper.readValue(CREATE_ORDERITEMS_REQUEST_JSON, 
+				Item[].class);
 		HashSet<Long> productNumbers = new HashSet<Long>();
-		for (OrderItem oi:ois)
-			productNumbers.add(oi.getProduct().getProductNumber());
+		for (Item oi:ois)
+			productNumbers.add(oi.getProductNumber());
 
 		assertTrue(productNumbers.contains(10055l));
 		assertTrue(productNumbers.contains(44210l));
-
-
 	}
 	
 	@Transactional
 	@Test
 	public void shouldDeserializeOrderItemsByJsonController() throws Exception{
-		OrderItemController oic = new OrderItemController(orderItemService, productService, orderItemService, null);
+		JsonController oic = new JsonController(itemRepo, customerService, heService, productRepository);
 		oic.parseJsonArray(CREATE_ORDERITEMS_REQUEST_JSON);
 	}
 
@@ -115,17 +113,14 @@ public class OrderItemControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
 
-		OrderItem oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
-				OrderItem.class);
-		Product product = oi.getProduct();
-		assertTrue(product.getProductNumber().equals(29026l));
+		Item oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
+				Item.class);
+		assertTrue(oi.getProductNumber().equals(29026l));
 		
-		oi.setProduct(productService.findByProductNumber(product.getProductNumber()));
+		oi.setProduct(productRepository.findByProductNumber(oi.getProductNumber()));
 		
 		try {
-//			orderItemService.save(oi);
-//			orderItemService.saveOrderItem(oi);
-			orderItemRepository.saveAndFlush(oi);
+			itemRepo.saveAndFlush(oi);
 		} catch(Exception e){
 			e.printStackTrace();
 		}

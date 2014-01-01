@@ -2,7 +2,9 @@ package de.switajski.priebes.flexibleorders.domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import de.switajski.priebes.flexibleorders.domain.specification.Address;
 import de.switajski.priebes.flexibleorders.integrationtest.AbstractIntegrationTest;
+import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
 
@@ -12,7 +14,15 @@ public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer>{
 	
 	@Override
 	protected Customer createEntity() {
-		return new CustomerBuilder("street", "city", 1234, "email@nowhere.com").build();
+		return new CustomerBuilder(
+				"shortName",
+				"email@nowhere.com",
+				new Address(
+						"name1", "name2", 
+						"street",
+						1234, "city",
+						Country.GERMANY)
+						).build();
 	}
 
 	@Override

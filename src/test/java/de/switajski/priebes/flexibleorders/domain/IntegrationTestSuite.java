@@ -6,11 +6,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	ArchiveItemIntegrationTest.class,
-	CategoryIntegrationTest.class,
-	InvoiceItemIntegrationTest.class,
+	ItemIntegrationTest.class,
+	CustomerIntegrationTest.class,
 	ProductIntegrationTest.class,
-	OrderItemIntegrationTest.class})
+	CategoryIntegrationTest.class
+	})
 public class IntegrationTestSuite {
 
 }

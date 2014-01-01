@@ -1,12 +1,10 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
@@ -18,29 +16,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.report.Order;
 import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.OrderService;
+import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
 
 @Controller
 @RequestMapping("/orders")
-public class OrderController extends JsonController<Order> {
+public class OrderController {
 	
-	OrderItemService orderItemService;
-	OrderService orderService;
+	ItemServiceImpl itemService;
 	CustomerService customerService;
 	
 	private static Logger log = Logger.getLogger(OrderController.class);
 
 	@Autowired
-	public OrderController(OrderService crudServiceAdapter,
-			OrderItemService orderItemService,
+	public OrderController(ItemServiceImpl itemService,
 			CustomerService customerService) {
-		super(crudServiceAdapter);
-		this.orderService = crudServiceAdapter;
-		this.orderItemService = orderItemService;
+		this.itemService = itemService;
 		this.customerService = customerService;
 	}
 	
@@ -53,7 +46,7 @@ public class OrderController extends JsonController<Order> {
 		JsonObjectResponse response = new JsonObjectResponse();	
 
 		if (orderNumberObject != null){
-			List<Long> orderNumbers = orderService.findOrderNumbersLike(orderNumberObject);
+			List<Long> orderNumbers = itemService.findOrderNumbersLike(orderNumberObject);
 			if (!orderNumbers.isEmpty()){
 				response.setTotal(orderNumbers.size());
 				response.setData(formatOrderNumbers(orderNumbers));			
@@ -66,7 +59,7 @@ public class OrderController extends JsonController<Order> {
 			List<Customer> customers = customerService.findAll();
 			ArrayList<Long> list = new ArrayList<Long>();
 			for (Customer customer:customers)
-				list.addAll(orderService.getOrderNumbersByCustomer(customer, new PageRequest(1,20)).getContent());
+				list.addAll(itemService.getOrderNumbersByCustomer(customer, new PageRequest(1,20)).getContent());
 			response.setTotal(list.size());
 			response.setData(formatOrderNumbers(list));
 		}
@@ -85,19 +78,6 @@ public class OrderController extends JsonController<Order> {
 		return orderNumberArray;
 	}
 
-	@Override
-	protected void resolveDependencies(Order entity) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected Page<Order> findByFilterable(PageRequest pageRequest,
-			HashMap<String, String> filter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
     /*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
      *  @ResponseBody is for direct responses without a view
@@ -107,7 +87,7 @@ public class OrderController extends JsonController<Order> {
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        Order record = new Order(orderItemService.findByOrderNumber(id));
+	        Order record = new Order(itemService.findByOrderNumber(id));
             return new ModelAndView("OrderPdfView","Order",record);
 			
 		} catch(Exception e) {

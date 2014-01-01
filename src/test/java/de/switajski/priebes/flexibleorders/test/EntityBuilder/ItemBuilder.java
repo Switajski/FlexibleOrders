@@ -1,125 +1,45 @@
 package de.switajski.priebes.flexibleorders.test.EntityBuilder;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.reference.Status;
+import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.OriginSystem;
 
-public abstract class ItemBuilder<T extends Item> implements Builder<T> {
+public class ItemBuilder implements Builder<Item> {
 
-	protected Product product;
-	protected Customer customer;
-	protected Date created = new Date();
-	protected int quantity;
-	protected BigDecimal priceNet;
-	protected Status status;
-	protected String productName;
-	protected Long productNumber;
-	protected Long orderConfirmationNumber;
-	protected Long invoiceNumber;
-	protected Long accountNumber;
-	protected Long orderNumber;
-
+	private Customer customer;
+	private DeliveryHistory deliveryHistory;
+	private OriginSystem originSystem;
+	private OrderedSpecification orderedSpecification;
 	
-	/**
-	 * to be called in build-method of the concrete item class
-	 */
-	protected void setSuperAttributes(T item){
-		item.setProduct(product);
+	@Override
+	public Item build() {
+		Item item = new Item();
+		item.setOrderedSpecification(orderedSpecification);
 		item.setCustomer(customer);
-		item.setCreated(created);
-		item.setQuantity(quantity);
-		item.setPriceNet(priceNet);
-		item.setStatus(status);
-		item.setProductName(productName);
-		item.setProductNumber(productNumber);
-		item.setOrderConfirmationNumber(orderConfirmationNumber);
-		item.setInvoiceNumber(invoiceNumber);
-		item.setAccountNumber(accountNumber);
-		item.setOrderNumber(orderNumber);
+		item.setDeliveryHistory(deliveryHistory);
+		item.setOriginSystem(originSystem);
+		return item;
 	}
-	
-	/**
-	 * Constructor with minimal attributes to persist
-	 * @param customer
-	 * @param product
-	 * @param orderNumber
-	 * @param productNumber
-	 * @param productName
-	 * @param priceNet
-	 */
-	public ItemBuilder(Customer customer, Product product, 
-			Long orderNumber, Long productNumber, 
-			String productName, BigDecimal priceNet) {
-		this.customer = customer;
-		this.product = product;
-		this.orderNumber = orderNumber;
-		this.productNumber = productNumber;
-		this.productName = productName;
-		this.priceNet = priceNet;
-	}
-	
 
-	public ItemBuilder<T> setProduct(Product product) {
-		this.product = product;
+	public ItemBuilder setOrderedSpecification(OrderedSpecification orderedSpecification) {
+		this.orderedSpecification = orderedSpecification;
 		return this;
 	}
 
-	public ItemBuilder<T> setCustomer(Customer customer) {
+	public ItemBuilder setCustomer(Customer customer) {
 		this.customer = customer;
 		return this;
 	}
 
-	public ItemBuilder<T> setCreated(Date created) {
-		this.created = created;
+	public ItemBuilder setDeliveryHistory(DeliveryHistory deliveryHistory) {
+		this.deliveryHistory = deliveryHistory;
 		return this;
 	}
 
-	public ItemBuilder<T> setQuantity(int quantity) {
-		this.quantity = quantity;
-		return this;
-	}
-
-	public ItemBuilder<T> setPriceNet(BigDecimal priceNet) {
-		this.priceNet = priceNet;
-		return this;
-	}
-
-	public ItemBuilder<T> setStatus(Status status) {
-		this.status = status;
-		return this;
-	}
-
-	public ItemBuilder<T> setProductName(String productName) {
-		this.productName = productName;
-		return this;
-	}
-
-	public ItemBuilder<T> setProductNumber(Long productNumber) {
-		this.productNumber = productNumber;
-		return this;
-	}
-
-	public ItemBuilder<T> setOrderConfirmationNumber(Long orderConfirmationNumber) {
-		this.orderConfirmationNumber = orderConfirmationNumber;
-		return this;
-	}
-
-	public ItemBuilder<T> setInvoiceNumber(Long invoiceNumber) {
-		this.invoiceNumber = invoiceNumber;
-		return this;
-	}
-
-	public ItemBuilder<T> setAccountNumber(Long accountNumber) {
-		this.accountNumber = accountNumber;
-		return this;
-	}
-
-	public ItemBuilder<T> setOrderNumber(Long orderNumber) {
-		this.orderNumber = orderNumber;
+	public ItemBuilder setOriginSystem(OriginSystem originSystem) {
+		this.originSystem = originSystem;
 		return this;
 	}
 

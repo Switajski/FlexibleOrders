@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.switajski.priebes.flexibleorders.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
 
 @Controller
 @RequestMapping("/orderconfirmations")
 public class OrderConfirmationController {
 	
-	@Autowired ShippingItemService shippingItemService;
+	@Autowired ItemServiceImpl itemService;
 
 	@RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
     /*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
@@ -25,7 +25,7 @@ public class OrderConfirmationController {
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        OrderConfirmation record = new OrderConfirmation(shippingItemService.findByOrderConfirmationNumber(id));
+	        OrderConfirmation record = new OrderConfirmation(itemService.findByOrderConfirmationNumber(id));
             return new ModelAndView("OrderConfirmationPdfView","OrderConfirmation",record);
 			
 		} catch(Exception e) {

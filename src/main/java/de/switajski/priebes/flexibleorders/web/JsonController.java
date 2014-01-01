@@ -2,8 +2,6 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,36 +10,51 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import de.switajski.priebes.flexibleorders.domain.Item;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
-import de.switajski.priebes.flexibleorders.service.CrudServiceAdapter;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
+import de.switajski.priebes.flexibleorders.repository.ItemRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerService;
+import de.switajski.priebes.flexibleorders.service.HandlingEventService;
 
-public abstract class JsonController<T> {
+@RequestMapping("/orderitems")
+@Controller
+@RooWebScaffold(path = "orderitems", formBackingObject = Item.class)
+public class JsonController {
 
 	private static Logger log = Logger.getLogger(JsonController.class);
-	CrudServiceAdapter<T> crudServiceAdapter;
+	
+	private static final String ID = "ordernumber";
+	private static final String FILTER_STATUS = "ordered";
+	private ItemRepository orderItemService;
+	private CustomerService customerService;
+	private HandlingEventService heService;
+	private CatalogProductRepository productRepository;
 
-	/* Code for Strong typing (checked)
-	 */ 
-	private Class< T > type;
-
-	@SuppressWarnings("unchecked")
-	public JsonController(CrudServiceAdapter<T> crudServiceAdapter) {
-		this.crudServiceAdapter = crudServiceAdapter;
-		/* Code for Strong typing (checked)
-		 */
-		Type t = getClass().getGenericSuperclass();
-		ParameterizedType pt = (ParameterizedType) t;
-		type = (Class) pt.getActualTypeArguments()[0];
+	@Autowired
+	public JsonController(ItemRepository itemRepo,
+			CustomerService customerService,
+			HandlingEventService heService,
+			CatalogProductRepository productRepository) {
+		this.orderItemService = itemRepo;
+		this.customerService = customerService;
+		this.heService = heService;
+		this.productRepository = productRepository;
 	}
 
 	@RequestMapping(value="/json", method=RequestMethod.GET)
@@ -56,9 +69,9 @@ public abstract class JsonController<T> {
 		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
 		log.debug("received json filter request:"+filters);
 		JsonObjectResponse response = new JsonObjectResponse();
-		Page<T> entities = null;
+		Page<Item> entities = null;
 		if (filters == null|| isRequestForEmptingFilter(filters)){ 
-			entities =  crudServiceAdapter.findAll(new PageRequest(page-1, limit));
+			entities =  orderItemService.findAll(new PageRequest(page-1, limit));
 		} else {
 			HashMap<String, String> filterList;
 
@@ -87,16 +100,14 @@ public abstract class JsonController<T> {
 		JsonObjectResponse response = new JsonObjectResponse();
 
 		if (json.charAt(0) == '['){
-			List<T> entities = parseJsonArray(json);
-			for (T entity:entities){
-				resolveDependencies(entity);
-				crudServiceAdapter.delete(entity);
+			List<Item> entities = parseJsonArray(json);
+			for (Item entity:entities){
+				orderItemService.delete(entity);
 			}
 			response.setTotal(entities.size());
 		} else {
-			T entity = parseJsonObject(json);
-			resolveDependencies(entity);
-			crudServiceAdapter.delete(entity);					
+			Item entity = parseJsonObject(json);
+			orderItemService.delete(entity);					
 			response.setData(entity);
 			response.setTotal(1l);
 		}
@@ -106,8 +117,6 @@ public abstract class JsonController<T> {
 
 		return response;
 	}
-
-	protected abstract Page<T> findByFilterable(PageRequest pageRequest, HashMap<String, String> filterList);
 
 	private HashMap<String, String> deserializeFiltersJson(String filters) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();  
@@ -145,56 +154,92 @@ public abstract class JsonController<T> {
 		JsonObjectResponse response = new JsonObjectResponse();
 
 		if (json.charAt(0) == '['){
-			List<T> entities = parseJsonArray(json);
-			for (T entity:entities){
-				resolveDependencies(entity);
-				crudServiceAdapter.save(entity);
+			List<Item> entities = parseJsonArray(json);
+			for (Item entity:entities){
+				orderItemService.save(entity);
 			}
 			response.setTotal(entities.size());
 		} else {
-			T entity = parseJsonObject(json);
-			resolveDependencies(entity);
-			crudServiceAdapter.save(entity);					
+			Item entity = parseJsonObject(json);
+			orderItemService.save(entity);					
 			response.setData(entity);
 			response.setTotal(1l);
 		}
 
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
-		response.setTotal(crudServiceAdapter.countAll());
+		response.setTotal(orderItemService.count());
 
 		return response;
 	}
 
-	private T parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
+	private Item parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		return (T) mapper.readValue(json, type); 
+		return (Item) mapper.readValue(json, Item.class); 
 	}
 
-	@SuppressWarnings({"unchecked"})
-	public List<T> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
-		T[] typedArray = (T[]) Array.newInstance(type,1);
+	public List<Item> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
+		Item[] typedArray = (Item[]) Array.newInstance(Item.class,1);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		T[] records = (T[]) mapper.readValue(json, typedArray.getClass());
+		Item[] records = (Item[]) mapper.readValue(json, typedArray.getClass());
 
-		ArrayList<T> list = new ArrayList<T>();
-		for (T record:records)
+		ArrayList<Item> list = new ArrayList<Item>();
+		for (Item record:records)
 			list.add(record);
 
 		return list;
 	}
+	
+	
+	
+	@RequestMapping(value="/json", params="orderNumber", headers = "Accept=application/json")
+	public @ResponseBody JsonObjectResponse listByOrderNumber(
+			@RequestParam(value = "orderNumber", required = true) Long orderNumber) {
+		JsonObjectResponse response = new JsonObjectResponse();
+		List<Item> entities =  orderItemService.findByOrderNumber(orderNumber);
+		response.setMessage("All order items retrieved.");
+		response.setSuccess(true);
+		response.setTotal(entities.size());
+		response.setData(entities);
 
+		return response;
+	}
+
+	
+	protected Page<Item> findByFilterable(PageRequest pageRequest,
+			HashMap<String, String> filter) {
+		if (filter.get("status") != null)
+			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
+				//TODO: implement me!
+				throw new NotImplementedException();
+//				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
+//				return customerService.findOpenOrderItems(customer, pageRequest);			
+			}
+		if (filter.get(ID)!=null && filter.get("status")==null) 
+			if (filter.get(ID)!="") 
+				return this.orderItemService.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
+		if (filter.get("status")!=null)
+			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
+				throw new NotImplementedException();
+//				Page<Item> orderItems = orderItemService.findOpen(pageRequest);
+//				return orderItems;
+			}
+		return null;
+	}
+	
 	/**
-	 * Verifies and resolves dependencies between domain entities. E.g. orderItem's productNumber into 
-	 * the object product. This is done for technical reasons of O/R-Mapping.
-	 * </br>
-	 * TODO: this technical matter should be implemented by Jackson's deserializer
-	 * TODO: Verification should be done by a separate layer, or by the domain model 
-	 * 
-	 * @param entity
+	 * Site is created by Extjs and JSON
+	 * @param page
+	 * @param size
+	 * @param uiModel
+	 * @return
 	 */
-	protected abstract void resolveDependencies(T entity);
+	@RequestMapping(value = "confirm", produces = "text/html")
+    public String showConfirmationPage(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        return "orderitems/confirm";
+    }
+	
 
 }

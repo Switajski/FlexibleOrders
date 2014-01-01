@@ -36,7 +36,7 @@ import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
-import de.switajski.priebes.flexibleorders.domain.parameter.Address;
+import de.switajski.priebes.flexibleorders.domain.specification.Address;
 
 /**
  * This class generates PDF views and files in DIN A4 and methods to create a letter.

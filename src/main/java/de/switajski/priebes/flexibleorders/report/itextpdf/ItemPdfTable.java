@@ -16,16 +16,10 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.Item;
 
-/**
- * TODO: implement decorator patter or an other
- * @author Marek
- *
- * @param <T>
- */
-public abstract class ItemPdfTable<T extends Item> {
+public abstract class ItemPdfTable {
 
 	protected final static int COLUMNS = 4;
-	public ArrayList<T> bpList;
+	public ArrayList<Item> bpList;
 	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
 	public static final float TOTAL_WIDTH = 500;
 
@@ -36,7 +30,7 @@ public abstract class ItemPdfTable<T extends Item> {
 	
 	private PdfPTable pdfPTable;
 	
-	public ItemPdfTable(List<T> bestellpositionen) {
+	public ItemPdfTable(List<Item> bestellpositionen) {
 		pdfPTable = new PdfPTable(COLUMNS);
 		try {
 			pdfPTable.setWidths(new int[]{100, 245, 90, 65});
@@ -91,7 +85,7 @@ public abstract class ItemPdfTable<T extends Item> {
 	private void createBody() {
 		
 		int bPos = 1;
-		for (T bp:bpList){
+		for (Item bp:bpList){
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
 			
 			String firstColumnContent = null;
@@ -106,7 +100,7 @@ public abstract class ItemPdfTable<T extends Item> {
 			
 			PdfPCell artikelname = new PdfPCell(new Phrase(
 					"Art.Nr.: "
-					+ bp.getProductNumber() 
+					+ bp..getProductNumber() 
 					+ " - "
 					+ bp.getProductName()
 					));
@@ -154,11 +148,11 @@ public abstract class ItemPdfTable<T extends Item> {
 	 */
 	protected abstract void createFooter();
 
-	private ArrayList<T> getSortedItemen(
-			Collection<T> bestellpositionen) {
+	private ArrayList<Item> getSortedItemen(
+			Collection<Item> bestellpositionen) {
 		
-		ArrayList<T> bps = new ArrayList<T>();
-		for (T bp:bestellpositionen){
+		ArrayList<Item> bps = new ArrayList<Item>();
+		for (Item bp:bestellpositionen){
 			bps.add(bp);
 		}
 		Collections.sort(bps);

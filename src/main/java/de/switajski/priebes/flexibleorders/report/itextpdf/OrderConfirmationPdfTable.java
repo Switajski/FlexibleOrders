@@ -10,8 +10,8 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 
 import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
-import de.switajski.priebes.flexibleorders.report.OrderConfirmation;
 
 public class OrderConfirmationPdfTable extends ItemPdfTable<ShippingItem> {
 	

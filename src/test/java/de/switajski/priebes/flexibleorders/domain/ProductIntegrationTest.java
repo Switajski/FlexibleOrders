@@ -6,31 +6,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.switajski.priebes.flexibleorders.integrationtest.AbstractIntegrationTest;
-import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.repository.ProductRepository;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CategoryBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ProductBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 
-public class ProductIntegrationTest extends AbstractIntegrationTest<Product> {
+public class ProductIntegrationTest extends AbstractIntegrationTest<CatalogProduct> {
 
 	@Autowired
-	private ProductRepository productRepo;
+	private CatalogProductRepository productRepo;
 	
 	@Autowired
 	private CategoryRepository catRepo;
 	
 	@Override
-	protected Product createEntity() {
-		Product product = 
-				new ProductBuilder(
-						new Category(), 12345L, ProductType.PRODUCT)
-			.build();
+	protected CatalogProduct createEntity() {
+		CatalogProduct product = 
+				CatalogProductBuilder.buildWithGeneratedAttributes(4);
 		return product;
 	}
 
 	@Override
-	protected JpaRepository<Product, Long> getRepository() {
+	protected JpaRepository<CatalogProduct, Long> getRepository() {
 		return productRepo;
 	}
 	
@@ -40,10 +37,8 @@ public class ProductIntegrationTest extends AbstractIntegrationTest<Product> {
 		Category cat = new CategoryBuilder("asfd", true).build();
 		catRepo.saveAndFlush(cat);
 		
-		Product p = createEntity();
+		CatalogProduct p = createEntity();
 		p.setName(name);
-		p.setActive(true);
-		p.setCategory(cat);
 		
 		productRepo.save(p);
 		productRepo.flush();

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Invoice;
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {

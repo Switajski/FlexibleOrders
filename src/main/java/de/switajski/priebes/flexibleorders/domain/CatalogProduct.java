@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -34,7 +34,7 @@ public class CatalogProduct extends GenericEntity {
 	
 	private Long sortOrder;
 	
-	@OneToMany
+	@ManyToOne
 	private Category category;
 	
 

@@ -1,6 +1,9 @@
 package de.switajski.priebes.flexibleorders.domain;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -9,6 +12,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity
 public class Category extends GenericEntity{
 
+	@OneToMany
+	private Set<Category> childCategories;
+	
     /**
      */
     @NotNull
@@ -99,4 +105,12 @@ public class Category extends GenericEntity{
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
+	public Set<Category> getChildCategories() {
+		return childCategories;
+	}
+
+	public void setChildCategories(Set<Category> childCategories) {
+		this.childCategories = childCategories;
+	}
 }

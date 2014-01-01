@@ -28,7 +28,7 @@ public class HandlingEventServiceImpl implements HandlingEventService{
 	public HandlingEvent confirm(Item orderItemToConfirm, int quantity, 
 			ConfirmedSpecification confirmedSpec) {
 		if (confirmedSpec.isSatisfiedBy(orderItemToConfirm)){
-			HandlingEvent he = new HandlingEvent(HandlingEventType.ORDERCONFIRM, orderItemToConfirm, quantity, new Date());
+			HandlingEvent he = new HandlingEvent(HandlingEventType.ORDERCONFIRM, orderItemToConfirm.getDeliveryHistory(), quantity, new Date());
 			he.setConfirmedSpec(confirmedSpec);
 			return heRepo.save(he);
 		}
@@ -37,7 +37,7 @@ public class HandlingEventServiceImpl implements HandlingEventService{
 
 	@Override
 	public HandlingEvent cancel(Item item) {
-		HandlingEvent he = new HandlingEvent(HandlingEventType.CANCEL, item, item.getQuantity(), new Date());
+		HandlingEvent he = new HandlingEvent(HandlingEventType.CANCEL, item.getDeliveryHistory(), item.getQuantity(), new Date());
 		return heRepo.save(he);
 	}
 
@@ -51,7 +51,7 @@ public class HandlingEventServiceImpl implements HandlingEventService{
 	public HandlingEvent deliver(Item shippingItemToDeliver, int quantity,
 			ShippedSpecification shippingSpec) {
 		if (shippingSpec.isSatisfiedBy(shippingItemToDeliver)){
-			HandlingEvent he = new HandlingEvent(HandlingEventType.SHIP, shippingItemToDeliver, quantity, new Date());
+			HandlingEvent he = new HandlingEvent(HandlingEventType.SHIP, shippingItemToDeliver.getDeliveryHistory(), quantity, new Date());
 			return heRepo.save(he);
 		}
 		return null;
@@ -67,7 +67,7 @@ public class HandlingEventServiceImpl implements HandlingEventService{
 	public HandlingEvent complete(Item invoiceItem, int quantity,
 			PayedSpecification accountSpec) {
 		if (accountSpec.isSatisfiedBy(invoiceItem)){
-			HandlingEvent he = new HandlingEvent(HandlingEventType.PAY, invoiceItem, quantity, new Date());
+			HandlingEvent he = new HandlingEvent(HandlingEventType.PAY, invoiceItem.getDeliveryHistory(), quantity, new Date());
 			return heRepo.save(he);
 		}
 		return null;

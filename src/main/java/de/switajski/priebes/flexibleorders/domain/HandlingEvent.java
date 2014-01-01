@@ -21,11 +21,7 @@ public class HandlingEvent extends GenericEntity{
 	
 	@NotNull
 	@ManyToOne
-	private Item item;
-	
-	@NotNull
-	@ManyToOne
-	private Report report;
+	private Document report;
 	
 	@NotNull
 	private HandlingEventType type;
@@ -38,12 +34,15 @@ public class HandlingEvent extends GenericEntity{
 	
 	@Embedded
 	private PayedSpecification payedSpec;
+	
+	@ManyToOne
+	private DeliveryHistory history;
 
 	public HandlingEvent() {}
 	
-	public HandlingEvent(HandlingEventType type, Item item, int quantity, Date created) {
+	public HandlingEvent(HandlingEventType type, DeliveryHistory history, int quantity, Date created) {
 		this.type = type;
-		this.item = item;
+		this.history = history;
 		this.quantity = quantity;
 		setCreated(created);
 	}
@@ -56,20 +55,20 @@ public class HandlingEvent extends GenericEntity{
 		this.quantity = quantity;
 	}
 
-	public Report getReport() {
+	public Document getReport() {
 		return report;
 	}
 
-	public void setReport(Report report) {
+	public void setReport(Document report) {
 		this.report = report;
 	}
 
-	public Item getItem() {
-		return item;
+	public DeliveryHistory getDeliveryHistory() {
+		return history;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
+	public void setDeliverHistory(DeliveryHistory history) {
+		this.history = history;
 	}
 
 	public HandlingEventType getType() {

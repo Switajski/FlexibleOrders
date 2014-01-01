@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.domain;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -11,9 +12,9 @@ import javax.persistence.OneToMany;
 public class DeliveryHistory extends GenericEntity {
 
 	@OneToMany
-	private HashSet<HandlingEvent> handlingEvents;
+	private Set<HandlingEvent> handlingEvents;
 	
-	public HashSet<HandlingEvent> getHandlingEvents() {
+	public Set<HandlingEvent> getHandlingEvents() {
 		return handlingEvents;
 	}
 

@@ -39,6 +39,10 @@ public class Customer extends GenericEntity{
      */
     private String phone;
     
+    private String firstName;
+    
+    private String lastName;
+    
     /**
      * number of days to add to due date
      */
@@ -105,5 +109,21 @@ public class Customer extends GenericEntity{
 
 	public void setPaymentGracePeriod(int paymentGracePeriod) {
 		this.paymentGracePeriod = paymentGracePeriod;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 }

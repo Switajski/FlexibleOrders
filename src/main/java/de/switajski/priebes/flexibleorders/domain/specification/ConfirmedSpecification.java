@@ -1,110 +1,95 @@
 package de.switajski.priebes.flexibleorders.domain.specification;
 
-import java.util.Date;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Embeddable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.constraints.NotNull;
+import javax.persistence.criteria.SetJoin;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
-import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
-import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
+/**
+ * Defines and validates an item in a confirmed state.</br>
+ *   
+ * @author Marek Switajski
+ *
+ */
+@Embeddable
 public class ConfirmedSpecification extends ItemSpecification{
 
-	@NotNull
-	private long orderConfirmationNumber;
+	private Boolean sendOrderConfirmationEmail;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date expectedDelivery;
+	private Boolean sendOrderConfirmationLetter;
+	
+	protected ConfirmedSpecification() {}
 
-	private Amount negotiatedPriceNet;
-	
-	private Address invoiceAddress;
-
-//	TODO: find a way to embed two different addresses
-//	private Address shippingAddress;
-
-	@JsonSerialize(using = JsonDateSerializer.class)
-	public Date getExpectedDelivery() {
-		return expectedDelivery;
-	}
-	
-	public ConfirmedSpecification() {}
-	
 	/**
-	 * Constructor with attributes needed for a valid order confirmation 
 	 * 
-	 * @param orderConfirmationNumber
-	 * @param expectedDelivery
-	 * @param negotiatedPriceNet
-	 * @param invoiceAddress
+	 * 
+	 * @param sendEmail
+	 * @param sendLetter
 	 */
-	public ConfirmedSpecification(long orderConfirmationNumber, 
-			Date expectedDelivery, 
-			Amount negotiatedPriceNet, 
-			Address invoiceAddress) {
-		this.orderConfirmationNumber = orderConfirmationNumber;
-		this.expectedDelivery = expectedDelivery;
-		this.negotiatedPriceNet = negotiatedPriceNet;
-		this.invoiceAddress = invoiceAddress;
+	public ConfirmedSpecification( 
+			boolean sendEmail,
+			boolean sendLetter
+			) {
+		this.sendOrderConfirmationEmail = sendEmail;
+		this.sendOrderConfirmationLetter = sendLetter;
 	}
 	
-	public boolean isSatisfiedBy(Item item){
-		for (HandlingEvent he: item.getDeliveryHistory().getAllHesOfType(HandlingEventType.ORDERCONFIRM)){
-			if (he.getConfirmedSpec().getInvoiceAddress() == null) return false;
-			if (he.getConfirmedSpec().getNegotiatedPriceNet() == null) return false;
-			if (he.getConfirmedSpec().getOrderConfirmationNumber() < 0) return false;
+	public boolean isSatisfiedBy(final OrderItem item){
+		//TODO: take account to executed tasks (includeTaskExecuted) 
+		if (item.getDeliveryHistory().isEmpty()) return false;
+		for (HandlingEvent he: item.getAllHesOfType(HandlingEventType.CONFIRM)){
+			if (he.getReport() == null || he.getOrderConfirmation() == null ||
+					he.getOrderConfirmation().getInvoiceAddress() == null ||
+					//TODO: check VAT_RATE
+					item.getNegotiatedPriceNet() == null ||
+					item.getOrder().getCustomer() == null) 
+				return false;
 		}
+		
+		int confirmedQuantity = this.getHandledQuantityFromEvents(item, HandlingEventType.CONFIRM);
+		if (confirmedQuantity != item.getOrderedQuantity()) return false;
 		return true;
 	}
-
-    @JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setExpectedDelivery(Date expectedDelivery) {
-		this.expectedDelivery = expectedDelivery;
-	}
-
-	public long getOrderConfirmationNumber() {
-		return orderConfirmationNumber;
-	}
-
-	public Amount getNegotiatedPriceNet() {
-		return negotiatedPriceNet;
-	}
-
-	public Address getInvoiceAddress() {
-		return invoiceAddress;
-	}
-
-	public void setInvoiceAddress(Address invoiceAddress) {
-		this.invoiceAddress = invoiceAddress;
-	}
-
+	
 	@Override
-	public Predicate toPredicate(Root<Item> root,
+	public Predicate toPredicate(Root<OrderItem> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		// TODO Auto-generated method stub
-		return null;
+		SetJoin<OrderItem, HandlingEvent> heJoin = root.joinSet("deliveryHistory");
+		
+		Predicate confirmedPred = cb.and(
+				cb.isNotNull(root.<FlexibleOrder>get("flexibleOrder")),
+				cb.equal(heJoin.<HandlingEventType>get("type"), cb.literal(HandlingEventType.CONFIRM)),
+				cb.isNotNull(heJoin.get("report")),
+				//TODO add deliveryNotes check
+//				cb.greaterThan(root.get("flexibleOrder").get("orderedQuantity").as(Integer.class), 0),
+				cb.isNotNull(root.get("product").get("name")),
+				cb.isNotNull(root.get("product").get("productNumber")),
+				cb.isNotNull(root.get("negotiatedPriceNet"))
+				);
+		return confirmedPred;
 	}
 
-//	public Address getShippingAddress() {
-//		return shippingAddress;
-//	}
-//
-//	public void setShippingAddress(Address shippingAddress) {
-//		this.shippingAddress = shippingAddress;
-//	}
+	public boolean isSendEmail() {
+		return sendOrderConfirmationEmail;
+	}
+
+	public void setSendEmail(boolean sendEmail) {
+		this.sendOrderConfirmationEmail = sendEmail;
+	}
+
+	public boolean isSendLetter() {
+		return sendOrderConfirmationLetter;
+	}
+
+	public void setSendLetter(boolean sendLetter) {
+		this.sendOrderConfirmationLetter = sendLetter;
+	}
 
 }

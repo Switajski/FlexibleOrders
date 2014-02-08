@@ -14,6 +14,14 @@ var filters = {
 			}]
 };
 
+var grouping = {
+        ftype: 'grouping'
+        ,groupHeaderTpl: '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]})',
+        hideGroupedHeader: true,
+        startCollapsed: true
+        //id: 'orderNumber'
+    };
+
 Ext.define('MyApp.view.PositionGridPanel', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.PositionGrid',
@@ -25,7 +33,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 
 		Ext.applyIf(me, {
-			plugins : [this.editing],
+			/*plugins : [this.editing],
 			/*
 			 * tbar : [{ itemid: 'add', dock : 'top', icon : 'images/add.png',
 			 * text : 'hinzuf&uuml;gen', scope : this, handler : this.onAddClick }, {
@@ -38,32 +46,43 @@ Ext.define('MyApp.view.PositionGridPanel', {
 			listeners : {
 				itemdblclick : this.onitemdblclick
 			},
-			features : [filters],
+			features : 
+				[grouping],
+				
+			//based on MyApp.model.BestellpositionData'
 			columns : [{
 						xtype : 'gridcolumn',
 						dataIndex : 'product',
 						text : 'Artikel',
-						width : 200,
+						width : 150,
 						displayField : 'name',
 						valueField : 'productNumber'
 					}, {
 						xtype : 'gridcolumn',
+						dataIndex : 'productName',
+						width : 150,
+						text : 'Artikel Name'
+					}, {
+						xtype : 'gridcolumn',
+						dataIndex : 'created',
+						width : 50,
+						text : 'erstellt',
+						format : 'd/m/Y'
+					}, {
+						xtype : 'gridcolumn',
 						dataIndex : 'orderNumber',
 						width : 90,
-						text : 'Bestellung',
-						filter : {
-							type : 'string'
-						}
+						text : 'Bestellung'
 					}, {
 						xtype : 'gridcolumn',
-						dataIndex : 'orderConfirmationNumber',
-						width : 90,
-						text : 'AB'
-					}, {
-						xtype : 'gridcolumn',
-						dataIndex : 'invoiceNumber',
-						width : 90,
-						text : 'Rechnung'
+						dataIndex : 'documentNumber',
+						width : 100,
+						text : 'Doknr.'
+					//}, {
+					//	xtype : 'gridcolumn',
+					//	dataIndex : 'invoiceNumber',
+					//	width : 80,
+					//	text : 'Rechnung'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantity',
@@ -72,33 +91,35 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantityLeft',
-						width : 80,
-						text : 'noch offen'
+						width : 40,
+						text : 'offen'
 					},{
 						xtype : 'numbercolumn',
 						dataIndex : 'priceNet',
-						width : 85,
-						text : 'Preis Netto',
+						width : 50,
+						text : 'Preis',
 						renderer : Ext.util.Format.euMoney
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'status',
 						width : 90,
-						text : 'Status',
-						filter : {
-							type : 'string'
-						}
+						text : 'Status'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customer',
-						width : 40,
+						width : 35,
 						text : 'KId'
 					}, {
 						xtype : 'gridcolumn',
-						dataIndex : 'expectedDelivery',
-						text : 'Geplante Auslieferung',
-						width : 20,
-						format : 'd/m/Y'
+						dataIndex : 'customerName',
+						width : 120,
+						text : 'Kurzname'
+					//}, {
+					//	xtype : 'gridcolumn',
+					//	dataIndex : 'expectedDelivery',
+					//	text : 'Geplante Auslieferung',
+					//	width : 20,
+					//	format : 'd/m/Y'
 					}, {
 						xtype : 'actioncolumn',
 						width : 30,

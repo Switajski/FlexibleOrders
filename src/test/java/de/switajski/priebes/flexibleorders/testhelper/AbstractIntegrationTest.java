@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.integrationtest;
+package de.switajski.priebes.flexibleorders.testhelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

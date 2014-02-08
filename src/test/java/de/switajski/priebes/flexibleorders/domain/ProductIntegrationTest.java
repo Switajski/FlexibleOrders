@@ -5,11 +5,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import de.switajski.priebes.flexibleorders.integrationtest.AbstractIntegrationTest;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CategoryBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractIntegrationTest;
 
 public class ProductIntegrationTest extends AbstractIntegrationTest<CatalogProduct> {
 
@@ -22,7 +22,7 @@ public class ProductIntegrationTest extends AbstractIntegrationTest<CatalogProdu
 	@Override
 	protected CatalogProduct createEntity() {
 		CatalogProduct product = 
-				CatalogProductBuilder.buildWithGeneratedAttributes(4);
+				CatalogProductBuilder.buildWithGeneratedAttributes(901834675);
 		return product;
 	}
 

@@ -1,14 +1,14 @@
 
 Ext.define('MyApp.store.BestellpositionDataStore', {
     extend: 'Ext.data.Store',
-	customurl: '/FlexibleOrders/orderitems/json/',
+	customurl: '/FlexibleOrders/reportitems/ordered',
 	custommodel: 'MyApp.model.BestellpositionData',
 	customstoreid: 'BestellpositionDataStore',
     requires: [
         'MyApp.model.BestellpositionData'
     ],
     alias: 'widget.BestellpositionDataStore',
-
+	groupField: 'orderNumber',
     constructor: function(cfg) {
         var me = this;
         cfg = cfg || {};
@@ -44,9 +44,10 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
 //                autoSync: true,
                 afterRequest:function(request,success){
                     console.log(request);	                    
-                },
+                }/*,
                 listeners: {
                     exception: function(proxy, response, operation){
+                    	console.error(response);
                         Ext.MessageBox.show({
                             title: 'Server Fehler',
                             msg: operation.getError(),
@@ -54,7 +55,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                             buttons: Ext.Msg.OK
                         });
                     }
-                }
+                }*/
                 /*,
                 filters: {
                     property: 'status',

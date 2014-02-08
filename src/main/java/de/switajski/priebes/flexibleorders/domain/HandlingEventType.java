@@ -1,5 +1,11 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 public enum HandlingEventType {
-	ORDER, ORDERCONFIRM, SHIP, PAY, CANCEL 
+	
+	CONFIRM, 
+	FORWARD_TO_THIRD_PARTY, 
+	SHIP, 
+	PAID, 
+	CANCEL; 
+	
 }

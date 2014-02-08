@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 
 @Transactional
@@ -35,9 +35,9 @@ public class ShippingItemControllerTest {
 	public void shouldDeserializeShippingItem() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		Item oi = mapper.readValue(CREATE_SHIPPING_ITEM_REQUEST_JSON, 
-				Item.class);
-		assertTrue(oi.getProductNumber().equals(10071l));
+		OrderItem oi = mapper.readValue(CREATE_SHIPPING_ITEM_REQUEST_JSON, 
+				OrderItem.class);
+		assertTrue(oi.getProduct().getProductNumber().equals(10071l));
 
 	}
 	

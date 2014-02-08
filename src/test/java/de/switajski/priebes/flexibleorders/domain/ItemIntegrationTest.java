@@ -1,72 +1,77 @@
 package de.switajski.priebes.flexibleorders.domain;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
-import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.integrationtest.AbstractIntegrationTest;
-import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
-import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
-import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractIntegrationTest;
 
-public class ItemIntegrationTest extends AbstractIntegrationTest<Item> {
+public class ItemIntegrationTest extends AbstractIntegrationTest<OrderItem> {
 		
 	@Autowired
-	private ItemRepository itemRepo;
+	private OrderItemRepository itemRepo;
 	
-	@Autowired
-	private ItemServiceImpl itemService;
+	@Autowired ReportRepository reportRepo;
 	
-	@Autowired
-	private CatalogProductRepository productRepository;
-	
-	@Autowired
-	private CustomerRepository customerRepository;
-
-	@Autowired 
-	private CategoryRepository categoryRepository;
-
-//	@Transactional
-//	@Test
-//	public void shouldOrderByDate(){
-//		List<Long> oiNrs = this.itemService.getAllOrderNumbers();
-//		Date date = null;
-//		long orderNumberTemp = 0;
-//		for (Long oiNr:oiNrs){
-//			List<Item> ois = itemRepo.findByOrderNumber(oiNr);
-//			if (date==null){
-//				date = ois.get(0).getCreated();
-//				orderNumberTemp = ois.get(0).getOrderItemNumber();
-//			}
-//			else{
-//				assertTrue("OrderNumber not ordered by date:" + oiNr + ","+ orderNumberTemp ,
-//						ois.get(0).getCreated().compareTo(date)<=0
-//						);
-//				date = ois.get(0).getCreated();
-//			}
-//		}
-//	}
-
 	@Override
-	protected Item createEntity() {
-		return new ItemBuilder().build();
+	protected OrderItem createEntity() {
+		return ItemBuilder.buildWithGeneratedAttributes(13425);
 	}
 
 	@Override
-	protected JpaRepository<Item, Long> getRepository() {
-		return (JpaRepository<Item, Long>) itemRepo;
+	protected JpaRepository<OrderItem, Long> getRepository() {
+		return (JpaRepository<OrderItem, Long>) itemRepo;
 	}
 	
+	@Test
+	public void shouldCascadePersistToReport(){
+		String documentNumber = "235";
+		OrderItem item = ItemBuilder.buildWithGeneratedAttributes(12);
+		HandlingEvent he = new HandlingEvent(new DeliveryNotes(documentNumber, 
+				null, AddressBuilder.buildWithGeneratedAttributes(9876)), 
+				HandlingEventType.CONFIRM, item, 12, new Date());
+		
+		item.addHandlingEvent(he);
+		itemRepo.save(item);
+		
+		Report report = reportRepo.findByDocumentNumber(documentNumber);
+		assertNotNull(report);
+		assertNotNull(report.getDocumentNumber());
+	}
 	
+	@Test
+	public void shouldRefreshHandlingEvent(){
+		Report report = new DeliveryNotes("235", null, 
+				AddressBuilder.buildWithGeneratedAttributes(1234));
+		OrderItem item = ItemBuilder.buildWithGeneratedAttributes(12);
+		HandlingEvent he = new HandlingEvent(report, 
+				HandlingEventType.CONFIRM, item, 12, new Date());
+		
+		item.addHandlingEvent(he);
+		itemRepo.save(item);
+		
+		item.addHandlingEvent(new HandlingEvent(new DeliveryNotes("12355", null, 
+				AddressBuilder.buildWithGeneratedAttributes(654)), 
+				HandlingEventType.CONFIRM, item, 20, null));
+		itemRepo.save(item);
+		
+		item.addHandlingEvent(new HandlingEvent(report, 
+				HandlingEventType.CONFIRM, item, 20, null));
+		
+		for (HandlingEvent he2:item.getDeliveryHistory()){
+			assertNotNull(he2);
+			assertNotNull(he2.getOrderItem());
+			assertNotNull(he2.getReport());
+		}
+		
+	}
 	
 	
 }

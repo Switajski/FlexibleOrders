@@ -4,15 +4,26 @@ import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
-public abstract class ItemSpecification implements Specification<Item>{
+/**
+ * Validates and defines states of items. Its responsibility is to identify an object that
+ * satisfies it.</br>
+ * <br>
+ * Follows the Specification pattern by Fowler and Evans</br>
+ * 
+ * @see <a href="http://martinfowler.com/apsupp/spec.pdf">
+ * http://martinfowler.com/apsupp/spec.pdf</a>
+ * @author Marek Switajski
+ *
+ */
+public abstract class ItemSpecification implements Specification<OrderItem>{
 
-	abstract boolean isSatisfiedBy(Item item);
+	public abstract boolean isSatisfiedBy(OrderItem item);
 	
-	protected int getHandledQuantityFromEvents(Item item, HandlingEventType type) {
+	public int getHandledQuantityFromEvents(OrderItem item, HandlingEventType type) {
 		int summedQuan = 0;
-		for (HandlingEvent orderEvent: item.getDeliveryHistory().getHandlingEvents()){
+		for (HandlingEvent orderEvent: item.getDeliveryHistory()){
 			if (orderEvent.getType() == type)
 				summedQuan += orderEvent.getQuantity();
 		}

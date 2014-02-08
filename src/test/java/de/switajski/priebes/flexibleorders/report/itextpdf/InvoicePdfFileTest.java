@@ -1,8 +1,5 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,49 +12,68 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.EntityBuilder;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.OriginSystem;
+import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.HandlingEventBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 
+//TODO: split application context to use one part as unit test
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class InvoicePdfFileTest {
 	
-	Invoice invoice;
+	private static final String INVOICE_PDF_PATH = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/InvoicePdfFileTest.pdf";
+
+	DeliveryNotes deliveryNotes;
 	
-	private static final long OC_NR = 98732645l;
-	private static final Long O_NR = 3465897l;
-	private static final Long I_NR = 13456l;
+	private static final String I_NR = "13456";
 	
 	@Before
 	public void initData(){
-		EntityBuilder eb = new EntityBuilder();
-		InvoiceItem i1 = eb.getInvoiceItem(15.59, O_NR, OC_NR, I_NR);
-		InvoiceItem i2 = eb.getInvoiceItem(25.59, O_NR, OC_NR, I_NR);
+		deliveryNotes = new DeliveryNotes(I_NR, new ShippedSpecification(false, false),
+				AddressBuilder.buildWithGeneratedAttributes(123));
+
+		OrderItem item1 = new ItemBuilder(
+			new FlexibleOrder(
+				"email@nowhere.com", 
+				OriginSystem.FLEXIBLE_ORDERS, 
+				I_NR),
+			CatalogProductBuilder.buildWithGeneratedAttributes(98760).toProduct(), 
+			0)
+		.generateAttributes(12)
+		.build();
 		
-		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
-		invoiceItems.add(i1);
-		invoiceItems.add(i2);
+		item1.addHandlingEvent(
+			new HandlingEventBuilder(
+					HandlingEventType.SHIP, item1, 12)
+			.setReport(deliveryNotes)
+			.build());
+		item1.addHandlingEvent(
+				new HandlingEventBuilder(
+						HandlingEventType.SHIP, item1, 13)
+				.setReport(deliveryNotes)
+				.build()
+		);
 		
-		invoice = new Invoice(invoiceItems);
 	}
 	
 	@Transactional
 	@Test
-	public void shouldGenerateInvoice(){
+	public void shouldGenerateInvoice() throws Exception{
 		
 		InvoicePdfFile bpf = new InvoicePdfFile();
+		bpf.setFilePathAndName(INVOICE_PDF_PATH);
         
-		try {
-			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("Invoice", invoice);
-			
-			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
+		Map<String,Object> model = new HashMap<String,Object>();
+		model.put("DeliveryNotes", deliveryNotes);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.toString());
-		}
-		
+		bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
+
 	}
 }

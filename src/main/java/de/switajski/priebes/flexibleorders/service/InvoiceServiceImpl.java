@@ -8,21 +8,21 @@ import org.springframework.stereotype.Service;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
+import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
 
-	private ItemRepository itemRepo;
+	private OrderItemRepository itemRepo;
 
 	@Autowired
-	public InvoiceServiceImpl(ItemRepository itemRepo){
+	public InvoiceServiceImpl(OrderItemRepository itemRepo){
 		this.itemRepo = itemRepo;
 	}
 
 	@Override
-	public List<Invoice> findByCustomer(Customer customer) {
+	public List<DeliveryNotes> findByCustomer(Customer customer) {
 		// TODO Auto-generated method stub
 		return null;
 	}

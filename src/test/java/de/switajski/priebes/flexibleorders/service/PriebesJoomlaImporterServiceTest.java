@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class PriebesJoomlaImporterServiceTest {
@@ -22,10 +20,10 @@ public class PriebesJoomlaImporterServiceTest {
 	@Autowired ImporterService pji;
 	@Autowired CustomerRepository customerRepository;
 	@Autowired CatalogProductRepository productRepository;
-	@Autowired OrderItemRepository orderItemRepository;
+	@Autowired OrderItemRepository itemRepository;
 	
 	@Rollback(false)
-	@Transactional
+//	@Transactional
 	@Test
 	public void shouldImportOrderItems(){
 		pji.importCustomers();
@@ -37,7 +35,7 @@ public class PriebesJoomlaImporterServiceTest {
 		assertFalse("OrderItemRepository repository is empty!", productRepository.count()==0);
 
 		pji.importOrderItems();
-		assertFalse("OrderItemRepository repository is empty!", orderItemRepository.count()==0);
+		assertFalse("OrderItemRepository repository is empty!", itemRepository.count()==0);
 	}
 	
 }

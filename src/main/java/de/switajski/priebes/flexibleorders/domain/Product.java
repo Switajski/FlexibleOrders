@@ -1,11 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -14,9 +9,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 @Embeddable
-@Entity
-public class Product extends GenericEntity {
+public class Product {
 
+	/**
+	 * natural id
+	 */
     @NotNull
     private Long productNumber;
 
@@ -25,12 +22,8 @@ public class Product extends GenericEntity {
     private ProductType productType;
 
     @NotNull
-    @Column(unique = true)
     private String name;
 
-    @Min(0L)
-    private BigDecimal recommendedPriceNet;
-    
     @Override
     public boolean equals(Object obj) {
     	if (!(obj instanceof Product)) return false;
@@ -68,11 +61,4 @@ public class Product extends GenericEntity {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-	public BigDecimal getRecommendedPriceNet() {
-		return recommendedPriceNet;
-	}
-
-	public void setRecommendedPriceNet(BigDecimal recommendedPriceNet) {
-		this.recommendedPriceNet = recommendedPriceNet;
-	}
 }

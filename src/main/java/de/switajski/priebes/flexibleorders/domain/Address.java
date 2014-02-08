@@ -1,10 +1,8 @@
-package de.switajski.priebes.flexibleorders.domain.specification;
+package de.switajski.priebes.flexibleorders.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.reference.Country;
 

@@ -21,7 +21,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	// height: 300,
 	//title : "Bestellpositionen",
 	requires : ['MyApp.model.ArtikelData',
-			'MyApp.store.BestellpositionDataStore',
+			'MyApp.store.CreateOrderDataStore',
 			'Ext.grid.plugin.CellEditing', 'Ext.ux.grid.FiltersFeature',
 			'Ext.form.field.Text', 'Ext.toolbar.TextItem'],
 	// store: 'BestellpositionDataStore',

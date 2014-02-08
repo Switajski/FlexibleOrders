@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -14,12 +14,12 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 
 public abstract class ItemPdfTable {
 
 	protected final static int COLUMNS = 4;
-	public ArrayList<Item> bpList;
+	public ArrayList<HandlingEvent> bpList;
 	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
 	public static final float TOTAL_WIDTH = 500;
 
@@ -30,7 +30,7 @@ public abstract class ItemPdfTable {
 	
 	private PdfPTable pdfPTable;
 	
-	public ItemPdfTable(List<Item> bestellpositionen) {
+	public ItemPdfTable(Set<HandlingEvent> set) {
 		pdfPTable = new PdfPTable(COLUMNS);
 		try {
 			pdfPTable.setWidths(new int[]{100, 245, 90, 65});
@@ -40,7 +40,7 @@ public abstract class ItemPdfTable {
 		pdfPTable.setTotalWidth(TOTAL_WIDTH);
 		pdfPTable.setLockedWidth(true);
 //		this.getDefaultCell().setFixedHeight(20);
-		bpList = getSortedItemen(bestellpositionen);
+		bpList = getSortedItemen(set);
 		
 	}
 	
@@ -85,7 +85,7 @@ public abstract class ItemPdfTable {
 	private void createBody() {
 		
 		int bPos = 1;
-		for (Item bp:bpList){
+		for (HandlingEvent bp:bpList){
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
 			
 			String firstColumnContent = null;
@@ -100,9 +100,9 @@ public abstract class ItemPdfTable {
 			
 			PdfPCell artikelname = new PdfPCell(new Phrase(
 					"Art.Nr.: "
-					+ bp..getProductNumber() 
+					+ bp.getOrderItem().getProduct().getProductNumber() 
 					+ " - "
-					+ bp.getProductName()
+					+ bp.getOrderItem().getProduct().getName()
 					));
 			artikelname.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cells.add(artikelname);
@@ -110,13 +110,13 @@ public abstract class ItemPdfTable {
 			PdfPCell preis = new PdfPCell(new Phrase(
 					bp.getQuantity()
 					+ " x "
-					+ DECIMAL_FORMAT.format(bp.getPriceNet())
+					+ DECIMAL_FORMAT.format(bp.getOrderItem().getNegotiatedPriceNet().getValue())
 					+ " €"
 					));
 			preis.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cells.add(preis);
 
-			BigDecimal betragValue = bp.getPriceNet().multiply(new BigDecimal(bp.getQuantity()));
+			BigDecimal betragValue = bp.getOrderItem().getNegotiatedPriceNet().getValue().multiply(new BigDecimal(bp.getQuantity()));
 			PdfPCell betrag = new PdfPCell(new Phrase(
 					DECIMAL_FORMAT.format(betragValue)
 					+ " €"
@@ -138,7 +138,7 @@ public abstract class ItemPdfTable {
 	 * Method to override for invoice and archive 
 	 * @return
 	 */
-	public String getFirstColumnContent(Item item) {
+	public String getFirstColumnContent(HandlingEvent item) {
 		return null;
 	}
 
@@ -148,11 +148,11 @@ public abstract class ItemPdfTable {
 	 */
 	protected abstract void createFooter();
 
-	private ArrayList<Item> getSortedItemen(
-			Collection<Item> bestellpositionen) {
+	private ArrayList<HandlingEvent> getSortedItemen(
+			Collection<HandlingEvent> bestellpositionen) {
 		
-		ArrayList<Item> bps = new ArrayList<Item>();
-		for (Item bp:bestellpositionen){
+		ArrayList<HandlingEvent> bps = new ArrayList<HandlingEvent>();
+		for (HandlingEvent bp:bestellpositionen){
 			bps.add(bp);
 		}
 		Collections.sort(bps);

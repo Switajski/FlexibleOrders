@@ -1,45 +1,99 @@
 package de.switajski.priebes.flexibleorders.test.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.OriginSystem;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ItemBuilder implements Builder<Item> {
+import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.Currency;
+import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.OriginSystem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 
-	private Customer customer;
-	private DeliveryHistory deliveryHistory;
-	private OriginSystem originSystem;
-	private OrderedSpecification orderedSpecification;
+public class ItemBuilder implements Builder<OrderItem> {
+
+	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
+	private Integer orderedQuantity;
+	private Amount negotiatedPriceNet;
+	private Product product;
+	private String packageNumber;
+	private String trackingNumber;
+	private FlexibleOrder order;
+	
+	public ItemBuilder(FlexibleOrder order, Product product, int orderedQuantity) {
+		this.order = order;
+		this.product = product;
+		this.orderedQuantity = orderedQuantity;
+	}
 	
 	@Override
-	public Item build() {
-		Item item = new Item();
-		item.setOrderedSpecification(orderedSpecification);
-		item.setCustomer(customer);
+	public OrderItem build() {
+		OrderItem item = new OrderItem(order, product, orderedQuantity);
 		item.setDeliveryHistory(deliveryHistory);
-		item.setOriginSystem(originSystem);
+		item.setNegotiatedPriceNet(negotiatedPriceNet);
+		item.setPackageNumber(packageNumber);
+		item.setTrackingNumber(trackingNumber);
 		return item;
 	}
-
-	public ItemBuilder setOrderedSpecification(OrderedSpecification orderedSpecification) {
-		this.orderedSpecification = orderedSpecification;
+	
+	public ItemBuilder generateAttributes(Integer i){
+		orderedQuantity = i;
+		negotiatedPriceNet = new Amount(new BigDecimal(i), Currency.EUR);
+		packageNumber = i.toString();
+		trackingNumber = i.toString();
 		return this;
 	}
-
-	public ItemBuilder setCustomer(Customer customer) {
-		this.customer = customer;
-		return this;
+	
+	public static OrderItem buildWithGeneratedAttributes(Integer i){
+		return new ItemBuilder(
+				new FlexibleOrder(
+					"", 
+					OriginSystem.FLEXIBLE_ORDERS, 
+					i.toString()), 
+				CatalogProductBuilder.buildWithGeneratedAttributes(i).toProduct(), 
+					i)
+		.generateAttributes(i).build();
 	}
 
-	public ItemBuilder setDeliveryHistory(DeliveryHistory deliveryHistory) {
+	public ItemBuilder setDeliveryHistory(Set<HandlingEvent> deliveryHistory) {
 		this.deliveryHistory = deliveryHistory;
 		return this;
 	}
 
-	public ItemBuilder setOriginSystem(OriginSystem originSystem) {
-		this.originSystem = originSystem;
+	public ItemBuilder setOrderedQuantity(Integer orderedQuantity) {
+		this.orderedQuantity = orderedQuantity;
+		return this;
+	}
+
+	public ItemBuilder setNegotiatedPriceNet(Amount negotiatedPriceNet) {
+		this.negotiatedPriceNet = negotiatedPriceNet;
+		return this;
+	}
+
+	public ItemBuilder setProduct(Product product) {
+		this.product = product;
+		return this;
+	}
+
+	public ItemBuilder setPackageNumber(String packageNumber) {
+		this.packageNumber = packageNumber;
+		return this;
+	}
+
+	public ItemBuilder setTrackingNumber(String trackingNumber) {
+		this.trackingNumber = trackingNumber;
+		return this;
+	}
+
+	public ItemBuilder setOrder(FlexibleOrder order) {
+		this.order = order;
+		return this;
+	}
+	
+	public ItemBuilder addHandlingEvent(HandlingEvent handlingEvent){
+		this.deliveryHistory.add(handlingEvent);
 		return this;
 	}
 

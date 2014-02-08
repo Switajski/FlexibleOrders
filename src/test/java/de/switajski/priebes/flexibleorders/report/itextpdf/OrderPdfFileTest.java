@@ -1,66 +1,65 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.service.OrderItemService;
-import de.switajski.priebes.flexibleorders.service.ShippingItemService;
+import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.OriginSystem;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class OrderPdfFileTest {
+
+	private final static String O_PDF_FILE = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/OrderPdfFileTest.pdf";
 	
-	@Autowired OrderItemService orderItemService;
-	@Autowired ShippingItemService shippingItemService;
-	
-	Order order;
+	private FlexibleOrder order;
 	
 	@Before
 	public void initData(){
-		//TODO: create a mock
-//		OrderItem oi1 = OrderItemTestFixture.createRandom();
-//		OrderItem oi2 = OrderItemTestFixture.createRandom();
-//		
-//		oi2.setOrderNumber(oi1.getOrderNumber());
-//		OrderItem merged = (OrderItem) orderItemService.updateOrderItem(oi2);
-//		
-//		ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
-//		orderItems.add(oi1);
-//		orderItems.add(merged);
-//		
-//		order = new Order(orderItems);
+		order = new FlexibleOrder(CustomerBuilder.buildWithGeneratedAttributes(123), 
+				OriginSystem.FLEXIBLE_ORDERS, "123561");
+		
+		OrderItem item1 = new ItemBuilder(
+				order,
+				CatalogProductBuilder.buildWithGeneratedAttributes(98760).toProduct(), 
+				5)
+			.generateAttributes(15)
+			.build();
+		
+		OrderItem item2 = new ItemBuilder(
+				order,
+				CatalogProductBuilder.buildWithGeneratedAttributes(98760).toProduct(), 
+				12)
+			.generateAttributes(12)
+			.build();
+		
+		order.addOrderItem(item1);
+		order.addOrderItem(item2);
 	}
 	
 	@Transactional
 	@Test
-	public void shouldGenerateOrder(){
-
-		
+	public void shouldGenerateOrder() throws Exception{
 		OrderPdfFile bpf = new OrderPdfFile();
-        
-		try {
-			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("Order", order);
-			
-			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
+		bpf.setFileNameAndPath(O_PDF_FILE);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.toString());
-		}
-		
+		Map<String,Object> model = new HashMap<String,Object>();
+		model.put("Order", order);
+
+		bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
+
 	}
 }

@@ -13,9 +13,11 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 @JsonAutoDetect
@@ -60,7 +62,23 @@ public abstract class GenericEntity {
 		return this.created;
 	}
 	
+	@JsonDeserialize(using=JsonDateDeserializer.class)
 	public void setCreated(Date created){
 		this.created = created;
 	}
+
+	//TODO: implement equals method - suggested from http://notesonjava.wordpress.com/2008/11/03/managing-the-bidirectional-relationship/
+//	public boolean equals(Object object) {
+//        if (object == this)
+//            return true;
+//        if ((object == null) || !(object instanceof A))
+//            return false;
+// 
+//        final A a = (A)object;
+// 
+//        if (id != null && a.getId() != null) {
+//            return id.equals(a.getId());
+//        }
+//        return false;
+//    }
 }

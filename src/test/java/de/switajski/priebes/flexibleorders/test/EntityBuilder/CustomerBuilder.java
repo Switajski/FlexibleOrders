@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.test.EntityBuilder;
 
+import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.specification.Address;
 
 public class CustomerBuilder implements Builder<Customer> {
 

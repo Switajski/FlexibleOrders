@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.OrderItemGridPanel', {
 			extend : 'MyApp.view.PositionGridPanel',
 			alias : 'widget.OrderItemGrid',
-			title : "Nicht bestaetigte Bestellpositionen",
+			title : "Bestellungen",
 			customicon : '/FlexibleOrders/images/new_ab.png',
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
@@ -13,7 +13,7 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 
 			},
 			onPdfClick : function(view, a, b, column, event, record, f){
-				var win = window.open('/FlexibleOrders/orders/' + record.data.orderNumber
+				var win = window.open('/FlexibleOrders/reports/orders/' + record.data.orderNumber
 						+ '.pdf', '_blank');
 				win.focus();
 			}

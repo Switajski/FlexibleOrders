@@ -15,12 +15,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.HandlingEventService;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.repository.OrderRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerServiceImpl;
+import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,10 +30,12 @@ import de.switajski.priebes.flexibleorders.service.HandlingEventService;
 public class OrderItemControllerTest {
 	
 
-	private ItemRepository itemRepo;
-	private CustomerService customerService;
-	private HandlingEventService heService;
+	private OrderItemRepository itemRepo;
+	private CustomerServiceImpl customerService;
+	private OrderServiceImpl heService;
 	private CatalogProductRepository productRepository;
+	private OrderRepository orderRepo;
+	private ReportItemServiceImpl reportService;
 	
 	public static final String CREATE_ORDERITEM_REQUEST_JSON = ""
 			+ "{\"product\":29026,"
@@ -79,9 +83,9 @@ public class OrderItemControllerTest {
 	public void shouldDeserializeOrderItem() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		Item oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
-				Item.class);
-		assertTrue(oi.getProductNumber().equals(29026l));
+		OrderItem oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
+				OrderItem.class);
+		assertTrue(oi.getProduct().getProductNumber().equals(29026l));
 
 	}
 
@@ -90,11 +94,11 @@ public class OrderItemControllerTest {
 	public void shouldDeserializeOrderItems() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		Item[] ois = mapper.readValue(CREATE_ORDERITEMS_REQUEST_JSON, 
-				Item[].class);
+		OrderItem[] ois = mapper.readValue(CREATE_ORDERITEMS_REQUEST_JSON, 
+				OrderItem[].class);
 		HashSet<Long> productNumbers = new HashSet<Long>();
-		for (Item oi:ois)
-			productNumbers.add(oi.getProductNumber());
+		for (OrderItem oi:ois)
+			productNumbers.add(oi.getProduct().getProductNumber());
 
 		assertTrue(productNumbers.contains(10055l));
 		assertTrue(productNumbers.contains(44210l));
@@ -103,7 +107,8 @@ public class OrderItemControllerTest {
 	@Transactional
 	@Test
 	public void shouldDeserializeOrderItemsByJsonController() throws Exception{
-		JsonController oic = new JsonController(itemRepo, customerService, heService, productRepository);
+		OrderItemsController oic = new OrderItemsController(itemRepo, customerService, heService, 
+				productRepository, orderRepo, reportService);
 		oic.parseJsonArray(CREATE_ORDERITEMS_REQUEST_JSON);
 	}
 
@@ -113,11 +118,11 @@ public class OrderItemControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
 
-		Item oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
-				Item.class);
-		assertTrue(oi.getProductNumber().equals(29026l));
+		OrderItem oi = mapper.readValue(CREATE_ORDERITEM_REQUEST_JSON, 
+				OrderItem.class);
+		assertTrue(oi.getProduct().getProductNumber().equals(29026l));
 		
-		oi.setProduct(productRepository.findByProductNumber(oi.getProductNumber()));
+		oi.setProduct(productRepository.findByProductNumber(oi.getProduct().getProductNumber()).toProduct());
 		
 		try {
 			itemRepo.saveAndFlush(oi);

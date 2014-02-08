@@ -9,55 +9,54 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Category;
+import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.Item;
-import de.switajski.priebes.flexibleorders.domain.factory.WholesaleOrderFactory;
-import de.switajski.priebes.flexibleorders.domain.specification.Address;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.PayedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
 
-@Service
-@Transactional
 /**
- * TODO: This class is quick and dirty. PriebesJoomla should be a repository with a second database instead.
- * like in http://stackoverflow.com/questions/4423125/spring-is-it-possible-to-use-multiple-transaction-managers-in-the-same-applica
+ * consider PriebesJoomlaService like http://stackoverflow.com/questions/4423125/spring-is-it-possible-to-use-multiple-transaction-managers-in-the-same-applica
  * 
  * @author Marek
  *
  */
+@Service
 public class PriebesJoomlaImporterService implements ImporterService {
 
-	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
 
 	public static final String CAT_IMAGE_PATH="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
 	private static final String PRIEBES_DB = "db358736992";
 	public static final String DATABASE_URL = "jdbc:mysql://localhost/"+PRIEBES_DB+"?"
 			+ "user=root&password=&useUnicode=yes&characterEncoding=UTF-8";
-	private Connection connection;
-
+	private static final boolean RANDOM = true;
+	
+	@PersistenceContext
+	private EntityManager em;
+	
 	private	CustomerRepository customerRepository;
 	private	CategoryRepository categoryRepo;
 	private	CatalogProductRepository productRepository;
-	private	ItemRepository itemRepository;
-	private HandlingEventService heService;
+	private OrderServiceImpl orderService;
+	private Connection connection;
+
+	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
 
 	private Connection getConnection(){
 		if (this.connection==null)
@@ -71,13 +70,11 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			CustomerRepository customerRepository,
 			CategoryRepository categoryRepo,
 			CatalogProductRepository productRepository,
-			ItemRepository itemRepository,
-			HandlingEventService handlingEventService) {
+			OrderServiceImpl handlingEventService) {
 		this.customerRepository = customerRepository;
 		this.categoryRepo = categoryRepo;
 		this.productRepository = productRepository;
-		this.itemRepository = itemRepository;
-		this.heService = handlingEventService;
+		this.orderService = handlingEventService;
 	}
 
 	public Connection init() {
@@ -110,7 +107,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 		return false;
 	}
 
-	@Transactional
 	public void importCustomers() {
 		Statement stmt;
 		connection = this.getConnection();
@@ -146,9 +142,10 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				c.setPassword(password);
 				c.setCreated(new Date());
 				c.setAddress(new Address(first_name, last_name, address_1, Integer.parseInt(zip.trim()), city, Country.GERMANY));
-				customerRepository.saveAndFlush(c);
 
+				customerRepository.save(c);
 			}
+			customerRepository.flush();
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -167,7 +164,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			stmt = (Statement) getConnection().createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
-			String catImagePath="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
+//			String catImagePath="D:/PriebesJoomlaXampp/htdocs/media/k2/categories";
 
 			ResultSet rs = stmt.executeQuery("SELECT * from " + PRIEBES_DB
 					+".jos_k2_categories ORDER BY id");
@@ -184,7 +181,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				if (rs.getInt("published")==0) published = false;
 				String image = rs.getString("image");
 
-				log.debug("ROW = " + id + " " + name + " " + description + " " + parent);
+//				log.debug("ROW = " + id + " " + name + " " + description + " " + parent);
 
 				Category kat = new Category();
 				kat.setName(name);
@@ -220,17 +217,17 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				Long a_id = as.getLong("id");
 				String a_title = as.getString("title"); 
 
-				String a_intro = as.getString("introtext");
-				String a_fulltext = as.getString("fulltext");
-				boolean a_trash = as.getBoolean("trash"); 
+//				String a_intro = as.getString("introtext");
+//				String a_fulltext = as.getString("fulltext");
+//				boolean a_trash = as.getBoolean("trash"); 
 				boolean a_published = as.getBoolean("published");
-				String a_video = as.getString("video");
+//				String a_video = as.getString("video");
 				String a_gallery = as.getString("gallery");
 				if (a_gallery != null) {
 					a_gallery = a_gallery.replace("{gallery}", "");
 					a_gallery = a_gallery.replace("{/gallery}", "");
 				}
-				Date a_created = as.getDate("created");
+//				Date a_created = as.getDate("created");
 				long a_ordering = as.getLong("ordering");
 				long a_artikelnummer = as.getLong("artikelnummer");
 				if (a_artikelnummer==0 || productRepository.findByProductNumber(a_artikelnummer)==null) {
@@ -241,11 +238,12 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				else log.debug("originale Artikelnummer genommen:"+a_artikelnummer) ;
 				int a_catid = as.getInt("catid");
 
-				log.debug("ROW = " + a_id + " " + a_title + " " + a_gallery + " " + a_catid);
+//				log.debug("ROW = " + a_id + " " + a_title + " " + a_gallery + " " + a_catid);
 
 				CatalogProduct artikel = new CatalogProduct();
 				if (a_title.equals("wendelin"))
 					a_title.charAt(0);
+				//FIXME set name of product
 				artikel.setName(a_title);
 				artikel.setActive(a_published);
 				artikel.setImageGalery(a_gallery);
@@ -274,7 +272,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			ResultSet rs = stmt.executeQuery("SELECT * from "+PRIEBES_DB+".jos_k2_items");
 
 			while (rs.next()){
-				Date created = rs.getDate("created");
+//				Date created = rs.getDate("created");
 				String title = rs.getString("title");
 				if (title == null || title.isEmpty()){
 					System.out.println("Importiere Preise: Name des Artikels ist leer!");
@@ -287,24 +285,23 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				String[] PluginsArray = plugins.split("\nk2storeitem_tax");
 				if (PluginsArray.length!=2) System.out.println("Fehler beim Einlesen der k2_items.plugins!");
 				String item_price=PluginsArray[0]; //k2storeitem_price=28.10
-				String item_bestand = PluginsArray[1]; //k2storeitem_shipping=1
+//				String item_bestand = PluginsArray[1]; //k2storeitem_shipping=1
 				//k2storeitem_bestand=
 				item_price=item_price.substring(18);
 				if (item_price.isEmpty()) continue; 
 				item_price = item_price.replace(",", ".");
-				System.out.println(item_price);
 				double k2storeitem_price = Double.parseDouble(item_price);
-				BigDecimal price = BigDecimal.valueOf(k2storeitem_price);
 				BigDecimal item_priceD= BigDecimal.valueOf(k2storeitem_price);
 
-				artikel.setRecommendedPriceNet(item_priceD);
+				artikel.setRecommendedPriceNet(new Amount(item_priceD, Currency.EUR));
 				productRepository.saveAndFlush(artikel);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-
+//TODO get the reason of failure, when this method is transactional
+//	@Transactional
 	@Override
 	public void importOrderItems() {
 
@@ -327,36 +324,48 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				//Loop for OrderItems
 				while(orderItems.next()){
 					CatalogProduct product = productRepository.findByName(getProductTitle(orderItems.getString("product_id")));
+					if (product == null){
+						log.error("product not found, productid:"+orderItems.getString("product_id"));
+						continue;
+					}
 					Customer customer = customerRepository.findByEmail(
-							getEmailOfOiCustomer(orders));				
+							getEmailOfOiCustomer(orders));		
+					if (customer == null){
+						log.error("customer not found, customerId:" + orders.getInt("user_id"));
+						continue;
+					}
+					
 					int quantity = orderItems.getInt("orderitem_quantity");
 					
-					OrderedSpecification orderedSpec = new OrderedSpecification(
-							quantity, 
-							orders.getLong("order_id"),
-							product.getProductNumber(),
-							product.getName(),
-							customer.getEmail() 
-					);
+					if (quantity<1){
+						log.error("quantity to be ordered less than 1");
+						continue;
+					}
+					Amount negotiatedPriceNet = new Amount(orderItems.getBigDecimal("orderitem_price"), Currency.EUR);
 					
-					Item item = WholesaleOrderFactory.createItem(customer,  
-							orderedSpec);
+					OrderItem item = orderService.order(customer, orders.getString("order_id"), 
+							product.toProduct(), quantity, negotiatedPriceNet);
 					if (item == null) continue;
-					itemRepository.save(item);
+					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
 
-					ConfirmedSpecification confirmedSpec = new ConfirmedSpecification(
-							orderItems.getLong("ab_id"), null, 
-							new Amount(orderItems.getBigDecimal("orderitem_price"), Currency.EUR),
-							customer.getAddress());
-					HandlingEvent he = heService.confirm(item, quantity, confirmedSpec);
-					if (he == null) continue;
-
-					ShippedSpecification shippedSpec = new ShippedSpecification(orderItems.getLong("rechnung_id"));
-					HandlingEvent he2 = heService.deliver(item, quantity, shippedSpec);
-					if (he2 == null) continue;
+					ConfirmationReport param = new ConfirmationReport(
+							"AB"+orderItems.getString("ab_id"), 
+							customer.getAddress(), 
+							customer.getAddress(),
+							new ConfirmedSpecification(false, false)
+							);
+					item = orderService.confirm(item, quantity, negotiatedPriceNet, param, null);
+					if (item == null) continue;
+					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
 					
-					PayedSpecification payedSpec = new PayedSpecification(orderItems.getLong("bezahlt_id"));
-					heService.complete(item, quantity, payedSpec);
+					String rechnung_id = "R"+orderItems.getString("rechnung_id");
+					if (rechnung_id != null)
+						item = orderService.shipAndInvoice(item, quantity, rechnung_id, null, customer.getAddress());
+					if (item == null) continue;
+					
+					if (orderItems.getString("bezahlt_id") != null);
+					//FIXME: after fixing receivePayment
+//						orderService.receivePayment(rechnung_id, null);
 					
 				}
 				stmt2.close();			
@@ -377,22 +386,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	private String getProductTitle(String product_id) throws SQLException {
 		String title = this.getSingleResult("select title from "+PRIEBES_DB+".jos_k2_items where id="+product_id, "title");
 		return title;
-	}
-
-	private boolean idOrderItemValid(ResultSet orderItems) {
-		try {
-			// Rules to Check:
-			if (orderItems.getInt("orderitem_quantity")<1 ||
-					getProductTitle(orderItems.getString("product_id")) == null
-					){				
-				return false;
-			}
-			else return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-
 	}
 
 	private String getSingleResult(String query, String column) throws SQLException{

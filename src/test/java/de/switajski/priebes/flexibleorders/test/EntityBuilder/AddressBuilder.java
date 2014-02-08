@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.test.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.specification.Address;
+import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class AddressBuilder implements Builder<Address>{

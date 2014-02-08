@@ -24,19 +24,25 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 name: 'product',
 			 type: 'int'
 		 },
+ 		 {
+			 name: 'productName'
+		 },
 		 {
 			 name: 'customer',
 			 type: 'int'
 		 },
 		 {
-			 name: 'orderNumber',
-			 type: 'int'
+			 name: 'customerName'
 		 },
+		 {
+			 name: 'orderNumber'
+		 },
+		 // TODO not used but for transition 
 		 {
 			 name: 'invoiceNumber'
 		 },
 		 {
-			 name: 'orderConfirmationNumber'
+			 name: 'documentNumber'
 		 },
 		 {
 			 name: 'quantity',
@@ -53,7 +59,13 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 name: 'status'
 		 },
 		 {
-			 name: 'expectedDelivery'
+			 name: 'expectedDelivery',
+			 format : 'd/m/Y'
+		 },
+		 {
+			 name: 'created',
+			 format : 'd/m/Y'
 		 }
+
 		 ]
 });

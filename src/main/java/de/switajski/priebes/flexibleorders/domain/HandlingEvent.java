@@ -2,49 +2,54 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import java.util.Date;
 
-import javax.persistence.Embedded;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.PayedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Entity
-public class HandlingEvent extends GenericEntity{
+public class HandlingEvent extends GenericEntity implements Comparable<HandlingEvent>{
 
-	private int quantity;
-	
 	@NotNull
-	@ManyToOne
-	private Document report;
+	private Integer quantity;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Report report;
 	
 	@NotNull
 	private HandlingEventType type;
 	
-	@Embedded
-	private ShippedSpecification shippedSpec;
-	
-	@Embedded
-	private ConfirmedSpecification confirmedSpec;
-	
-	@Embedded
-	private PayedSpecification payedSpec;
-	
+	@NotNull
 	@ManyToOne
-	private DeliveryHistory history;
+	private OrderItem orderItem;
 
-	public HandlingEvent() {}
-	
-	public HandlingEvent(HandlingEventType type, DeliveryHistory history, int quantity, Date created) {
-		this.type = type;
-		this.history = history;
+	protected HandlingEvent() {}
+
+	//TODO: refactor to constructor with minimal attributes
+	public HandlingEvent(Report report, HandlingEventType handlingEventType, OrderItem item, 
+			Integer quantity, Date created) {
+		if (report == null || handlingEventType == null || item == null || quantity == null) 
+			throw new IllegalArgumentException();
+		this.report = report;
+		this.type = handlingEventType;
+		this.orderItem = item;
 		this.quantity = quantity;
 		setCreated(created);
+		
+		if (report.getEvents().contains(this)) return ;
+		report.addEvent(this);
+	}
+	
+	public String toString(){
+		return (this.getId()+": Report:"+getReport().getDocumentNumber())
+				+" Type: " + getType().toString()
+				+" Quantity: "+getQuantity();
 	}
 	
 	public int getQuantity() {
@@ -55,20 +60,38 @@ public class HandlingEvent extends GenericEntity{
 		this.quantity = quantity;
 	}
 
-	public Document getReport() {
+	public Report getReport() {
 		return report;
 	}
-
-	public void setReport(Document report) {
+	
+	public DeliveryNotes getInvoice(){
+		if (getReport() instanceof DeliveryNotes)
+			return (DeliveryNotes) getReport();
+		return null;
+	}
+	
+	public ConfirmationReport getOrderConfirmation(){
+		if (getReport() instanceof ConfirmationReport)
+			return (ConfirmationReport) getReport();
+		return null;
+	}
+	
+	public void setReport(Report report) {
+		if (report.getEvents().contains(this)) return;
 		this.report = report;
+		report.addEvent(this);
 	}
 
-	public DeliveryHistory getDeliveryHistory() {
-		return history;
+	public OrderItem getOrderItem() {
+		return orderItem;
 	}
 
-	public void setDeliverHistory(DeliveryHistory history) {
-		this.history = history;
+	public void setOrderItem(OrderItem item) {
+		this.orderItem = item;
+		
+		// handle bidirectional relationship:
+		if (item.getDeliveryHistory().contains(this)) return;
+		item.addHandlingEvent(this);
 	}
 
 	public HandlingEventType getType() {
@@ -79,28 +102,40 @@ public class HandlingEvent extends GenericEntity{
 		this.type = type;
 	}
 
-	public ShippedSpecification getShippedSpec() {
-		return shippedSpec;
+	@Override
+	public int compareTo(HandlingEvent o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public ReportItem toReportItem(){
+		ReportItem item = new ReportItem();
+		item.setCreated(getCreated());
+		item.setCustomer(getOrderItem().getOrder().getCustomer().getId());
+		item.setId(getId());
+		item.setOrderNumber(getOrderItem().getOrder().getOrderNumber());
+		if (getOrderItem().getNegotiatedPriceNet() != null)
+			item.setPriceNet(getOrderItem().getNegotiatedPriceNet().getValue());
+		item.setProduct(getOrderItem().getProduct().getProductNumber());
+		item.setProductName(getOrderItem().getProduct().getName());
+		item.setStatus(provideStatus());
+		item.setCustomerName(getOrderItem().getOrder().getCustomer().getShortName());
+		item.setDocumentNumber(this.getReport().getDocumentNumber());
+		item.setQuantity(getQuantity());
+		item.setQuantityLeft(getOrderItem().getOrderedQuantity() - quantity);
+		return item;
 	}
 
-	public void setShippedSpec(ShippedSpecification shippedSpec) {
-		this.shippedSpec = shippedSpec;
-	}
-
-	public ConfirmedSpecification getConfirmedSpec() {
-		return confirmedSpec;
-	}
-
-	public void setConfirmedSpec(ConfirmedSpecification confirmedSpec) {
-		this.confirmedSpec = confirmedSpec;
-	}
-
-	public PayedSpecification getPayedSpec() {
-		return payedSpec;
-	}
-
-	public void setPayedSpec(PayedSpecification payedSpec) {
-		this.payedSpec = payedSpec;
+	private String provideStatus() {
+		String status = "";
+		switch (type){
+			case CONFIRM: status = "bestätigt"; break;
+			case SHIP: status = "ausgeliefert"; break;
+			case PAID: status = "bezahlt"; break;
+			case FORWARD_TO_THIRD_PARTY: status = "zur Näherei"; break;
+			case CANCEL: status = "storniert"; break;
+		}
+		return status;
 	}
 	
 	

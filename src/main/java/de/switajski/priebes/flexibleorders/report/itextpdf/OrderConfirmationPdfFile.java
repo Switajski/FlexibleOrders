@@ -13,19 +13,25 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class OrderConfirmationPdfFile extends OrderConfirmationPdfView {
 
-	public static final String RESULT
-    = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/OrderConfirmationPdfFileTest.pdf";
-	
+	public String filePathAndName;
 	
 	protected PdfWriter newWriter(Document document, OutputStream os) throws DocumentException {
 		PdfWriter writer;
 			try {
-				writer = PdfWriter.getInstance(document, new FileOutputStream(RESULT));
+				writer = PdfWriter.getInstance(document, new FileOutputStream(filePathAndName));
 				return writer;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return null;
 			}
+	}
+
+	public String getFilePathAndName() {
+		return filePathAndName;
+	}
+
+	public void setFilePathAndName(String filePathAndName) {
+		this.filePathAndName = filePathAndName;
 	}
 
 }

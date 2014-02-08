@@ -14,6 +14,15 @@
  * Do NOT hand edit this file.
  */
 
+// Global Exception Handling
+Ext.Ajax.on('requestexception', function (conn, response, options) {
+    if (response.status === 400) {
+        Ext.MessageBox.alert('Eingabefehler', response.responseText);
+    } else {
+    	Ext.MessageBox.alert('Server meldet Fehler', response.responseText);
+    }
+});
+
 Ext.override(Ext.data.JsonWriter, {
 			encode : false,
 			writeAllFields : true,
@@ -26,7 +35,7 @@ Ext.override(Ext.data.JsonWriter, {
 				params.jsonData = data;
 			}
 		});
-
+		
 Ext.define('MyApp.controller.MyController', {
 	debug : true,
 	extend : 'Ext.app.Controller',
@@ -37,7 +46,7 @@ Ext.define('MyApp.controller.MyController', {
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
 			'ArchiveItemDataStore', 'OrderNumberDataStore',
-			'InvoiceNumberDataStore'],
+			'InvoiceNumberDataStore', 'CreateOrderDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
 			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
@@ -405,11 +414,6 @@ Ext.define('MyApp.controller.MyController', {
 						},
 						success : function(response) {
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)
@@ -440,11 +444,6 @@ Ext.define('MyApp.controller.MyController', {
 						},
 						success : function(response) {
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)
@@ -505,11 +504,6 @@ Ext.define('MyApp.controller.MyController', {
 						},
 						success : function(response) {
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)
@@ -540,11 +534,6 @@ Ext.define('MyApp.controller.MyController', {
 						},
 						success : function(response) {
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)
@@ -578,11 +567,6 @@ Ext.define('MyApp.controller.MyController', {
 						success : function(response) {
 							//TODO: make a responsive design
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)
@@ -614,11 +598,6 @@ Ext.define('MyApp.controller.MyController', {
 						},
 						success : function(response) {
 							var text = response.responseText;
-						},
-						failure : function(response) {
-							// TODO: Fehlerhandling vereinheitlichen
-							Ext.Msg.alert('Fehler', response.status
-											+ response.text);
 						}
 					});
 			if (this.debug)

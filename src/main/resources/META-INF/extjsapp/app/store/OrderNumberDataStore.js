@@ -33,7 +33,7 @@ Ext.define('MyApp.store.OrderNumberDataStore', {
                     create: 'POST'
                 },
                 type: 'ajax',
-                url: '/FlexibleOrders/orders/listOrderNumbers',
+                url: '/FlexibleOrders/reports/orders/listOrderNumbers',
                 headers: {
                     accept: 'application/json'
                 },

@@ -4,7 +4,8 @@
     <jsp:output omit-xml-declaration="yes"/>
     <div id="extjs_confirm">
         <script src="http://localhost/ext-4.2.1.883/ext-all-debug-w-comments.js"><jsp:text /></script>
-    <link rel="stylesheet" href="http://localhost/ext-4.2.1.883/resources/priebes-theme-all.css" ><jsp:text /></link>
+    <!-- <link rel="stylesheet" href="http://localhost/ext-4.2.1.883/resources/priebes-theme-all.css" ><jsp:text /></link>-->
+    <link rel="stylesheet" href="http://localhost/ext-4.2.1.883/resources/ext-theme-classic/ext-theme-classic-all.css"><jsp:text /></link>
     <script type="text/javascript" src="/FlexibleOrders/resources/confirm.js"><jsp:text /></script>
     </div>
 </div>

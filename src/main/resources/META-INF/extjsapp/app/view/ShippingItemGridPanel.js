@@ -9,15 +9,15 @@ Ext.define('MyApp.view.ShippingItemGridPanel', {
 
 			},
 			onPdfClick : function(view, a, b, column, event, record, f) {
-				var win = window.open('/FlexibleOrders/orderconfirmations/'
-								+ record.data.orderConfirmationNumber + '.pdf',
+				var win = window.open('/FlexibleOrders/reports/orderConfirmations/'
+								+ record.data.documentNumber + '.pdf',
 						'_blank');
 				win.focus();
 			},
 			onRemoveClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
 				MyApp.getApplication().getController('MyController').deconfirm(
-						"ok", record.data.orderConfirmationNumber, record);
+						"ok", record.data.documentNumber, record);
 
 			}
 		});

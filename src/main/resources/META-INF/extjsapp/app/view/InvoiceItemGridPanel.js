@@ -12,7 +12,7 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 
 			},
 	onPdfClick : function(view, a, b, column, event, record, f){
-				var win = window.open('/FlexibleOrders/invoices/' + record.data.invoiceNumber
+				var win = window.open('/FlexibleOrders/reports/invoices/' + record.data.documentNumber
 						+ '.pdf', '_blank');
 				win.focus();
 			},

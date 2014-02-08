@@ -9,8 +9,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.domain.specification.Address;
-
 @Entity
 @JsonAutoDetect
 public class Customer extends GenericEntity{
@@ -27,7 +25,7 @@ public class Customer extends GenericEntity{
     /**
      */
     @NotNull
-    @Column(unique = true)
+    @Column(unique=true)
     private String email;
 
     /**
@@ -46,6 +44,7 @@ public class Customer extends GenericEntity{
     /**
      * number of days to add to due date
      */
+    @JsonIgnore
     private int paymentGracePeriod;
     
     public Customer(){}

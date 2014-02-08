@@ -36,7 +36,7 @@ import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
-import de.switajski.priebes.flexibleorders.domain.specification.Address;
+import de.switajski.priebes.flexibleorders.domain.Address;
 
 /**
  * This class generates PDF views and files in DIN A4 and methods to create a letter.
@@ -198,16 +198,16 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		 */
 		public void insertInfo(Document doc, String info)
 				throws MalformedURLException, IOException, DocumentException {
-					
-					Paragraph p = new Paragraph();
-					
-					p.setFont(FontFactory.getFont(FONT,12,Font.NORMAL));
-					insertEmptyLines(doc,1);
-					
-					p.add(info);
-					doc.add(p);
+
+			Paragraph p = new Paragraph();
+
+			p.setFont(FontFactory.getFont(FONT,12,Font.NORMAL));
+			insertEmptyLines(doc,1);
+
+			p.add(info);
+			doc.add(p);
 		}
-		
+
 		public void insertEmptyLines(Document doc, int lines) throws DocumentException{
 			Paragraph p = new Paragraph();
 			for (int i=0;i<lines;i++){

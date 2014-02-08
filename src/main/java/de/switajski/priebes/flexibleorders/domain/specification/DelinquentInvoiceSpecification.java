@@ -13,9 +13,9 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
-public class DelinquentInvoiceSpecification implements Specification<Item>{
+public class DelinquentInvoiceSpecification implements Specification<OrderItem>{
 	
 	private Date currentDate;
 	
@@ -23,22 +23,21 @@ public class DelinquentInvoiceSpecification implements Specification<Item>{
 		this.currentDate = currentDate;
 	}
 	
-	public boolean isSatisfiedBy(Item candidate, Customer customer){
-		if (new ShippedSpecification().isSatisfiedBy(candidate)) return false;
-		int gracePeriod = customer.getPaymentGracePeriod();
+	public boolean isSatisfiedBy(OrderItem candidate, Customer customer){
+		if (new ShippedSpecification(false, false).isSatisfiedBy(candidate)) return false;
+		Integer gracePeriod = customer.getPaymentGracePeriod();
+		if (gracePeriod == null) gracePeriod = 0;
 
-		for (HandlingEvent he: candidate.getDeliveryHistory().getAllHesOfType(HandlingEventType.SHIP)){
-			if (he.getShippedSpec() != null && he.getShippedSpec().getDueDate() != null){
+		for (HandlingEvent he: candidate.getAllHesOfType(HandlingEventType.SHIP)){
 				Date firmDeadline = 
-						DateUtils.addDays(he.getShippedSpec().getDueDate(), gracePeriod);
+						DateUtils.addDays(he.getInvoice().getEvaluationDate(), gracePeriod);
 				return currentDate.after(firmDeadline);
-			}
 		}
 		return false;
 	}
 
 	@Override
-	public Predicate toPredicate(Root<Item> root,
+	public Predicate toPredicate(Root<OrderItem> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
 		// TODO Auto-generated method stub
 		return null;

@@ -23,7 +23,7 @@ Ext.define('MyApp.model.ArtikelData', {
             name: 'productNumber'
         },
         {
-            name: 'name'
+            name: 'productName'
         },
         {
             name: 'productType'

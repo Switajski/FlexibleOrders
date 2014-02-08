@@ -1,12 +1,10 @@
 package de.switajski.priebes.flexibleorders.domain;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -25,12 +23,12 @@ public class CatalogProduct extends GenericEntity {
 	@Column(unique = true)
 	private String name;
 
-	@Min(0L)
-	private BigDecimal recommendedPriceNet;
+	@Embedded
+	private Amount recommendedPriceNet;
 
 	private boolean active;
 	
-	private String ImageGalery;
+	private String imageGalery;
 	
 	private Long sortOrder;
 	
@@ -62,11 +60,11 @@ public class CatalogProduct extends GenericEntity {
 		this.name = name;
 	}
 
-	public BigDecimal getRecommendedPriceNet() {
+	public Amount getRecommendedPriceNet() {
 		return recommendedPriceNet;
 	}
 
-	public void setRecommendedPriceNet(BigDecimal recommendedPriceNet) {
+	public void setRecommendedPriceNet(Amount recommendedPriceNet) {
 		this.recommendedPriceNet = recommendedPriceNet;
 	}
 
@@ -79,11 +77,11 @@ public class CatalogProduct extends GenericEntity {
 	}
 
 	public String getImageGalery() {
-		return ImageGalery;
+		return imageGalery;
 	}
 
 	public void setImageGalery(String imageGalery) {
-		ImageGalery = imageGalery;
+		this.imageGalery = imageGalery;
 	}
 
 	public Long getSortOrder() {
@@ -100,6 +98,15 @@ public class CatalogProduct extends GenericEntity {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	
+	public Product toProduct(){
+		Product product = new Product();
+		product.setName(name);
+		product.setProductNumber(this.productNumber);
+		product.setProductNumber(productNumber);
+		product.setProductType(ProductType.PRODUCT);
+		return product;
 	}
 	
 }

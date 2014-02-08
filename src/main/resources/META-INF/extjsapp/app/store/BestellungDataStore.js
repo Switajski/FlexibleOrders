@@ -52,7 +52,8 @@ Ext.define('MyApp.store.BestellungDataStore', {
             },
                 listeners: {
                     exception: function(proxy, response, operation){
-                        Ext.MessageBox.show({
+                        console.rerror(response);
+                    	Ext.MessageBox.show({
                             title: 'Server Fehler',
                             msg: operation.getError(),
                             icon: Ext.MessageBox.ERROR,

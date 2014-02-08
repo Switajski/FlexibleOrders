@@ -8,20 +8,17 @@ import javax.persistence.criteria.Root;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
-public class ToBeShippedSpecification extends ItemSpecification {
-
-	public ToBeShippedSpecification() {	}
+public class ToBePaidSpecification extends ItemSpecification {
 	
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
-		return (new OrderedSpecification().isSatisfiedBy(item) &&
-				!(new ShippedSpecification(false, false).isSatisfiedBy(item)));
+		return (new ShippedSpecification(false, false).isSatisfiedBy(item) && 
+				!(new CompletedSpecification().isSatisfiedBy(item)));
 	}
-
+	
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
 			CriteriaBuilder cb) {
 		throw new NotImplementedException();
 	}
-
 }

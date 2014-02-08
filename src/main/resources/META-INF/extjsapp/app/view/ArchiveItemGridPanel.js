@@ -10,9 +10,7 @@ Ext.define('MyApp.view.ArchiveItemGridPanel', {
 
 			},
 			onPdfClick : function(view, a, b, column, event, record, f) {
-				var win = window.open('/FlexibleOrders/archiveitems/'
-								+ record.data.accountNumber + '.pdf', '_blank');
-				win.focus();
+				console.info("notImplemented");
 			},
 			onRemoveClick : function(view, a, b, column, event, record, f) {
 				console.log('ArchiveItemGrid - customtransitionfunction');

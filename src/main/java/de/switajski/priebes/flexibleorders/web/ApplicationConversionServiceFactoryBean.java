@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -8,13 +7,13 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.roo.addon.web.mvc.controller.converter.RooConversionService;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.Item;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.ItemRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerService;
-import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
+import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.service.CustomerServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 
 /**
  * A central place to register application converters and formatters. 
@@ -22,7 +21,7 @@ import de.switajski.priebes.flexibleorders.service.ItemServiceImpl;
 @RooConversionService
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
-	private static Logger log = Logger.getLogger(ApplicationConversionServiceFactoryBean.class);
+//	private static Logger log = Logger.getLogger(ApplicationConversionServiceFactoryBean.class);
 	
 	@Override
 	protected void installFormatters(FormatterRegistry registry) {
@@ -33,16 +32,16 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	}
 	
     @Autowired
-    CustomerService customerService;
+    CustomerServiceImpl customerService;
     
     @Autowired
     CustomerRepository customerRepo;
     
     @Autowired
-    ItemServiceImpl itemService;
+    ReportItemServiceImpl itemService;
     
     @Autowired
-    ItemRepository itemRepo;
+    OrderItemRepository itemRepo;
     
     @Autowired
     CatalogProductRepository productService;
@@ -71,26 +70,26 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         };
     }
     
-    public Converter<Item, String> getItemToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<de.switajski.priebes.flexibleorders.domain.Item, java.lang.String>() {
-            public String convert(Item orderItem) {
-                return new StringBuilder().append(orderItem.getCreated()).append(' ').append(orderItem.getQuantity()).append(' ').append(' ').append(orderItem.getProductName()).toString();
+    public Converter<OrderItem, String> getOrderItemToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<de.switajski.priebes.flexibleorders.domain.OrderItem, java.lang.String>() {
+            public String convert(OrderItem orderItem) {
+                return new StringBuilder().append(orderItem.getCreated()).append(' ').append(orderItem.getOrderedQuantity()).append(' ').append(' ').append(orderItem.getProduct().getName()).toString();
             }
         };
     }
     
-    public Converter<Long, Item> getIdToItemConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, de.switajski.priebes.flexibleorders.domain.Item>() {
-            public de.switajski.priebes.flexibleorders.domain.Item convert(java.lang.Long id) {
+    public Converter<Long, OrderItem> getIdToOrderItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, de.switajski.priebes.flexibleorders.domain.OrderItem>() {
+            public de.switajski.priebes.flexibleorders.domain.OrderItem convert(java.lang.Long id) {
                 return itemRepo.findOne(id);
             }
         };
     }
     
-    public Converter<String, Item> getStringToOrderItemConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, de.switajski.priebes.flexibleorders.domain.Item>() {
-            public de.switajski.priebes.flexibleorders.domain.Item convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), Item.class);
+    public Converter<String, OrderItem> getStringToOrderItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, de.switajski.priebes.flexibleorders.domain.OrderItem>() {
+            public de.switajski.priebes.flexibleorders.domain.OrderItem convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), OrderItem.class);
             }
         };
     }

@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -21,7 +22,7 @@ import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 @RooConversionService
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
-//	private static Logger log = Logger.getLogger(ApplicationConversionServiceFactoryBean.class);
+	private static Logger log = Logger.getLogger(ApplicationConversionServiceFactoryBean.class);
 	
 	@Override
 	protected void installFormatters(FormatterRegistry registry) {
@@ -45,6 +46,8 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     
     @Autowired
     CatalogProductRepository productService;
+
+    //TODO: install missing converters
     
     public Converter<Customer, String> getCustomerToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<de.switajski.priebes.flexibleorders.domain.Customer, java.lang.String>() {

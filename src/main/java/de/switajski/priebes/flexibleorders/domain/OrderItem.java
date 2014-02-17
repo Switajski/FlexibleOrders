@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +25,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	@JsonIgnore
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "deliveryHistory", fetch = FetchType.LAZY)
 	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
 	
 	@NotNull
@@ -44,7 +43,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	
 	@JsonIgnore
 	@NotNull
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne
 	private FlexibleOrder flexibleOrder;
 
 	protected OrderItem() {}
@@ -199,6 +198,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	
 	public ReportItem toReportItem(){
 		ReportItem item = new ReportItem();
+		item.setId(getId());
 		item.setQuantity(getOrderedQuantity());
 		item.setQuantityLeft(getOrderedQuantity() - getHandledQuantity(HandlingEventType.CONFIRM));
 		item.setCustomer(getOrder().getCustomer().getId());

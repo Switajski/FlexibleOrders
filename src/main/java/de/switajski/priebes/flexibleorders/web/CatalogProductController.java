@@ -19,21 +19,11 @@ import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 
 @RequestMapping("/products")
 @Controller
-public class CatalogProductController {
+public class CatalogProductController extends ExceptionController{
 
 	private CatalogProductRepository cProductRepo;
 	
 	private static Logger log = Logger.getLogger(CatalogProductController.class);
-	
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server";
-		return ex.getMessage();
-	}
 	
 	@Autowired
 	public CatalogProductController (CatalogProductRepository catalogProductRepo){

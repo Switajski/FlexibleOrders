@@ -19,7 +19,7 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	@NotNull
 	private Integer quantity;
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Report report;
 	
 	@NotNull
@@ -42,6 +42,8 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		this.quantity = quantity;
 		setCreated(created);
 		
+		if (!orderItem.getDeliveryHistory().contains(this))
+			orderItem.addHandlingEvent(this);
 		if (report.getEvents().contains(this)) return ;
 		report.addEvent(this);
 	}
@@ -110,6 +112,18 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	
 	public ReportItem toReportItem(){
 		ReportItem item = new ReportItem();
+		if (this.getReport() instanceof ConfirmationReport){
+			item.setDocumentNumber(getReport().getDocumentNumber());
+			item.setOrderConfirmationNumber(getReport().getDocumentNumber());
+		}
+		if (this.getReport() instanceof DeliveryNotes){
+			DeliveryNotes deliveryNotes = (DeliveryNotes) this.getReport();
+			item.setDocumentNumber(getReport().getDocumentNumber());
+			item.setInvoiceNumber(getReport().getDocumentNumber());
+			item.setTrackNumber(deliveryNotes.getTrackNumber());
+			item.setPackageNumber(deliveryNotes.getPackageNumber());
+		}
+		item.setId(getId());
 		item.setCreated(getCreated());
 		item.setCustomer(getOrderItem().getOrder().getCustomer().getId());
 		item.setId(getId());

@@ -78,7 +78,7 @@ public class AmountCalculator {
 	private static AmountCalculator sum(FlexibleOrder order) {
 		AmountCalculator calc = new AmountCalculator();
 		for (OrderItem oi: order.getItems()){
-			if (oi.getNegotiatedPriceNet() == null) 
+			if (oi.getNegotiatedPriceNet() == null || oi.getNegotiatedPriceNet().getValue() == null) 
 				throw new BusinessException("Order has items with no price set");
 			else calc.addNet(oi.getNegotiatedPriceNet().multiply(oi.getOrderedQuantity()));
 		}

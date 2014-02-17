@@ -12,13 +12,15 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.InvoicePdfFileTest;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfFileTest;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfFileTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
+import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 	CategoryIntegrationTest.class,
 	CustomerIntegrationTest.class,
 	InvoicePdfFileTest.class,
-	ItemIntegrationTest.class, 
+	ItemIntegrationTest.class,
+	JacksonDeserializationTest.class,
 	OrderPdfFileTest.class,
 	OrderServiceTest.class,
 	OrderConfirmationPdfFileTest.class,

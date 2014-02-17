@@ -1,7 +1,12 @@
 package de.switajski.priebes.flexibleorders.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +32,14 @@ import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecifi
 import de.switajski.priebes.flexibleorders.domain.specification.ForwardSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.exception.BusinessException;
+import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
+import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
+import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 @Service
 public class OrderServiceImpl {
@@ -39,6 +48,7 @@ public class OrderServiceImpl {
 	private ReportRepository reportRepo;
 	private OrderItemRepository itemRepo;
 	private CatalogProductRepository cProductRepo;
+	private HandlingEventRepository heRepo;
 	
 	private WholesaleOrderHandlingFactory orderFactory = new WholesaleOrderHandlingFactory();
 	private OrderRepository orderRepo;
@@ -46,11 +56,12 @@ public class OrderServiceImpl {
 	@Autowired
 	public OrderServiceImpl(ReportRepository reportRepo,
 			OrderItemRepository itemRepo, OrderRepository orderRepo,
-			CatalogProductRepository cProductRepo) {
+			CatalogProductRepository cProductRepo, HandlingEventRepository heRepo) {
 		this.reportRepo = reportRepo;
 		this.itemRepo = itemRepo;
 		this.cProductRepo = cProductRepo;
 		this.orderRepo = orderRepo;
+		this.heRepo = heRepo;
 	}
 	
 	/**
@@ -104,6 +115,32 @@ public class OrderServiceImpl {
 		return itemRepo.save(item);
 	}
 	
+	@Transactional
+	public ConfirmationReport confirm(String orderNumber, String orderConfirmationNumber,
+			Date expectedDelivery, Map<Long, Integer> items){
+		if (reportRepo.findByDocumentNumber(orderConfirmationNumber) != null)
+			throw new IllegalStateException("ConfirmationReport already exists");
+		
+		OrderItem orderItem = itemRepo.findOne(items.keySet().iterator().next());
+		Address address = orderItem.getOrder().getCustomer().getAddress();
+		
+		ConfirmationReport cr = new ConfirmationReport(orderConfirmationNumber, 
+				address, address, new ConfirmedSpecification(false, false));
+		cr.setExpectedDelivery(expectedDelivery);
+		
+		HandlingEvent he = null;
+		for (Entry<Long, Integer> entry: items.entrySet()){
+			OrderItem oi = itemRepo.findOne(entry.getKey());
+			if (oi == null) 
+				throw new IllegalArgumentException("Bestellposition nicht gefunden");
+			he = new HandlingEvent(cr, HandlingEventType.CONFIRM, oi, 
+					entry.getValue(), new Date());
+			itemRepo.save(oi);
+		}
+		
+		return he.getOrderConfirmation();
+	}
+	
 	/**
 	 * Adds an order item to an existing OrderConfirmation  
 	 * 
@@ -114,7 +151,7 @@ public class OrderServiceImpl {
 	 * @return
 	 */
 	@Transactional
-	public OrderItem confirm(OrderItem orderItemToConfirm, 
+	public OrderItem confirm_old(OrderItem orderItemToConfirm, 
 			int quantity,
 			String orderConfirmationNo, 
 			Amount negotiatedPriceNet) {
@@ -154,38 +191,90 @@ public class OrderServiceImpl {
 	 * @param spec
 	 * @return
 	 */
-	@Transactional
-	public OrderItem confirm(OrderItem itemToConfirm, Integer quantity, 
-			Amount negotiatedPriceNet, ConfirmationReport confirmationReport, 
-			ConfirmedSpecification spec) throws IllegalArgumentException {
-		//TODO: confirm has an report as parameter - shipAndInvoice a documentNumber. 
-		//When a Report is given outside transaction it will be probably be detached.
-		if (quantity == null || quantity < 1) throw new IllegalArgumentException("Menge nicht angegeben");
-		if (itemToConfirm == null || negotiatedPriceNet == null || confirmationReport == null)
-			throw new IllegalArgumentException();
-		if (spec == null) 
-			spec = new ConfirmedSpecification(false, false);
-		if (quantity > itemToConfirm.getOrderedQuantity())
-			throw new IllegalArgumentException("Quantity to confirm is greater than ordered!");
-		if (negotiatedPriceNet == null || negotiatedPriceNet.getValue() == null)
-			negotiatedPriceNet = retrieveRecommendedPriceNet(itemToConfirm);
-		
-		if (reportRepo.findByDocumentNumber(confirmationReport.getDocumentNumber()) != null){
-			//	TODO check if parameters are equal to existing confirmationReport
-			return this.confirm(itemToConfirm, quantity, confirmationReport.getDocumentNumber(), negotiatedPriceNet);
-		}
-		
-		OrderItem item = orderFactory.createOrderConfirmation(itemToConfirm, quantity, 
-				negotiatedPriceNet, null, confirmationReport, null);
-		
-		if (TEST) return itemRepo.saveAndFlush(item);
-		return itemRepo.save(item);
-	}
+//	@Transactional
+//	public OrderItem confirm(OrderItem itemToConfirm, Integer quantity, 
+//			Amount negotiatedPriceNet, ConfirmationReport confirmationReport, 
+//			ConfirmedSpecification spec) throws IllegalArgumentException {
+//		//TODO: confirm has an report as parameter - shipAndInvoice a documentNumber. 
+//		//When a Report is given outside transaction it will be probably be detached.
+//		if (quantity == null || quantity < 1) throw new IllegalArgumentException("Menge nicht angegeben");
+//		if (itemToConfirm == null || negotiatedPriceNet == null || confirmationReport == null)
+//			throw new IllegalArgumentException();
+//		if (negotiatedPriceNet.getValue() == null)
+//			throw new IllegalArgumentException("Preis nicht angegeben");
+//		if (spec == null) 
+//			spec = new ConfirmedSpecification(false, false);
+//		if (quantity > itemToConfirm.getOrderedQuantity())
+//			throw new IllegalArgumentException("Quantity to confirm is greater than ordered!");
+//		if (negotiatedPriceNet == null || negotiatedPriceNet.getValue() == null)
+//			negotiatedPriceNet = retrieveRecommendedPriceNet(itemToConfirm);
+//		
+//		if (reportRepo.findByDocumentNumber(confirmationReport.getDocumentNumber()) != null){
+//			//	TODO check if parameters are equal to existing confirmationReport
+//			return this.confirm(itemToConfirm, quantity, confirmationReport.getDocumentNumber(), negotiatedPriceNet);
+//		}
+//		
+//		OrderItem item = orderFactory.createOrderConfirmation(itemToConfirm, quantity, 
+//				negotiatedPriceNet, null, confirmationReport, null);
+//		
+//		if (TEST) return itemRepo.saveAndFlush(item);
+//		return itemRepo.save(item);
+//	}
 
 	@Transactional
 	public OrderItem deconfirm(OrderItem shippingItem) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
+	}
+	
+	@Transactional
+	public List<ReportItem> deliverJsonCommitted(JsonDeliverRequest deliverRequest){
+		new Address(deliverRequest.getName1(), deliverRequest.getName2(),
+				deliverRequest.getStreet(), deliverRequest.getPostalCode(), 
+				deliverRequest.getCity(), Country.GERMANY);
+		
+		Map<Long, Integer> hes = new HashMap<Long, Integer>();
+		for (ReportItem ri :deliverRequest.getItems()){
+			if (heRepo.findOne(ri.getId()) == null)
+				throw new IllegalArgumentException("Auftragsbestätigung mit gegebener Id nicht gefunden");
+			hes.put(ri.getId(), ri.getQuantity());
+		}
+		
+		DeliveryNotes deliveryNotes = deliver(deliverRequest.getInvoiceNumber(), deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
+				new Address(deliverRequest.getName1(), deliverRequest.getName2(),
+						deliverRequest.getStreet(), deliverRequest.getPostalCode(), 
+						deliverRequest.getCity(), Country.GERMANY),
+						hes);
+		
+		List<ReportItem> response = new ArrayList<ReportItem>();
+		for (HandlingEvent he :deliveryNotes.getEvents()){
+			response.add(he.toReportItem());
+		}
+		
+		return response;
+	}
+	
+	public DeliveryNotes deliver(String invoiceNumber, String trackNumber, String packageNumber,
+			Address shippingAddress, Map<Long, Integer> confirmEvents){
+		
+		DeliveryNotes deliveryNotes;
+		
+		if (reportRepo.findByDocumentNumber(invoiceNumber) == null){
+			deliveryNotes = new DeliveryNotes(invoiceNumber, 
+					new ShippedSpecification(false, false), shippingAddress);
+		} else {
+			deliveryNotes = (DeliveryNotes) reportRepo.findByDocumentNumber(invoiceNumber);
+		}
+		
+		for (Entry<Long, Integer> entry: confirmEvents.entrySet()){
+			OrderItem orderItem = itemRepo.findOne(entry.getKey());
+			deliveryNotes.addEvent(new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, 
+					orderItem, entry.getValue(), new Date()));
+		}
+		
+		for (HandlingEvent he: deliveryNotes.getEvents())
+			itemRepo.save(he.getOrderItem());
+		return reportRepo.save(deliveryNotes);
 	}
 
 	/**
@@ -204,12 +293,15 @@ public class OrderServiceImpl {
 	public OrderItem shipAndInvoice(OrderItem shippingItemToDeliver, Integer quantity, 
 			String invoiceNo, ShippedSpecification spec, Address shippedAddress) {
 		//TODO: provide this checks in a specification like "Shippable-Specification" 
-		// or: "ConfirmedSpecification"
+		// or: "ConfirmedSpecification" or do i mess it up with validation?
 		if (!new ConfirmedSpecification(false, false).isSatisfiedBy(shippingItemToDeliver))
 			throw new IllegalArgumentException();
-		if (shippingItemToDeliver == null || quantity == null || quantity < 1 ||
-				invoiceNo == null)
+		if (shippingItemToDeliver == null)
 			throw new IllegalArgumentException();
+		if (quantity == null || quantity < 1)
+			throw new IllegalArgumentException("Menge ist nicht valide");
+		if (invoiceNo == null)
+			throw new IllegalArgumentException("Rechnungsnummer nicht angegeben");
 		if (spec == null) 
 			spec = new ShippedSpecification(false, false);
 		
@@ -227,7 +319,7 @@ public class OrderServiceImpl {
 			return this.shipAndInvoice(shippingItemToDeliver, quantity, invoiceNo);
 		}
 		DeliveryNotes dn = new DeliveryNotes(invoiceNo, new ShippedSpecification(false, false), shippedAddress);
-		OrderItem item = orderFactory.createInvoice(shippingItemToDeliver, dn, quantity, null);
+		OrderItem item = orderFactory.createDeliveryNotes(shippingItemToDeliver, dn, quantity, null);
 		
 		if (TEST) return itemRepo.saveAndFlush(item);
 		return itemRepo.save(item);
@@ -320,6 +412,10 @@ public class OrderServiceImpl {
 	public HandlingEvent withdrawPayment(Report item) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
+	}
+
+	public boolean existsOrderNumber(String orderNumber) {
+		return (orderRepo.findByOrderNumber(orderNumber) != null);
 	}
 	
 }

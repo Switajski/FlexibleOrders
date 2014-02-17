@@ -34,9 +34,10 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 						xtype : 'ordernumbercombobox',
 						fieldLabel : 'Bestellnr',
 						listeners : {
-							change : this.onOrderNumberChange,
+							//change : this.onOrderNumberChange,
 							specialkey : function(field, e) {
 								if (e.getKey() == e.ENTER) {
+									me.onOrderNumberChange(field, e);
 									Ext.ComponentQuery
 											.query('#ErstelleBestellungForm button[itemid=add]')[0]
 											.focus();
@@ -73,14 +74,18 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 
 		me.callParent(arguments);
 	},
-	onOrderNumberChange : function(form, data) {
-		/*
-		 * if (data!= null){ var store =
-		 * Ext.data.StoreManager.lookup('OrderNumberDataStore');
-		 * console.log(data);
-		 * 
-		 * store.getProxy().extraParams = {orderNumber: data}; store.read(); }
-		 */
+	onOrderNumberChange : function(field, event) {
+		
+		 if (event!= null){ 
+		 var store =
+		 Ext.data.StoreManager.lookup('CreateOrderDataStore');
+		 store.filter("orderNumber", field.rawValue);
+		 console.log(field.rawValue);
+		 console.log(store);
+		 
+		 //store.getProxy().extraParams = {orderNumber: data}; 
+		 //store.read(); 
+		 }
 
 	},
 	onSelect : function(form, data) {

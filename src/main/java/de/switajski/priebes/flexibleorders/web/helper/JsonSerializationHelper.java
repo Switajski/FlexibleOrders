@@ -1,12 +1,21 @@
 package de.switajski.priebes.flexibleorders.web.helper;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
+import de.switajski.priebes.flexibleorders.web.entities.JsonCustomer;
+import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 /**
  * NOT USED - Backup for filters implementation. Method from former controller-filter-method:
@@ -50,7 +59,7 @@ import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
  * @author Marek Switajski
  *
  */
-public class SerializationHelper {
+public class JsonSerializationHelper {
 	
 	public static HashMap<String, String> deserializeFiltersJson(String filters) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();  
@@ -83,4 +92,46 @@ public class SerializationHelper {
 		return jsonFilters;
 	}
 	
+	public static List<ReportItem> deserializeReportItems(String jsonReportItems) 
+			throws JsonParseException, JsonMappingException, IOException{
+		ReportItem[] typedArray = (ReportItem[]) Array.newInstance(ReportItem.class,1);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
+		ReportItem[] records = (ReportItem[]) mapper.readValue(jsonReportItems, typedArray.getClass());
+
+		ArrayList<ReportItem> list = new ArrayList<ReportItem>();
+		for (ReportItem record:records)
+			list.add(record);
+
+		return list;
+	}
+	
+	public static ReportItem deserializeReportItem(String json) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
+		return (ReportItem) mapper.readValue(json, ReportItem.class); 
+	}
+
+	public static List<JsonCustomer> convertToJsonCustomers(
+			Collection<Customer> customers) {
+		List<JsonCustomer> jsonCustomers = new ArrayList<JsonCustomer>();
+		for (Customer c : customers){
+			JsonCustomer jc = new JsonCustomer();
+			jc.setId(c.getId());
+			jc.setShortName(c.getShortName());
+			jc.setLastName(c.getLastName());
+			jc.setFirstName(c.getFirstName());
+			jc.setEmail(c.getEmail());
+			jc.setPhone(c.getPhone());
+			jc.setName1(c.getAddress().getName1());
+			jc.setName2(c.getAddress().getName2());
+			jc.setStreet(c.getAddress().getStreet());
+			jc.setPostalCode(c.getAddress().getPostalCode());
+			jc.setCity(c.getAddress().getCity());
+			jc.setCountry(c.getAddress().getCountry().toString());
+			jsonCustomers.add(jc);
+		}
+		return jsonCustomers;
+	}
+
 }

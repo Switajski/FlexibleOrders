@@ -5,8 +5,10 @@ import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 /**
  * View class for GUI - Build on BestellpositionData
@@ -24,11 +26,15 @@ public class ReportItem {
 	private String customerName;
 	private String orderNumber;
 	private String documentNumber;
+	private String invoiceNumber;
+	private String orderConfirmationNumber;
 	private Integer quantity;
 	private Integer quantityLeft;
 	private BigDecimal priceNet;
 	private String status;
 	private Date expectedDelivery;
+	private String trackNumber;
+	private String packageNumber;
 	
 	public Long getId() {
 		return id;
@@ -102,11 +108,36 @@ public class ReportItem {
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
-	@JsonDeserialize(using = JsonDateDeserializer.class)
+	@JsonSerialize(using = JsonDateSerializer.class)
 	public Date getCreated() {
 		return created;
 	}
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+	public String getOrderConfirmationNumber() {
+		return orderConfirmationNumber;
+	}
+	public void setOrderConfirmationNumber(String orderConfirmationNumber) {
+		this.orderConfirmationNumber = orderConfirmationNumber;
+	}
+	public String getTrackNumber() {
+		return trackNumber;
+	}
+	public void setTrackNumber(String trackNumber) {
+		this.trackNumber = trackNumber;
+	}
+	public String getPackageNumber() {
+		return packageNumber;
+	}
+	public void setPackageNumber(String packageNumber) {
+		this.packageNumber = packageNumber;
 	}
 }

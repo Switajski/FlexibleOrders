@@ -1,79 +1,70 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import javassist.NotFoundException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Currency;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
+import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
+import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
+import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @Controller
 @RequestMapping("/transitions")
-public class TransitionsController {
+public class TransitionsController extends ExceptionController{
 	
 	private static Logger log = Logger.getLogger(TransitionsController.class);
 	private OrderItemRepository itemRepo;
 	private ReportRepository reportRepo;
-	private OrderServiceImpl heService;
+	private OrderServiceImpl orderService;
+	private CatalogProductRepository cProductRepo;
+	private CustomerRepository customerRepo;
+	private HandlingEventRepository heRepo;
 
 	@Autowired
 	public TransitionsController(
-			OrderServiceImpl transitionService,
+			CustomerRepository customerRepo,
+			OrderServiceImpl orderService,
 			OrderItemRepository itemRepo,
-			ReportRepository reportRepo) {
-		this.heService = transitionService;
+			ReportRepository reportRepo,
+			CatalogProductRepository catalogProductRepo) {
+		this.orderService = orderService;
 		this.itemRepo = itemRepo;
 		this.reportRepo = reportRepo;
+		this.cProductRepo = catalogProductRepo;
+		this.customerRepo = customerRepo;
 	}
 	
-	@ExceptionHandler(IllegalArgumentException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleIllegalArgumentException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Funktion mit falschen Parameter aufgerufen";
-		return ex.getMessage();
-	}
-	
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server";
-		return ex.getMessage();
-	}
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse confirm(
@@ -95,12 +86,12 @@ public class TransitionsController {
 			// document does not exist - create new one
 			 ConfirmationReport oc = new ConfirmationReport(orderConfirmationNumber, address, 
 					 address, new ConfirmedSpecification(false, false));
-			 heService.confirm(orderItemToConfirm, quantity, 
+			 orderService.confirm(orderItemToConfirm, quantity, 
 					 new Amount(priceNet, Currency.EUR), oc, null);
 			
 		}
 		else
-		heService.confirm(orderItemToConfirm, quantity, orderConfirmationNumber, new Amount(priceNet, Currency.EUR));
+		orderService.confirm(orderItemToConfirm, quantity, orderConfirmationNumber, new Amount(priceNet, Currency.EUR));
 
 		response.setData(orderItemToConfirm);
 		response.setTotal(1);
@@ -110,17 +101,44 @@ public class TransitionsController {
 		return response;
 	}
 	
+	//TODO: try RequestParam with ReportItem[].class
 	@RequestMapping(value="/order", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse order(@RequestParam(required = false) Map map) 
+	public @ResponseBody JsonObjectResponse order(@RequestBody String json) 
 					throws Exception {
+		// TODO: replace if condition with Ext.data.writer.Json.allowSingle = false
+		if (json.charAt(0) == '['){
+			List<ReportItem> entities = JsonSerializationHelper.deserializeReportItems(json);
+			entities = addAndSaveOrderItems(entities);
+			return ExtJsResponseCreator.createResponse(entities);
+			
+		} else {
+			ReportItem entity = JsonSerializationHelper.deserializeReportItem(json);
+			entity = addAndSaveOrderItem(entity);
+			return ExtJsResponseCreator.createResponse(entity);
+		}
 		
-		map.toString();
-		JsonObjectResponse response = new JsonObjectResponse();
-		response.setTotal(1);
-		response.setMessage("order item(s) confirmed");
-		response.setSuccess(false);
+	}
 
-		return response;
+	private List<ReportItem> addAndSaveOrderItems(List<ReportItem> entities) {
+		List<ReportItem> reportItems = new ArrayList<ReportItem>();
+		for (ReportItem reportItem:entities){
+			reportItems.add(addAndSaveOrderItem(reportItem));
+		}
+		return reportItems;
+	}
+
+	private ReportItem addAndSaveOrderItem(ReportItem entity) {
+		Product product = cProductRepo.findByProductNumber(entity.getProduct()).toProduct();
+		if (orderService.existsOrderNumber(entity.getOrderNumber()))
+			return orderService.order(entity.getOrderNumber(), product, entity.getQuantity(), 
+					new Amount(entity.getPriceNet(), Currency.EUR))
+					.toReportItem();
+		else {
+			Customer customer = customerRepo.findOne(entity.getCustomer());
+			return orderService.order(customer, entity.getOrderNumber(), product, 
+					entity.getQuantity(), new Amount(entity.getPriceNet(), Currency.EUR))
+					.toReportItem();
+		}
 	}
 
 	
@@ -142,7 +160,7 @@ public class TransitionsController {
 		OrderItem shippingItemToDeconfirm =
 				itemRepo.findOne(shippingItemId);
 		
-		OrderItem shippingItem = heService.deconfirm(
+		OrderItem shippingItem = orderService.deconfirm(
 				shippingItemToDeconfirm);
 		
 		response.setData(shippingItem);
@@ -154,45 +172,13 @@ public class TransitionsController {
 	}
 	
 	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse deliver(
-			@RequestParam(value = "id", required = true) long shippingItemId,
-			@RequestParam(value = "quantity", required = true) int quantity,
-			@RequestParam(value = "invoiceNumber", required = true) String invoiceNumber,
-			@RequestParam(value = "trackNumber", required = false) String trackNumber,
-			@RequestParam(value = "packageNumber", required = false) String packageNumber) 
+	public @ResponseBody JsonObjectResponse deliver(@RequestBody JsonDeliverRequest deliverRequest) 
 					throws Exception {
 		
-		// filters = [{"type":"string","value":"13","field":"orderNumber"}]
-		log.debug("received json confirm request: orderConfirmationNumber:" 
-				+ " quantity:" + quantity + " orderConfirmationNumber:"+invoiceNumber);
-		JsonObjectResponse response = new JsonObjectResponse();
-		
-		OrderItem shippingItemToDeliver = itemRepo.findOne(shippingItemId);
-		if (shippingItemToDeliver == null)
-			handleException(new NotFoundException("ShippingItem with given id not found!"));
-		
-		if (shippingItemToDeliver.getReport(invoiceNumber) == null)
-			// Document with given invoiceNumber does not exist
-			shippingItemToDeliver = heService.shipAndInvoice(shippingItemToDeliver, quantity, invoiceNumber, 
-					null, null);
-		else // Document with given invoiceNumber exists
-			shippingItemToDeliver = heService.shipAndInvoice(shippingItemToDeliver, quantity, invoiceNumber);
-		
-		response.setData(shippingItemToDeliver);
-		response.setTotal(1);
-		response.setMessage("shipped and invoiced");
-		response.setSuccess(true);
+		log.debug("received json confirm request: invoiceNumber:"+deliverRequest.getInvoiceNumber());
 
-		return response;
-	}
-	
-	private void handleException(Throwable e){
-		JsonObjectResponse response = new JsonObjectResponse();
-		response.setData(e.getMessage());
-		response.setTotal(1);
-		response.setMessage(e.toString());
-		response.setSuccess(true);
-		log.error(e.toString());
+		List<ReportItem> deliveredItems = orderService.deliverJsonCommitted(deliverRequest);
+		return ExtJsResponseCreator.createResponse(deliveredItems);
 	}
 	
 	@RequestMapping(value="/withdraw/json", method=RequestMethod.POST)
@@ -209,7 +195,7 @@ public class TransitionsController {
 			throw new NotFoundException("Item with given id not found");
 		}
 
-		OrderItem he= heService.withdrawInvoiceItemAndShipment(item);
+		OrderItem he= orderService.withdrawInvoiceItemAndShipment(item);
 		
 		response.setData(he);
 		response.setTotal(1);
@@ -235,7 +221,7 @@ public class TransitionsController {
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		Set<HandlingEvent> hes = heService.receivePayment(documentNumber, receivedPaymentDate);
+		Set<HandlingEvent> hes = orderService.receivePayment(documentNumber, receivedPaymentDate);
 		
 		response.setData(hes);
 		response.setTotal(1);
@@ -258,7 +244,7 @@ public class TransitionsController {
 		if (item == null){
 			throw new NotFoundException("Item with given id not found");
 		}
-		HandlingEvent he = heService.withdrawPayment(item);
+		HandlingEvent he = orderService.withdrawPayment(item);
 		
 		response.setData(he);
 		response.setTotal(1);

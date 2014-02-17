@@ -26,7 +26,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 
 	@Query("SELECT oi from OrderItem oi where oi.deliveryHistory is empty"
 			+ " and oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllOrdered(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllOrderedByCustomer(Customer customer, Pageable pageable);
 
 
 	// Emergency solution until specification framework is set up
@@ -41,7 +41,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM and "
 			+ "oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllConfirmed(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllConfirmedByCustomer(Customer customer, Pageable pageable);
 
 
 	// Emergency solution until specification framework is set up
@@ -56,7 +56,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP and "
 			+ "oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllShipped(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllShippedByCustomer(Customer customer, Pageable pageable);
 
 
 //TODO adjust query
@@ -72,9 +72,17 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.PAID and "
 			+ "oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllCompleted(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllCompletedByCustomer(Customer customer, Pageable pageable);
 
-
+	// Emergency solution until specification framework is set up
+	@Query("SELECT oi from OrderItem oi where oi.deliveryHistory is empty")
+	Page<OrderItem> findAllToBeConfirmed(Pageable pageable);
+	
+	@Query("SELECT oi from OrderItem oi where oi.deliveryHistory is empty "
+			+ "and oi.flexibleOrder.customer =?1")
+	Page<OrderItem> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
+	
+	
 	// Emergency solution until specification framework is set up
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM")
@@ -87,7 +95,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM and "
 			+ "oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllToBeShipped(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllToBeShippedByCustomer(Customer customer, Pageable pageable);
 
 	
 	
@@ -103,13 +111,12 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 	@Query("SELECT oi from OrderItem oi join oi.deliveryHistory dh where dh.type = "
 			+ "de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM and "
 			+ "oi.flexibleOrder.customer = ?1")
-	Page<OrderItem> findAllToBePaid(Customer customer, Pageable pageable);
+	Page<OrderItem> findAllToBePaidByCustomer(Customer customer, Pageable pageable);
 
 	@Query("SELECT oi from OrderItem oi where oi.flexibleOrder.customer = ?1")
 	Page<OrderItem> findByCustomer(Customer customer, Pageable pageable);
 
-	
-
-
+	@Query("SELECT oi from OrderItem oi where oi.flexibleOrder.customer = ?1")
+	List<OrderItem> findByCustomer(Customer customer);
 
 }

@@ -15,13 +15,14 @@
  */
 
 // Global Exception Handling
-Ext.Ajax.on('requestexception', function (conn, response, options) {
-    if (response.status === 400) {
-        Ext.MessageBox.alert('Eingabefehler', response.responseText);
-    } else {
-    	Ext.MessageBox.alert('Server meldet Fehler', response.responseText);
-    }
-});
+Ext.Ajax.on('requestexception', function(conn, response, options) {
+			if (response.status === 400) {
+				Ext.MessageBox.alert('Eingabefehler', response.responseText);
+			} else {
+				Ext.MessageBox.alert('Server meldet Fehler',
+						response.responseText);
+			}
+		});
 
 Ext.override(Ext.data.JsonWriter, {
 			encode : false,
@@ -35,7 +36,7 @@ Ext.override(Ext.data.JsonWriter, {
 				params.jsonData = data;
 			}
 		});
-		
+
 Ext.define('MyApp.controller.MyController', {
 	debug : true,
 	extend : 'Ext.app.Controller',
@@ -46,8 +47,9 @@ Ext.define('MyApp.controller.MyController', {
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
 			'ArchiveItemDataStore', 'OrderNumberDataStore',
-			'InvoiceNumberDataStore', 'CreateOrderDataStore'],
-	views : ['MainPanel', 'BpForm', 'BestellungWindow',
+			'InvoiceNumberDataStore', 'CreateOrderDataStore',
+			'CreateInvoiceItemDataStore'],
+	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
 			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
 			'TransitionWindow', 'OrderNumberComboBox', 'InvoiceNumberComboBox'],
@@ -69,6 +71,9 @@ Ext.define('MyApp.controller.MyController', {
 						selectionchange : this.onSelectionchange,
 						itemdblclick : this.showTransition
 					},
+					'#CreateCustomerButton' : {
+						click : this.onCreateCustomer
+					},
 					'#ErstelleBpButton' : {
 						click : this.loadBpForm
 					},
@@ -86,9 +91,6 @@ Ext.define('MyApp.controller.MyController', {
 					},
 					'#AbBestellungButton' : {
 						click : this.bestaetigeAuftragDialog
-					},
-					'#RechnungBestellungButton' : {
-						click : this.liefereDialog
 					},
 					'#BestellungPdf' : {
 						click : this.showBestellundPdf
@@ -180,6 +182,7 @@ Ext.define('MyApp.controller.MyController', {
 	},
 	getButtons : function() {
 		var buttons = {
+			createCustomer : Ext.getCmp('CreateCustomerButton'),
 			deleteBp : Ext.getCmp('DeleteBpButton'),
 			erstelleBpButton : Ext.getCmp('ErstelleBpButton'),
 			deleteBestellung : Ext.getCmp('DeleteBestellungButton'),
@@ -253,48 +256,12 @@ Ext.define('MyApp.controller.MyController', {
 	 * if (this.debug) console.log('Bestellung geloescht!'); },
 	 */
 
-	liefereDialog : function(btn, e, eOpts) {
+	/*liefereDialog : function(btn, e, eOpts) {
 		Ext.MessageBox.confirm('Best&auml;tigen', 'Auftrag sicher liefern?',
 				Ext.Function
 						.bind(this.liefere, null, [this.activeBestellnr], 1));
-	},
-
-	liefere : function(success, activeBestellnr) {
-		console
-				.log('Parameter1: ' + success + " Parameter2:"
-						+ activeBestellnr);
-		var request = Ext.Ajax.request({
-					url : '/leanorders/auftragsbestaetigungs/liefere/'
-							+ activeBestellnr,
-					success : function(response) {
-						var text = response.responseText;
-					},
-					failure : function(response) {
-						// TODO: Fehlerhandling vereinheitlichen
-						Ext.Msg
-								.alert('Fehler', response.status
-												+ response.text);
-					}
-				});
-		if (this.debug)
-			console.log('liefere');
-
-		// Reload GridPanel
-		MyApp.getApplication().getController('MyController').sleep(500);
-		// Ext.data.StoreManager.lookup('BestellungDataStore').reload();
-		grid = Ext.getCmp('BestellungGrid');
-		grid.refresh();
-		Ext.getCmp('RechnungBestellungButton').setDisabled(true);
-		Ext.getCmp('BezahltBestellungButton').setDisabled(false);
-		Ext.getCmp('RechnungPdf').setDisabled(false);
-		// Falsch, da Status des Grid-Records immer noch auf Auftragbestaetigt
-		// ist
-		/*
-		 * grid.fireEvent('selectionchange', grid.getSelectionModel(),
-		 * grid.getSelectionModel().getSelection() );
-		 */
-	},
-
+	},*/
+	
 	showTransition : function(grid, record) {
 		Ext.ComponentQuery.query('panel[extend=MyApp.view.TransitionWindow]');
 		switch (record.data.status) {
@@ -328,20 +295,8 @@ Ext.define('MyApp.controller.MyController', {
 
 	},
 
-	/*
-	 * loadBpForm: function(btn, e, eOpts) { var bestellung =
-	 * this.getBestellungSelection();
-	 * 
-	 * var form = Ext.getCmp('ErstelleBpForm').getForm(); try {
-	 * form.findField('bestellung').setValue(bestellung.getId()); var BpForm =
-	 * Ext.getCmp('BpForm'); BpForm.show(); } catch (e){
-	 * Ext.Msg.alert('Hinweis', 'Bevor eine eine Bestellposition erstellt werden
-	 * kann, muss eine Bestellung ausgew&auml;hlt sein </br> Fehlerdetails:'+
-	 * e.toString()); } },
-	 */
-
 	loadErstelleBestellungWindow : function(btn, e, eOpts) {
-		console.log('function createBestellung');
+		console.log('function loadErstelleBestellungWindow');
 		var bestellungWindow = Ext.getCmp('ErstelleBestellungWindow');
 		var customerid = Ext.getCmp('mainCustomerComboBox').getValue();
 		if (customerid == null)
@@ -356,7 +311,6 @@ Ext.define('MyApp.controller.MyController', {
 					.setValue("");
 			store = Ext.data.StoreMgr.lookup('BestellpositionDataStore');
 			bestellungWindow.show();
-
 		}
 	},
 
@@ -460,85 +414,110 @@ Ext.define('MyApp.controller.MyController', {
 
 	/**
 	 * 
-	 * @param {} function only succeds if event is equals "ok". This variable if for 
-	 * previous confirmation messages.
-	 * @param {} record selected shipping item from a grid
+	 * @param {}
+	 *            function only succeds if event is equals "ok". This variable
+	 *            if for previous confirmation messages.
+	 * @param {}
+	 *            record selected shipping item from a grid
 	 */
 	deliver : function(event, record) {
-		record.data.invoiceNumber = record.data.orderConfirmationNumber;
+		// TODO create Invoice Data Object
+		record.data.invoiceNumber = record.data.documentNumber;
+		var createInvoiceStore = MyApp.getApplication()
+				.getStore('CreateInvoiceItemDataStore');
+		createInvoiceStore.filter('documentNumber', record.data.documentNumber);
+
+		var invoice = Ext.create('MyApp.model.KundeData', {
+					customer : record.data.customer
+				});
+		// this.down('form').getForm().loadRecord(invoiceItem);
+		var kunde = Ext.getStore('KundeDataStore').findRecord("id", record.data.customer);
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
-					record: record,
+					id : "DeliverWindow",
+					record : kunde,
 					onSave : function() {
-						MyApp.getApplication().getController('MyController').deliver2(
-							"ok",
-							this.record
-						);
+						MyApp.getApplication().getController('MyController')
+								.deliver2("ok", kunde, createInvoiceStore);
+					},
+					onShow : function() {
+						this.down('form').getForm().loadRecord(kunde);
 					}
 				});
 		deliverWindow.show();
-		
+
 	},
 
 	/**
 	 * 
-	 * @param {} event
-	 * @param {} inr
-	 * @param {} record the invoice item for the transition 
+	 * @param {}
+	 *            event
+	 * @param {}
+	 *            inr
+	 * @param {}
+	 *            record the invoice item for the transition
 	 */
-	deliver2 : function(event, record) {
+	deliver2 : function(event, record, createInvoiceStore) {
 		console.log('deliver2');
+		var form = Ext.getCmp('DeliverWindow').down('form').getForm();
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.orderConfirmationNumber);
 
-			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/deliver/json',
-						params : {
-							id : record.data.id,
-							trackNumber : record.data.trackNumber,
-							packageNumber : record.data.packageNumber,
-							quantity : record.data.quantity,
-							productNumber : record.data.product,
-							orderConfirmationNumber: record.data.orderConfirmationNumber,
-							invoiceNumber : record.data.invoiceNumber
-						},
-						success : function(response) {
-							var text = response.responseText;
-						}
-					});
+				var request = Ext.Ajax.request({
+				url : '/FlexibleOrders/transitions/deliver/json',
+				//headers: { 'Content-Type': 'application/json' },
+				jsonData: {
+					orderConfirmationNumber : form.getValues().confirmationNumber,
+					customerId : record.data.customer,
+					name1 : record.data.name1,
+					name2 : record.data.name2,
+					street : record.data.street,
+					postalCode : record.data.postalCode,
+					city : record.data.city,
+					country : record.data.country,
+					invoiceNumber : form.getValues().invoiceNumber,
+					packageNumber : form.getValues().packageNumber,
+					trackNumber : form.getValues().trackNumber,
+					items : Ext.pluck(createInvoiceStore.data.items, 'data')
+				},
+				success : function(response) {
+					var text = response.responseText;
+					// Sync
+					MyApp.getApplication().getController('MyController')
+							.sleep(500);
+					var allGrids = Ext.ComponentQuery.query('PositionGrid');
+					allGrids.forEach(function(grid) {
+								grid.getStore().load();
+							});
+					Ext.getCmp("DeliverWindow").close();
+				}
+			});
 			if (this.debug)
 				console.log('deliver order confirmation');
-
-			// Sync
-			MyApp.getApplication().getController('MyController').sleep(500);
-			var allGrids = Ext.ComponentQuery.query('PositionGrid');
-			allGrids.forEach(function(grid) {
-						grid.getStore().load();
-					});
 		}
-	},	
-	
+	},
+
 	withdraw : function(event, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.invoiceNumber);
 
 			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/withdraw/json',
-						params : {
-							id : record.data.id,
-							productNumber : record.data.product,
-							orderConfirmationNumber : record.data.orderConfirmationNumber,
-							invoiceNumber : record.data.invoiceNumber,
-							quantity : record.data.quantity
-						},
-						success : function(response) {
-							var text = response.responseText;
-						}
-					});
+				url : '/FlexibleOrders/transitions/withdraw/json',
+				params : {
+					id : record.data.id,
+					productNumber : record.data.product,
+					orderConfirmationNumber : record.data.orderConfirmationNumber,
+					invoiceNumber : record.data.invoiceNumber,
+					quantity : record.data.quantity
+				},
+				success : function(response) {
+					var text = response.responseText;
+				}
+			});
 			if (this.debug)
 				console.log('withdraw invoice item');
-// TODO: DRY in Sync
+			// TODO: DRY in Sync
 			// Sync
 			MyApp.getApplication().getController('MyController').sleep(500);
 			var allGrids = Ext.ComponentQuery.query('PositionGrid');
@@ -548,30 +527,29 @@ Ext.define('MyApp.controller.MyController', {
 		}
 	},
 
-
-	decomplete : function(event, record){
+	decomplete : function(event, record) {
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.accountNumber);
 
 			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/decomplete/json',
-						params : {
-							id : record.data.id,
-							productNumber : record.data.product,
-							orderConfirmationNumber : record.data.orderConfirmationNumber,
-							invoiceNumber : record.data.invoiceNumber,
-							accountNumber : record.data.accountNumber,
-							quantity : record.data.quantity
-						},
-						success : function(response) {
-							//TODO: make a responsive design
-							var text = response.responseText;
-						}
-					});
+				url : '/FlexibleOrders/transitions/decomplete/json',
+				params : {
+					id : record.data.id,
+					productNumber : record.data.product,
+					orderConfirmationNumber : record.data.orderConfirmationNumber,
+					invoiceNumber : record.data.invoiceNumber,
+					accountNumber : record.data.accountNumber,
+					quantity : record.data.quantity
+				},
+				success : function(response) {
+					// TODO: make a responsive design
+					var text = response.responseText;
+				}
+			});
 			if (this.debug)
 				console.log('decomplete archive item');
-// TODO: DRY in Sync
+			// TODO: DRY in Sync
 			// Sync
 			MyApp.getApplication().getController('MyController').sleep(500);
 			var allGrids = Ext.ComponentQuery.query('PositionGrid');
@@ -580,7 +558,7 @@ Ext.define('MyApp.controller.MyController', {
 					});
 		}
 	},
-	
+
 	complete : function(event, anr, record) {
 		record.data.accountNumber = record.data.invoiceNumber;
 		if (event == "ok") {
@@ -593,7 +571,7 @@ Ext.define('MyApp.controller.MyController', {
 							id : record.data.id,
 							productNumber : record.data.product,
 							quantity : record.data.quantity,
-							invoiceNumber:record.data.invoiceNumber,
+							invoiceNumber : record.data.invoiceNumber,
 							accountNumber : record.data.accountNumber
 						},
 						success : function(response) {
@@ -611,28 +589,6 @@ Ext.define('MyApp.controller.MyController', {
 					});
 		}
 	},
-
-	/*
-	 * bestaetigeAuftragDialog : function(btn, e, eOpts) {
-	 * console.log('bestaetigeAuftragDialog');
-	 * Ext.MessageBox.prompt('Versandkosten', 'Bitte Versandkosten netto
-	 * eingeben:', Ext.Function .bind(this.bestaetigeAuftrag, null,
-	 * [this.activeBestellnr], 2)); },
-	 * 
-	 * bestaetigeAuftrag : function(status, versandkosten, activeBestellnr) {
-	 * console.log('/leanorders/bestellungs/bestaetigeAuftrag/' +
-	 * activeBestellnr + " Parameter2:" + versandkosten + " Parameter3:" +
-	 * activeBestellnr); var request = Ext.Ajax.request({ url :
-	 * '/leanorders/bestellungs/bestaetigeAuftrag/' + activeBestellnr, params : {
-	 * versandNetto : versandkosten }, success : function(response) { var text =
-	 * response.responseText; }, failure : function(response) { // TODO:
-	 * Fehlerhandling vereinheitlichen Ext.Msg .alert('Fehler', response.status +
-	 * response.text); } }); if (this.debug) console.log('bestaetigeAuftrag'); //
-	 * Reload GridPanel
-	 * MyApp.getApplication().getController('MyController').sleep(500);
-	 * Ext.data.StoreManager.lookup('BestellungDataStore').reload(); grid =
-	 * Ext.getCmp('BestellungGrid'); grid.refresh(); },
-	 */
 
 	onCustomerChange : function(field, newValue, oldValue, eOpts) {
 		console.log('onCustomerChange');
@@ -656,7 +612,12 @@ Ext.define('MyApp.controller.MyController', {
 						// store.load();
 					}
 				});
+	},
 
+	onCreateCustomer : function(button, event, options) {
+		console.log('onCreateCustomer');
+		var createCustomerWindow = this.getCreateCustomerWindowView().create();
+		createCustomerWindow.show();
 	}
 
 });

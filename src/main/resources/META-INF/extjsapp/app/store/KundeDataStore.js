@@ -15,7 +15,7 @@
 
 Ext.define('MyApp.store.KundeDataStore', {
     extend: 'Ext.data.Store',
-
+    customurl: '/FlexibleOrders/customers/json',
     requires: [
         'MyApp.model.KundeData'
     ],
@@ -37,6 +37,12 @@ Ext.define('MyApp.store.KundeDataStore', {
                 reader: {
                     type: 'json',
                     root: 'data'
+                },
+                api:{
+                    read: this.customurl,
+                    update: this.customurl,
+                    destroy: this.customurl,
+                    create: "/FlexibleOrders/customers/create"
                 }
             }
         }, cfg)]);

@@ -8,15 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
@@ -41,7 +38,7 @@ import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
  */
 @Controller
 @RequestMapping("/reports")
-public class ReportController {
+public class ReportController extends ExceptionController{
 	
 	private static Logger log = Logger.getLogger(ReportController.class);
 	@Autowired OrderItemRepository invoiceItemService;
@@ -51,16 +48,6 @@ public class ReportController {
 	@Autowired InvoiceServiceImpl invoiceService;
 	@Autowired CustomerRepository customerService;
 	
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server";
-		return ex.getMessage();
-	}
-
 	/*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
      *  @ResponseBody is for direct responses without a view
      */

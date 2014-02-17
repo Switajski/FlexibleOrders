@@ -65,23 +65,26 @@ public class OrderPdfView extends PriebesIText5PdfView {
 			builder.addFooterRow("Warenwert netto:   " + net.toString())
 			.addFooterRow("zzgl. " + order.getVatRate() + "% MwSt.   " + vat.toString())
 			.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat).toString());
+		} else {
+			builder.addFooterRow("Warenwert netto:   " + "           -    ");
 		}
 		return builder.build();
 	}
 
 	private String getPriceXquantity(OrderItem he) {
-		if (he.getNegotiatedPriceNet() != null)
+		if (he.getNegotiatedPriceNet() != null && he.getNegotiatedPriceNet().getValue() != null)
 			return he.getNegotiatedPriceNet().multiply(he.getOrderedQuantity()).toString();
 		else 
-			return " - ";
+			return " -     ";
 	}
 
 	private String getPriceString(OrderItem he) {
 		String priceString ="";
-		if (he.getNegotiatedPriceNet() != null)
+		if (he.getNegotiatedPriceNet() != null && he.getOrderedQuantity() != null
+				&& he.getNegotiatedPriceNet().getValue() != null)
 			priceString = he.getOrderedQuantity()+ " x " + he.getNegotiatedPriceNet().toString();
 		else 
-			priceString = "Preis nicht verfügbar";
+			priceString = "Preis n. verf.";
 		return priceString;
 	}
 	
@@ -91,7 +94,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
 	private boolean hasRecommendedPrices(FlexibleOrder order) {
 		for (OrderItem oi:order.getItems()){
-			if (oi.getNegotiatedPriceNet()==null)
+			if (oi.getNegotiatedPriceNet()==null || oi.getNegotiatedPriceNet().getValue()==null)
 				return false;
 		}
 		return true;

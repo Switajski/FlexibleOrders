@@ -4,6 +4,7 @@ Ext.define('MyApp.store.ShippingItemDataStore', {
 			customurl : '/FlexibleOrders/reportitems/tobeshipped',
 			custommodel : 'MyApp.model.ShippingItemData',
 			customstoreid : 'ShippingItemDataStore',
+			groupField: 'documentNumber',
 			requires : ['MyApp.model.ShippingItemData'],
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');

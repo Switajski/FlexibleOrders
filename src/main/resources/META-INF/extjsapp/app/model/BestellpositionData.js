@@ -36,8 +36,7 @@ Ext.define('MyApp.model.BestellpositionData', {
 		 },
 		 {
 			 name: 'orderNumber'
-		 },
-		 // TODO not used but for transition 
+		 }, 
 		 {
 			 name: 'invoiceNumber'
 		 },

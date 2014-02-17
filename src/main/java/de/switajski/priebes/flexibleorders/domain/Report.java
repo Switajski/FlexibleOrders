@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -24,7 +25,7 @@ public abstract class Report extends GenericEntity{
 	private String documentNumber;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "report")
+	@OneToMany(mappedBy = "events", cascade = CascadeType.ALL)
 	private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 	
 	protected Report() {}

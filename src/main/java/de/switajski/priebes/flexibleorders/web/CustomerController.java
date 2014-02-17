@@ -1,41 +1,36 @@
 package de.switajski.priebes.flexibleorders.web;
-import org.apache.log4j.Logger;
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.web.entities.JsonCustomer;
+import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
+import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @RequestMapping("/customers")
 @Controller
 @RooWebScaffold(path = "customers", formBackingObject = Customer.class)
-public class CustomerController {
+public class CustomerController extends ExceptionController{
 
 	private CustomerRepository customerRepo;
 
-	private static Logger log = Logger.getLogger(CustomerController.class);
-	
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server";
-		return ex.getMessage();
-	}
+//	private static Logger log = Logger.getLogger(CustomerController.class);
 	
 	@Autowired
 	public CustomerController(CustomerRepository customerRepository) {
@@ -47,21 +42,33 @@ public class CustomerController {
 			@RequestParam(value = "start", required = false) Integer start,
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts){
-		JsonObjectResponse response = new JsonObjectResponse();
-		Page<Customer> customer = customerRepo.findAll(new PageRequest(page-1, limit));
-		response.setData(customer.getContent());
-		response.setTotal(customer.getTotalElements());
-		response.setMessage("All entities retrieved.");
-		response.setSuccess(true);
-
+		Page<Customer> customers = customerRepo.findAll(new PageRequest(page-1, limit));
+		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
+				JsonSerializationHelper.convertToJsonCustomers(customers.getContent()));
+		response.setTotal(customers.getTotalElements());
 		return response;
 	}
-
-
+	
 	//TODO: move to ReportController
 	@RequestMapping(value = "listitems", produces = "text/html")
     public String confirm(Model uiModel) {
         return "customers/listitems";
     }
 	
+	//TODO let a serializer read and map these attribute
+	@RequestMapping(value = "/create", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse create(@RequestBody String json
+			) throws JsonParseException, JsonMappingException, IOException{
+		JsonCustomer jsonCustomer = serializeJsonCustomer(json);
+		Customer c = jsonCustomer.toCustomer();
+		customerRepo.save(c);
+		return ExtJsResponseCreator.createResponse(c);
+	}
+
+	public JsonCustomer serializeJsonCustomer(String json) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
+		JsonCustomer jsonCustomer = (JsonCustomer) mapper.readValue(json, JsonCustomer.class);
+		return jsonCustomer;
+	}
 }

@@ -23,12 +23,23 @@ Ext.define('MyApp.view.MainPanel', {
 		align : 'stretch',
 		type : 'vbox'
 	},
+	bodyPadding: 7,
 	title : 'Stand der Bestellungen',
 	requires : ['MyApp.store.BestellpositionDataStore'],
 	dockedItems : [{
 		xtype : 'toolbar',
 		dock : 'top',
 		items : [{
+			id : 'ErstelleBestellungButton',
+			icon : '/FlexibleOrders/images/add.png',
+			text : 'erstelle Bestellung',
+			scope : this
+		}, {
+			id : 'CreateCustomerButton',
+			icon : '/FlexibleOrders/images/add.png',
+			text : 'erstelle Kunden',
+			scope : this
+		}/*,{
 			xtype : 'button',
 			text : 'Berichte',
 			icon : '/FlexibleOrders/images/pdf_button.png',
@@ -64,17 +75,12 @@ Ext.define('MyApp.view.MainPanel', {
 						}]
 			}
 		}, {
-			id : 'ErstelleBestellungButton',
-			icon : '/FlexibleOrders/images/add.png',
-			text : 'erstelle Bestellung',
-			scope : this
-		}/*, {
 			id : 'AbBestellungButton',
 			text : 'Auftrag best&auml;tigen',
 			icon : '/FlexibleOrders/images/new_ab.png',
 			tooltip : 'Auftrag bestaetigen. Damit kommen die Bestellpositionen unter offene Posten',
-			schope : this
-		}, {
+			scope : this
+		}/*, {
 			id : 'RechnungBestellungButton',
 			text : 'Rechnung erstellen',
 			icon : '/FlexibleOrders/images/new_rechnung.png',

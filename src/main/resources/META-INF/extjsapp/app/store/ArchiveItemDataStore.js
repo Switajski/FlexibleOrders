@@ -19,6 +19,7 @@ Ext.define('MyApp.store.ArchiveItemDataStore', {
 	customurl: '/FlexibleOrders/reportitems/completed',
 	custommodel: 'MyApp.model.ArchiveItemData',
 	customstoreid: 'ArchiveItemDataStore',
+	groupField: 'documentNumber',
     requires: [
         'MyApp.model.ArchiveItemData'
     ]

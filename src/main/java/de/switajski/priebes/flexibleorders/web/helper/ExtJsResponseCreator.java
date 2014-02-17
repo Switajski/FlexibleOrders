@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.helper;
 
-import java.util.HashMap;
+import java.util.Collection;
 
 import org.springframework.data.domain.Page;
 
@@ -11,29 +11,11 @@ public class ExtJsResponseCreator {
 	
 	public static JsonObjectResponse createResponse(Page<ReportItem> reportItems, boolean byOrder, boolean byOrderNumber) throws Exception{
 		JsonObjectResponse response = new JsonObjectResponse();
-		long total;
-		if (byOrder)
-			total = getTotalElementsByOrder(reportItems, byOrderNumber);
-		else 
-			total = reportItems.getTotalElements();
-		
 		response.setData(reportItems.getContent());
-		response.setTotal(total);
+		response.setTotal(reportItems.getTotalElements());
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
 		return response;
-	}
-
-	private static long getTotalElementsByOrder(Page<ReportItem> reportItems, boolean byOrderNumber) {
-		HashMap<String, ReportItem> ris = new HashMap<String, ReportItem>();
-		for (ReportItem ri :reportItems){
-			if (byOrderNumber)
-				ris.put(ri.getOrderNumber(), ri);
-			else
-				ris.put(ri.getDocumentNumber(), ri);
-
-		}
-		return (long) ris.size();
 	}
 
 	public static JsonObjectResponse createFailedReponse(Exception e) {
@@ -45,5 +27,22 @@ public class ExtJsResponseCreator {
 		return response;
 	}
 
-	
+	public static JsonObjectResponse createResponse(Collection<Object> entities) {
+		JsonObjectResponse response = new JsonObjectResponse();
+		response.setData(entities);
+		response.setMessage("Report items successfully handled");
+		response.setSuccess(true);
+		response.setTotal(entities.size());
+		return response;
+	}
+
+	public static JsonObjectResponse createResponse(Object entity) {
+		JsonObjectResponse response = new JsonObjectResponse();
+		response.setData(entity);
+		response.setMessage("Report items successfully handled");
+		response.setSuccess(true);
+		response.setTotal(1);
+		return response;
+	}
+
 }

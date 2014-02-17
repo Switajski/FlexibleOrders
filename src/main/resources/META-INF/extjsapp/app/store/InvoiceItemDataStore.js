@@ -19,6 +19,7 @@ Ext.define('MyApp.store.InvoiceItemDataStore', {
 	customurl: '/FlexibleOrders/reportitems/tobepaid',
 	custommodel: 'MyApp.model.InvoiceItemData',
 	customstoreid: 'InvoiceItemDataStore',
+	groupField: 'documentNumber',
     requires: [
         'MyApp.model.InvoiceItemData'
     ]

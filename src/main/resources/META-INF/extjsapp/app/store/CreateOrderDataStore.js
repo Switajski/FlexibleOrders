@@ -39,6 +39,11 @@ Ext.define('MyApp.store.CreateOrderDataStore', {
                     root: 'data',
                     messageProperty: 'message'
                 },
+                writer: {
+                    type: 'json',
+                    root: 'data',
+                    writeAllFields: false
+                },
                 afterRequest:function(request,success){
                     console.log(request);	                    
                 }

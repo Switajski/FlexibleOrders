@@ -23,16 +23,34 @@ Ext.define('MyApp.model.KundeData', {
             name: 'shortName'
         },
         {
+            name: 'firstName'
+        },
+        {
+            name: 'lastName'
+        },
+        {
             name: 'email'
         },
         {
             name: 'phone'
         },
         {
-            name: 'shippingAddress'
+            name: 'name1'
         },
         {
-            name: 'invoiceAddress'
+            name: 'name2'
+        },
+        {
+            name: 'street'
+        },
+        {
+            name: 'postalCode'
+        },
+        {
+            name: 'city'
+        },
+        {
+            name: 'country'
         }
      ]
 });

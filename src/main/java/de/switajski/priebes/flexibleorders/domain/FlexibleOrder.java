@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -32,7 +33,7 @@ public class FlexibleOrder extends GenericEntity {
 	private OriginSystem originSystem;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "flexibleOrder")
+	@OneToMany(mappedBy = "flexibleOrder", cascade = CascadeType.ALL)
 	private Set<OrderItem> items = new HashSet<OrderItem>();
 	
 	@NotNull
@@ -109,6 +110,16 @@ public class FlexibleOrder extends GenericEntity {
 
 	public Double getVatRate() {
 		return this.vatRate;
+	}
+	
+	@Override
+	public String toString() {
+		String itemsString = "";
+		for (OrderItem oi:this.items)
+			itemsString.concat(oi.toString());
+		String s = "#"+getId().toString() + " Cust.:" + getCustomer().getId()+" "
+				+ "(items: "+itemsString +")";
+		return s;
 	}
 
 }

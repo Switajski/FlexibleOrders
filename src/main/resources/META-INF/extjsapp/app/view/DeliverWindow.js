@@ -17,19 +17,52 @@ Ext.define('MyApp.view.DeliverWindow', {
 						bodyPadding : 10,
 						items : [{
 									xtype : 'fieldset',
-									title : 'Inhalt',
+									//title : 'Kunde',
 									flex : 1,
 									items : [{
 												xtype : 'displayfield',
 												anchor : '100%',
-												name : 'product',
-												fieldLabel : 'Artikel'
+												name : 'shortName',
+												fieldLabel : 'Kurzname'
 											}, {
 												xtype : 'displayfield',
 												anchor : '100%',
-												name : 'customer',
-												fieldLabel : 'Kunde'
+												name : 'id',
+												fieldLabel : 'Kundennr'
+											},{
+												//itemid : 'invoiceNumber',
+												//xtype : 'invoicenumbercombobox',
+												xtype : 'textfield',
+												fieldLabel : 'Rechnungsnr',
+												name : 'invoiceNumber',
+												id : 'invoiceNumber',
+												allowBlank : false,
+												onChange : function(oldValue, newValue){
+													this.up('form').setValues({invoiceNumber : newValue})
+												}
 											}, {
+												xtype : 'numberfield',
+												fieldLabel : 'Paketnr',
+												name : 'packageNumber',
+												allowBlank : true,
+												allowDecimals : false,
+												allowExponential : false,
+												minValue : 1,
+												onChange : function(oldValue, newValue){
+													this.up('form').setValues({packageNumber : newValue})
+												}
+											}, {
+												xtype : 'numberfield',
+												fieldLabel : 'Sendungsnr',
+												name : 'trackNumber',
+												allowBlank : true,
+												allowDecimals : false,
+												allowExponential : false,
+												minValue : 1,
+												onChange : function(oldValue, newValue){
+													this.up('form').setValues({trackNumber: newValue})
+												}
+											}/*, {
 												xtype : 'numberfield',
 												fieldLabel : 'Menge',
 												name : 'quantity',
@@ -38,7 +71,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 												allowExponential : false,
 												minValue : 1,
 												maxValue : this.record.data.quantity
-											}]
+											}*/]
 								}, {
 									xtype : 'fieldset',
 									title : 'Lieferadresse',
@@ -46,72 +79,65 @@ Ext.define('MyApp.view.DeliverWindow', {
 									items : [{
 												xtype : 'textfield',
 												anchor : '100%',
-												name : 'shippingName1',
+												name : 'name1',
 												fieldLabel : 'Name 1',
-												allowBlank : false
-											}, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'shippingName2',
-												fieldLabel : 'Name 2',
-												allowBlank : false
-											}, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'shippingStreet',
-												fieldLabel : 'Strasse',
-												allowBlank : false
-											}, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'shippingPostalCode',
-												fieldLabel : 'PLZ',
-												allowBlank : false
-											}, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'shippingCity',
-												fieldLabel : 'Stadt',
-												allowBlank : false
-											}, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'shippingCountry',
-												fieldLabel : 'Land',
-												allowBlank : false
-											}]
-								}, {
-									xtype : 'fieldset',
-									title : 'zus&auml;tzliche Informationen',
-									flex : 1,
-									items : [{
-												itemid : 'invoiceNumber',
-												xtype : 'invoicenumbercombobox',
-												name : 'invoiceNumber',
-												fieldLabel : 'Rechnungsnr',
 												allowBlank : false,
-												allowDecimals : false,
-												allowExponential : false
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
 											}, {
-												xtype : 'numberfield',
-												fieldLabel : 'Paketnr',
-												name : 'packageNumber',
-												allowBlank : true,
-												allowDecimals : false,
-												allowExponential : false,
-												minValue : 1
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'name2',
+												fieldLabel : 'Name 2',
+												allowBlank : false,
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
 											}, {
-												xtype : 'numberfield',
-												fieldLabel : 'Sendungsnr',
-												name : 'trackNumber',
-												allowBlank : true,
-												allowDecimals : false,
-												allowExponential : false,
-												minValue : 1
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'street',
+												fieldLabel : 'Strasse',
+												allowBlank : false,
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'postalCode',
+												fieldLabel : 'PLZ',
+												allowBlank : false,
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'city',
+												fieldLabel : 'Stadt',
+												allowBlank : false,
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'country',
+												fieldLabel : 'Land',
+												allowBlank : false,
+												onChange: function(){
+													var form = this.up('form').getForm();
+													form.updateRecord(form.record);
+												}
 											}]
-								}
-
-						],
+								}],
 
 						dockedItems : [{
 									xtype : 'toolbar',
@@ -125,10 +151,41 @@ Ext.define('MyApp.view.DeliverWindow', {
 												scope : this,
 												handler : this.onSave
 											}]
+								}, {
+									xtype : 'InvoiceItemGrid',
+									dock : 'bottom',
+									id: 'CreateInvoiceItemGrid',
+									flex : 1,
+									store : 'CreateInvoiceItemDataStore',
+									//store : 'InvoiceItemDataStore',
+									title : "Rechnungs-/Lieferscheinpositionen",
+									features : null,
+									columns : [{
+												xtype : 'gridcolumn',
+												dataIndex : 'product',
+												text : 'Artikel',
+												width : 75,
+												displayField : 'name',
+												valueField : 'productNumber'
+											}, {
+												xtype : 'gridcolumn',
+												dataIndex : 'productName',
+												width : 150,
+												text : 'Artikel Name'
+											}, {
+												xtype : 'gridcolumn',
+												dataIndex : 'quantity',
+												width : 50,
+												text : 'Menge'
+											}, {
+												xtype : 'numbercolumn',
+												dataIndex : 'priceNet',
+												width : 50,
+												text : 'Preis',
+												renderer : Ext.util.Format.euMoney
+											}]
 								}]
-
 					}
-
 			]
 		});
 
@@ -136,23 +193,8 @@ Ext.define('MyApp.view.DeliverWindow', {
 		if (this.record == null)
 			console.error('no record set!');
 
-		var invoiceItem = Ext.create('MyApp.model.InvoiceItemData', {
-					product : this.record.data.product,
-					customer : this.record.data.customer,
-					invoiceNumber : this.record.data.orderConfirmationNumber,
-					quantity : this.record.data.quantity,
-					shippingCity : this.record.data.shippingCity,
-					shippingCountry : this.record.data.shippingCountry,
-					shippingName1 : this.record.data.shippingName1,
-					shippingName2 : this.record.data.shippingName2,
-					shippingPostalCode : this.record.data.shippingPostalCode,
-					shippingStreet : this.record.data.shippingStreet
-				})
-
-		this.down('form').getForm().loadRecord(invoiceItem);
-
 		// set the listeners to update record onChange
-		this.down('form').items.each(function(item) {
+		/*this.down('form').items.each(function(item) {
 			item.items.each(function(ii) {
 				console.log(ii);
 				ii.on({
@@ -163,7 +205,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 					}
 				});
 			});
-		});
+		});*/
 	},
 	/**
 	 * this method is to override by the using Component (usually Panel)
@@ -172,7 +214,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 		console.log('Override me!');
 	},
 
-	//TODO: remove setter and getter
+	// TODO: remove setter and getter
 	setInvoiceNumber : function(invoiceNumber) {
 		this.down('form').down('invoicenumbercombobox').setValue(invoiceNumber);
 		this.record.data.invoiceNumber = invoiceNumber;
@@ -220,8 +262,8 @@ Ext.define('MyApp.view.DeliverWindow', {
 				.getValue(customer);
 	},
 	/**
-	 * this method listens to the save button and is usually overridden by a panel.
-	 * see {@Link MyController.deliver}
+	 * this method listens to the save button and is usually overridden by a
+	 * panel. see {@Link MyController.deliver}
 	 */
 	onSave : function() {
 		var active = this.activeRecord, form = this.getForm();

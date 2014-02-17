@@ -16,8 +16,8 @@ var filters = {
 
 var grouping = {
         ftype: 'grouping'
-        ,groupHeaderTpl: '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]})',
-        hideGroupedHeader: true,
+        ,groupHeaderTpl: '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
+        hideGroupedHeader: false,
         startCollapsed: true
         //id: 'orderNumber'
     };
@@ -54,7 +54,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						xtype : 'gridcolumn',
 						dataIndex : 'product',
 						text : 'Artikel',
-						width : 150,
+						width : 75,
 						displayField : 'name',
 						valueField : 'productNumber'
 					}, {
@@ -73,11 +73,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'orderNumber',
 						width : 90,
 						text : 'Bestellung'
-					}, {
-						xtype : 'gridcolumn',
-						dataIndex : 'documentNumber',
-						width : 100,
-						text : 'Doknr.'
 					//}, {
 					//	xtype : 'gridcolumn',
 					//	dataIndex : 'invoiceNumber',

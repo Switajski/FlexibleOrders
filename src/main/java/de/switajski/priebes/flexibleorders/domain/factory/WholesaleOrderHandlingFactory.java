@@ -65,7 +65,7 @@ public class WholesaleOrderHandlingFactory {
 		return itemToConfirm;
 	}
 
-	public OrderItem createInvoice(OrderItem shippingItemToDeliver, DeliveryNotes deliveryNotes, 
+	public OrderItem createDeliveryNotes(OrderItem shippingItemToDeliver, DeliveryNotes deliveryNotes, 
 			Integer quantity, Date created) {
 		if (created == null) created = new Date();
 		

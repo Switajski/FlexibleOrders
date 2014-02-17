@@ -36,6 +36,10 @@ public class DeliveryNotes extends Report{
 	
 	@Embedded
 	private ShippedSpecification shippedSpecification;
+
+	private String trackNumber;
+	
+	private String packageNumber;
 	
 	protected DeliveryNotes(){};
 	
@@ -75,6 +79,22 @@ public class DeliveryNotes extends Report{
 
 	public void setShippedAddress(Address shippedAddress) {
 		this.shippedAddress = shippedAddress;
+	}
+
+	public String getTrackNumber() {
+		return trackNumber;
+	}
+
+	public String getPackageNumber() {
+		return packageNumber;
+	}
+
+	public void setPackageNumber(String packageNumber) {
+		this.packageNumber = packageNumber;
+	}
+
+	public void setTrackNumber(String trackNumber) {
+		this.trackNumber = trackNumber;
 	}
 
 }

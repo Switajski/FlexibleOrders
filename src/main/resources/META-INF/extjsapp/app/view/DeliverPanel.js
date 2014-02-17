@@ -14,6 +14,7 @@
  * Do NOT hand edit this file.
  */
 
+//TODO delete this - not used anymore
 Ext.define('MyApp.view.DeliverPanel', {
 	extend : 'Ext.panel.Panel',
 	frame : false,

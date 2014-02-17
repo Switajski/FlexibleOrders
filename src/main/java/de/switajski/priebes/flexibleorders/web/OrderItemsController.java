@@ -38,7 +38,7 @@ import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 @RequestMapping("/orderitems")
 @Controller
-public class OrderItemsController {
+public class OrderItemsController extends ExceptionController{
 
 	private static Logger log = Logger.getLogger(OrderItemsController.class);
 	
@@ -47,16 +47,6 @@ public class OrderItemsController {
 	private OrderRepository orderRepo;
 	private ReportItemServiceImpl reportService;
 
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public String handleException(IllegalArgumentException ex) {
-		//TODO: Exception handling
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server";
-		return ex.getMessage();
-	}
-	
 	@Autowired
 	public OrderItemsController(OrderItemRepository itemRepo,
 			CustomerServiceImpl customerService,
@@ -122,6 +112,7 @@ public class OrderItemsController {
 		return (OrderItem) mapper.readValue(json, OrderItem.class); 
 	}
 
+	//TODO: move to SerializationHelper
 	public List<OrderItem> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
 		OrderItem[] typedArray = (OrderItem[]) Array.newInstance(OrderItem.class,1);
 		ObjectMapper mapper = new ObjectMapper();

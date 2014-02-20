@@ -6,6 +6,7 @@ import java.util.Date;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer;
 
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
@@ -30,6 +31,7 @@ public class ReportItem {
 	private String orderConfirmationNumber;
 	private Integer quantity;
 	private Integer quantityLeft;
+	@JsonDeserialize(using = BigDecimalDeserializer.class)
 	private BigDecimal priceNet;
 	private String status;
 	private Date expectedDelivery;

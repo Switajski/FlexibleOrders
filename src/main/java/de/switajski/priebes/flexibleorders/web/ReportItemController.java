@@ -7,16 +7,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
@@ -33,12 +37,15 @@ public class ReportItemController extends ExceptionController {
 
 	private ReportItemServiceImpl reportItemService;
 	private CustomerRepository customerRepo;
+	private OrderServiceImpl orderService;
 	
 	@Autowired
 	public ReportItemController(ReportItemServiceImpl reportitemService, 
-			CustomerRepository customerRepo) {
+			CustomerRepository customerRepo,
+			OrderServiceImpl orderService) {
 		this.reportItemService = reportitemService;
 		this.customerRepo = customerRepo;
+		this.orderService = orderService;
 	}
 	
 	@RequestMapping(value = "/ordered", method=RequestMethod.GET)
@@ -158,6 +165,5 @@ public class ReportItemController extends ExceptionController {
 		
 		throw new NotImplementedException();
 	}
-
 	
 }

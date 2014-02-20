@@ -32,6 +32,7 @@ public class ShippedSpecification extends ItemSpecification {
 	public boolean isSatisfiedBy(OrderItem item) {
 		if (item.getDeliveryHistory().isEmpty()) return false;
 		if (item.getAllHesOfType(HandlingEventType.SHIP).isEmpty()) return false;
+		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
 		
 		if (getHandledQuantityFromEvents(item, HandlingEventType.CONFIRM) <= 
 				getHandledQuantityFromEvents(item, HandlingEventType.SHIP))

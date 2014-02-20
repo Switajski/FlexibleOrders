@@ -42,7 +42,8 @@ Ext.application({
         'ShippingItemGridPanel',
         'TransitionWindow',
         'OrderItemGridPanel',
-        'OrderNumberComboBox'
+        'OrderNumberComboBox',
+        'OrderWindow'
     ],
     autoCreateViewport: false,
     controllers: [

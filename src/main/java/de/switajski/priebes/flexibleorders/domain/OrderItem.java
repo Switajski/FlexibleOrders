@@ -25,7 +25,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	@JsonIgnore
 	@NotNull
-	@OneToMany(mappedBy = "deliveryHistory", fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
 	
 	@NotNull
@@ -193,6 +193,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		else if (new ShippedSpecification(false, false).isSatisfiedBy(this)) s += "versendet";
 		else if (new ConfirmedSpecification(false, false).isSatisfiedBy(this)) s+= "bestätigt";
 		else if (new OrderedSpecification().isSatisfiedBy(this)) s+= "bestellt";
+		else s+= "abgebrochen";
 		return s;
 	}
 	

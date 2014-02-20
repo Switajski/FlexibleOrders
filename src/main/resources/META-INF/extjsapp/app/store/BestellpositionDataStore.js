@@ -29,7 +29,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                 api:{
                     read: this.customurl,
                     update: this.customurl,
-                    destroy: this.customurl,
+                    destroy: '/FlexibleOrders/transitions/deleteOrder',
                     create: this.customurl
                 },
                 headers: {
@@ -40,6 +40,9 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                     successProperty: 'success',
                     root: 'data',
                     messageProperty: 'message'
+                },
+                writer: {
+                	allowSingle: false
                 },
 //                autoSync: true,
                 afterRequest:function(request,success){

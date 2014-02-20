@@ -207,12 +207,16 @@ public class ReportItemServiceImpl {
 	}
 
 	private Page<String> extractOrderNumber(Page<FlexibleOrder> orders) {
+		//if no orders are found return empty list
+		if (orders.getSize() < 1) 
+			return new PageImpl<String>(new ArrayList<String>());
+		
 		List<String> ordersList = new ArrayList<String>();
 		for (FlexibleOrder order:orders)
 			ordersList.add(order.getOrderNumber());
+		
 		Page<String> result = new PageImpl<String>(
-				ordersList, 
-				new PageRequest(orders.getNumber(), orders.getTotalPages()),
+				ordersList, new PageRequest(orders.getSize(), orders.getNumber()+1),
 				orders.getTotalElements()
 				);
 		return result;
@@ -275,7 +279,7 @@ public class ReportItemServiceImpl {
 			for (OrderItem oi:order.getItems()){
 				if (heType == null)
 					ris.add(oi.toReportItem());
-				else
+				else if (!oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
 					ris.addAll(extractRiOnlyWithHe(oi, heType));
 			}
 		}

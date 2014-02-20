@@ -122,11 +122,6 @@ Ext.define('MyApp.view.MainPanel', {
 							xtype : 'OrderItemGrid',
 							store : 'BestellpositionDataStore',
 							customurl : '/FlexibleOrders/customers/json/getItems'
-							/*extraParams : {
-								customer : 1,
-								itemType : 'ordered'
-							},*/
-							
 						}, {
 							xtype : 'ShippingItemGrid',
 							store : 'ShippingItemDataStore'

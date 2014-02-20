@@ -5,12 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +18,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
-import de.switajski.priebes.flexibleorders.domain.Currency;
-import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
+import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 
 /**
@@ -52,77 +52,180 @@ public class OrderServiceTest {
 	@Autowired OrderItemRepository itemRepo;
 
 	private static final int QUANTITY_INITIAL = 4;
-	private static final int QUANTITY_IN_NEXT_STATE = 2;
-	private static final Amount AMOUNT = new Amount(new BigDecimal("23.34"), Currency.EUR);
 	private static final Address INVOICE_ADDRESS = AddressBuilder.buildWithGeneratedAttributes(12);
 
+	private static final Long CUSTOMER_ID_1 = 1l;
+	private static final Long PRODUCT_ID_1 = 1l;
+	private static final Long PRODUCT_ID_2 = 2l;
+	
+	@Before
+	public void setUp(){
+		customerService.create(
+				CustomerBuilder.buildWithGeneratedAttributes(new Integer(CUSTOMER_ID_1.toString())));
+		productService.create(
+				CatalogProductBuilder.buildWithGeneratedAttributes(new Integer(PRODUCT_ID_1.toString())));
+		productService.create(
+				CatalogProductBuilder.buildWithGeneratedAttributes(new Integer(PRODUCT_ID_2.toString())));
+	}
+	
 	@Test
 	public void shouldOrder(){
-		OrderItem item = createItemAndOrder(QUANTITY_INITIAL, 3);
+		FlexibleOrder order = createOrder(QUANTITY_INITIAL, 3);
 		
-		assertNotNull(item);
-		assertNotNull(item.getId());
-		assertNotNull(item.getProduct());
-		
-		assertNotNull(item.getOrder().getId());
+		assertNotNull(order.getId());
+		for (OrderItem item : order.getItems()){
+			assertNotNull(item);
+			assertNotNull(item.getId());
+			assertNotNull(item.getProduct());
+			assertNotNull(item.getOrder().getId());
+		};
 	}
 
 	@Test
 	public void shouldConfirm(){
-		OrderItem item = createItemAndOrder(QUANTITY_INITIAL, 4);
+		Integer orderNumber = 4;
+		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
 		
-		assertFalse(new ConfirmedSpecification(false, false).isSatisfiedBy(item));
+		List<ReportItem> ris = createReportItemsToConfirm(order);
 		
-		Map<Long, Integer> map = new HashMap<Long, Integer>();
-		map.put(item.getId(), 4);
-		ConfirmationReport cr = orderService.confirm("13245jjj", item.getOrder().getOrderNumber(), new Date(), map);
+		ConfirmationReport cr = orderService.confirm(
+				order.getOrderNumber(), "AB-4", new Date(), ris);
 		
-		OrderItem oi = cr.getEvents().iterator().next().getOrderItem();
-		
-		assertTrue(new ConfirmedSpecification(false, false).isSatisfiedBy(oi));
-		assertNotNull("Primary key of ConfirmationReport is null after persist", cr.getId());
-		assertNotNull("Primary key of OrderItem is null after persist", oi.getId());
-		assertNotNull("Primary key of FlexibleOrder is null after persist", oi.getOrder().getId());
+		assertConfirmationReport(cr);
+	}
+
+	private void assertConfirmationReport(ConfirmationReport cr) {
 		assertTrue(cr != null);
-		assertTrue(cr.getEvents().size() == 1);
+		assertTrue(cr.getEvents().size() == 2);
 		assertTrue(cr.getEvents().iterator().next().getType() == HandlingEventType.CONFIRM);
 		
 		// assert events are as expected
-		Set<HandlingEvent> confirmedEvents = item.getAllHesOfType(HandlingEventType.CONFIRM);
-		assertEquals(1, confirmedEvents.size());
-		ConfirmationReport orderConfirmation = confirmedEvents.iterator().next().getOrderConfirmation();
-		assertNotNull(orderConfirmation.getDocumentNumber());
-		assertNotNull(orderConfirmation.getInvoiceAddress());
-		assertNotNull(orderConfirmation.getShippingAddress());
+		for (HandlingEvent he : cr.getEvents()){
+			assertTrue(new ConfirmedSpecification(false, false).isSatisfiedBy(he.getOrderItem()));
+			assertNotNull("Primary key of ConfirmationReport is null after persist", cr.getId());
+			assertNotNull("Primary key of OrderItem is null after persist", he.getOrderItem().getId());
+			assertNotNull("Primary key of FlexibleOrder is null after persist", he.getOrderItem().getOrder().getId());
+			
+			Set<HandlingEvent> confirmedEvents = he.getOrderItem().getAllHesOfType(HandlingEventType.CONFIRM);
+			assertEquals(1, confirmedEvents.size());
+			ConfirmationReport orderConfirmation = confirmedEvents.iterator().next().getOrderConfirmation();
+			assertNotNull(orderConfirmation.getDocumentNumber());
+			assertNotNull(orderConfirmation.getInvoiceAddress());
+			assertNotNull(orderConfirmation.getShippingAddress());
+		}
+	}
+
+	private List<ReportItem> createReportItemsToConfirm(FlexibleOrder order) {
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		for (OrderItem item:order.getItems()){
+			assertFalse(new ConfirmedSpecification(false, false).isSatisfiedBy(item));
+			ReportItem ri = new ReportItem();
+			ri.setId(item.getId());
+			ri.setQuantity(item.getOrderedQuantity());
+			ri.setProduct(item.getProduct().getProductNumber());
+			ris.add(ri);
+		}
+		return ris;
 	}
 	
 	@Test
 	public void shouldDeliver(){
-		OrderItem item = createItemAndOrder(QUANTITY_INITIAL, 4);
+		Integer orderNumber = 5;
+		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
 		
-		Map<Long, Integer> ois = new HashMap<Long, Integer>();
-		ois.put(item.getId(), 4);
-		ConfirmationReport cr = orderService.confirm("13245jjj", 
-				item.getOrder().getOrderNumber(), new Date(), ois);
+		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
+		ConfirmationReport cr = orderService.confirm(
+				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
 		
-		Map<Long, Integer> hes = new HashMap<Long, Integer>();
-		hes.put(cr.getEvents().iterator().next().getId(), 4);
-		DeliveryNotes dn = orderService.deliver("invoiceNumber1", "123", "jk-kj", INVOICE_ADDRESS, hes);
+		List<ReportItem> risToShip = createReportItemsToShip(cr);
+		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
+				"trackNumber", "packNo", INVOICE_ADDRESS, risToShip);
 		
-		assertFalse(dn.getEvents().isEmpty());
-		assertTrue(dn.getEvents().iterator().next().getType() == HandlingEventType.SHIP);
+		assertDeliveryNotesAsExpected(dn);
 	}
-	
-	private OrderItem createItemAndOrder(int quantity, Integer random){
-		Customer customer = customerService.create(
-				CustomerBuilder.buildWithGeneratedAttributes(random));
-		CatalogProduct product = productService.create(
-				CatalogProductBuilder.buildWithGeneratedAttributes(random));
 
-		return orderService.order(customer, random.toString(), 
-				product.toProduct(), quantity, new Amount(BigDecimal.TEN, Currency.EUR));
+	private void assertDeliveryNotesAsExpected(DeliveryNotes dn) {
+		assertTrue(dn.getId() != null);
+		assertFalse(dn.getEvents().isEmpty());
+		for (HandlingEvent he : dn.getEvents()){
+			assertTrue(he.getType() == HandlingEventType.SHIP);
+			assertTrue(he.getId() != null);
+			assertTrue(he.getInvoice() != null);
+			assertTrue(he.getInvoice().getId() != null);
+			assertTrue(he.getQuantity() > 0);
+		}
 	}
 	
+	private List<ReportItem> createReportItemsToShip(ConfirmationReport cr) {
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		for (HandlingEvent he : cr.getEvents()){
+			assertFalse(new ShippedSpecification(false, false).isSatisfiedBy(he.getOrderItem()));
+			ReportItem ri = new ReportItem();
+			ri.setId(he.getId());
+			ri.setQuantity(he.getQuantity());
+			ris.add(ri);
+		}
+		return ris;
+	}
+
+	private FlexibleOrder createOrder(int quantity, Integer random){
+		
+		ReportItem r1 = new ReportItem();
+		r1.setProduct(PRODUCT_ID_1);
+		r1.setQuantity(QUANTITY_INITIAL);
+		
+		ReportItem r2 = new ReportItem();
+		r2.setProduct(PRODUCT_ID_2);
+		r2.setQuantity(QUANTITY_INITIAL);
+		
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		ris.add(r1); ris.add(r2);
+
+		return orderService.order(CUSTOMER_ID_1, random.toString(), ris);
+	}
+	
+	@Test
+	public void shouldComplete(){
+		Integer orderNumber = 5;
+		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
+		
+		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
+		ConfirmationReport cr = orderService.confirm(
+				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+		
+		List<ReportItem> risToShip = createReportItemsToShip(cr);
+		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
+				"trackNumber", "packNo", INVOICE_ADDRESS, risToShip);
+		
+		List<ReportItem> risToComplete = createReportItemsToComplete(dn);
+		Receipt receipt = orderService.markAsPayed(dn.getDocumentNumber(), "billoreceipt", new Date(), 
+				risToComplete);
+		
+		assertReceiptAsExpected(receipt);
+	}
+
+	private void assertReceiptAsExpected(Receipt receipt) {
+		assertTrue(receipt.getId() != null);
+		assertFalse(receipt.getEvents().isEmpty());
+		for (HandlingEvent he : receipt.getEvents()){
+			assertTrue(he.getType() == HandlingEventType.PAID);
+			assertTrue(he.getId() != null);
+			assertTrue(he.getReceipt() != null);
+			assertTrue(he.getReceipt().getId() != null);
+			assertTrue(he.getQuantity() > 0);
+		}
+	}
+
+	private List<ReportItem> createReportItemsToComplete(DeliveryNotes dn) {
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		for (HandlingEvent he : dn.getEvents()){
+			ReportItem ri = new ReportItem();
+			ri.setId(he.getId());
+			ri.setQuantity(he.getQuantity());
+			ris.add(ri);
+		}
+		return ris;
+	}
 
 //	@Test
 //	public void shouldDeconfirm(){

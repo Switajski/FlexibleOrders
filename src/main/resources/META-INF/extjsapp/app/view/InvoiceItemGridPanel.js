@@ -17,7 +17,7 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 				win.focus();
 			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
-				console.log('invvoiceItemGrid - customtransitionfunction');
+				console.log('invoiceItemGrid - customtransitionfunction');
 				MyApp.getApplication().getController('MyController').withdraw(
 						"ok", record);
 

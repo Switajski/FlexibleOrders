@@ -151,7 +151,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	},
 
 	onAddClick : function() {
-		bestellnr = Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0].rawValue;
+		var bestellnr = this.getOrderNumber(); 
 		customer = Ext.getCmp('mainCustomerComboBox').getValue();
 		console.log('hierher!');
 		if (bestellnr == null || bestellnr == 0 || bestellnr == "") {
@@ -186,6 +186,9 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 		if (selection) {
 			this.store.remove(selection);
 		}
+	},
+	getOrderNumber : function(){
+		return Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0].rawValue;
 	}
 	
 });

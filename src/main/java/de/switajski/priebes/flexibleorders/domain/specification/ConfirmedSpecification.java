@@ -44,6 +44,7 @@ public class ConfirmedSpecification extends ItemSpecification{
 	public boolean isSatisfiedBy(final OrderItem item){
 		//TODO: take account to executed tasks (includeTaskExecuted) 
 		if (item.getDeliveryHistory().isEmpty()) return false;
+		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
 		for (HandlingEvent he: item.getAllHesOfType(HandlingEventType.CONFIRM)){
 			if (he.getReport() == null || he.getOrderConfirmation() == null ||
 					he.getOrderConfirmation().getInvoiceAddress() == null ||

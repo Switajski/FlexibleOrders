@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -69,6 +68,12 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	public DeliveryNotes getInvoice(){
 		if (getReport() instanceof DeliveryNotes)
 			return (DeliveryNotes) getReport();
+		return null;
+	}
+	
+	public Receipt getReceipt(){
+		if (getReport() instanceof Receipt)
+			return (Receipt) getReport();
 		return null;
 	}
 	

@@ -192,7 +192,7 @@ a img {
 }
 
 tr:nth-child(odd) {
-	background-color: #FFFFFF;
+/*	background-color: #FFFFFF;*/
 }
 
 tr:nth-child(even) {
@@ -305,11 +305,11 @@ fieldset textarea {
 	background: #e0e7d3;
 }
 
-fieldset input {
+/*fieldset input {
 	margin: 3px;
 	height: 20px;
 	background: #e0e7d3;
-}
+}*/
 
 fieldset table {
 	width: 100%;

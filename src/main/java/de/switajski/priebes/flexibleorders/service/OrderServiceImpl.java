@@ -2,12 +2,7 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
@@ -26,19 +23,18 @@ import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.factory.WholesaleOrderHandlingFactory;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ForwardSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
-import de.switajski.priebes.flexibleorders.exception.BusinessException;
-import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
+import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 @Service
@@ -49,12 +45,13 @@ public class OrderServiceImpl {
 	private OrderItemRepository itemRepo;
 	private CatalogProductRepository cProductRepo;
 	private HandlingEventRepository heRepo;
+	private CustomerRepository customerRepo;
 	
 	private WholesaleOrderHandlingFactory orderFactory = new WholesaleOrderHandlingFactory();
 	private OrderRepository orderRepo;
 	
 	@Autowired
-	public OrderServiceImpl(ReportRepository reportRepo,
+	public OrderServiceImpl(ReportRepository reportRepo, CustomerRepository customerRepo,
 			OrderItemRepository itemRepo, OrderRepository orderRepo,
 			CatalogProductRepository cProductRepo, HandlingEventRepository heRepo) {
 		this.reportRepo = reportRepo;
@@ -62,35 +59,59 @@ public class OrderServiceImpl {
 		this.cProductRepo = cProductRepo;
 		this.orderRepo = orderRepo;
 		this.heRepo = heRepo;
+		this.customerRepo = customerRepo;
 	}
 	
-	/**
-	 * creates a new order with OrderItem with given product.
-	 *  If given orderNumber exists, adds a created order item to existing order.
-	 * @param customer not null
-	 * @param orderNumber not null
-	 * @param product not null
-	 * @param orderedQuantity not null and greater zero
-	 * @param priceNet
-	 * @return
-	 */
+//	/**
+//	 * creates a new order with OrderItem with given product.
+//	 *  If given orderNumber exists, adds a created order item to existing order.
+//	 * @param customer not null
+//	 * @param orderNumber not null
+//	 * @param product not null
+//	 * @param orderedQuantity not null and greater zero
+//	 * @param priceNet
+//	 * @return
+//	 */
+//	@Transactional
+//	public OrderItem order(Customer customer, String orderNumber, 
+//			Product product, Integer orderedQuantity, Amount priceNet){
+//		if (customer == null || orderNumber == null || product == null || 
+//				orderedQuantity == null || orderedQuantity < 1)
+//			throw new IllegalArgumentException();
+//		
+//		if (orderRepo.findByOrderNumber(orderNumber) != null){
+//			return this.order(orderNumber, product, orderedQuantity, priceNet);
+//		}
+//		
+//		FlexibleOrder order = new FlexibleOrder(customer, OriginSystem.FLEXIBLE_ORDERS, orderNumber);
+//		OrderItem item = orderFactory.addOrderItem(order, product, orderedQuantity, priceNet);
+//		
+//		if (TEST) return itemRepo.saveAndFlush(item);
+//		return itemRepo.save(item);
+//	}
+	
 	@Transactional
-	public OrderItem order(Customer customer, String orderNumber, 
-			Product product, Integer orderedQuantity, Amount priceNet){
-		if (customer == null || orderNumber == null || product == null || 
-				orderedQuantity == null || orderedQuantity < 1)
+	public FlexibleOrder order(Long customerId, String orderNumber, List<ReportItem> ris){
+		if (customerId == null || orderNumber == null || ris.isEmpty())
 			throw new IllegalArgumentException();
-		
-		if (orderRepo.findByOrderNumber(orderNumber) != null){
-//			check if parameters are equal
-			return this.order(orderNumber, product, orderedQuantity, priceNet);
-		}
+		if (orderRepo.findByOrderNumber(orderNumber) != null)
+			throw new IllegalArgumentException("Bestellnr existiert bereits");
+		Customer customer = customerRepo.findOne(customerId);
+		if (customer == null)
+			throw new IllegalArgumentException("Keinen Kunden mit gegebener Kundennr. gefunden");
 		
 		FlexibleOrder order = new FlexibleOrder(customer, OriginSystem.FLEXIBLE_ORDERS, orderNumber);
-		OrderItem item = orderFactory.addOrderItem(order, product, orderedQuantity, priceNet);
+		for (ReportItem ri:ris){
+			CatalogProduct cProduct = cProductRepo.findByProductNumber(ri.getProduct());
+			if (cProduct == null) throw new IllegalArgumentException("Artikelnr nicht gefunden");
+			
+			OrderItem oi = new OrderItem(order, cProduct.toProduct(), ri.getQuantity());
+			oi.setNegotiatedPriceNet(new Amount(ri.getPriceNet(), Currency.EUR));
+			oi.setCreated(new Date());
+			order.addOrderItem(oi);
+		}
 		
-		if (TEST) return itemRepo.saveAndFlush(item);
-		return itemRepo.save(item);
+		return orderRepo.save(order);
 	}
 	
 	/**
@@ -101,7 +122,7 @@ public class OrderServiceImpl {
 	 * @return
 	 */
 	@Transactional
-	public OrderItem order(String orderNumber, Product product, Integer orderedQuantity, Amount priceNet){
+	public OrderItem addToOrder(String orderNumber, Product product, Integer orderedQuantity, Amount priceNet){
 		if (orderNumber == null || orderedQuantity == null || orderedQuantity < 1 ||
 				product == null)
 			throw new IllegalArgumentException();
@@ -111,34 +132,34 @@ public class OrderServiceImpl {
 		
 		OrderItem item = orderFactory.addOrderItem(order, product, orderedQuantity, priceNet);
 		
-		if (TEST) return itemRepo.saveAndFlush(item);
 		return itemRepo.save(item);
 	}
 	
 	@Transactional
-	public ConfirmationReport confirm(String orderNumber, String orderConfirmationNumber,
-			Date expectedDelivery, Map<Long, Integer> items){
-		if (reportRepo.findByDocumentNumber(orderConfirmationNumber) != null)
-			throw new IllegalStateException("ConfirmationReport already exists");
+	public ConfirmationReport confirm(String orderNumber, String confirmNumber,
+			Date expectedDelivery, List<ReportItem> orderItems){
+		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
+			throw new IllegalArgumentException("Auftragsnr. "+ confirmNumber +" besteht bereits");
+		if (orderItems.isEmpty())
+			throw new IllegalArgumentException("Keine Positionen angegeben");
 		
-		OrderItem orderItem = itemRepo.findOne(items.keySet().iterator().next());
-		Address address = orderItem.getOrder().getCustomer().getAddress();
+		FlexibleOrder order = orderRepo.findByOrderNumber(orderNumber);
+		if (order == null) throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 		
-		ConfirmationReport cr = new ConfirmationReport(orderConfirmationNumber, 
+		Address address = order.getCustomer().getAddress();
+				
+		ConfirmationReport cr = new ConfirmationReport(confirmNumber, 
 				address, address, new ConfirmedSpecification(false, false));
 		cr.setExpectedDelivery(expectedDelivery);
 		
-		HandlingEvent he = null;
-		for (Entry<Long, Integer> entry: items.entrySet()){
-			OrderItem oi = itemRepo.findOne(entry.getKey());
+		for (ReportItem entry: orderItems){
+			OrderItem oi = itemRepo.findOne(entry.getId());
 			if (oi == null) 
 				throw new IllegalArgumentException("Bestellposition nicht gefunden");
-			he = new HandlingEvent(cr, HandlingEventType.CONFIRM, oi, 
-					entry.getValue(), new Date());
-			itemRepo.save(oi);
+			cr.addEvent(new HandlingEvent(cr, HandlingEventType.CONFIRM, oi, 
+					entry.getQuantity(), new Date()));
 		}
-		
-		return he.getOrderConfirmation();
+		return reportRepo.save(cr);
 	}
 	
 	/**
@@ -228,137 +249,30 @@ public class OrderServiceImpl {
 	}
 	
 	@Transactional
-	public List<ReportItem> deliverJsonCommitted(JsonDeliverRequest deliverRequest){
-		new Address(deliverRequest.getName1(), deliverRequest.getName2(),
-				deliverRequest.getStreet(), deliverRequest.getPostalCode(), 
-				deliverRequest.getCity(), Country.GERMANY);
-		
-		Map<Long, Integer> hes = new HashMap<Long, Integer>();
-		for (ReportItem ri :deliverRequest.getItems()){
-			if (heRepo.findOne(ri.getId()) == null)
-				throw new IllegalArgumentException("Auftragsbestätigung mit gegebener Id nicht gefunden");
-			hes.put(ri.getId(), ri.getQuantity());
-		}
-		
-		DeliveryNotes deliveryNotes = deliver(deliverRequest.getInvoiceNumber(), deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
-				new Address(deliverRequest.getName1(), deliverRequest.getName2(),
-						deliverRequest.getStreet(), deliverRequest.getPostalCode(), 
-						deliverRequest.getCity(), Country.GERMANY),
-						hes);
-		
-		List<ReportItem> response = new ArrayList<ReportItem>();
-		for (HandlingEvent he :deliveryNotes.getEvents()){
-			response.add(he.toReportItem());
-		}
-		
-		return response;
-	}
-	
 	public DeliveryNotes deliver(String invoiceNumber, String trackNumber, String packageNumber,
-			Address shippingAddress, Map<Long, Integer> confirmEvents){
+			Address shippingAddress, List<ReportItem> confirmEvents){
+		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
+			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
-		DeliveryNotes deliveryNotes;
-		
-		if (reportRepo.findByDocumentNumber(invoiceNumber) == null){
-			deliveryNotes = new DeliveryNotes(invoiceNumber, 
-					new ShippedSpecification(false, false), shippingAddress);
-		} else {
-			deliveryNotes = (DeliveryNotes) reportRepo.findByDocumentNumber(invoiceNumber);
-		}
-		
-		for (Entry<Long, Integer> entry: confirmEvents.entrySet()){
-			OrderItem orderItem = itemRepo.findOne(entry.getKey());
+		DeliveryNotes deliveryNotes = new DeliveryNotes(invoiceNumber, 
+				new ShippedSpecification(false, false), shippingAddress);
+				
+		for (ReportItem entry: confirmEvents){
+			if (entry.getQuantity() == null || entry.getQuantity() < 1)
+				throw new IllegalArgumentException("Menge ist nicht valide");
+			
+			HandlingEvent confirmEvent = heRepo.findOne(entry.getId());
 			deliveryNotes.addEvent(new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, 
-					orderItem, entry.getValue(), new Date()));
+					confirmEvent.getOrderItem(), entry.getQuantity(), new Date()));
 		}
 		
-		for (HandlingEvent he: deliveryNotes.getEvents())
-			itemRepo.save(he.getOrderItem());
 		return reportRepo.save(deliveryNotes);
-	}
-
-	/**
-	 * creates an invoice with given invoiceno and adds shippingItemToDeliver to it. 
-	 * If invoice already exists, then adds the item to existing invoice.
-	 * 
-	 * @param shippingItemToDeliver not null
-	 * @param quantity not null
-	 * @param invoiceNo not null
-	 * @param expectedDelivery
-	 * @param spec 
-	 * @param shippedAddress
-	 * @return
-	 */
-	@Transactional
-	public OrderItem shipAndInvoice(OrderItem shippingItemToDeliver, Integer quantity, 
-			String invoiceNo, ShippedSpecification spec, Address shippedAddress) {
-		//TODO: provide this checks in a specification like "Shippable-Specification" 
-		// or: "ConfirmedSpecification" or do i mess it up with validation?
-		if (!new ConfirmedSpecification(false, false).isSatisfiedBy(shippingItemToDeliver))
-			throw new IllegalArgumentException();
-		if (shippingItemToDeliver == null)
-			throw new IllegalArgumentException();
-		if (quantity == null || quantity < 1)
-			throw new IllegalArgumentException("Menge ist nicht valide");
-		if (invoiceNo == null)
-			throw new IllegalArgumentException("Rechnungsnummer nicht angegeben");
-		if (spec == null) 
-			spec = new ShippedSpecification(false, false);
-		
-		if (shippedAddress == null)
-			shippedAddress = retrieveAddressFromCustomer(shippingItemToDeliver);
-		
-		Integer confirmedQuantity = shippingItemToDeliver.getHandledQuantity(HandlingEventType.CONFIRM);
-		if (confirmedQuantity == null)
-			throw new IllegalArgumentException("Given shipping item has no order confirmation");
-		else if (quantity > confirmedQuantity)
-			throw new IllegalArgumentException("Quantity to be shipped is greater than confirmed");
-		
-		if (reportRepo.findByDocumentNumber(invoiceNo) != null){
-			// check if parameters are equal to found invoice
-			return this.shipAndInvoice(shippingItemToDeliver, quantity, invoiceNo);
-		}
-		DeliveryNotes dn = new DeliveryNotes(invoiceNo, new ShippedSpecification(false, false), shippedAddress);
-		OrderItem item = orderFactory.createDeliveryNotes(shippingItemToDeliver, dn, quantity, null);
-		
-		if (TEST) return itemRepo.saveAndFlush(item);
-		return itemRepo.save(item);
-	}
-
-	private Address retrieveAddressFromCustomer(OrderItem shippingItemToDeliver) {
-		if (shippingItemToDeliver.getOrder() == null || 
-			shippingItemToDeliver.getOrder().getCustomer() == null || 
-			shippingItemToDeliver.getOrder().getCustomer().getAddress() == null)
-			throw new BusinessException("Shipped address not provided");
-		return shippingItemToDeliver.getOrder().getCustomer().getAddress();
 	}
 
 	@Transactional
 	public OrderItem withdrawInvoiceItemAndShipment(OrderItem invoiceItem) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
-	}
-
-	/**
-	 * adds a shipping item to deliver to an existing invoice with given invoiceno.
-	 * @param shippingItemToDeliver not null
-	 * @param quantity not null and greater than zero
-	 * @param invoiceNo not null
-	 * @return
-	 */
-	@Transactional
-	public OrderItem shipAndInvoice(OrderItem shippingItemToDeliver, Integer quantity,
-			String invoiceNo) {
-		if (shippingItemToDeliver == null || quantity == null || quantity < 1 || invoiceNo == null)
-			throw new IllegalArgumentException();
-		
-		Report confirmationReport = reportRepo.findByDocumentNumber(invoiceNo);
-		
-		OrderItem item = orderFactory
-				.addToInvoice(confirmationReport, shippingItemToDeliver, quantity, invoiceNo, null);
-		
-		if (TEST) return itemRepo.saveAndFlush(item);
-		return itemRepo.save(item);
 	}
 
 	@Transactional
@@ -383,24 +297,24 @@ public class OrderServiceImpl {
 	 * @return
 	 */
 	@Transactional
-	public Set<HandlingEvent> receivePayment(String documentNumber, Date receivedPaymentDate) {
-//		FIXME: does not work
+	public Receipt markAsPayed(String documentNumber, String receiptNumber, 
+			Date receivedPaymentDate, List<ReportItem> ris) {
 		if (receivedPaymentDate == null) 
 			receivedPaymentDate = new Date();
 		
 		Report report = reportRepo.findByDocumentNumber(documentNumber);
 		if (report == null) 
-			throw new IllegalArgumentException("given documentNumber not found");
-		Set<HandlingEvent> hes = new HashSet<HandlingEvent>(); 
-		for (HandlingEvent he: report.getEvents()){
-			he.getOrderItem().addHandlingEvent(
-					new HandlingEvent(report, HandlingEventType.PAID, he.getOrderItem(), 
-							he.getOrderItem().getOrderedQuantity(), receivedPaymentDate)
-					);
-			hes.add(he);
-			itemRepo.save(he.getOrderItem());
+			throw new IllegalArgumentException("Bericht mit gegebener Nummer nicht gefunden");
+		
+		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
+		
+		for (ReportItem ri: ris){
+			HandlingEvent he = heRepo.findOne(ri.getId());
+			receipt.addEvent(
+					new HandlingEvent(receipt, HandlingEventType.PAID, he.getOrderItem(), 
+							he.getQuantity(), receivedPaymentDate));
 		}
-		return hes;
+		return reportRepo.save(receipt);
 	}
 
 	@Transactional
@@ -416,6 +330,56 @@ public class OrderServiceImpl {
 
 	public boolean existsOrderNumber(String orderNumber) {
 		return (orderRepo.findByOrderNumber(orderNumber) != null);
+	}
+
+	public ConfirmationReport confirm(String orderNumber) {
+		List<OrderItem> ois = itemRepo.findByOrderNumber(orderNumber);
+		List<ReportItem> ris = convertToReportItems(ois);
+		return confirm(orderNumber, "AB"+orderNumber, new Date(), ris);
+	}
+
+	private List<ReportItem> convertToReportItems(List<OrderItem> ois) {
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		for (OrderItem oi:ois){
+			ris.add(oi.toReportItem());
+		}
+		return ris;
+	}
+
+	@Transactional
+	public boolean deleteOrder(String orderNumber) { 
+		FlexibleOrder order = orderRepo.findByOrderNumber(orderNumber);
+		if (order == null)
+			throw new IllegalArgumentException("Bestellnr. zum löschen nicht gefunden");
+		orderRepo.delete(order);
+		return true;
+	}
+	
+	@Transactional
+	public CancelReport cancelConfirmationReport(String orderConfirmationNumber){
+		Report cr = reportRepo.findByDocumentNumber(orderConfirmationNumber);
+		if (cr == null || !(cr instanceof ConfirmationReport))
+			throw new IllegalArgumentException("Auftragsnr. nicht gefunden");
+		CancelReport cancelReport = createCancelReport(cr);
+		return reportRepo.save(cancelReport);
+	}
+	
+	@Transactional
+	public CancelReport cancelDeliveryNotes(String invoiceNumber){
+		Report cr = reportRepo.findByDocumentNumber(invoiceNumber);
+		if (cr == null || !(cr instanceof DeliveryNotes))
+			throw new IllegalArgumentException("Rechnungs/Lieferscheinnr. nicht gefunden");
+		CancelReport cancelReport = createCancelReport(cr);
+		return reportRepo.save(cancelReport);
+	}
+
+	private CancelReport createCancelReport(Report cr) {
+		CancelReport cancelReport = new CancelReport("ABGEBROCHEN-"+cr.getDocumentNumber());
+		for (HandlingEvent he :cr.getEvents()){
+			cancelReport.addEvent(new HandlingEvent(cancelReport, HandlingEventType.CANCEL, 
+					he.getOrderItem(), he.getQuantity(), new Date()));
+		}
+		return cancelReport;
 	}
 	
 }

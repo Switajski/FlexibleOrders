@@ -25,7 +25,7 @@ public abstract class Report extends GenericEntity{
 	private String documentNumber;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "events", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 	
 	protected Report() {}

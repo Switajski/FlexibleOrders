@@ -20,6 +20,7 @@ public class PaidSpecification extends ItemSpecification {
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
 		if (item.getDeliveryHistory().isEmpty()) return false;
+		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
 		if (item.getAllHesOfType(HandlingEventType.PAID).isEmpty())
 			return false;
 		else return true;

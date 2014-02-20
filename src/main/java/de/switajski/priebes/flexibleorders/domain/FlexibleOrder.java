@@ -33,7 +33,7 @@ public class FlexibleOrder extends GenericEntity {
 	private OriginSystem originSystem;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "flexibleOrder", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<OrderItem> items = new HashSet<OrderItem>();
 	
 	@NotNull

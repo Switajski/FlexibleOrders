@@ -1,8 +1,16 @@
 package de.switajski.priebes.flexibleorders.web.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import de.switajski.priebes.flexibleorders.domain.Address;
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.reference.Country;
 
 /**
  * Can have several orders
@@ -33,6 +41,12 @@ public class JsonDeliverRequest {
 	private String trackNumber;
 	
 	private String packageNumber;
+
+	private String orderNumber;
+
+	private String orderConfirmationNumber;
+
+	private Date expectedDelivery;
 
 	public Long getCustomerId() {
 		return customerId;
@@ -120,6 +134,37 @@ public class JsonDeliverRequest {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getOrderNumber() {
+		return this.orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+	
+	public Address createAddress(){
+		return new Address(getName1(), getName2(), getStreet(), getPostalCode(), getCity(),
+				Country.GERMANY);
+	}
+
+	public String getOrderConfirmationNumber() {
+		return this.orderConfirmationNumber;
+	}
+
+	public void setOrderConfirmationNumber(String orderConfirmationNumber) {
+		this.orderConfirmationNumber = orderConfirmationNumber;
+	}
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
+	public Date getExpectedDelivery() {
+		return expectedDelivery;
+	}
+
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public void setExpectedDelivery(Date expectedDelivery) {
+		this.expectedDelivery = expectedDelivery;
 	}
 	
 }

@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 
@@ -25,6 +26,7 @@ public class OrderedSpecification extends ItemSpecification{
 		if (item.getProduct().getProductNumber() == null) return false;
 		if (item.getOrder().getCustomerEmail() == null
 				&& item.getOrder().getCustomer() == null) return false;
+		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
 		
 		return true;
 	}

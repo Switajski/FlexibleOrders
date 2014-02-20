@@ -43,6 +43,11 @@ Ext.define('MyApp.store.KundeDataStore', {
                     update: this.customurl,
                     destroy: this.customurl,
                     create: "/FlexibleOrders/customers/create"
+                },
+                writer : {
+                	type: 'json',
+                	allowSingle: true,
+                	root: 'data'
                 }
             }
         }, cfg)]);

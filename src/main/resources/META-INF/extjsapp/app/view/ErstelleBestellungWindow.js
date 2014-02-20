@@ -5,7 +5,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 	layout : 'fit',
 	closeAction : 'hide',
 	title : 'Erstelle Bestellung',
-	width : 900,
+	width : 700,
 
 	initComponent : function() {
 		var me = this;
@@ -34,7 +34,7 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 						xtype : 'ordernumbercombobox',
 						fieldLabel : 'Bestellnr',
 						listeners : {
-							//change : this.onOrderNumberChange,
+							// change : this.onOrderNumberChange,
 							specialkey : function(field, e) {
 								if (e.getKey() == e.ENTER) {
 									me.onOrderNumberChange(field, e);
@@ -57,7 +57,75 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 							store.insert(0, data);
 						},
 						selectionchange : this.onSelectionchange
-					}
+					},
+					columns : [{
+						xtype : 'gridcolumn',
+						dataIndex : 'product',
+						text : 'Artikel',
+						width : 250,
+						// name: 'productNumber',
+						editor : {
+							id : 'ArtikelComboBox',
+							xtype : 'combobox',
+							displayField : 'name',
+							valueField : 'productNumber',
+							enableRegEx : true,
+							allowBlank : false,
+							forceSelection : true,
+							queryMode : 'local',
+							store : 'ArtikelDataStore',
+							tpl : Ext.create(
+											'Ext.XTemplate',
+											'<tpl for=".">',
+											'<div class="x-boundlist-item">{productNumber} - {name}</div>',
+											'</tpl>'),
+							displayTpl : Ext.create('Ext.XTemplate',
+									'<tpl for=".">',
+									'{productNumber} - {name}', '</tpl>')
+						}
+					}, {
+						xtype : 'gridcolumn',
+						dataIndex : 'orderNumber',
+						width : 100,
+						text : 'Bestellung',
+						filter : {
+							type : 'string'
+							// , disabled: true
+						}
+					}, {
+						xtype : 'gridcolumn',
+						dataIndex : 'quantity',
+						width : 75,
+						text : 'Menge',
+						editor : {
+							xtype : 'numberfield',
+							allowBlank : false,
+							minValue : 1
+						}
+					}, {
+						xtype : 'numbercolumn',
+						dataIndex : 'priceNet',
+						width : 100,
+						text : 'Preis Netto',
+						renderer : Ext.util.Format.euMoney,
+						editor : {
+							xtype : 'numberfield',
+							allowBlank : true
+						}
+					}, {
+						xtype : 'gridcolumn',
+						dataIndex : 'expectedDelivery',
+						text : 'Geplante Auslieferung',
+						width : 130,
+						format : 'd/m/Y',
+						editor : {
+							xtype : 'datefield',
+							format : 'd/m/Y',
+							allowBlank : true,
+							minValue : Ext.Date.format(new Date(), 'd/m/Y'),
+							minText : 'Datum liegt in der Vergangenheit'
+						}
+					}]
 				}],
 
 				buttons : [{
@@ -75,17 +143,16 @@ Ext.define('MyApp.view.ErstelleBestellungWindow', {
 		me.callParent(arguments);
 	},
 	onOrderNumberChange : function(field, event) {
-		
-		 if (event!= null){ 
-		 var store =
-		 Ext.data.StoreManager.lookup('CreateOrderDataStore');
-		 store.filter("orderNumber", field.rawValue);
-		 console.log(field.rawValue);
-		 console.log(store);
-		 
-		 //store.getProxy().extraParams = {orderNumber: data}; 
-		 //store.read(); 
-		 }
+
+		if (event != null) {
+			var store = Ext.data.StoreManager.lookup('CreateOrderDataStore');
+			store.filter("orderNumber", field.rawValue);
+			console.log(field.rawValue);
+			console.log(store);
+
+			// store.getProxy().extraParams = {orderNumber: data};
+			// store.read();
+		}
 
 	},
 	onSelect : function(form, data) {

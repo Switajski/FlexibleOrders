@@ -196,7 +196,7 @@ public class ReportController extends ExceptionController{
 			List<Customer> customers = customerService.findAll();
 			ArrayList<String> list = new ArrayList<String>();
 			for (Customer customer:customers)
-				list.addAll(itemService.retrieveOrderNumbersByCustomer(customer, new PageRequest(1,20)).getContent());
+				list.addAll(itemService.retrieveOrderNumbersByCustomer(customer, new PageRequest(0,20)).getContent());
 			response.setTotal(list.size());
 			response.setData(formatOrderNumbers(list));
 		}

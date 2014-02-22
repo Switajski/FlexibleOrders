@@ -1,11 +1,13 @@
 package de.switajski.priebes.flexibleorders.web.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
@@ -43,6 +45,9 @@ public class JsonDeliverRequest {
 	private String packageNumber;
 
 	private String orderNumber;
+	
+	@JsonDeserialize(using = BigDecimalDeserializer.class)
+	private BigDecimal shipment;
 
 	private String orderConfirmationNumber;
 
@@ -165,6 +170,14 @@ public class JsonDeliverRequest {
 	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setExpectedDelivery(Date expectedDelivery) {
 		this.expectedDelivery = expectedDelivery;
+	}
+
+	public BigDecimal getShipment() {
+		return shipment;
+	}
+
+	public void setShipment(BigDecimal shipment) {
+		this.shipment = shipment;
 	}
 	
 }

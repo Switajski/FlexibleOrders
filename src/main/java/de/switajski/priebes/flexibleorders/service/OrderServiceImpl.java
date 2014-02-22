@@ -29,6 +29,7 @@ import de.switajski.priebes.flexibleorders.domain.factory.WholesaleOrderHandling
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ForwardSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
@@ -250,11 +251,11 @@ public class OrderServiceImpl {
 	
 	@Transactional
 	public DeliveryNotes deliver(String invoiceNumber, String trackNumber, String packageNumber,
-			Address shippingAddress, List<ReportItem> confirmEvents){
+			Address shippingAddress, Amount shipment, List<ReportItem> confirmEvents){
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
-		DeliveryNotes deliveryNotes = new DeliveryNotes(invoiceNumber, 
+		DeliveryNotes deliveryNotes = new DeliveryNotes(invoiceNumber, createShippingCosts(shipment),
 				new ShippedSpecification(false, false), shippingAddress);
 				
 		for (ReportItem entry: confirmEvents){
@@ -267,6 +268,15 @@ public class OrderServiceImpl {
 		}
 		
 		return reportRepo.save(deliveryNotes);
+	}
+
+	private Product createShippingCosts(Amount shipment) {
+		// private Product createShipment(Amount shipment2) {
+		Product product = new Product();
+		product.setProductType(ProductType.SHIPPING);
+		product.setName("Versand");
+		product.setShippingCosts(shipment);
+		return product;
 	}
 
 	@Transactional
@@ -380,6 +390,15 @@ public class OrderServiceImpl {
 					he.getOrderItem(), he.getQuantity(), new Date()));
 		}
 		return cancelReport;
+	}
+
+	@Transactional
+	public boolean deleteReport(String invoiceNumber) {
+		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
+		if (r == null)
+			throw new IllegalArgumentException("Bericht zum löschen nicht gefunden");
+		reportRepo.delete(r);
+		return true;
 	}
 	
 }

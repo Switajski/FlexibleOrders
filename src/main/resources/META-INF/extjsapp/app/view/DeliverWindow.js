@@ -5,7 +5,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 	alias : 'widget.DeliverWindow',
 	layout : 'fit',
 	defaultInvoiceNumber : 0,
-	width:378,
+	width : 378,
 	record : null,
 	closeAction : 'destroy',
 	bottomGrid : {
@@ -20,6 +20,13 @@ Ext.define('MyApp.view.DeliverWindow', {
 		plugins : [Ext.create('Ext.grid.plugin.CellEditing', {
 					clicksToEdit : 1
 				})],
+		features : [{
+			ftype : 'grouping',
+			groupHeaderTpl : '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
+			hideGroupedHeader : false,
+			startCollapsed : true
+				// id: 'orderNumber'
+		}],
 		columns : [{
 					xtype : 'gridcolumn',
 					dataIndex : 'product',
@@ -36,7 +43,12 @@ Ext.define('MyApp.view.DeliverWindow', {
 					xtype : 'gridcolumn',
 					dataIndex : 'quantity',
 					width : 50,
-					text : 'Menge'
+					text : 'Menge',
+					editor : {
+						xtype : 'numberfield',
+						allowBlank : false,
+						minValue : 1
+					}
 				}, {
 					xtype : 'numbercolumn',
 					dataIndex : 'priceNet',
@@ -53,13 +65,14 @@ Ext.define('MyApp.view.DeliverWindow', {
 					sortable : false,
 					menuDisabled : true,
 					items : [{
-								icon : '/FlexibleOrders/images/delete.png',
-								tooltip : 'Position l&ouml;schen',
-								scope : this,
-								handler : function(grid, rowIndex) {
-									Ext.getStore('CreateInvoiceItemDataStore').removeAt(rowIndex);
-								}
-							}]
+						icon : '/FlexibleOrders/images/delete.png',
+						tooltip : 'Position l&ouml;schen',
+						scope : this,
+						handler : function(grid, rowIndex) {
+							Ext.getStore('CreateInvoiceItemDataStore')
+									.removeAt(rowIndex);
+						}
+					}]
 				}]
 	},
 	headerForm : {
@@ -87,6 +100,19 @@ Ext.define('MyApp.view.DeliverWindow', {
 					onChange : function(oldValue, newValue) {
 						this.up('form').setValues({
 									invoiceNumber : newValue
+								})
+					}
+				}, {
+					xtype : 'numberfield',
+					fieldLabel : 'Versandkosten',
+					name : 'shipment',
+					allowBlank : true,
+					allowDecimals : false,
+					allowExponential : false,
+					minValue : 1,
+					onChange : function(oldValue, newValue) {
+						this.up('form').setValues({
+									shipment : newValue
 								})
 					}
 				}, {

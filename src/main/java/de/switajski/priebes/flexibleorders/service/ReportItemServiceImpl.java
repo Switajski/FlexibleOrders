@@ -1,7 +1,12 @@
 package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,9 @@ import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 @Service
 public class ReportItemServiceImpl {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private OrderItemRepository itemRepo;
 	private OrderRepository orderRepo;
 	private ReportRepository reportRepo;
@@ -131,9 +139,10 @@ public class ReportItemServiceImpl {
 	 */
 	public Page<ReportItem> retrieveAllToBeShipped(Customer customer,
 			PageRequest pageable, boolean byOrder) {
+		Page<FlexibleOrder> orders = orderRepo.findAllToBeShippedByCustomer(customer, pageable);
 		if (byOrder){
 			return extractReportItemsFromOrders(
-					orderRepo.findAllToBeShippedByCustomer(customer, pageable), pageable, HandlingEventType.CONFIRM);
+					orders, pageable, HandlingEventType.CONFIRM);
 		}
 		return extractReportItems(itemRepo.findAllToBeShippedByCustomer(customer, pageable), pageable);
 	}
@@ -147,8 +156,9 @@ public class ReportItemServiceImpl {
 	public Page<ReportItem> retrieveAllToBeShipped(PageRequest pageable,
 			boolean byOrder) {
 		if (byOrder){
+			Page<FlexibleOrder> orders = orderRepo.findAllToBeShipped(pageable);
 			return extractReportItemsFromOrders(
-					orderRepo.findAllToBeShipped(pageable), pageable, HandlingEventType.CONFIRM);
+					orders, pageable, HandlingEventType.CONFIRM);
 		}
 		return extractReportItems(itemRepo.findAllToBeShipped(pageable), pageable);
 	}
@@ -162,11 +172,13 @@ public class ReportItemServiceImpl {
 	 */
 	public Page<ReportItem> retrieveAllToBePaid(Customer customer,
 			PageRequest pageable, boolean byOrder) {
+		
+		em.createNamedQuery("");
 		if (byOrder){
 			return extractReportItemsFromOrders(
-					orderRepo.findByCustomer(customer, pageable), pageable, HandlingEventType.SHIP);
+					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.PAID);
 		}
-		Page<OrderItem> page = itemRepo.findByCustomer(customer, pageable);
+		Page<OrderItem> page = itemRepo.findAllToBePaidByCustomer(customer, pageable);
 		return extractReportItems(page, pageable);
 	}
 	
@@ -279,13 +291,33 @@ public class ReportItemServiceImpl {
 			for (OrderItem oi:order.getItems()){
 				if (heType == null)
 					ris.add(oi.toReportItem());
-				else if (!oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
+				else if (oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
 					ris.addAll(extractRiOnlyWithHe(oi, heType));
+				// mark cancelled items as cancelled
+				//TODO is a workaround, as long as querying only for not canceled is not working
+				else if (!oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
+					ris.addAll(extractRiOnlyWihtHeCanceled(oi, heType));
 			}
 		}
-		return new PageImpl<ReportItem>(ris, pageable, orders.getTotalElements());
+		return new PageImpl<ReportItem>(ris, pageable, countOrders(ris));
 	}
 	
+	private static int countOrders(List<ReportItem> ris){
+		Set<String> set = new HashSet<String>();
+		for (ReportItem ri : ris)
+			set.add(ri.getOrderNumber());
+		return set.size();
+	}
+	
+	private static List<ReportItem> extractRiOnlyWihtHeCanceled(
+			OrderItem oi, HandlingEventType heType) {
+		List<ReportItem> ris = new ArrayList<ReportItem>();
+		for (HandlingEvent hi: oi.getDeliveryHistory())
+			if (hi.getType().equals(heType))
+				ris.add(hi.toCancelledReportItem());
+		return ris;
+	}
+
 	private static List<ReportItem> extractRiOnlyWithHe(OrderItem oi,
 			HandlingEventType heType) {
 		List<ReportItem> ris = new ArrayList<ReportItem>();

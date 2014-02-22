@@ -18,8 +18,7 @@ var grouping = {
         ftype: 'grouping'
         ,groupHeaderTpl: '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
         hideGroupedHeader: false,
-        startCollapsed: true
-        //id: 'orderNumber'
+        startCollapsed: false
     };
 
 Ext.define('MyApp.view.PositionGridPanel', {

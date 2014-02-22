@@ -156,6 +156,14 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		}
 		return status;
 	}
+
+	//TODO workaround, as long as querying for not canceled not working
+	public ReportItem toCancelledReportItem() {
+		ReportItem ri = this.toReportItem();
+		ri.setStatus("Abgebrochen");
+		ri.setId(0l);
+		return ri;
+	}
 	
 	
 }

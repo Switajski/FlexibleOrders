@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.Date;
-import java.util.List;
 
 import javassist.NotFoundException;
 
@@ -15,16 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import de.switajski.priebes.flexibleorders.domain.CancelReport;
+import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
-import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
-import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
@@ -37,24 +32,10 @@ public class TransitionsController extends ExceptionController{
 	private static Logger log = Logger.getLogger(TransitionsController.class);
 	private OrderServiceImpl orderService;
 
-	private OrderItemRepository itemRepo;
-	private ReportRepository reportRepo;
-	private CatalogProductRepository cProductRepo;
-	private CustomerRepository customerRepo;
-	private HandlingEventRepository heRepo;
-
 	@Autowired
 	public TransitionsController(
-			CustomerRepository customerRepo,
-			OrderServiceImpl orderService,
-			OrderItemRepository itemRepo,
-			ReportRepository reportRepo,
-			CatalogProductRepository catalogProductRepo) {
+			OrderServiceImpl orderService) {
 		this.orderService = orderService;
-		this.itemRepo = itemRepo;
-		this.reportRepo = reportRepo;
-		this.cProductRepo = catalogProductRepo;
-		this.customerRepo = customerRepo;
 	}
 	
 
@@ -84,7 +65,9 @@ public class TransitionsController extends ExceptionController{
 		
 		DeliveryNotes dn = orderService.deliver(deliverRequest.getInvoiceNumber(), 
 				deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
-				deliverRequest.createAddress(), deliverRequest.getItems());
+				deliverRequest.createAddress(), 
+				new Amount(deliverRequest.getShipment(), Currency.EUR),
+				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(dn);
 	}
 	
@@ -99,16 +82,20 @@ public class TransitionsController extends ExceptionController{
 	public @ResponseBody JsonObjectResponse cancelDeliveryNotes(
 			@RequestParam(value = "invoiceNumber", required = true) String invoiceNumber) 
 			throws Exception {
-		CancelReport cr = orderService.cancelDeliveryNotes(invoiceNumber);
-		return ExtJsResponseCreator.createResponse(cr);
+		//TODO: implement cancellation instead of delete
+//		CancelReport cr = orderService.cancelDeliveryNotes(invoiceNumber);
+		orderService.deleteReport(invoiceNumber);
+		return ExtJsResponseCreator.createResponse(invoiceNumber);
 	}
 	
 	@RequestMapping(value="/cancelConfirmationReport", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse cancelConfirmationReport(
 			@RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber) 
 			throws Exception {
-		CancelReport cr = orderService.cancelConfirmationReport(orderConfirmationNumber);
-		return ExtJsResponseCreator.createResponse(cr);
+		//TODO: implement cancellation instead of delete
+//		CancelReport cr = orderService.cancelConfirmationReport(orderConfirmationNumber);
+		orderService.deleteReport(orderConfirmationNumber);
+		return ExtJsResponseCreator.createResponse(orderConfirmationNumber);
 	}
 	
 //	private ReportItem addAndSaveOrderItem(ReportItem entity) {
@@ -186,7 +173,7 @@ public class TransitionsController extends ExceptionController{
 			@RequestParam(value = "documentNumber", required = true) String documentNumber,
 			@RequestParam(value = "receivedPaymentDate", required = false) Date receivedPaymentDate) 
 					throws Exception {
-		//TODO Implement
+		//	
 		throw new NotImplementedException();
 	}
 

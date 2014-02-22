@@ -30,7 +30,8 @@ public interface OrderRepository extends JpaRepository<FlexibleOrder, Long>, Jpa
 	
 	
 	@Query("SELECT distinct(o) from FlexibleOrder o join o.items oi join oi.deliveryHistory dh where "
-			+ "dh.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM "
+			+ "dh.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM and "
+			+ "dh.type != de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP "
 			+ "and o.customer = ?1")
 	Page<FlexibleOrder> findAllToBeShippedByCustomer(Customer customer, Pageable pageable);
 	

@@ -517,7 +517,7 @@ Ext.define('MyApp.controller.MyController', {
 		record.data.invoiceNumber = record.data.documentNumber;
 		var createInvoiceStore = MyApp.getApplication()
 				.getStore('CreateInvoiceItemDataStore');
-		createInvoiceStore.filter('documentNumber', record.data.documentNumber);
+		createInvoiceStore.filter('customer', record.data.customer);
 		kunde = Ext.getStore('KundeDataStore').findRecord("id", record.data.customer);
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
@@ -594,9 +594,10 @@ Ext.define('MyApp.controller.MyController', {
 					city : record.data.city,
 					country : record.data.country,
 					invoiceNumber : form.getValues().invoiceNumber,
+					shipment : form.getValues().shipment,
 					packageNumber : form.getValues().packageNumber,
 					trackNumber : form.getValues().trackNumber,
-					items : Ext.pluck(createInvoiceStore.data.items, 'data')
+					items : Ext.pluck(createInvoiceStore.data.items, 'data'),
 				},
 				success : function(response) {
 					var text = response.responseText;

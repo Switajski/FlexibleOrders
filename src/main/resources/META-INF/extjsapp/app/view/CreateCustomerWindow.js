@@ -29,7 +29,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'email',
-												fieldLabel : 'E-Mail'
+												fieldLabel : 'E-Mail',
+												vtype: 'email'
 											}, {
 												xtype : 'textfield',
 												anchor : '100%',

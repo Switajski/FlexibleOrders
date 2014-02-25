@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.report.itextpdf.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -29,7 +30,13 @@ public class PdfPTableBuilder {
 	private FourStrings headerStrings;
 	
 	private String firstColumn = null;
+	//FIXME add page handling (Builder pattern won't work here)
+	private Document doc;
 	
+	public PdfPTableBuilder(Document doc) {
+		this.doc = doc;
+	}
+
 	public PdfPTable build(){
 		PdfPTable pdfPTable = new PdfPTable(COLUMNS);
 		pdfPTable = new PdfPTable(COLUMNS);
@@ -94,6 +101,7 @@ public class PdfPTableBuilder {
 				pdfPTable.addCell(cell);
 			}
 			bPos++;
+			
 		}
 		
 	}

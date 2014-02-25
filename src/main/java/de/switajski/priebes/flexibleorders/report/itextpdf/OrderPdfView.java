@@ -37,13 +37,13 @@ public class OrderPdfView extends PriebesIText5PdfView {
         insertSubject(document,"Bestellung Nr." + bestellung.getOrderNumber());
         insertInfo(document,"Bestelldatum: " + dateFormat.format(bestellung.getCreated()));
         this.insertEmptyLines(document, 1);
-        document.add(createTable(bestellung));
+        document.add(createTable(bestellung, document));
 
 	}
 	
-	private PdfPTable createTable(FlexibleOrder order){
+	private PdfPTable createTable(FlexibleOrder order,Document document){
 		
-		PdfPTableBuilder builder = new PdfPTableBuilder()
+		PdfPTableBuilder builder = new PdfPTableBuilder(document)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
 		for (OrderItem he: order.getItems()){
 			String priceString = getPriceString(he);

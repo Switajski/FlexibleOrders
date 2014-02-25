@@ -173,10 +173,9 @@ public class ReportItemServiceImpl {
 	public Page<ReportItem> retrieveAllToBePaid(Customer customer,
 			PageRequest pageable, boolean byOrder) {
 		
-		em.createNamedQuery("");
 		if (byOrder){
 			return extractReportItemsFromOrders(
-					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.PAID);
+					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.SHIP);
 		}
 		Page<OrderItem> page = itemRepo.findAllToBePaidByCustomer(customer, pageable);
 		return extractReportItems(page, pageable);

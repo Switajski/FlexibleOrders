@@ -37,11 +37,11 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         insertInfo(document,"Auftragsdatum: " + dateFormat.format(confirmationReport.getCreated()));
         //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
         this.insertEmptyLines(document, 2);
-        document.add(createTable(confirmationReport));
+        document.add(createTable(confirmationReport, document));
 	}
 	
-	private PdfPTable createTable(ConfirmationReport cReport){
-		PdfPTableBuilder builder = new PdfPTableBuilder()
+	private PdfPTable createTable(ConfirmationReport cReport, Document document){
+		PdfPTableBuilder builder = new PdfPTableBuilder(document)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
 		for (HandlingEvent he: cReport.getEvents()){
 			builder.addBodyRow(

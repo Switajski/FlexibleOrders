@@ -24,6 +24,8 @@ public class JsonDeliverRequest {
 	
 	private Long customerId;
 	
+	private String paymentConditions;
+	
 	private String name1;
 	
 	private String name2;
@@ -178,6 +180,14 @@ public class JsonDeliverRequest {
 
 	public void setShipment(BigDecimal shipment) {
 		this.shipment = shipment;
+	}
+
+	public String getPaymentConditions() {
+		return paymentConditions;
+	}
+
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
 	}
 	
 }

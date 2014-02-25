@@ -34,11 +34,13 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         insertSubject(document, "Rechnung Nr." + invoice.getDocumentNumber());
         insertInfo(document,"Rechnungsdatum: " + dateFormat.format(invoice.getCreated()));
         this.insertEmptyLines(document, 1);
-        document.add(createTable(invoice));
+        document.add(createTable(invoice, document));
+        this.insertEmptyLines(document, 1);
+        this.insertSmallText(document, invoice.getPaymentConditions());
 	}
 	
-	private PdfPTable createTable(DeliveryNotes deliveryNotes){
-		PdfPTableBuilder builder = new PdfPTableBuilder()
+	private PdfPTable createTable(DeliveryNotes deliveryNotes, Document doc){
+		PdfPTableBuilder builder = new PdfPTableBuilder(doc)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
 		for (HandlingEvent he: deliveryNotes.getEvents()){
 			builder.addBodyRow(
@@ -56,8 +58,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		//TODO: make vatRate dependent from order
 		Amount vat = AmountCalculator.calculateVatAmount(deliveryNotes, VAT_RATE);
 		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-		.addFooterRow("zzgl. " + VAT_RATE + "% MwSt.   " + vat.toString())
-		.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat).toString());
+		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString())
+		.addFooterRow("Versandkosten:     " + deliveryNotes.getShipment().getShippingCosts().toString())
+		.addFooterRow("Gesamtbetrag brutto:   " + 
+				net.add(vat).add(deliveryNotes.getShipment().getShippingCosts()).toString());
 		return builder.build();
 	}
 

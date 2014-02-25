@@ -20,7 +20,7 @@
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
 		up static resources -->
-	<mvc:resources location="/, classpath:/META-INF/extjsapp/, classpath:/META-INF/web-resources/"
+	<mvc:resources location="/, classpath:/META-INF/extjsapp/, classpath:/META-INF/web-resources/, classpath:/META_INF/ext-4.2.1.883/"
 		mapping="/resources/**" />
 
 	<!-- Allows for mapping the DispatcherServlet to "/" by forwarding static 

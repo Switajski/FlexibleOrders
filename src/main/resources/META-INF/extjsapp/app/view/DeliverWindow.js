@@ -96,12 +96,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 					fieldLabel : 'Rechnungsnr',
 					name : 'invoiceNumber',
 					id : 'invoiceNumber',
-					allowBlank : false,
-					onChange : function(oldValue, newValue) {
-						this.up('form').setValues({
-									invoiceNumber : newValue
-								})
-					}
+					allowBlank : false
 				}, {
 					xtype : 'numberfield',
 					fieldLabel : 'Versandkosten',
@@ -109,12 +104,12 @@ Ext.define('MyApp.view.DeliverWindow', {
 					allowBlank : true,
 					allowDecimals : false,
 					allowExponential : false,
-					minValue : 1,
-					onChange : function(oldValue, newValue) {
-						this.up('form').setValues({
-									shipment : newValue
-								})
-					}
+					minValue : 1
+					
+				}, {
+					xtype : 'textfield',
+					fieldLabel : 'Zahlungsbed.',
+					name : 'paymentConditions'				
 				}, {
 					xtype : 'numberfield',
 					fieldLabel : 'Paketnr',
@@ -122,12 +117,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 					allowBlank : true,
 					allowDecimals : false,
 					allowExponential : false,
-					minValue : 1,
-					onChange : function(oldValue, newValue) {
-						this.up('form').setValues({
-									packageNumber : newValue
-								})
-					}
+					minValue : 1
 				}, {
 					xtype : 'numberfield',
 					fieldLabel : 'Sendungsnr',
@@ -135,12 +125,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 					allowBlank : true,
 					allowDecimals : false,
 					allowExponential : false,
-					minValue : 1,
-					onChange : function(oldValue, newValue) {
-						this.up('form').setValues({
-									trackNumber : newValue
-								})
-					}
+					minValue : 1
 				}/*
 					 * , { xtype : 'numberfield', fieldLabel : 'Menge', name :
 					 * 'quantity', allowBlank : false, allowDecimals : false,
@@ -157,61 +142,37 @@ Ext.define('MyApp.view.DeliverWindow', {
 					anchor : '100%',
 					name : 'name1',
 					fieldLabel : 'Name 1',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'name2',
 					fieldLabel : 'Name 2',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'street',
 					fieldLabel : 'Strasse',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'postalCode',
 					fieldLabel : 'PLZ',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'city',
 					fieldLabel : 'Stadt',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'country',
 					fieldLabel : 'Land',
-					allowBlank : false,
-					onChange : function() {
-						var form = this.up('form').getForm();
-						form.updateRecord(form.record);
-					}
+					allowBlank : false
 				}]
 	},
 	initComponent : function() {

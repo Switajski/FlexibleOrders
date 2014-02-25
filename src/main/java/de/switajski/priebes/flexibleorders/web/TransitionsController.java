@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
@@ -67,6 +69,7 @@ public class TransitionsController extends ExceptionController{
 				deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
 				deliverRequest.createAddress(), 
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
+				deliverRequest.getPaymentConditions(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(dn);
 	}
@@ -82,10 +85,9 @@ public class TransitionsController extends ExceptionController{
 	public @ResponseBody JsonObjectResponse cancelDeliveryNotes(
 			@RequestParam(value = "invoiceNumber", required = true) String invoiceNumber) 
 			throws Exception {
-		//TODO: implement cancellation instead of delete
-//		CancelReport cr = orderService.cancelDeliveryNotes(invoiceNumber);
-		orderService.deleteReport(invoiceNumber);
-		return ExtJsResponseCreator.createResponse(invoiceNumber);
+		CancelReport cr = orderService.cancelDeliveryNotes(invoiceNumber);
+//		orderService.deleteReport(invoiceNumber);
+		return ExtJsResponseCreator.createResponse(cr);
 	}
 	
 	@RequestMapping(value="/cancelConfirmationReport", method=RequestMethod.POST)
@@ -93,9 +95,9 @@ public class TransitionsController extends ExceptionController{
 			@RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber) 
 			throws Exception {
 		//TODO: implement cancellation instead of delete
-//		CancelReport cr = orderService.cancelConfirmationReport(orderConfirmationNumber);
-		orderService.deleteReport(orderConfirmationNumber);
-		return ExtJsResponseCreator.createResponse(orderConfirmationNumber);
+		CancelReport cr = orderService.cancelConfirmationReport(orderConfirmationNumber);
+//		orderService.deleteReport(orderConfirmationNumber);
+		return ExtJsResponseCreator.createResponse(cr);
 	}
 	
 //	private ReportItem addAndSaveOrderItem(ReportItem entity) {
@@ -170,11 +172,10 @@ public class TransitionsController extends ExceptionController{
 	
 	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse complete(
-			@RequestParam(value = "documentNumber", required = true) String documentNumber,
-			@RequestParam(value = "receivedPaymentDate", required = false) Date receivedPaymentDate) 
+			@RequestParam(value="invoiceNumber", required = true) String invoiceNumber) 
 					throws Exception {
-		//	
-		throw new NotImplementedException();
+		Receipt receipt = orderService.markAsPayed(invoiceNumber, "B" + invoiceNumber, new Date());
+		return ExtJsResponseCreator.createResponse(receipt);
 	}
 
 	@RequestMapping(value="/decomplete/json", method=RequestMethod.POST)

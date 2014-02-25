@@ -251,12 +251,12 @@ public class OrderServiceImpl {
 	
 	@Transactional
 	public DeliveryNotes deliver(String invoiceNumber, String trackNumber, String packageNumber,
-			Address shippingAddress, Amount shipment, List<ReportItem> confirmEvents){
+			Address shippingAddress, Amount shipment, String paymentConditions, List<ReportItem> confirmEvents){
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
 		DeliveryNotes deliveryNotes = new DeliveryNotes(invoiceNumber, createShippingCosts(shipment),
-				new ShippedSpecification(false, false), shippingAddress);
+				new ShippedSpecification(false, false), paymentConditions, shippingAddress);
 				
 		for (ReportItem entry: confirmEvents){
 			if (entry.getQuantity() == null || entry.getQuantity() < 1)
@@ -399,6 +399,21 @@ public class OrderServiceImpl {
 			throw new IllegalArgumentException("Bericht zum löschen nicht gefunden");
 		reportRepo.delete(r);
 		return true;
+	}
+
+	@Transactional
+	public Receipt markAsPayed(String invoiceNumber, String receiptNumber, Date date) {
+		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
+		if (r == null || !(r instanceof DeliveryNotes))
+			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
+		
+		DeliveryNotes dn = (DeliveryNotes) r;
+		Receipt receipt = new Receipt(receiptNumber, date);
+		for (HandlingEvent he:dn.getEvents()){
+			receipt.addEvent(
+					new HandlingEvent(receipt, HandlingEventType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
+		}
+		return reportRepo.save(receipt);
 	}
 	
 }

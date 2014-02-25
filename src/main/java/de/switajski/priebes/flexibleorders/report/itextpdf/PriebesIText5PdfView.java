@@ -103,7 +103,10 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 			HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 	//TODO: Filemanagement...
-		protected static final String LOGO = "C:/workspaces/gitRepos/leanorders/src/main/webapp/images/LogoGross.jpg";
+		//prod:
+		protected static final String LOGO = "/var/lib/tomcat7/webapps/FlexibleOrders/images/LogoGross.jpg";
+		//dev
+		//protected static final String LOGO = "C:/workspaces/gitRepos/leanorders/src/main/webapp/images/LogoGross.jpg";
 		public static final String FONT = "Arial";
 		protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
 		protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
@@ -178,16 +181,25 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		 */
 		public void insertSubject(Document doc, String title)
 				throws MalformedURLException, IOException, DocumentException {
-					
-					Paragraph p = new Paragraph();
-					
-					p.setFont(FontFactory.getFont(FONT,16,Font.BOLD));
-					insertEmptyLines(doc,3);
-					
-					p.add(title);
-					doc.add(p);
+
+			Paragraph p = new Paragraph();
+
+			p.setFont(FontFactory.getFont(FONT,16,Font.BOLD));
+			insertEmptyLines(doc,3);
+
+			p.add(title);
+			doc.add(p);
 		}
 		
+		public void insertSmallText(Document doc, String text)
+				throws MalformedURLException, IOException, DocumentException {
+
+			Paragraph p = new Paragraph();
+			p.setFont(FontFactory.getFont(FONT,10,Font.NORMAL));
+			p.add(text);
+			doc.add(p);
+		}
+
 		/**
 		 * 
 		 * @param doc

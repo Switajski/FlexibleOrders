@@ -48,11 +48,12 @@ public class DeliveryNotes extends Report{
 	protected DeliveryNotes(){};
 	
 	public DeliveryNotes(String invoiceNumber, Product shipment, ShippedSpecification shippedSpec,
-			Address shippedAdress) {
+			String paymentConditions, Address shippedAdress) {
 		super(invoiceNumber);
 		this.shippedSpecification = shippedSpec;
 		this.shippedAddress = shippedAdress;
 		this.shipment = shipment;
+		this.paymentConditions = paymentConditions;
 	}
 	
 	public ShippedSpecification getShippedSpecification() {

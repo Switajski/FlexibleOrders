@@ -43,17 +43,18 @@ Ext.define('MyApp.controller.MyController', {
 
 	id : 'MyController',
 	models : ['BestellungData', 'BestellpositionData', 'KundeData',
-			'ArchiveItemData', 'InvoiceItemData', 'ShippingItemData'],
+			'ArchiveItemData', 'InvoiceItemData', 'ShippingItemData',
+			'DeliveryNotesItemData'],
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
-			'ArchiveItemDataStore', 'OrderNumberDataStore',
+			'ArchiveItemDataStore', 'OrderNumberDataStore','DeliveryNotesItemDataStore',
 			'InvoiceNumberDataStore', 'CreateOrderDataStore',
-			'CreateInvoiceItemDataStore'],
+			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
 			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
 			'TransitionWindow', 'OrderNumberComboBox', 'InvoiceNumberComboBox',
-			'OrderWindow'],
+			'OrderWindow', 'InvoiceWindow', 'DeliveryNotesItemGridPanel'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
 	// implementieren
 
@@ -111,10 +112,12 @@ Ext.define('MyApp.controller.MyController', {
 				});
 		this.getBpFormView().create();
 		this.getBpWindowView().create();
+		//TODO: do not create on init, but on button click
 		this.getErstelleBestellungWindowView().create();
 		this.getStore('BestellpositionDataStore').filter('status', 'ordered');
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
-		this.getStore('InvoiceItemDataStore').filter('status', 'shipped');
+		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
+		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');
 		this.getStore('ArchiveItemDataStore').filter('status', 'completed');
 	},
 
@@ -521,18 +524,18 @@ Ext.define('MyApp.controller.MyController', {
 	 *            record selected shipping item from a grid
 	 */
 	deliver : function(event, record) {
-		invoiceNumber = record.data.documentNumber.replace(/AB/g, "R")
+		deliveryNotesNumber = record.data.documentNumber.replace(/AB/g, "L")
 
-		record.data.invoiceNumber = record.data.documentNumber;
-		var createInvoiceStore = MyApp.getApplication()
-				.getStore('CreateInvoiceItemDataStore');
-		createInvoiceStore.filter('customer', record.data.customer);
+		record.data.deliveryNotesNumber = record.data.documentNumber;
+		var createDeliveryNotesStore = MyApp.getApplication()
+				.getStore('CreateDeliveryNotesItemDataStore');
+		createDeliveryNotesStore.filter('customer', record.data.customer);
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					id : "DeliverWindow",
 					onSave : function() {
 						MyApp.getApplication().getController('MyController')
-								.deliver2("ok", kunde, createInvoiceStore);
+								.deliver2("ok", kunde, createDeliveryNotesStore);
 					}
 				});
 		kunde = Ext.getStore('KundeDataStore').findRecord("id",
@@ -552,12 +555,12 @@ Ext.define('MyApp.controller.MyController', {
 					lastName: kunde.data.lastName,
 					phone: kunde.data.phone,
 					postalCode: kunde.data.postalCode,
-					shortName: kunde.data.shortName,
+					customerNumber: kunde.data.customerNumber,
 					street: kunde.data.street,
 					paymentConditions: "Rechnungsbetrag ist zahlbar innerhalb von 30 Tagen. 3% Skonto bei Zahlung innerhalb von 8 Tagen."
 				});
 		// somehow the id is deleted onShow
-		Ext.getCmp('invoiceNumber').setValue(invoiceNumber);
+		Ext.getCmp('deliveryNotesNumber').setValue(deliveryNotesNumber);
 		Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
 	},
 
@@ -689,6 +692,10 @@ Ext.define('MyApp.controller.MyController', {
 				Ext.getCmp("OrderWindow").close();
 			}
 		});
+	},
+	
+	invoice : function(button, event, option){
+		console.error('not implemented');
 	}
 
 });

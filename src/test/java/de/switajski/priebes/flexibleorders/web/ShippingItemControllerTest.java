@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.web;
 import static org.junit.Assert.assertTrue;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +31,7 @@ public class ShippingItemControllerTest {
 			+ "\"expectedDelivery\":\""
 			+ "\"}";	
 	
+	@Ignore
 	@Transactional
 	@Test
 	public void shouldDeserializeShippingItem() throws Exception{

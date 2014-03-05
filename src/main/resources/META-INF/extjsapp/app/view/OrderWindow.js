@@ -10,13 +10,13 @@ Ext.define('MyApp.view.OrderWindow', {
 		items : [{
 					xtype : 'displayfield',
 					anchor : '100%',
-					name : 'shortName',
-					fieldLabel : 'Kurzname'
+					name : 'customerNumber',
+					fieldLabel : 'Kundennr'
 				}, {
 					xtype : 'displayfield',
 					anchor : '100%',
-					name : 'id',
-					fieldLabel : 'Kundennr'
+					name : 'lastName',
+					fieldLabel : 'Nachname'
 				}, {
 					itemid : 'newOrderNumber',
 					xtype : 'ordernumbercombobox',

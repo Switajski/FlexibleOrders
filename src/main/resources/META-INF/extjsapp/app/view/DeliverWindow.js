@@ -14,7 +14,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 		id : 'CreateInvoiceItemGrid',
 		flex : 1,
 		store : 'CreateInvoiceItemDataStore',
-		title : "Rechnungs-/Lieferscheinpositionen",
+		title : "Lieferscheinpositionen",
 		features : null,
 		selType : 'cellmodel',
 		plugins : [Ext.create('Ext.grid.plugin.CellEditing', {
@@ -82,20 +82,20 @@ Ext.define('MyApp.view.DeliverWindow', {
 		items : [{
 					xtype : 'displayfield',
 					anchor : '100%',
-					name : 'shortName',
-					fieldLabel : 'Kurzname'
+					name : 'customerNumber',
+					fieldLabel : 'Kundennr'
 				}, {
 					xtype : 'displayfield',
 					anchor : '100%',
-					name : 'id',
-					fieldLabel : 'Kundennr'
+					name : 'lastName',
+					fieldLabel : 'Name'
 				}, {
 					// itemid : 'invoiceNumber',
 					// xtype : 'invoicenumbercombobox',
 					xtype : 'textfield',
-					fieldLabel : 'Rechnungsnr',
-					name : 'invoiceNumber',
-					id : 'invoiceNumber',
+					fieldLabel : 'Lieferscheinnr.',
+					name : 'deliveryNotesNumber',
+					id : 'deliveryNotesNumber',
 					allowBlank : false
 				}, {
 					xtype : 'numberfield',
@@ -111,21 +111,15 @@ Ext.define('MyApp.view.DeliverWindow', {
 					fieldLabel : 'Zahlungsbed.',
 					name : 'paymentConditions'				
 				}, {
-					xtype : 'numberfield',
+					xtype : 'textfield',
 					fieldLabel : 'Paketnr',
 					name : 'packageNumber',
-					allowBlank : true,
-					allowDecimals : false,
-					allowExponential : false,
-					minValue : 1
+					allowBlank : true
 				}, {
-					xtype : 'numberfield',
+					xtype : 'textfield',
 					fieldLabel : 'Sendungsnr',
 					name : 'trackNumber',
-					allowBlank : true,
-					allowDecimals : false,
-					allowExponential : false,
-					minValue : 1
+					allowBlank : true
 				}/*
 					 * , { xtype : 'numberfield', fieldLabel : 'Menge', name :
 					 * 'quantity', allowBlank : false, allowDecimals : false,

@@ -13,11 +13,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @JsonAutoDetect
 public class Customer extends GenericEntity{
 
-    /**
-     */
-    @Column(unique = true)
-    private String shortName;
-    
+	@NotNull
+	@Column(unique = true)
+    private Long customerNumber;
+	
     @JsonIgnore
     @Embedded
     private Address address;
@@ -50,12 +49,12 @@ public class Customer extends GenericEntity{
     public Customer(){}
     
     public Customer(
-    		String shortName,
+    		Long customerNumber,
     		String email,
     		Address address){
     	setAddress(address);
     	setEmail(email);
-    	setShortName(shortName);
+    	setCustomerNumber(customerNumber);
     }
     
     public void setAddress(Address address) {
@@ -66,14 +65,6 @@ public class Customer extends GenericEntity{
     	return address;
     }
     
-	public String getShortName() {
-        return this.shortName;
-    }
-
-	public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
 	public String getEmail() {
         return this.email;
     }
@@ -124,5 +115,13 @@ public class Customer extends GenericEntity{
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Long getCustomerNumber() {
+		return this.customerNumber;
+	}
+
+	public void setCustomerNumber(Long customerNumber) {
+		this.customerNumber = customerNumber;
 	}
 }

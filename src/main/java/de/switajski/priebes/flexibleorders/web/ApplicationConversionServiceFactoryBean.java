@@ -52,7 +52,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     public Converter<Customer, String> getCustomerToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<de.switajski.priebes.flexibleorders.domain.Customer, java.lang.String>() {
             public String convert(Customer customer) {
-                return new StringBuilder().append(customer.getShortName()).append(' ').append(customer.getFirstName()).append(' ').append(customer.getLastName()).append(' ').append(customer.getAddress().getStreet()).toString();
+                return new StringBuilder().append(customer.getCustomerNumber()).append(' ').append(customer.getFirstName()).append(' ').append(customer.getLastName()).append(' ').append(customer.getAddress().getStreet()).toString();
             }
         };
     }

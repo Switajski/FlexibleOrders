@@ -14,7 +14,7 @@ public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer>{
 	@Override
 	protected Customer createEntity() {
 		return new CustomerBuilder(
-				"shortName",
+				123l,
 				"email@nowhere.com",
 				new Address(
 						"name1", "name2", 

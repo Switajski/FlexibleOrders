@@ -14,6 +14,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class InvoicePdfFile extends InvoicePdfView {
 
 	//TODO: create constructor with filePathAndName as parameter 
+	//TODO: all *PdfFile(s) are duplicate code
 	
 	public String filePathAndName;
 	

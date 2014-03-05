@@ -118,7 +118,7 @@ public class JsonSerializationHelper {
 		for (Customer c : customers){
 			JsonCustomer jc = new JsonCustomer();
 			jc.setId(c.getId());
-			jc.setShortName(c.getShortName());
+			jc.setCustomerNumber(c.getCustomerNumber());
 			jc.setLastName(c.getLastName());
 			jc.setFirstName(c.getFirstName());
 			jc.setEmail(c.getEmail());

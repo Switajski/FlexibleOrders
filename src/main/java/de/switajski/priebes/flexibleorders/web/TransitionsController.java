@@ -69,7 +69,6 @@ public class TransitionsController extends ExceptionController{
 				deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
 				deliverRequest.createAddress(), 
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
-				deliverRequest.getPaymentConditions(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(dn);
 	}

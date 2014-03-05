@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
@@ -16,7 +17,16 @@ public class CatalogProductServiceImpl {
 		this.catalogProductRepo = catalogProductRepo;
 	}
 	
+	@Transactional
 	public CatalogProduct create(CatalogProduct product){
 		return catalogProductRepo.save(product);
+	}
+
+	@Transactional
+	public void delete(Long productNumber) {
+		CatalogProduct p = catalogProductRepo.findByProductNumber(productNumber);
+		if (p == null)
+			throw new IllegalArgumentException("Produktnr. nicht gefunden");
+		catalogProductRepo.delete(p);
 	}
 }

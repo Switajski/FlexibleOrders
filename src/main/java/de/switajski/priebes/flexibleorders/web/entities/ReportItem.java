@@ -25,9 +25,11 @@ public class ReportItem {
 	private String productName;
 	private Long customer;
 	private String customerName;
+	private Long customerNumber;
 	private String orderNumber;
 	private String documentNumber;
 	private String invoiceNumber;
+	private String deliveryNotesNumber;
 	private String orderConfirmationNumber;
 	private Integer quantity;
 	private Integer quantityLeft;
@@ -37,6 +39,7 @@ public class ReportItem {
 	private Date expectedDelivery;
 	private String trackNumber;
 	private String packageNumber;
+	private String paymentConditions;
 	
 	public Long getId() {
 		return id;
@@ -141,5 +144,24 @@ public class ReportItem {
 	}
 	public void setPackageNumber(String packageNumber) {
 		this.packageNumber = packageNumber;
+	}
+	public Long getCustomerNumber() {
+		return customerNumber;
+	}
+	public void setCustomerNumber(Long customerNumber) {
+		this.customerNumber = customerNumber;
+	}
+	public String getDeliveryNotesNumber() {
+		return deliveryNotesNumber;
+	}
+	public void setDeliveryNotesNumber(String deliveryNotesNumber) {
+		this.deliveryNotesNumber = deliveryNotesNumber;
+	}
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
+		
+	}
+	public String getPaymentConditions() {
+		return paymentConditions;
 	}
 }

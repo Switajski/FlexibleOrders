@@ -129,6 +129,33 @@ public class ReportItemController extends ExceptionController {
 
 	}
 	
+	@RequestMapping(value = "/tobeinvoiced", method=RequestMethod.GET)
+	public @ResponseBody JsonObjectResponse listAllToBeInvoiced(@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "start", required = false) Integer start,
+			@RequestParam(value = "limit", required = true) Integer limit,
+			@RequestParam(value = "sort", required = false) String sorts,
+			@RequestParam(value = "filter", required = false) String filters) throws Exception{
+			
+		Customer customer = null;
+		PageRequest pageable = new PageRequest((page-1), limit);
+		HashMap<String, String> filterMap;
+		if (filters != null)
+			filterMap = JsonSerializationHelper.deserializeFiltersJson(filters);
+		else filterMap = null;
+		
+		Page<ReportItem> reportItems;
+		if (filterMap != null && filterMap.containsKey("customer") && filterMap.get("customer")!=null){ 
+			customer = customerRepo.findOne(Long.parseLong(filterMap.get("customer")));
+			if (customer == null)
+				throw new IllegalArgumentException("Kunde mit gegebener Id nicht gefunden");
+			reportItems = reportItemService.retrieveAllToBeInvoiced(customer, pageable, BY_ORDER);
+		} else {
+			reportItems = reportItemService.retrieveAllToBeInvoiced(pageable, BY_ORDER);
+		}
+		return ExtJsResponseCreator.createResponse(reportItems, BY_ORDER, false);
+
+	}
+	
 	@RequestMapping(value = "/completed", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAllCompleted(@RequestParam(value = "page", required = true) Integer page,
 			@RequestParam(value = "start", required = false) Integer start,

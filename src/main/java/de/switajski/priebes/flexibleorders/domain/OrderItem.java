@@ -210,7 +210,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		item.setProduct(getProduct().getProductNumber());
 		item.setProductName(getProduct().getName());
 		item.setStatus(provideStatus());
-		item.setCustomerName(getOrder().getCustomer().getShortName());
+		item.setCustomerNumber(getOrder().getCustomer().getCustomerNumber());
 		item.setCreated(getCreated());
 		return item;
 	}

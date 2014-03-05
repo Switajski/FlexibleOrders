@@ -37,6 +37,7 @@ Ext.application({
         'DeliverWindow',
         'ErstelleBestellungWindow',
         'InvoiceItemGridPanel',
+        'InvoiceWindow',
         'MainPanel',
         'PositionGridPanel',
         'ShippingItemGridPanel',

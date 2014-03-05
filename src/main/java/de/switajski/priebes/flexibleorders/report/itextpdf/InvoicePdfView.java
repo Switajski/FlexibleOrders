@@ -31,12 +31,11 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		DeliveryNotes invoice =  (DeliveryNotes) model.get(DeliveryNotes.class.getSimpleName());
 		insertHeader(document);
         insertAdresse(document, invoice.getShippedAddress());
-        insertSubject(document, "Rechnung Nr." + invoice.getDocumentNumber());
+        insertSubject(document, "Rechnungnr." + invoice.getDocumentNumber());
         insertInfo(document,"Rechnungsdatum: " + dateFormat.format(invoice.getCreated()));
         this.insertEmptyLines(document, 1);
         document.add(createTable(invoice, document));
         this.insertEmptyLines(document, 1);
-        this.insertSmallText(document, invoice.getPaymentConditions());
 	}
 	
 	private PdfPTable createTable(DeliveryNotes deliveryNotes, Document doc){

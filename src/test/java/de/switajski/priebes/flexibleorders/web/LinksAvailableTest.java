@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,13 @@ public class LinksAvailableTest {
 
 	private MockMvc mockMvc;
 
+	@Ignore
 	@Before
 	public void setup() {
 		this.mockMvc = webAppContextSetup(this.wac).build();
 	}
 
+	@Ignore
 	@Test
 	public void getFoo() throws Exception {
 		this.mockMvc.perform(get("reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
@@ -38,6 +41,7 @@ public class LinksAvailableTest {
 		.andExpect(jsonPath("$.name").value("Lee"));
 	}
 	
+	@Ignore
 	@Test
 	public void getFoo2() throws Exception {
 		this.mockMvc.perform(get("/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
@@ -46,6 +50,7 @@ public class LinksAvailableTest {
 		.andExpect(jsonPath("$.name").value("Lee"));
 	}
 	
+	@Ignore
 	@Test
 	public void getFoo3() throws Exception {
 		this.mockMvc.perform(get("FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
@@ -54,6 +59,7 @@ public class LinksAvailableTest {
 		.andExpect(jsonPath("$.name").value("Lee"));
 	}
 	
+	@Ignore
 	@Test
 	public void getFoo4() throws Exception {
 		this.mockMvc.perform(get("/FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
@@ -62,6 +68,7 @@ public class LinksAvailableTest {
 		.andExpect(jsonPath("$.name").value("Lee"));
 	}
 	
+	@Ignore
 	@Test
 	public void getFoo5() throws Exception {
 		this.mockMvc.perform(get("http://localhost:8080/FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
@@ -70,6 +77,7 @@ public class LinksAvailableTest {
 		.andExpect(jsonPath("$.name").value("Lee"));
 	}
 	
+	@Ignore
 	@Test
 	public void getFoo6() throws Exception {
 		this.mockMvc.perform(get("/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))

@@ -41,19 +41,16 @@ public class DeliveryNotes extends Report{
 	
 	private String packageNumber;
 	
-	private String paymentConditions;
-	
 	private Product shipment;
 	
 	protected DeliveryNotes(){};
 	
 	public DeliveryNotes(String invoiceNumber, Product shipment, ShippedSpecification shippedSpec,
-			String paymentConditions, Address shippedAdress) {
+			Address shippedAdress) {
 		super(invoiceNumber);
 		this.shippedSpecification = shippedSpec;
 		this.shippedAddress = shippedAdress;
 		this.shipment = shipment;
-		this.paymentConditions = paymentConditions;
 	}
 	
 	public ShippedSpecification getShippedSpecification() {
@@ -101,14 +98,6 @@ public class DeliveryNotes extends Report{
 
 	public void setTrackNumber(String trackNumber) {
 		this.trackNumber = trackNumber;
-	}
-
-	public String getPaymentConditions() {
-		return paymentConditions;
-	}
-
-	public void setPaymentConditions(String paymentConditions) {
-		this.paymentConditions = paymentConditions;
 	}
 
 	public Product getShipment() {

@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.ArchiveItemGridPanel', {
 			extend : 'MyApp.view.PositionGridPanel',
 			alias : 'widget.ArchiveItemGrid',
-			title : "Abgeschlossene Positionen",
+			title : "Belege",
 			customicon : '',
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('ArchiveItemGrid - customtransitionfunction');

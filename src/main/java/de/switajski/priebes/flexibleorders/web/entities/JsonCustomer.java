@@ -16,8 +16,8 @@ public class JsonCustomer {
 
 	private Long id;
 	
-	private String shortName;
-    
+	private Long customerNumber;
+	
     private String email;
 
     private String password;
@@ -43,14 +43,6 @@ public class JsonCustomer {
     private String city;
 
     private String country;
-
-	public String getShortName() {
-		return shortName;
-	}
-
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
 
 	public String getEmail() {
 		return email;
@@ -145,7 +137,7 @@ public class JsonCustomer {
 		if (name2 == null) name2 = lastName;
 		Address a = new Address(getName1(), getName2(), getStreet(), getPostalCode(), 
 				getCity(), Country.GERMANY);
-		Customer customer = new Customer(getShortName(), getEmail(), a);
+		Customer customer = new Customer(getCustomerNumber(), getEmail(), a);
 		customer.setFirstName(getFirstName());
 		customer.setLastName(getLastName());
 		customer.setEmail(getEmail());
@@ -159,6 +151,14 @@ public class JsonCustomer {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getCustomerNumber() {
+		return customerNumber;
+	}
+
+	public void setCustomerNumber(Long customerNumber) {
+		this.customerNumber = customerNumber;
 	} 
 
 }

@@ -21,10 +21,10 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									title : 'Daten',
 									flex : 1,
 									items : [{
-												xtype : 'textfield',
+												xtype : 'numberfield',
 												anchor : '100%',
-												name : 'shortName',
-												fieldLabel : 'Kurzname'
+												name : 'customerNumber',
+												fieldLabel : 'Kundennr'
 											}, {
 												xtype : 'textfield',
 												anchor : '100%',
@@ -76,13 +76,13 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												name : 'city',
 												fieldLabel : 'Stadt',
 												allowBlank : false
-											}, {
+											}/*, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'country',
 												fieldLabel : 'Land',
 												allowBlank : false
-											}]
+											}*/]
 								}/*, {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
@@ -120,7 +120,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 			console.error('no record set!');
 		
 		var kunde = Ext.create('MyApp.model.KundeData', {
-					shortName : this.record.data.shortName,
+					customerNumber : this.record.data.customerNumber,
 					firstName : this.record.data.firstName,
 					lastName : this.record.data.lastName,
 					email : this.record.data.email,

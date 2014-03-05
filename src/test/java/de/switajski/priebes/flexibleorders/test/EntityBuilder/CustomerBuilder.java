@@ -5,11 +5,11 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 
 public class CustomerBuilder implements Builder<Customer> {
 
-    private String shortName;
     private Address address;
     private String email;
     private String password;
     private String phone;
+	private Long customerNumber;
 
     
     /**
@@ -20,18 +20,18 @@ public class CustomerBuilder implements Builder<Customer> {
      * @param email
      */
     public CustomerBuilder(
-    		String shortName,
+    		Long customerNumber,
     		String email,
     		Address address
     		) {
-    	this.shortName = shortName;
     	this.email = email;
     	this.address = address;
+    	this.customerNumber = customerNumber;
     }
     
     public CustomerBuilder generateAttributes(Integer i){
+    	customerNumber = new Long(i.toString());
     	address = AddressBuilder.buildWithGeneratedAttributes(i);
-    	shortName = "shortName".concat(i.toString());
     	email = "name@somewhere.com".concat(i.toString());
     	password = "password".concat(i.toString());
     	phone = "0049".concat(i.toString());
@@ -39,8 +39,7 @@ public class CustomerBuilder implements Builder<Customer> {
     }
     
     public static Customer buildWithGeneratedAttributes(Integer i){
-    	return new CustomerBuilder(
-    			"shortName".concat(i.toString()),
+    	return new CustomerBuilder(new Long(i.toString()),
     			"name@somewhere.com".concat(i.toString()),
     			AddressBuilder.buildWithGeneratedAttributes(i)
     			)
@@ -50,18 +49,13 @@ public class CustomerBuilder implements Builder<Customer> {
 	@Override
 	public Customer build() {
 		Customer c = new Customer();
-		c.setShortName(shortName);
+		c.setCustomerNumber(customerNumber);
 		c.setEmail(email);
 		c.setPassword(password);
 		c.setPhone(phone);
 		c.setAddress(address);
 		
 		return c;
-	}
-
-	public CustomerBuilder setShortName(String shortName) {
-		this.shortName = shortName;
-		return this;
 	}
 
 	public CustomerBuilder setAddress(Address address) {
@@ -81,6 +75,11 @@ public class CustomerBuilder implements Builder<Customer> {
 
 	public CustomerBuilder setPhone(String phone) {
 		this.phone = phone;
+		return this;
+	}
+
+	public CustomerBuilder setCustomerNumber(Long customerNumber) {
+		this.customerNumber = customerNumber;
 		return this;
 	}
 	

@@ -20,7 +20,9 @@ import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.InvoicePdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfView;
@@ -28,7 +30,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.InvoiceServiceImpl;
+import de.switajski.priebes.flexibleorders.service.DeliveryNotesServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 
 /**
@@ -45,7 +47,7 @@ public class ReportController extends ExceptionController{
 	@Autowired ReportRepository reportRepo;
 	@Autowired OrderRepository orderRepo;
 	@Autowired ReportItemServiceImpl itemService;
-	@Autowired InvoiceServiceImpl invoiceService;
+	@Autowired DeliveryNotesServiceImpl invoiceService;
 	@Autowired CustomerRepository customerService;
 	
 	/*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
@@ -70,14 +72,14 @@ public class ReportController extends ExceptionController{
         return new ModelAndView(OrderConfirmationPdfView.class.getName(),ConfirmationReport.class.getSimpleName(),null);
     }
 	
-	@RequestMapping(value = "/invoices/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showInvoicePdf(@PathVariable("id") String id) {
+	@RequestMapping(value = "/deliveryNotes/{id}.pdf", headers = "Accept=application/pdf")
+    public ModelAndView showDeliveryNotesPdf(@PathVariable("id") String id) {
         
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
 	        DeliveryNotes record = (DeliveryNotes) reportRepo.findByDocumentNumber(id);
-            return new ModelAndView(InvoicePdfView.class.getSimpleName(),
+            return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),
             		DeliveryNotes.class.getSimpleName(),
             		record);
 			
@@ -86,8 +88,28 @@ public class ReportController extends ExceptionController{
 			log.error(e.toString());
 		}
 		
-        return new ModelAndView(InvoicePdfView.class.getSimpleName(),DeliveryNotes.class.getSimpleName(),null);
+        return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),DeliveryNotes.class.getSimpleName(),null);
     }
+	
+	@RequestMapping(value = "/invoices/{id}.pdf", headers = "Accept=application/pdf")
+    public ModelAndView showInvoicePdf(@PathVariable("id") String id) {
+        //TODO: duplicate code
+    	try {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.add("Content-Type", "application/pdf; charset=utf-8");
+	        Invoice record = (Invoice) reportRepo.findByDocumentNumber(id);
+            return new ModelAndView(InvoicePdfView.class.getSimpleName(),
+            		Invoice.class.getSimpleName(),
+            		record);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			log.error(e.toString());
+		}
+		
+        return new ModelAndView(InvoicePdfView.class.getSimpleName(),Invoice.class.getSimpleName(),null);
+    }
+	
 	
 	@RequestMapping(value = "/orders/{orderNumber}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showOrderPdf(@PathVariable("orderNumber") String orderNumber) {
@@ -107,7 +129,7 @@ public class ReportController extends ExceptionController{
     }
 	
 	
-	@RequestMapping(value="/invoices/listInvoiceNumbers", method=RequestMethod.GET)
+	@RequestMapping(value="/deliveryNotes/listDeliveryNotesNumbers", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listInvoiceNumbers(
 			@RequestParam(value = "query", required = false) Long orderNumberObject) 
 					throws Exception {

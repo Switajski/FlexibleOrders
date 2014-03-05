@@ -23,7 +23,6 @@ import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.specification.ItemSpecification;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
@@ -34,16 +33,14 @@ public class ReportItemServiceImpl {
 	@PersistenceContext
 	private EntityManager em;
 	
-	private OrderItemRepository itemRepo;
 	private OrderRepository orderRepo;
 	private ReportRepository reportRepo;
 
 	@Autowired
-	public ReportItemServiceImpl(OrderItemRepository itemRepo,
+	public ReportItemServiceImpl(
 			OrderRepository orderRepo,
 			ReportRepository reportRepo) {
 		this.orderRepo = orderRepo;
-		this.itemRepo = itemRepo;
 		this.reportRepo = reportRepo;
 	}
 
@@ -58,8 +55,9 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orderRepo.findAllCompleted(pageRequest), pageRequest, HandlingEventType.PAID);
 		}
-		return extractReportItems( 
-				itemRepo.findAllConfirmed(pageRequest), pageRequest); 
+		throw new NotImplementedException();
+//		return extractReportItems( 
+//				itemRepo.findAllConfirmed(pageRequest), pageRequest); 
 	}
 	
 	/**
@@ -74,8 +72,9 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orderRepo.findAllCompletedByCustomer(customer, pageRequest), pageRequest, HandlingEventType.PAID);
 		}
-		return extractReportItems(
-				itemRepo.findAllCompletedByCustomer(customer, pageRequest), pageRequest);
+		throw new NotImplementedException();
+//		return extractReportItems(
+//				itemRepo.findAllCompletedByCustomer(customer, pageRequest), pageRequest);
 	}
 	
 	/**
@@ -91,7 +90,8 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orderRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable, null);
 		}
-		return extractReportItems(itemRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable);
+		throw new NotImplementedException();
+//		return extractReportItems(itemRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable);
 	}
 	
 //	private Page<ReportItem> extractSpecifiedReportItemsFromOrderItems(
@@ -126,8 +126,9 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orderRepo.findAllToBeConfirmed(pageable), pageable, null);
 		}
-		return extractReportItems(itemRepo.findAllToBeConfirmed(pageable), 
-				pageable);
+		throw new NotImplementedException();
+//		return extractReportItems(itemRepo.findAllToBeConfirmed(pageable), 
+//				pageable);
 	}
 	
 	/**
@@ -144,7 +145,8 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orders, pageable, HandlingEventType.CONFIRM);
 		}
-		return extractReportItems(itemRepo.findAllToBeShippedByCustomer(customer, pageable), pageable);
+		throw new NotImplementedException();
+//		return extractReportItems(itemRepo.findAllToBeShippedByCustomer(customer, pageable), pageable);
 	}
 	
 	/**
@@ -160,7 +162,8 @@ public class ReportItemServiceImpl {
 			return extractReportItemsFromOrders(
 					orders, pageable, HandlingEventType.CONFIRM);
 		}
-		return extractReportItems(itemRepo.findAllToBeShipped(pageable), pageable);
+		throw new NotImplementedException();
+//		return extractReportItems(itemRepo.findAllToBeShipped(pageable), pageable);
 	}
 	
 	/**
@@ -175,10 +178,11 @@ public class ReportItemServiceImpl {
 		
 		if (byOrder){
 			return extractReportItemsFromOrders(
-					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.SHIP);
+					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.INVOICE);
 		}
-		Page<OrderItem> page = itemRepo.findAllToBePaidByCustomer(customer, pageable);
-		return extractReportItems(page, pageable);
+		throw new NotImplementedException();
+//		Page<OrderItem> page = itemRepo.findAllToBePaidByCustomer(customer, pageable);
+//		return extractReportItems(page, pageable);
 	}
 	
 	/**
@@ -191,9 +195,10 @@ public class ReportItemServiceImpl {
 			boolean byOrder) {
 		if (byOrder){
 			return extractReportItemsFromOrders(
-					orderRepo.findAllToBePaid(pageable), pageable, HandlingEventType.SHIP);
+					orderRepo.findAllToBePaid(pageable), pageable, HandlingEventType.INVOICE);
 		}
-		return extractReportItems(itemRepo.findAllToBePaid(pageable), pageable);
+		throw new NotImplementedException();
+//		return extractReportItems(itemRepo.findAllToBePaid(pageable), pageable);
 	}
 
 	public List<String> retrieveOrderNumbersLike(String orderNumber) {
@@ -290,12 +295,8 @@ public class ReportItemServiceImpl {
 			for (OrderItem oi:order.getItems()){
 				if (heType == null)
 					ris.add(oi.toReportItem());
-				else if (oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
+				else 
 					ris.addAll(extractRiOnlyWithHe(oi, heType));
-				// mark cancelled items as cancelled
-				//TODO is a workaround, as long as querying only for not canceled is not working
-				else if (!oi.getAllHesOfType(HandlingEventType.CANCEL).isEmpty())
-					ris.addAll(extractRiOnlyWihtHeCanceled(oi, heType));
 			}
 		}
 		return new PageImpl<ReportItem>(ris, pageable, countOrders(ris));
@@ -308,15 +309,6 @@ public class ReportItemServiceImpl {
 		return set.size();
 	}
 	
-	private static List<ReportItem> extractRiOnlyWihtHeCanceled(
-			OrderItem oi, HandlingEventType heType) {
-		List<ReportItem> ris = new ArrayList<ReportItem>();
-		for (HandlingEvent hi: oi.getDeliveryHistory())
-			if (hi.getType().equals(heType))
-				ris.add(hi.toCancelledReportItem());
-		return ris;
-	}
-
 	private static List<ReportItem> extractRiOnlyWithHe(OrderItem oi,
 			HandlingEventType heType) {
 		List<ReportItem> ris = new ArrayList<ReportItem>();
@@ -351,6 +343,24 @@ public class ReportItemServiceImpl {
 				}
 			}
 		return new PageImpl<ReportItem>(ris, pageable, ris.size());
+	}
+
+	public Page<ReportItem> retrieveAllToBeInvoiced(
+			PageRequest pageable, boolean byOrder) {
+		if (byOrder){
+			return extractReportItemsFromOrders(
+					orderRepo.findAllToBeInvoiced(pageable), pageable, HandlingEventType.SHIP);
+		}
+		throw new NotImplementedException();
+	}
+
+	public Page<ReportItem> retrieveAllToBeInvoiced(Customer customer,
+			PageRequest pageable, boolean byOrder) {
+			if (byOrder){
+				return extractReportItemsFromOrders(
+						orderRepo.findAllToBeInvoicedByCustomer(customer, pageable), pageable, HandlingEventType.SHIP);
+			}
+			throw new NotImplementedException();
 	}
 
 }

@@ -7,7 +7,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +24,6 @@ import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @RequestMapping("/customers")
 @Controller
-@RooWebScaffold(path = "customers", formBackingObject = Customer.class)
 public class CustomerController extends ExceptionController{
 
 	private CustomerRepository customerRepo;

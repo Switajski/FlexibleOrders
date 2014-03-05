@@ -12,6 +12,9 @@
    	<bean id="OrderConfirmationPdfView"
    		class="de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfView">
    	</bean>
+   	<bean id="DeliveryNotesPdfView"
+   		class="de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfView">
+   	</bean>
    	<bean id="InvoicePdfView"
    		class="de.switajski.priebes.flexibleorders.report.itextpdf.InvoicePdfView">
    	</bean>

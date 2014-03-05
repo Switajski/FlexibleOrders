@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -14,10 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
-import de.switajski.priebes.flexibleorders.domain.OriginSystem;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.HandlingEventBuilder;
@@ -30,14 +30,13 @@ public class InvoicePdfFileTest {
 	
 	private static final String INVOICE_PDF_PATH = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/InvoicePdfFileTest.pdf";
 
-	DeliveryNotes deliveryNotes;
+	Invoice invoice;
 	
 	private static final String I_NR = "13456";
 	
 	@Before
 	public void initData(){
-		deliveryNotes = new DeliveryNotes(I_NR, new ShippedSpecification(false, false),
-				AddressBuilder.buildWithGeneratedAttributes(123));
+		invoice = new Invoice(I_NR, "paymentCondition", AddressBuilder.buildWithGeneratedAttributes(123));
 
 		OrderItem item1 = new ItemBuilder(
 			new FlexibleOrder(
@@ -52,17 +51,18 @@ public class InvoicePdfFileTest {
 		item1.addHandlingEvent(
 			new HandlingEventBuilder(
 					HandlingEventType.SHIP, item1, 12)
-			.setReport(deliveryNotes)
+			.setReport(invoice)
 			.build());
 		item1.addHandlingEvent(
 				new HandlingEventBuilder(
 						HandlingEventType.SHIP, item1, 13)
-				.setReport(deliveryNotes)
+				.setReport(invoice)
 				.build()
 		);
 		
 	}
 	
+	@Ignore
 	@Transactional
 	@Test
 	public void shouldGenerateInvoice() throws Exception{
@@ -71,7 +71,7 @@ public class InvoicePdfFileTest {
 		bpf.setFilePathAndName(INVOICE_PDF_PATH);
         
 		Map<String,Object> model = new HashMap<String,Object>();
-		model.put("DeliveryNotes", deliveryNotes);
+		model.put("Invoice", invoice);
 
 		bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 

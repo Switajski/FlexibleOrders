@@ -33,6 +33,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 			ProductType productType){
 		this.productNumber = productNumber;
 		this.productType = productType;
+		this.name = name;
 	};
 	
 	public static CatalogProduct buildWithGeneratedAttributes(Integer i){

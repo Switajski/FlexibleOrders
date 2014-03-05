@@ -121,10 +121,16 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 			item.setDocumentNumber(getReport().getDocumentNumber());
 			item.setOrderConfirmationNumber(getReport().getDocumentNumber());
 		}
+		if (this.getReport() instanceof Invoice){
+			Invoice invoice = (Invoice) this.getReport();
+			item.setDocumentNumber(getReport().getDocumentNumber());
+			item.setDeliveryNotesNumber(getReport().getDocumentNumber());
+			item.setPaymentConditions(invoice.getPaymentConditions());
+		}
 		if (this.getReport() instanceof DeliveryNotes){
 			DeliveryNotes deliveryNotes = (DeliveryNotes) this.getReport();
 			item.setDocumentNumber(getReport().getDocumentNumber());
-			item.setInvoiceNumber(getReport().getDocumentNumber());
+			item.setDeliveryNotesNumber(getReport().getDocumentNumber());
 			item.setTrackNumber(deliveryNotes.getTrackNumber());
 			item.setPackageNumber(deliveryNotes.getPackageNumber());
 		}
@@ -138,7 +144,7 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		item.setProduct(getOrderItem().getProduct().getProductNumber());
 		item.setProductName(getOrderItem().getProduct().getName());
 		item.setStatus(provideStatus());
-		item.setCustomerName(getOrderItem().getOrder().getCustomer().getShortName());
+		item.setCustomerNumber(getOrderItem().getOrder().getCustomer().getCustomerNumber());
 		item.setDocumentNumber(this.getReport().getDocumentNumber());
 		item.setQuantity(getQuantity());
 		item.setQuantityLeft(getOrderItem().getOrderedQuantity() - quantity);
@@ -150,6 +156,7 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		switch (type){
 			case CONFIRM: status = "bestätigt"; break;
 			case SHIP: status = "ausgeliefert"; break;
+			case INVOICE: status = "in Rechnung gestellt"; break;
 			case PAID: status = "bezahlt"; break;
 			case FORWARD_TO_THIRD_PARTY: status = "zur Näherei"; break;
 			case CANCEL: status = "storniert"; break;

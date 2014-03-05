@@ -39,6 +39,9 @@ Ext.define('MyApp.model.BestellpositionData', {
 		 }, 
 		 {
 			 name: 'invoiceNumber'
+		 }, 
+		 {
+			 name: 'deliveryNotesNumber'
 		 },
 		 {
 			 name: 'documentNumber'

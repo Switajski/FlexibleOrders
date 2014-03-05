@@ -136,9 +136,9 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				log.debug("ROW = " + id + " " + user_id + " " + first_name + " " + last_name);
 
 				Customer c = new Customer();
+				c.setCustomerNumber(new Long(id));
 				c.setEmail(email);		
 				c.setPhone(phone_1);
-				c.setShortName(last_name);
 				c.setPassword(password);
 				c.setCreated(new Date());
 				c.setAddress(new Address(first_name, last_name, address_1, Integer.parseInt(zip.trim()), city, Country.GERMANY));
@@ -343,29 +343,29 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					}
 					Amount negotiatedPriceNet = new Amount(orderItems.getBigDecimal("orderitem_price"), Currency.EUR);
 					
-					OrderItem item = orderService.order(customer, orders.getString("order_id"), 
-							product.toProduct(), quantity, negotiatedPriceNet);
-					if (item == null) continue;
-					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
-
-					ConfirmationReport param = new ConfirmationReport(
-							"AB"+orderItems.getString("ab_id"), 
-							customer.getAddress(), 
-							customer.getAddress(),
-							new ConfirmedSpecification(false, false)
-							);
-					item = orderService.confirm(item, quantity, negotiatedPriceNet, param, null);
-					if (item == null) continue;
-					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
-					
-					String rechnung_id = "R"+orderItems.getString("rechnung_id");
-					if (rechnung_id != null)
-						item = orderService.shipAndInvoice(item, quantity, rechnung_id, null, customer.getAddress());
-					if (item == null) continue;
-					
-					if (orderItems.getString("bezahlt_id") != null);
-					//FIXME: after fixing receivePayment
-//						orderService.receivePayment(rechnung_id, null);
+//					OrderItem item = orderService.order(customer, orders.getString("order_id"), 
+//							product.toProduct(), quantity, negotiatedPriceNet);
+//					if (item == null) continue;
+//					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
+//
+//					ConfirmationReport param = new ConfirmationReport(
+//							"AB"+orderItems.getString("ab_id"), 
+//							customer.getAddress(), 
+//							customer.getAddress(),
+//							new ConfirmedSpecification(false, false)
+//							);
+//					item = orderService.confirm(item, quantity, negotiatedPriceNet, param, null);
+//					if (item == null) continue;
+//					if (RANDOM && ((int) (Math.random()*2)) == 1 ) continue;
+//					
+//					String rechnung_id = "R"+orderItems.getString("rechnung_id");
+//					if (rechnung_id != null)
+//						item = orderService.shipAndInvoice(item, quantity, rechnung_id, null, customer.getAddress());
+//					if (item == null) continue;
+//					
+//					if (orderItems.getString("bezahlt_id") != null);
+//					//FIXME: after fixing receivePayment
+////						orderService.receivePayment(rechnung_id, null);
 					
 				}
 				stmt2.close();			

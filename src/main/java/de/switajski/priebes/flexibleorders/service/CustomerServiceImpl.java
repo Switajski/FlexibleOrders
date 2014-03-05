@@ -9,17 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 
 @Service
 public class CustomerServiceImpl {
 
-	private OrderItemRepository itemRepo;
 	private CustomerRepository customerRepo;
 
 	@Autowired
-	public CustomerServiceImpl(OrderItemRepository itemRepository, CustomerRepository customerRepo) {
-		itemRepo = itemRepository;
+	public CustomerServiceImpl(CustomerRepository customerRepo) {
 		this.customerRepo = customerRepo;
 	}
 	
@@ -31,6 +28,14 @@ public class CustomerServiceImpl {
 	public List<Customer> findAll() {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
+	}
+
+	@Transactional
+	public void delete(Long customerNumber) {
+		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
+		if (customer == null) 
+			throw new IllegalArgumentException("Kundennr. nicht gefunden");
+		customerRepo.delete(customer);
 	}
 
 }

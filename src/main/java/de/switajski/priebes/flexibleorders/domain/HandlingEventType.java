@@ -5,6 +5,7 @@ public enum HandlingEventType {
 	CONFIRM, 
 	FORWARD_TO_THIRD_PARTY, 
 	SHIP, 
+	INVOICE,
 	PAID, 
 	CANCEL; 
 	

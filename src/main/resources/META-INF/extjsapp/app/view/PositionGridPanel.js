@@ -64,7 +64,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'created',
-						width : 50,
+						width : 70,
 						text : 'erstellt',
 						format : 'd/m/Y'
 					}, {
@@ -85,7 +85,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantityLeft',
-						width : 40,
+						width : 50,
 						text : 'offen'
 					},{
 						xtype : 'numbercolumn',
@@ -100,14 +100,14 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						text : 'Status'
 					}, {
 						xtype : 'gridcolumn',
-						dataIndex : 'customer',
-						width : 35,
-						text : 'KId'
+						dataIndex : 'customerNumber',
+						width : 70,
+						text : 'Kundennr'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customerName',
 						width : 120,
-						text : 'Kurzname'
+						text : 'Name'
 					//}, {
 					//	xtype : 'gridcolumn',
 					//	dataIndex : 'expectedDelivery',

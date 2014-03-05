@@ -20,7 +20,7 @@ Ext.define('MyApp.model.KundeData', {
 
     fields: [
         {
-            name: 'shortName'
+            name: 'customerNumber'
         },
         {
             name: 'firstName'

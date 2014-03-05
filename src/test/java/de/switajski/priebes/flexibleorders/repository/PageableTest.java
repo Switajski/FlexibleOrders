@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.repository;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ public class PageableTest extends AbstractTestWithSpringContext{
 
 	@Autowired private OrderItemRepository orderItemRepo;
 	
+	@Ignore
 	@Test
 	public void shouldReturnPage(){
 		

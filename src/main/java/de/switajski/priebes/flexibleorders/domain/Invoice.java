@@ -1,5 +1,8 @@
 package de.switajski.priebes.flexibleorders.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +13,8 @@ public class Invoice extends Report {
 	
 	@NotNull
 	private Address invoiceAddress;
+	
+	protected Invoice() {}
 	
 	public Invoice(String invoiceNumber, String paymentConditions, Address invoiceAddress) {
 		super(invoiceNumber);
@@ -34,6 +39,15 @@ public class Invoice extends Report {
 
 	public void setInvoiceAddress(Address invoiceAddress) {
 		this.invoiceAddress = invoiceAddress;
+	}
+
+	public Set<HandlingEvent> getShippingCosts() {
+		Set<HandlingEvent> hes = new HashSet<HandlingEvent>();
+		for (HandlingEvent he : this.getEvents()){
+			if (he.getOrderItem().isShippingCosts())
+				hes.add(he);
+		}
+		return hes;
 	}
 
 }

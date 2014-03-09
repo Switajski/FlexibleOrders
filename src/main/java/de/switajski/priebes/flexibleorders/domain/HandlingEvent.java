@@ -116,23 +116,27 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	}
 	
 	public ReportItem toReportItem(){
+		//TODO: enhance mapping by a mapping framework
 		ReportItem item = new ReportItem();
+		item.setDocumentNumber(getReport().getDocumentNumber());
+		
 		if (this.getReport() instanceof ConfirmationReport){
-			item.setDocumentNumber(getReport().getDocumentNumber());
 			item.setOrderConfirmationNumber(getReport().getDocumentNumber());
 		}
 		if (this.getReport() instanceof Invoice){
 			Invoice invoice = (Invoice) this.getReport();
-			item.setDocumentNumber(getReport().getDocumentNumber());
+			item.setInvoiceNumber(getReport().getDocumentNumber());
 			item.setDeliveryNotesNumber(getReport().getDocumentNumber());
 			item.setPaymentConditions(invoice.getPaymentConditions());
 		}
 		if (this.getReport() instanceof DeliveryNotes){
 			DeliveryNotes deliveryNotes = (DeliveryNotes) this.getReport();
-			item.setDocumentNumber(getReport().getDocumentNumber());
 			item.setDeliveryNotesNumber(getReport().getDocumentNumber());
 			item.setTrackNumber(deliveryNotes.getTrackNumber());
 			item.setPackageNumber(deliveryNotes.getPackageNumber());
+		}
+		if (this.getReport() instanceof Receipt){
+			item.setReceiptNumber(getReport().getDocumentNumber());
 		}
 		item.setId(getId());
 		item.setCreated(getCreated());
@@ -164,13 +168,4 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		return status;
 	}
 
-	//TODO workaround, as long as querying for not canceled not working
-	public ReportItem toCancelledReportItem() {
-		ReportItem ri = this.toReportItem();
-		ri.setStatus("Abgebrochen");
-		ri.setId(0l);
-		return ri;
-	}
-	
-	
 }

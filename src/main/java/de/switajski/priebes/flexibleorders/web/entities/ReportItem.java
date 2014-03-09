@@ -29,6 +29,7 @@ public class ReportItem {
 	private String orderNumber;
 	private String documentNumber;
 	private String invoiceNumber;
+	private String receiptNumber;
 	private String deliveryNotesNumber;
 	private String orderConfirmationNumber;
 	private Integer quantity;
@@ -163,5 +164,11 @@ public class ReportItem {
 	}
 	public String getPaymentConditions() {
 		return paymentConditions;
+	}
+	public String getReceiptNumber() {
+		return receiptNumber;
+	}
+	public void setReceiptNumber(String receiptNumber) {
+		this.receiptNumber = receiptNumber;
 	}
 }

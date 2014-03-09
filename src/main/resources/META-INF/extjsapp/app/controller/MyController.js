@@ -47,8 +47,9 @@ Ext.define('MyApp.controller.MyController', {
 			'DeliveryNotesItemData'],
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
-			'ArchiveItemDataStore', 'OrderNumberDataStore','DeliveryNotesItemDataStore',
-			'InvoiceNumberDataStore', 'CreateOrderDataStore',
+			'ArchiveItemDataStore', 'OrderNumberDataStore',
+			'DeliveryNotesItemDataStore', 'InvoiceNumberDataStore',
+			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
 			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
@@ -112,8 +113,6 @@ Ext.define('MyApp.controller.MyController', {
 				});
 		this.getBpFormView().create();
 		this.getBpWindowView().create();
-		//TODO: do not create on init, but on button click
-		this.getErstelleBestellungWindowView().create();
 		this.getStore('BestellpositionDataStore').filter('status', 'ordered');
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
@@ -451,7 +450,8 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	complete : function(event, anr, record) {
-		record.data.accountNumber = record.data.invoiceNumber;
+		record.data.accountNumber = record.data.invoiceNumber
+				.replace(/R/g, "Q");
 		if (event == "ok") {
 			console.log(record.data.product + " " + record.data.quantity + " "
 					+ record.data.accountNumber);
@@ -489,8 +489,9 @@ Ext.define('MyApp.controller.MyController', {
 		var stores = new Array();
 		stores[0] = Ext.data.StoreManager.lookup('BestellpositionDataStore');
 		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
-		stores[2] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
-		stores[3] = Ext.data.StoreManager.lookup('ArchiveItemDataStore');
+		stores[2] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
+		stores[3] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
+		stores[4] = Ext.data.StoreManager.lookup('ArchiveItemDataStore');
 
 		stores.forEach(function(store) {
 					found = false;
@@ -524,7 +525,7 @@ Ext.define('MyApp.controller.MyController', {
 	 *            record selected shipping item from a grid
 	 */
 	deliver : function(event, record) {
-		deliveryNotesNumber = record.data.documentNumber.replace(/AB/g, "L")
+		deliveryNotesNumber = record.data.documentNumber.replace(/AB/g, "L");
 
 		record.data.deliveryNotesNumber = record.data.documentNumber;
 		var createDeliveryNotesStore = MyApp.getApplication()
@@ -534,7 +535,9 @@ Ext.define('MyApp.controller.MyController', {
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					id : "DeliverWindow",
 					onSave : function() {
-						MyApp.getApplication().getController('MyController')
+						MyApp
+								.getApplication()
+								.getController('MyController')
 								.deliver2("ok", kunde, createDeliveryNotesStore);
 					}
 				});
@@ -547,17 +550,16 @@ Ext.define('MyApp.controller.MyController', {
 		deliverWindow.down('form').getForm().setValues({
 					name1 : kunde.data.name1,
 					name2 : kunde.data.name2,
-					city: kunde.data.city,
-					country: kunde.data.country,
-					email: kunde.data.email,
-					firstName: kunde.data.firstName,
-					id: kunde.data.id,
-					lastName: kunde.data.lastName,
-					phone: kunde.data.phone,
-					postalCode: kunde.data.postalCode,
-					customerNumber: kunde.data.customerNumber,
-					street: kunde.data.street,
-					paymentConditions: "Rechnungsbetrag ist zahlbar innerhalb von 30 Tagen. 3% Skonto bei Zahlung innerhalb von 8 Tagen."
+					city : kunde.data.city,
+					country : kunde.data.country,
+					email : kunde.data.email,
+					firstName : kunde.data.firstName,
+					id : kunde.data.id,
+					lastName : kunde.data.lastName,
+					phone : kunde.data.phone,
+					postalCode : kunde.data.postalCode,
+					customerNumber : kunde.data.customerNumber,
+					street : kunde.data.street
 				});
 		// somehow the id is deleted onShow
 		Ext.getCmp('deliveryNotesNumber').setValue(deliveryNotesNumber);
@@ -578,6 +580,7 @@ Ext.define('MyApp.controller.MyController', {
 					});
 			return;
 		}
+
 		var customer = MyApp.getApplication().getStore('KundeDataStore')
 				.getById(customerId);
 
@@ -606,7 +609,7 @@ Ext.define('MyApp.controller.MyController', {
 	 * @param {}
 	 *            createInvoiceStore
 	 */
-	deliver2 : function(event, record, createInvoiceStore) {
+	deliver2 : function(event, record, createDeliveryNotesStore) {
 		console.log('deliver2');
 		var form = Ext.getCmp('DeliverWindow').down('form').getForm();
 		if (event == "ok") {
@@ -625,12 +628,12 @@ Ext.define('MyApp.controller.MyController', {
 					postalCode : form.getValues().postalCode,
 					city : form.getValues().city,
 					country : form.getValues().country,
-					invoiceNumber : form.getValues().invoiceNumber,
+					deliveryNotesNumber : form.getValues().deliveryNotesNumber,
 					shipment : form.getValues().shipment,
-					paymentConditions : form.getValues().paymentConditions,
 					packageNumber : form.getValues().packageNumber,
 					trackNumber : form.getValues().trackNumber,
-					items : Ext.pluck(createInvoiceStore.data.items, 'data')
+					items : Ext.pluck(createDeliveryNotesStore.data.items,
+							'data')
 				},
 				success : function(response) {
 					var text = response.responseText;
@@ -689,13 +692,102 @@ Ext.define('MyApp.controller.MyController', {
 				allGrids.forEach(function(grid) {
 							grid.getStore().load();
 						});
+				Ext.getCmp('CreateOrderGrid').getStore().removeAll();
 				Ext.getCmp("OrderWindow").close();
 			}
 		});
 	},
+
+	invoice : function(event, record) {
+		deliveryNotesNumber = record.data.deliveryNotesNumber
+				.replace(/L/g, "R");
+
+		record.data.deliveryNotesNumber = record.data.deliveryNotesNumber;
+		var createInvoiceStore = MyApp.getApplication()
+				.getStore('CreateInvoiceItemDataStore');
+		createInvoiceStore.filter('customer', record.data.customer);
+
+		var invoiceWindow = Ext.create('MyApp.view.InvoiceWindow', {
+					id : "InvoiceWindow",
+					onSave : function() {
+						MyApp.getApplication().getController('MyController')
+								.invoice2("ok", kunde, createInvoiceStore);
+					}
+				});
+		kunde = Ext.getStore('KundeDataStore').findRecord("id",
+				record.data.customer);
+		kundeId = kunde.data.id;
+		email = kunde.data.email;
+
+		invoiceWindow.show();
+		invoiceWindow.down('form').getForm().setValues({
+			name1 : kunde.data.name1,
+			name2 : kunde.data.name2,
+			city : kunde.data.city,
+			country : kunde.data.country,
+			email : kunde.data.email,
+			firstName : kunde.data.firstName,
+			id : kunde.data.id,
+			lastName : kunde.data.lastName,
+			phone : kunde.data.phone,
+			postalCode : kunde.data.postalCode,
+			customerNumber : kunde.data.customerNumber,
+			street : kunde.data.street,
+			paymentConditions : "Rechnungsbetrag ist zahlbar innerhalb von 30 Tagen. 3% Skonto bei Zahlung innerhalb von 8 Tagen."
+		});
+		// somehow the id is deleted onShow
+		Ext.getCmp('invoiceNumber').setValue(deliveryNotesNumber);
+		Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
+	},
+
+	invoice2 : function(event, record, createInvoiceStore) {
+		console.log('invoice2');
+		var form = Ext.getCmp('InvoiceWindow').down('form').getForm();
+		if (event == "ok") {
+			var request = Ext.Ajax.request({
+						url : '/FlexibleOrders/transitions/invoice/json',
+						jsonData : {
+							customerId : form.getValues().id,
+							name1 : form.getValues().name1,
+							name2 : form.getValues().name2,
+							street : form.getValues().street,
+							postalCode : form.getValues().postalCode,
+							city : form.getValues().city,
+							country : form.getValues().country,
+							invoiceNumber : form.getValues().invoiceNumber,
+							paymentConditions : form.getValues().paymentConditons,
+							items : Ext.pluck(createInvoiceStore.data.items,
+									'data')
+						},
+						success : function(response) {
+							var text = response.responseText;
+							// Sync
+							MyApp.getApplication()
+									.getController('MyController').sleep(500);
+							var allGrids = Ext.ComponentQuery
+									.query('PositionGrid');
+							allGrids.forEach(function(grid) {
+										grid.getStore().load();
+									});
+							Ext.getCmp("InvoiceWindow").close();
+						}
+					});
+		}
+	},
 	
-	invoice : function(button, event, option){
-		console.error('not implemented');
+	deleteReport : function(varDocumentNumber){
+		console.error('Not Implemented!');
+		var request = Ext.Ajax.request({
+			url : '/FlexibleOrders/transitions/deleteReport',
+			params : {
+				documentNumber : varDocumentNumber
+			},
+			success : function(response) {
+				var text = response.responseText;
+				// Sync
+				MyApp.getApplication().getController('MyController').sleep(500);
+			}
+		});
 	}
 
 });

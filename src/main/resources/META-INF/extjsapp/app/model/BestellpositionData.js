@@ -41,10 +41,16 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 name: 'invoiceNumber'
 		 }, 
 		 {
+			 name: 'orderConfirmationNumber'
+		 },
+		 {
 			 name: 'deliveryNotesNumber'
 		 },
 		 {
 			 name: 'documentNumber'
+		 },
+		 {
+			 name: 'receiptNumber'
 		 },
 		 {
 			 name: 'quantity',

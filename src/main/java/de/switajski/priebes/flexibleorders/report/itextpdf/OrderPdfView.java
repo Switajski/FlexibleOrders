@@ -46,18 +46,20 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		PdfPTableBuilder builder = new PdfPTableBuilder(document)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
 		for (OrderItem he: order.getItems()){
-			String priceString = getPriceString(he);
-			String priceXquantity = getPriceXquantity(he);
-			builder.addBodyRow(
-				new FourStrings("",
-				// product Name
-				"Art.Nr.: " + he.getProduct().getProductNumber() + " - "
-				+ he.getProduct().getName(),
-				// price
-				priceString,
-				// amount of single item
-				priceXquantity
-			));
+			if (!he.isShippingCosts()){
+				String priceString = getPriceString(he);
+				String priceXquantity = getPriceXquantity(he);
+				builder.addBodyRow(
+						new FourStrings("",
+								// product Name
+								"Art.Nr.: " + he.getProduct().getProductNumber() + " - "
+								+ he.getProduct().getName(),
+								// price
+								priceString,
+								// amount of single item
+								priceXquantity
+								));
+			}
 		}
 		if (hasRecommendedPrices(order) && hasVat(order)){
 			Amount net = AmountCalculator.calculateNetAmount(order);

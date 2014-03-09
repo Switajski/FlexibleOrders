@@ -21,5 +21,6 @@ Ext.define('MyApp.store.CreateDeliveryNotesItemDataStore', {
 	//customstoreid: 'InvoiceItemDataStore',
     requires: [
         'MyApp.model.DeliveryNotesItemData'
-    ]
+    ],
+    groupField: 'orderConfirmationNumber'
 });

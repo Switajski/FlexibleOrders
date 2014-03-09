@@ -296,7 +296,7 @@ public class ReportItemServiceImpl {
 				if (heType == null)
 					ris.add(oi.toReportItem());
 				else 
-					ris.addAll(extractRiOnlyWithHe(oi, heType));
+					ris.addAll(oi.toReportItems(heType));
 			}
 		}
 		return new PageImpl<ReportItem>(ris, pageable, countOrders(ris));
@@ -309,15 +309,6 @@ public class ReportItemServiceImpl {
 		return set.size();
 	}
 	
-	private static List<ReportItem> extractRiOnlyWithHe(OrderItem oi,
-			HandlingEventType heType) {
-		List<ReportItem> ris = new ArrayList<ReportItem>();
-		for (HandlingEvent hi: oi.getDeliveryHistory())
-			if (hi.getType().equals(heType))
-				ris.add(hi.toReportItem());
-		return ris;
-	}
-
 	/**
 	 * 
 	 * @param type if null, ReportItem will be generated from OrderItem only!

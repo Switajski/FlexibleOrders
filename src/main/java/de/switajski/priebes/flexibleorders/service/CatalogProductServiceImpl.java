@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 
@@ -28,5 +29,17 @@ public class CatalogProductServiceImpl {
 		if (p == null)
 			throw new IllegalArgumentException("Produktnr. nicht gefunden");
 		catalogProductRepo.delete(p);
+	}
+	
+	@Transactional(readOnly = true)
+	public Amount retrieveRecommendedPriceNet(Long productNumber) {
+		CatalogProduct product = 
+				catalogProductRepo.findByProductNumber(productNumber);
+		if (product == null)
+			//TODO: find a more suitable Exception - something like NotFoundException
+			throw new IllegalArgumentException("Product with given productno. not found in catalog");
+		if (product.getRecommendedPriceNet() == null)
+			throw new IllegalArgumentException("Price of product with given productno. not set in catalog");
+		return product.getRecommendedPriceNet();	
 	}
 }

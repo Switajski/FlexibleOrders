@@ -16,7 +16,7 @@ var filters = {
 
 var grouping = {
         ftype: 'grouping'
-        ,groupHeaderTpl: '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
+        ,groupHeaderTpl: 'Dok.nr.: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
         hideGroupedHeader: false,
         startCollapsed: false
     };

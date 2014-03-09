@@ -12,8 +12,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.FourStrings;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
@@ -28,9 +29,9 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		DeliveryNotes invoice =  (DeliveryNotes) model.get(DeliveryNotes.class.getSimpleName());
+		Invoice invoice =  (Invoice) model.get(Invoice.class.getSimpleName());
 		insertHeader(document);
-        insertAdresse(document, invoice.getShippedAddress());
+        insertAdresse(document, invoice.getInvoiceAddress());
         insertSubject(document, "Rechnungnr." + invoice.getDocumentNumber());
         insertInfo(document,"Rechnungsdatum: " + dateFormat.format(invoice.getCreated()));
         this.insertEmptyLines(document, 1);
@@ -38,29 +39,39 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         this.insertEmptyLines(document, 1);
 	}
 	
-	private PdfPTable createTable(DeliveryNotes deliveryNotes, Document doc){
+	private PdfPTable createTable(Invoice invoice, Document doc){
 		PdfPTableBuilder builder = new PdfPTableBuilder(doc)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
-		for (HandlingEvent he: deliveryNotes.getEvents()){
-			builder.addBodyRow(
-				new FourStrings("",
-				// product Name
-				"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
-				+ he.getOrderItem().getProduct().getName(),
-				// price
-				he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
-				// amount of single item
-				he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
-			));
+		for (HandlingEvent he: invoice.getEvents()){
+			if (!he.getOrderItem().isShippingCosts()){
+				builder.addBodyRow(
+						new FourStrings("",
+								// product Name
+								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
+								+ he.getOrderItem().getProduct().getName(),
+								// price
+								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
+								// amount of single item
+								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
+								));
+			}
 		}
-		Amount net = AmountCalculator.calculateNetAmount(deliveryNotes);
+		Amount net = AmountCalculator.calculateNetAmount(invoice);
 		//TODO: make vatRate dependent from order
-		Amount vat = AmountCalculator.calculateVatAmount(deliveryNotes, VAT_RATE);
+		Amount vat = AmountCalculator.calculateVatAmount(invoice, VAT_RATE);
 		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString())
-		.addFooterRow("Versandkosten:     " + deliveryNotes.getShipment().getShippingCosts().toString())
-		.addFooterRow("Gesamtbetrag brutto:   " + 
-				net.add(vat).add(deliveryNotes.getShipment().getShippingCosts()).toString());
+		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString());
+		
+		Amount shippingCosts = new Amount();
+		for (HandlingEvent shipment:invoice.getShippingCosts()){
+			Amount price = shipment.getOrderItem().getNegotiatedPriceNet();
+			if (!price.isGreaterZero())
+				throw new IllegalStateException("Versand ohne Preis angegeben!");
+			builder.addFooterRow("Versandkosten:     " + price.toString());
+			shippingCosts.add(price);
+		}
+		builder.addFooterRow("Gesamtbetrag brutto:   " + 
+				net.add(vat).add(shippingCosts).toString());
 		return builder.build();
 	}
 

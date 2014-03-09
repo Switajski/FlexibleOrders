@@ -108,10 +108,12 @@ public class AmountCalculator {
 	private static AmountCalculator sum(Report report) {
 		AmountCalculator calc = new AmountCalculator();
 		for (HandlingEvent oi: report.getEvents()){
-			Amount priceNet = oi.getOrderItem().getNegotiatedPriceNet();
-			if (priceNet == null)
-				throw new BusinessException("Report has items with no price set");
-			else calc.addNet(priceNet.multiply(oi.getQuantity()));
+			if (!oi.getOrderItem().isShippingCosts()){
+				Amount priceNet = oi.getOrderItem().getNegotiatedPriceNet();
+				if (priceNet == null)
+					throw new BusinessException("Report has items with no price set");
+				else calc.addNet(priceNet.multiply(oi.getQuantity()));
+			}
 		}
 		return calc;
 	}

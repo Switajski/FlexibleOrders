@@ -81,4 +81,12 @@ public class Amount {
 		if (divisor == 0d) throw new IllegalArgumentException("Cannot devide by zero");
 		return new Amount(this.value.divide(new BigDecimal(divisor)), this.currency);
 	}
+	
+	public boolean isGreaterZero(){
+		if (this.getValue() == null)
+			return false;
+		if (this.getValue().compareTo(BigDecimal.ZERO) > 0)
+			return true;
+		return false;
+	}
 }

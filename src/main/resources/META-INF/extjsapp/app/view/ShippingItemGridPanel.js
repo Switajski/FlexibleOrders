@@ -16,8 +16,8 @@ Ext.define('MyApp.view.ShippingItemGridPanel', {
 			},
 			onRemoveClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
-				MyApp.getApplication().getController('MyController').deconfirm(
-						"ok", record.data.documentNumber, record);
+				MyApp.getApplication().getController('MyController').deleteReport(
+						record.data.orderConfirmationNumber);
 
 			}
 		});

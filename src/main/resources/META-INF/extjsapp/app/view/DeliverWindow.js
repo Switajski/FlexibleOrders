@@ -9,11 +9,11 @@ Ext.define('MyApp.view.DeliverWindow', {
 	record : null,
 	closeAction : 'destroy',
 	bottomGrid : {
-		xtype : 'InvoiceItemGrid',
+		xtype : 'DeliveryNotesItemGrid',
 		dock : 'bottom',
-		id : 'CreateInvoiceItemGrid',
+		id : 'CreateDeliveryNotesItemGrid',
 		flex : 1,
-		store : 'CreateInvoiceItemDataStore',
+		store : 'CreateDeliveryNotesItemDataStore',
 		title : "Lieferscheinpositionen",
 		features : null,
 		selType : 'cellmodel',
@@ -24,7 +24,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 			ftype : 'grouping',
 			groupHeaderTpl : '{columnName}: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
 			hideGroupedHeader : false,
-			startCollapsed : true
+			startCollapsed : false
 				// id: 'orderNumber'
 		}],
 		columns : [{
@@ -41,23 +41,13 @@ Ext.define('MyApp.view.DeliverWindow', {
 					text : 'Artikel Name'
 				}, {
 					xtype : 'gridcolumn',
-					dataIndex : 'quantity',
+					dataIndex : 'quantityLeft',
 					width : 50,
 					text : 'Menge',
 					editor : {
 						xtype : 'numberfield',
 						allowBlank : false,
 						minValue : 1
-					}
-				}, {
-					xtype : 'numbercolumn',
-					dataIndex : 'priceNet',
-					width : 50,
-					text : 'Preis',
-					renderer : Ext.util.Format.euMoney,
-					editor : {
-						xtype : 'numberfield',
-						allowBlank : true
 					}
 				}, {
 					xtype : 'actioncolumn',
@@ -69,7 +59,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 						tooltip : 'Position l&ouml;schen',
 						scope : this,
 						handler : function(grid, rowIndex) {
-							Ext.getStore('CreateInvoiceItemDataStore')
+							Ext.getStore('CreateDeliveryNotesItemDataStore')
 									.removeAt(rowIndex);
 						}
 					}]
@@ -102,14 +92,10 @@ Ext.define('MyApp.view.DeliverWindow', {
 					fieldLabel : 'Versandkosten',
 					name : 'shipment',
 					allowBlank : true,
-					allowDecimals : false,
-					allowExponential : false,
-					minValue : 1
+					allowDecimals : true,
+					//allowExponential : false,
+					minValue : 0
 					
-				}, {
-					xtype : 'textfield',
-					fieldLabel : 'Zahlungsbed.',
-					name : 'paymentConditions'				
 				}, {
 					xtype : 'textfield',
 					fieldLabel : 'Paketnr',

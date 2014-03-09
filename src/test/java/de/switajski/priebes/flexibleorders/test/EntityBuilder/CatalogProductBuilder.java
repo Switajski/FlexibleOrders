@@ -1,10 +1,13 @@
 package de.switajski.priebes.flexibleorders.test.EntityBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Currency;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 public class CatalogProductBuilder implements Builder<CatalogProduct> {
@@ -105,6 +108,17 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 	public CatalogProductBuilder setSortOrder(Long sortOrder) {
 		this.sortOrder = sortOrder;
 		return this;
+	}
+	
+	public static List<Product> buildShippingCosts(){
+		List<Product> shippingCosts = new ArrayList<Product>();
+		Product shipping1 = new CatalogProductBuilder("DHL", null, ProductType.SHIPPING).build().toProduct();
+		shipping1.setShippingCosts(new Amount(BigDecimal.valueOf(5.5d), Currency.EUR));
+		Product shipping2 = new CatalogProductBuilder("UPS", null, ProductType.SHIPPING).build().toProduct();
+		shipping2.setShippingCosts(new Amount(BigDecimal.valueOf(2.5d), Currency.EUR));
+		shippingCosts.add(shipping1);
+		shippingCosts.add(shipping2);
+		return shippingCosts;
 	}
 
 }

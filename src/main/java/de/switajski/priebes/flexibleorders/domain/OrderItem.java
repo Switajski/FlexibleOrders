@@ -17,6 +17,7 @@ import de.switajski.priebes.flexibleorders.domain.specification.CompletedSpecifi
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 @Entity
@@ -178,13 +179,9 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		if (hes.isEmpty()) return 0;
 		int summed = 0;
 		for (HandlingEvent he: hes){
-			summed =+ he.getQuantity();
+			summed = summed + he.getQuantity();
 		}
 		return summed;
-	}
-
-	public Integer calculateQuantityLeft() {
-		return 666;
 	}
 
 	public String provideStatus() {
@@ -197,6 +194,14 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return s;
 	}
 	
+	/**
+	 * Creates a report item out of this order item.</br>
+	 * </br>
+	 * Report items in certain HandlingEvents are provided by 
+	 * {@link OrderItem#toReportItems}
+	 * 
+	 * @return
+	 */
 	public ReportItem toReportItem(){
 		ReportItem item = new ReportItem();
 		item.setId(getId());
@@ -213,6 +218,56 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		item.setCustomerNumber(getOrder().getCustomer().getCustomerNumber());
 		item.setCreated(getCreated());
 		return item;
+	}
+	
+	/**
+	 * Creates report items of this order item. </br>
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public Set<ReportItem> toReportItems(HandlingEventType type){
+		Set<ReportItem> ris = new HashSet<ReportItem>();
+		if (type != null){
+			for (HandlingEvent he: this.getAllHesOfType(type)){
+				ReportItem item = he.toReportItem();
+				item.setQuantityLeft(calculateQuantityLeft(type));
+				ris.add(item);
+			}
+		} else 
+			ris.add(this.toReportItem());
+		return ris;
+	}
+
+	/**
+	 * Provides the quantity stuck in given {@link HandlingEventType}.
+	 * @param type HandlingEventType representing a state
+	 * @return quantity left in given {@link HandlingEventType}
+	 * @see ReportItem#getQuantityLeft
+	 */
+	public int calculateQuantityLeft(HandlingEventType type) {
+		int quantityLeft = 0;
+		switch (type) {
+		case CONFIRM:
+			quantityLeft = getOrderedQuantity() - getHandledQuantity(HandlingEventType.SHIP);
+			break;
+		case SHIP:
+			quantityLeft = getHandledQuantity(HandlingEventType.SHIP) 
+					- getHandledQuantity(HandlingEventType.INVOICE);
+			break;
+		case INVOICE:
+			quantityLeft = getHandledQuantity(HandlingEventType.INVOICE) 
+					- getHandledQuantity(HandlingEventType.PAID);
+			break;
+		case PAID:
+			quantityLeft = getHandledQuantity(HandlingEventType.PAID);
+			break;
+		}
+		return quantityLeft;
+	}
+
+	public boolean isShippingCosts() {
+		return this.getProduct().getProductType().equals(ProductType.SHIPPING);
 	}
 	
 }

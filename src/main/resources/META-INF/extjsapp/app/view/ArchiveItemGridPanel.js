@@ -14,8 +14,8 @@ Ext.define('MyApp.view.ArchiveItemGridPanel', {
 			},
 			onRemoveClick : function(view, a, b, column, event, record, f) {
 				console.log('ArchiveItemGrid - customtransitionfunction');
-				MyApp.getApplication().getController('MyController').decomplete(
-						"ok", record);
+				MyApp.getApplication().getController('MyController').deleteReport(
+						record.data.receiptNumber);
 
 			}
 

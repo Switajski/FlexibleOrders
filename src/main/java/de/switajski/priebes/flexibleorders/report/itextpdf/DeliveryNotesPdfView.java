@@ -43,25 +43,26 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 		PdfPTableBuilder builder = new PdfPTableBuilder(doc)
 		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
 		for (HandlingEvent he: deliveryNotes.getEvents()){
-			builder.addBodyRow(
-				new FourStrings("",
-				// product Name
-				"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
-				+ he.getOrderItem().getProduct().getName(),
-				// price
-				he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
-				// amount of single item
-				he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
-			));
+			if (!he.getOrderItem().isShippingCosts()){
+				builder.addBodyRow(
+						new FourStrings("",
+								// product Name
+								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
+								+ he.getOrderItem().getProduct().getName(),
+								// price
+								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
+								// amount of single item
+								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
+								));
+			}
 		}
 		Amount net = AmountCalculator.calculateNetAmount(deliveryNotes);
 		//TODO: make vatRate dependent from order
 		Amount vat = AmountCalculator.calculateVatAmount(deliveryNotes, VAT_RATE);
 		builder.addFooterRow("Warenwert netto:   "+ net.toString())
 		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString())
-		.addFooterRow("Versandkosten:     " + deliveryNotes.getShipment().getShippingCosts().toString())
-		.addFooterRow("Gesamtbetrag brutto:   " + 
-				net.add(vat).add(deliveryNotes.getShipment().getShippingCosts()).toString());
+//		.addFooterRow("Versandkosten:     " + deliveryNotes.getShipment().getShippingCosts().toString())
+		.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat));
 		return builder.build();
 	}
 

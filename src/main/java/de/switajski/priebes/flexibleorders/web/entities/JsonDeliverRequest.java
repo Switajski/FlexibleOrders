@@ -42,6 +42,8 @@ public class JsonDeliverRequest {
 
 	private String invoiceNumber;
 	
+	private String deliveryNotesNumber;
+	
 	private String trackNumber;
 	
 	private String packageNumber;
@@ -189,5 +191,17 @@ public class JsonDeliverRequest {
 	public void setPaymentConditions(String paymentConditions) {
 		this.paymentConditions = paymentConditions;
 	}
+
+	public String getDeliveryNotesNumber() {
+		return deliveryNotesNumber;
+	}
+
+	public void setDeliveryNotesNumber(String deliveryNotesNumber) {
+		this.deliveryNotesNumber = deliveryNotesNumber;
+	}
 	
+	public void validate(){
+		if (getItems().isEmpty())
+			throw new IllegalArgumentException("Keine Positionen angegeben!");
+	}
 }

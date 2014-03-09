@@ -18,8 +18,8 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
 				console.log('invoiceItemGrid - customtransitionfunction');
-				MyApp.getApplication().getController('MyController').withdraw(
-						"ok", record);
+				MyApp.getApplication().getController('MyController').deleteReport(
+						record.data.invoiceNumber);
 
 			}
 

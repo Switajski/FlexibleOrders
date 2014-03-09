@@ -4,11 +4,9 @@ Ext.define('MyApp.view.DeliveryNotesItemGridPanel', {
 	title : "Lieferscheine",
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
-				console.log('deliveryNotesItemGrid - customtransitionfunction');
-				var anr = record.data.invoiceNumber;
-				
+				console.log(record);
 				MyApp.getApplication().getController('MyController').invoice(
-						"ok", anr, record);
+						"ok", record);
 
 			},
 	onPdfClick : function(view, a, b, column, event, record, f){
@@ -17,9 +15,9 @@ Ext.define('MyApp.view.DeliveryNotesItemGridPanel', {
 				win.focus();
 			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
-				console.log('invoiceItemGrid - customtransitionfunction');
-				MyApp.getApplication().getController('MyController').withdraw(
-						"ok", record);
+				console.log('deliveryNotesItemGrid - customtransitionfunction');
+				MyApp.getApplication().getController('MyController').deleteReport(
+						record.data.deliveryNotesNumber);
 
 			}
 

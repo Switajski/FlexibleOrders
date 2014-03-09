@@ -105,21 +105,9 @@ public class OrderServiceImpl {
 			if (oi == null) 
 				throw new IllegalArgumentException("Bestellposition nicht gefunden");
 			cr.addEvent(new HandlingEvent(cr, HandlingEventType.CONFIRM, oi, 
-					entry.getQuantity(), new Date()));
+					entry.getQuantityLeft(), new Date()));
 		}
 		return reportRepo.save(cr);
-	}
-
-	//TODO: move to CatalogProductService
-	private Amount retrieveRecommendedPriceNet(OrderItem orderItemToConfirm) {
-		CatalogProduct product = 
-				cProductRepo.findByProductNumber(orderItemToConfirm.getProduct().getProductNumber());
-		if (product == null)
-			//TODO: find a more suitable Exception - something like NotFoundException
-			throw new IllegalArgumentException("Product with given productno. not found in catalog");
-		if (product.getRecommendedPriceNet() == null)
-			throw new IllegalArgumentException("Price of product with given productno. not set in catalog");
-		return product.getRecommendedPriceNet();	
 	}
 
 	@Transactional
@@ -129,33 +117,55 @@ public class OrderServiceImpl {
 	}
 	
 	@Transactional
-	public DeliveryNotes deliver(String invoiceNumber, String trackNumber, String packageNumber,
+	public DeliveryNotes deliver(String deliveryNotesNumber, String trackNumber, String packageNumber,
 			Address shippingAddress, Amount shipment, List<ReportItem> confirmEvents){
-		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
+		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
-		DeliveryNotes deliveryNotes = new DeliveryNotes(invoiceNumber, createShippingCosts(shipment),
+		DeliveryNotes deliveryNotes = new DeliveryNotes(deliveryNotesNumber,
 				new ShippedSpecification(false, false), shippingAddress);
 				
+		FlexibleOrder firstOrder = null;
 		for (ReportItem entry: confirmEvents){
-			if (entry.getQuantity() == null || entry.getQuantity() < 1)
+			HandlingEvent confirmEventToBeDelivered = heRepo.findOne(entry.getId());
+			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered.getOrderItem();
+			
+			//TODO: move into validation layer
+			Integer quantityToDeliver = entry.getQuantityLeft();
+			if (quantityToDeliver == null || quantityToDeliver < 1 || 
+					quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(HandlingEventType.CONFIRM))
 				throw new IllegalArgumentException("Menge ist nicht valide");
 			
-			HandlingEvent confirmEvent = heRepo.findOne(entry.getId());
 			deliveryNotes.addEvent(new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, 
-					confirmEvent.getOrderItem(), entry.getQuantity(), new Date()));
+					orderItemToBeDelivered, quantityToDeliver, new Date()));
+			
+			if (firstOrder == null)
+				firstOrder = orderItemToBeDelivered.getOrder();
 		}
-		
+
+		// add shipping costs as new HandlingEvent
+		if (shipment.isGreaterZero())
+			deliveryNotes.addEvent(
+					new HandlingEvent(
+							deliveryNotes, HandlingEventType.SHIP,
+							createShippingCosts(shipment, firstOrder), 
+							1, new Date())
+					);
+
 		return reportRepo.save(deliveryNotes);
 	}
 
-	private Product createShippingCosts(Amount shipment) {
-		// private Product createShipment(Amount shipment2) {
+	@Transactional
+	private OrderItem createShippingCosts(Amount shipment, FlexibleOrder order) {
 		Product product = new Product();
 		product.setProductType(ProductType.SHIPPING);
 		product.setName("Versand");
 		product.setShippingCosts(shipment);
-		return product;
+		
+		OrderItem shipOi = new OrderItem(order, product, 1);
+		shipOi.setNegotiatedPriceNet(shipment);
+		
+		return itemRepo.save(shipOi);
 	}
 
 	@Transactional
@@ -269,12 +279,12 @@ public class OrderServiceImpl {
 	@Transactional
 	public Receipt markAsPayed(String invoiceNumber, String receiptNumber, Date date) {
 		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
-		if (r == null || !(r instanceof DeliveryNotes))
+		if (r == null || !(r instanceof Invoice))
 			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
 		
-		DeliveryNotes dn = (DeliveryNotes) r;
+		Invoice invoice = (Invoice) r;
 		Receipt receipt = new Receipt(receiptNumber, date);
-		for (HandlingEvent he:dn.getEvents()){
+		for (HandlingEvent he:invoice.getEvents()){
 			receipt.addEvent(
 					new HandlingEvent(receipt, HandlingEventType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
 		}
@@ -286,28 +296,32 @@ public class OrderServiceImpl {
 	 * @param invoiceNumber
 	 * @param paymentConditions
 	 * @param invoiceAddress
-	 * @param invoiceEvents
+	 * @param shipEvents
 	 * @return
 	 */
 	@Transactional
 	public Invoice invoice(String invoiceNumber, String paymentConditions, Address invoiceAddress,
-			List<ReportItem> invoiceEvents) {
+			List<ReportItem> shipEvents) {
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
 		Invoice invoice = new Invoice(invoiceNumber, paymentConditions,
 				invoiceAddress);
 				
-		for (ReportItem entry: invoiceEvents){
-			if (entry.getQuantity() == null || entry.getQuantity() < 1)
+		for (ReportItem entry: shipEvents){
+			HandlingEvent shipEventToBeInvoiced = heRepo.findOne(entry.getId());
+			OrderItem oiToBeInvoiced = shipEventToBeInvoiced.getOrderItem();
+			
+			Integer quantityToDeliver = entry.getQuantityLeft();
+			if (quantityToDeliver == null || quantityToDeliver < 1 ||
+					quantityToDeliver > oiToBeInvoiced.calculateQuantityLeft(HandlingEventType.SHIP))
 				throw new IllegalArgumentException("Menge ist nicht valide");
 			
-			HandlingEvent shipEvent = heRepo.findOne(entry.getId());
 			invoice.addEvent(new HandlingEvent(invoice, HandlingEventType.INVOICE, 
-					shipEvent.getOrderItem(), entry.getQuantity(), new Date()));
+					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));
 		}
 		
 		return reportRepo.save(invoice);
 	}
-	
+
 }

@@ -23,7 +23,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
                 actionMethods: {
                     read: 'GET',
                     update: 'PUT',
-                    destroy: 'DELETE',
+                    destroy: 'POST',
                     create: 'POST'
                 },
                 api:{

@@ -145,7 +145,7 @@ public class OrderServiceTest {
 			assertFalse(new ConfirmedSpecification(false, false).isSatisfiedBy(item));
 			ReportItem ri = new ReportItem();
 			ri.setId(item.getId());
-			ri.setQuantity(item.getOrderedQuantity());
+			ri.setQuantityLeft(item.getOrderedQuantity());
 			ri.setProduct(item.getProduct().getProductNumber());
 			ris.add(ri);
 		}
@@ -205,21 +205,22 @@ public class OrderServiceTest {
 	}
 
 	private void reduceQuantity(List<ReportItem> risToShip, int reduceBy) {
-		for (ReportItem ri : risToShip)
-			ri.setQuantity(ri.getQuantity() - reduceBy);
+		for (ReportItem ri : risToShip){
+			ri.setQuantityLeft(ri.getQuantityLeft() - reduceBy);
+		}
 	}
 	
 	private void assertPartialDeliveryNotesAsExpected(DeliveryNotes dn, ConfirmationReport cr) {
 		Page<ReportItem> risToBeShipped =  itemService.retrieveAllToBeShipped(createPageRequest(), true);
-		Page<ReportItem> risToBePaid =  itemService.retrieveAllToBeInvoiced(createPageRequest(), true);
+		Page<ReportItem> risToBeInvoiced =  itemService.retrieveAllToBeInvoiced(createPageRequest(), true);
 		
 		assertTrue("should still find items to be shipped", risToBeShipped.getTotalElements() != 0l);
-		assertTrue("should find shipped items", risToBePaid.getTotalElements() != 0l);
+		assertTrue("should find shipped items", risToBeInvoiced.getTotalElements() != 0l);
 		
 		for (ReportItem ri : risToBeShipped)
 			assertEquals("shipped quantity of item is false", new Integer(10), ri.getQuantity());
 		
-		for (ReportItem ri : risToBePaid)
+		for (ReportItem ri : risToBeInvoiced)
 			assertEquals("paid quantity of item is false", new Integer(7), ri.getQuantity());
 	}
 
@@ -305,7 +306,7 @@ public class OrderServiceTest {
 		for (HandlingEvent he : dn.getEvents()){
 			ReportItem ri = new ReportItem();
 			ri.setId(he.getId());
-			ri.setQuantity(he.getQuantity());
+			ri.setQuantityLeft(he.getQuantity());
 			ris.add(ri);
 		}
 		return ris;

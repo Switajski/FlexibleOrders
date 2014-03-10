@@ -24,11 +24,11 @@ public class Product {
     @Enumerated
     private ProductType productType;
     
-    @AttributeOverrides({
-	    @AttributeOverride(name="currency",column=@Column(name="shipping_currency")),
-	    @AttributeOverride(name="value",column=@Column(name="shipping_value"))
-	  })
-    private Amount shippingCosts;
+//    @AttributeOverrides({
+//	    @AttributeOverride(name="currency",column=@Column(name="shipping_currency")),
+//	    @AttributeOverride(name="value",column=@Column(name="shipping_value"))
+//	  })
+//    private Amount shippingCosts;
 
     @NotNull
     private String name;
@@ -70,12 +70,12 @@ public class Product {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-	public Amount getShippingCosts() {
-		return shippingCosts;
-	}
-
-	public void setShippingCosts(Amount shippingCosts) {
-		this.shippingCosts = shippingCosts;
-	}
+//	public Amount getShippingCosts() {
+//		return shippingCosts;
+//	}
+//
+//	public void setShippingCosts(Amount shippingCosts) {
+//		this.shippingCosts = shippingCosts;
+//	}
 
 }

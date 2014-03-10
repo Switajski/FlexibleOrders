@@ -100,6 +100,10 @@ public class FlexibleOrder extends GenericEntity {
 		this.items = items;
 	}
 	
+	public boolean remove(OrderItem orderItem){
+		return this.items.remove(orderItem);
+	}
+	
 	public void addOrderItem(OrderItem item1) {
 		if (item1.getOrder() == null)
 			item1.setOrder(item1.getOrder());

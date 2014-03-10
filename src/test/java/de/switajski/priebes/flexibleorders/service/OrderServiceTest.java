@@ -173,6 +173,23 @@ public class OrderServiceTest {
 		assertTrue(risToBePaid.getTotalElements() != 0l);
 	}
 	
+	@Test
+	public void shouldDeleterDeliveryNotes(){
+		
+		Integer orderNumber = 5;
+		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
+		
+		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
+		ConfirmationReport cr = orderService.confirm(
+				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+		
+		List<ReportItem> risToShip = createReportItems(cr);
+		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
+				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
+		
+		orderService.deleteReport(dn.getDocumentNumber());
+	}
+	
 	private void assertDeliveryNotesAsExpected(DeliveryNotes dn) {
 		assertTrue(dn.getId() != null);
 		assertFalse(dn.getEvents().isEmpty());

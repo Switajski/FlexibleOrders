@@ -113,9 +113,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 	public static List<Product> buildShippingCosts(){
 		List<Product> shippingCosts = new ArrayList<Product>();
 		Product shipping1 = new CatalogProductBuilder("DHL", null, ProductType.SHIPPING).build().toProduct();
-		shipping1.setShippingCosts(new Amount(BigDecimal.valueOf(5.5d), Currency.EUR));
 		Product shipping2 = new CatalogProductBuilder("UPS", null, ProductType.SHIPPING).build().toProduct();
-		shipping2.setShippingCosts(new Amount(BigDecimal.valueOf(2.5d), Currency.EUR));
 		shippingCosts.add(shipping1);
 		shippingCosts.add(shipping2);
 		return shippingCosts;

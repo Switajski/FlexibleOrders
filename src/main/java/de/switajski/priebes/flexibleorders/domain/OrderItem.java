@@ -26,7 +26,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	@JsonIgnore
 	@NotNull
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
 	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
 	
 	@NotNull

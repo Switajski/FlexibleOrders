@@ -160,7 +160,6 @@ public class OrderServiceImpl {
 		Product product = new Product();
 		product.setProductType(ProductType.SHIPPING);
 		product.setName("Versand");
-		product.setShippingCosts(shipment);
 		
 		OrderItem shipOi = new OrderItem(order, product, 1);
 		shipOi.setNegotiatedPriceNet(shipment);
@@ -272,8 +271,21 @@ public class OrderServiceImpl {
 		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
 		if (r == null)
 			throw new IllegalArgumentException("Bericht zum löschen nicht gefunden");
+		if (r instanceof DeliveryNotes){
+			deleteShippingCosts(r);
+		}
 		reportRepo.delete(r);
 		return true;
+	}
+
+	@Transactional
+	private void deleteShippingCosts(Report r) {
+		for (HandlingEvent he:r.getEvents()){
+			OrderItem orderItem = he.getOrderItem();
+			if (orderItem.isShippingCosts())
+				orderItem.getOrder().remove(orderItem);
+			orderRepo.save(orderItem.getOrder());
+		}
 	}
 
 	@Transactional

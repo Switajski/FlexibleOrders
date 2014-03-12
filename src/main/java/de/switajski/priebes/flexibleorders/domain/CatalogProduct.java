@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 @Entity
 public class CatalogProduct extends GenericEntity {
 	
+	@Column(unique = true)
 	@NotNull
 	private Long productNumber;
 
@@ -20,7 +21,6 @@ public class CatalogProduct extends GenericEntity {
 	private ProductType productType;
 
 	@NotNull
-	@Column(unique = true)
 	private String name;
 
 	@Embedded

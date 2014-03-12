@@ -106,7 +106,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		//prod:
 //		protected static final String LOGO = "/var/lib/tomcat7/webapps/FlexibleOrders/images/LogoGross.jpg";
 		//dev
-		protected static final String LOGO = "C:/workspaces/gitRepos/leanorders/src/main/webapp/images/LogoGross.jpg";
+		protected static final String LOGO = "/var/lib/tomcat7/webapps/FlexibleOrders/images/LogoGross.jpg";
 		public static final String FONT = "Arial";
 		protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
 		protected static final String HEADER_ZEILE1 = "Maxstrasse 1";

@@ -228,11 +228,11 @@ public class PriebesJoomlaImporterService implements ImporterService {
 					a_gallery = a_gallery.replace("{/gallery}", "");
 				}
 //				Date a_created = as.getDate("created");
-				long a_ordering = as.getLong("ordering");
-				long a_artikelnummer = as.getLong("artikelnummer");
-				if (a_artikelnummer==0 || productRepository.findByProductNumber(a_artikelnummer)==null) {
+				Long a_ordering = as.getLong("ordering");
+				Long a_artikelnummer = Long.valueOf(as.getInt("artikelnummer"));
+				if (a_artikelnummer == null || a_artikelnummer==0) {
 					Random gen = new Random();
-					a_artikelnummer = gen.nextInt();
+					a_artikelnummer = (long) gen.nextInt();
 					a_artikelnummer = Math.abs(a_artikelnummer);
 				}
 				else log.debug("originale Artikelnummer genommen:"+a_artikelnummer) ;
@@ -273,13 +273,13 @@ public class PriebesJoomlaImporterService implements ImporterService {
 
 			while (rs.next()){
 //				Date created = rs.getDate("created");
-				String title = rs.getString("title");
-				if (title == null || title.isEmpty()){
+				Long title = rs.getLong("artikelnummer");
+				if (title == null){
 					System.out.println("Importiere Preise: Name des Artikels ist leer!");
 					continue;
 				}
-				if (productRepository.findByName(title) == null) continue;
-				CatalogProduct artikel = productRepository.findByName(title);
+				if (productRepository.findByProductNumber(title) == null) continue;
+				CatalogProduct artikel = productRepository.findByProductNumber(title);
 				String plugins = rs.getString("plugins");
 				if (!plugins.contains("k2storeitem_price=")) continue;
 				String[] PluginsArray = plugins.split("\nk2storeitem_tax");

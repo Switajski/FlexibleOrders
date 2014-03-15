@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.itextpdf.text.BadElementException;
@@ -43,9 +44,16 @@ import de.switajski.priebes.flexibleorders.domain.Address;
  * @author Marek
  *
  */
+@Component
 public abstract class PriebesIText5PdfView extends AbstractView implements PdfPageEvent {
 
 	public final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+	public static final String FONT = "Arial";
+	protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
+	protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
+	protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";
+	protected static final String HEADER_ZEILE3 = "priebes.eu";
+
 	
 	public PriebesIText5PdfView() {
 		setContentType("application/pdf");
@@ -102,18 +110,6 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 	protected abstract void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer,
 			HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
-	//TODO: Filemanagement...
-		//prod:
-//		protected static final String LOGO = "/var/lib/tomcat7/webapps/FlexibleOrders/images/LogoGross.jpg";
-		//dev
-		protected static final String LOGO = "/var/lib/tomcat7/webapps/FlexibleOrders/images/LogoGross.jpg";
-		public static final String FONT = "Arial";
-		protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
-		protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
-		protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";
-		protected static final String HEADER_ZEILE3 = "priebes.eu";
-
-
 		/**
 		 * Einfügen des Headers in ein PDF-Document
 		 * @param document
@@ -139,7 +135,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		public void insertAdresse(Document doc, Address adresse)
 				throws MalformedURLException, IOException, DocumentException {
 					insertEmptyLines(doc, 6);
-					Image img = Image.getInstance(LOGO);
+					Image img = createLogoPath();
 					img.scaleToFit(70,35);
 					img.setAbsolutePosition(50, 693);
 					Chunk tab1 = new Chunk(new VerticalPositionMark(), 90, true);
@@ -169,6 +165,12 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 					doc.add(p);
 					
 				}
+
+		private Image createLogoPath() throws BadElementException,
+				MalformedURLException, IOException {
+			return Image.getInstance(
+					this.getServletContext().getRealPath("/images").concat("/LogoGross.jpg"));
+		}
 		 
 
 		/**
@@ -243,7 +245,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements PdfPa
 		@Override
 		public void onEndPage(PdfWriter writer, Document document) {
 	        try {
-	        	Image img = Image.getInstance(LOGO);
+	        	Image img = Image.getInstance(createLogoPath());
 	        	img.setAlignment(Image.RIGHT);
 	        	img.scaleToFit(180,75);
 	        	

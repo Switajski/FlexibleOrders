@@ -5,12 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
+import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
@@ -34,7 +36,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
@@ -43,7 +45,6 @@ import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 
 /**
  * Test with database to proof core order process functionality.</br>
- * <i>This Test is explicity without Transactional annotation</i>
  * 
  * @author Marek Switajski
  *
@@ -53,38 +54,37 @@ import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
 @Transactional
 public class OrderServiceTest {
 
+	private static final int CUSTOMER_NUMBER = 10;
+	private static final int PRODUCT_NUMBER = 2;
+	private static final int QUANTITY_INITIAL = 4;
+	private static final Address INVOICE_ADDRESS = AddressBuilder.buildWithGeneratedAttributes(12);
+
 	@Autowired CustomerServiceImpl customerService;
 	@Autowired ReportItemServiceImpl itemService;
 	@Autowired CatalogProductServiceImpl productService;
 	@Autowired OrderServiceImpl orderService;
-	@Autowired OrderItemRepository itemRepo;
-
-	private static final int QUANTITY_INITIAL = 4;
-	private static final Address INVOICE_ADDRESS = AddressBuilder.buildWithGeneratedAttributes(12);
-
-	private static final Long CUSTOMER_NR_1 = 1423464l;
-	private static final Long PRODUCT_NR_1 = 1222345l;
-	private static final Long PRODUCT_NR_2 = 23122344l;
 	
-	private Customer customer;
-	private CatalogProduct product1;
-	private CatalogProduct product2;
+	private List<Customer> persistentCustomers = new ArrayList<Customer>();
+	private List<CatalogProduct> persistentProducts = new ArrayList<CatalogProduct>();
 	
-	@Before
 	public void setUp(){
-		customer = customerService.create(
-				CustomerBuilder.buildWithGeneratedAttributes(new Integer(CUSTOMER_NR_1.toString())));
-		product1 = productService.create(
-				CatalogProductBuilder.buildWithGeneratedAttributes(new Integer(PRODUCT_NR_1.toString())));
-		product2 = productService.create(
-				CatalogProductBuilder.buildWithGeneratedAttributes(new Integer(PRODUCT_NR_2.toString())));
+		for (int i = 0;i<CUSTOMER_NUMBER;i++){
+		persistentCustomers.add(customerService.create(
+				CustomerBuilder.buildWithGeneratedAttributes(i)));
+		}
+		for (int i = 0;i<PRODUCT_NUMBER;i++){
+		persistentProducts.add(
+				productService.create(CatalogProductBuilder.buildWithGeneratedAttributes(i)));
+		}
 	}
 	
 	@Rollback
 	@Test
 	public void shouldOrder(){
+		setUp();
+		Customer customer = persistentCustomers.get(0);
 		
-		FlexibleOrder order = createOrder(QUANTITY_INITIAL, 3);
+		FlexibleOrder order = createOrder(customer, QUANTITY_INITIAL, 3);
 		
 		assertNotNull(order.getId());
 		for (OrderItem item : order.getItems()){
@@ -94,7 +94,7 @@ public class OrderServiceTest {
 			assertNotNull(item.getOrder().getId());
 		};
 		
-		Page<ReportItem> risToBeConfirmed = itemService.retrieveAllToBeConfirmed(createPageRequest(), true);
+		Page<ReportItem> risToBeConfirmed = itemService.retrieveAllToBeConfirmedByCustomer(customer, createPageRequest(), true);
 		assertTrue(risToBeConfirmed != null);
 		assertTrue(risToBeConfirmed.getTotalElements() != 0l);
 	}
@@ -102,23 +102,22 @@ public class OrderServiceTest {
 	@Rollback
 	@Test
 	public void shouldConfirm(){
-		
+		setUp();
 		Integer orderNumber = 4;
-		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
+		Customer customer = persistentCustomers.get(1);
 		
-		List<ReportItem> ris = createReportItemsToConfirm(order);
+		FlexibleOrder order = createOrder(customer, QUANTITY_INITIAL, orderNumber);
 		
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-4", new Date(), ris);
+				order.getOrderNumber(), 
+				"AB-4", 
+				new Date(), 
+				createReportItemsToConfirm(order));
 		
-		assertConfirmationReport(cr);
-		
-		Page<ReportItem> risToBeShipped = itemService.retrieveAllToBeShipped(createPageRequest(), true);
-		assertTrue(risToBeShipped != null);
-		assertTrue(risToBeShipped.getTotalElements() != 0l);
+		assertConfirmed(cr, customer);
 	}
 
-	private void assertConfirmationReport(ConfirmationReport cr) {
+	private void assertConfirmed(ConfirmationReport cr, Customer customer) {
 		assertTrue(cr != null);
 		assertTrue(cr.getEvents().size() == 2);
 		assertTrue(cr.getEvents().iterator().next().getType() == HandlingEventType.CONFIRM);
@@ -137,6 +136,10 @@ public class OrderServiceTest {
 			assertNotNull(orderConfirmation.getInvoiceAddress());
 			assertNotNull(orderConfirmation.getShippingAddress());
 		}
+		
+		Page<ReportItem> risToBeShipped = itemService.retrieveAllToBeShipped(customer, createPageRequest(), true);
+		assertTrue(risToBeShipped != null);
+		assertTrue(risToBeShipped.getTotalElements() != 0l);
 	}
 
 	private List<ReportItem> createReportItemsToConfirm(FlexibleOrder order) {
@@ -154,43 +157,75 @@ public class OrderServiceTest {
 	
 	@Test
 	public void shouldDeliver(){
-		
+		setUp();
 		Integer orderNumber = 5;
-		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
+		Customer customer = persistentCustomers.get(4);
 		
-		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
+		FlexibleOrder order = createOrder(customer, QUANTITY_INITIAL, orderNumber);
+		
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+				order.getOrderNumber(), 
+				"AB-".concat(orderNumber.toString()), 
+				new Date(), 
+				createReportItemsToConfirm(order));
 		
-		List<ReportItem> risToShip = createReportItems(cr);
-		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
-				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
+		DeliveryNotes dn = orderService.deliver(
+				"R-".concat(orderNumber.toString()),
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				createReportItems(cr));
 		
-		assertDeliveryNotesAsExpected(dn);
-		
-		Page<ReportItem> risToBePaid = itemService.retrieveAllToBeInvoiced(createPageRequest(), true);
-		assertTrue(risToBePaid != null);
-		assertTrue(risToBePaid.getTotalElements() != 0l);
+		assertDeliveryNotesAsExpected(dn, customer);
 	}
 	
 	@Test
-	public void shouldDeleterDeliveryNotes(){
+	public void shouldDeleteDeliveryNotes(){
+		setUp();
+		Integer orderNumber = 5123;
+		Customer customer = persistentCustomers.get(8);
+		FlexibleOrder order = createOrder(customer, QUANTITY_INITIAL, orderNumber);
 		
-		Integer orderNumber = 5;
-		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
-		
-		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
-		
-		List<ReportItem> risToShip = createReportItems(cr);
-		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
-				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
+				order.getOrderNumber(), 
+				"AB-".concat(orderNumber.toString()), 
+				new Date(), 
+				createReportItemsToConfirm(order));
+		DeliveryNotes dn = orderService.deliver(
+				"R-".concat(orderNumber.toString()),
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				new Amount(BigDecimal.TEN, Currency.EUR), //ShippingCosts 
+				createReportItems(cr));
+		assertDeliveryNotesAsExpected(dn, customer);
 		
 		orderService.deleteReport(dn.getDocumentNumber());
+		
+		assertDeliveryNotesDeleted(customer);
+		
+	}
+
+	private void assertDeliveryNotesDeleted(Customer customer) {
+		FlexibleOrder order;
+		Page<ReportItem> risToBeInvoiced = 
+				itemService.retrieveAllToBeInvoiced(customer, createPageRequest(), true);
+		assertTrue("deleted DeliveryNotes should not be part of report items to be invoiced", 
+				risToBeInvoiced.getContent().isEmpty());
+		
+		Page<ReportItem> risToBeShipped = 
+				itemService.retrieveAllToBeShipped(customer, createPageRequest(), true);
+		assertTrue("after deletion of DeliveryNotes, ReportItems should be shippable again", 
+				!risToBeShipped.getContent().isEmpty());
+		
+		order = itemService.retrieveOrder(risToBeShipped.getContent().get(0).getOrderNumber());
+		for (OrderItem oi:order.getItems())
+			assertTrue("Shipping costs should have been deleted",
+					oi.getProduct().getProductType() != ProductType.SHIPPING);
 	}
 	
-	private void assertDeliveryNotesAsExpected(DeliveryNotes dn) {
+	private void assertDeliveryNotesAsExpected(DeliveryNotes dn, Customer customer) {
 		assertTrue(dn.getId() != null);
 		assertFalse(dn.getEvents().isEmpty());
 		for (HandlingEvent he : dn.getEvents()){
@@ -200,34 +235,48 @@ public class OrderServiceTest {
 			assertTrue(he.getInvoice().getId() != null);
 			assertTrue(he.getQuantity() > 0);
 		}
+		
+		Page<ReportItem> risToBePaid = itemService.retrieveAllToBeInvoiced(customer, createPageRequest(), true);
+		assertTrue(risToBePaid != null);
+		assertTrue(risToBePaid.getTotalElements() != 0l);
 	}
 	
 	@Rollback
 	@Test
 	public void shouldDeliverPartially(){
+		setUp();
+		Integer orderNumber = 122;
+		Customer customer = persistentCustomers.get(6);
 		
-		Integer orderNumber = 5;
-		FlexibleOrder order = createOrder(10, orderNumber);
+		FlexibleOrder order = createOrder(customer, 10, orderNumber);
 		
-		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+				order.getOrderNumber(), 
+				"AB-".concat(orderNumber.toString()), 
+				new Date(), 
+				createReportItemsToConfirm(order));
 		
 		List<ReportItem> risToShip = createReportItems(cr);
 		reduceQuantity(risToShip, 3);
-		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
-				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
+		DeliveryNotes dn = orderService.deliver(
+				"R-".concat(orderNumber.toString()),
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				risToShip);
 		
-		assertPartialDeliveryNotesAsExpected(dn, cr);
+		assertPartialDeliveryNotesAsExpected(customer, dn, cr);
 	}
 
-	private void reduceQuantity(List<ReportItem> risToShip, int reduceBy) {
+	private List<ReportItem> reduceQuantity(List<ReportItem> risToShip, int reduceBy) {
 		for (ReportItem ri : risToShip){
 			ri.setQuantityLeft(ri.getQuantityLeft() - reduceBy);
 		}
+		return risToShip;
 	}
 	
-	private void assertPartialDeliveryNotesAsExpected(DeliveryNotes dn, ConfirmationReport cr) {
+	private void assertPartialDeliveryNotesAsExpected(Customer customer, DeliveryNotes dn, ConfirmationReport cr) {
 		Page<ReportItem> risToBeShipped =  itemService.retrieveAllToBeShipped(createPageRequest(), true);
 		Page<ReportItem> risToBeInvoiced =  itemService.retrieveAllToBeInvoiced(createPageRequest(), true);
 		
@@ -245,14 +294,14 @@ public class OrderServiceTest {
 		return new PageRequest(0, 1);
 	}
 
-	private FlexibleOrder createOrder(int quantity, Integer random){
+	private FlexibleOrder createOrder(Customer customer, int quantity, Integer random){
 		
 		ReportItem r1 = new ReportItem();
-		r1.setProduct(product1.getProductNumber());
+		r1.setProduct(persistentProducts.get(0).getProductNumber());
 		r1.setQuantity(quantity);
 		
 		ReportItem r2 = new ReportItem();
-		r2.setProduct(product2.getProductNumber());
+		r2.setProduct(persistentProducts.get(0).getProductNumber());
 		r2.setQuantity(quantity);
 		
 		List<ReportItem> ris = new ArrayList<ReportItem>();
@@ -263,20 +312,30 @@ public class OrderServiceTest {
 	
 	@Rollback
 	@Test
-	public void shouldComplete(){
+	public void shouldMarkAsPayed(){
+		setUp();
+		Integer orderNumber = 545;
+		FlexibleOrder order = createOrder(persistentCustomers.get(6), QUANTITY_INITIAL, orderNumber);
 		
-		Integer orderNumber = 5;
-		FlexibleOrder order = createOrder(QUANTITY_INITIAL, orderNumber);
-		
-		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+				order.getOrderNumber(), 
+				"AB-".concat(orderNumber.toString()), 
+				new Date(), 
+				createReportItemsToConfirm(order));
+		DeliveryNotes dn = orderService.deliver(
+				"L-".concat(orderNumber.toString()),
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				createReportItems(cr));
+		Invoice invoice = orderService.invoice(
+				"R-".concat(orderNumber.toString()), 
+				"paymentCondition", 
+				INVOICE_ADDRESS, 
+				createReportItems(dn));
 		
-		List<ReportItem> risToShip = createReportItems(cr);
-		DeliveryNotes dn = orderService.deliver("R-".concat(orderNumber.toString()),
-				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
-		
-		List<ReportItem> risToComplete = createReportItems(dn);
+		List<ReportItem> risToComplete = createReportItems(invoice);
 		Receipt receipt = orderService.markAsPayed(dn.getDocumentNumber(), "billoreceipt", new Date(), 
 				risToComplete);
 		
@@ -302,20 +361,43 @@ public class OrderServiceTest {
 
 	@Test
 	public void shouldInvoice(){
+		setUp();
 		Integer orderNumber = 5;
-		FlexibleOrder order = createOrder(10, orderNumber);
+		FlexibleOrder order = createOrder(persistentCustomers.get(4), 10, orderNumber);
 		
-		List<ReportItem> risToConfirm = createReportItemsToConfirm(order);
 		ConfirmationReport cr = orderService.confirm(
-				order.getOrderNumber(), "AB-".concat(orderNumber.toString()), new Date(), risToConfirm);
+				order.getOrderNumber(), 
+				"AB-".concat(orderNumber.toString()), 
+				new Date(), 
+				createReportItemsToConfirm(order));
 		
-		List<ReportItem> risToShip = createReportItems(cr);
-		DeliveryNotes dn = orderService.deliver("L-".concat(orderNumber.toString()),
-				"trackNumber", "packNo", INVOICE_ADDRESS, null, risToShip);
+		DeliveryNotes dn = orderService.deliver(
+				"L-".concat(orderNumber.toString()),
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				createReportItems(cr));
 		
-		List<ReportItem> risToInvoice = createReportItems(dn);
-		Invoice i = orderService.invoice("R-".concat(orderNumber.toString()), "paymentCondition", 
-				INVOICE_ADDRESS, risToInvoice);
+		Invoice invoice = orderService.invoice(
+				"R-".concat(orderNumber.toString()), 
+				"paymentCondition", 
+				INVOICE_ADDRESS, 
+				createReportItems(dn));
+		
+		assertInvoiceAsExpected(invoice);
+		
+	}
+
+	private void assertInvoiceAsExpected(Invoice invoice) {
+		assertTrue(invoice.getId() != null);
+		assertTrue(invoice.getDocumentNumber() != null);
+		
+		for (HandlingEvent he : invoice.getEvents()){
+			assertTrue(he.getId() != null);
+			assertTrue(he.getType() == HandlingEventType.INVOICE);
+			assertTrue(he.getQuantity() > 0);
+		}
 	}
 
 	private List<ReportItem> createReportItems(Report dn) {

@@ -39,7 +39,7 @@ public class CustomerBuilder implements Builder<Customer> {
     }
     
     public static Customer buildWithGeneratedAttributes(Integer i){
-    	return new CustomerBuilder(new Long(i.toString()),
+    	return new CustomerBuilder(Long.valueOf(i.toString()),
     			"name@somewhere.com".concat(i.toString()),
     			AddressBuilder.buildWithGeneratedAttributes(i)
     			)

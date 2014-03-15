@@ -144,7 +144,7 @@ public class OrderServiceImpl {
 		}
 
 		// add shipping costs as new HandlingEvent
-		if (shipment.isGreaterZero())
+		if (shipment != null && shipment.isGreaterZero())
 			deliveryNotes.addEvent(
 					new HandlingEvent(
 							deliveryNotes, HandlingEventType.SHIP,
@@ -165,12 +165,6 @@ public class OrderServiceImpl {
 		shipOi.setNegotiatedPriceNet(shipment);
 		
 		return itemRepo.save(shipOi);
-	}
-
-	@Transactional
-	public OrderItem withdrawInvoiceItemAndShipment(OrderItem invoiceItem) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
 	}
 
 	/**

@@ -18,11 +18,16 @@ public class CatalogProductServiceImpl {
 		this.catalogProductRepo = catalogProductRepo;
 	}
 	
+	//TODO create by attributes, not by object
 	@Transactional
 	public CatalogProduct create(CatalogProduct product){
 		return catalogProductRepo.save(product);
 	}
 
+	/**
+	 * 
+	 * @param productNumber
+	 */
 	@Transactional
 	public void delete(Long productNumber) {
 		CatalogProduct p = catalogProductRepo.findByProductNumber(productNumber);
@@ -31,6 +36,11 @@ public class CatalogProductServiceImpl {
 		catalogProductRepo.delete(p);
 	}
 	
+	/**
+	 * 
+	 * @param productNumber
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public Amount retrieveRecommendedPriceNet(Long productNumber) {
 		CatalogProduct product = 

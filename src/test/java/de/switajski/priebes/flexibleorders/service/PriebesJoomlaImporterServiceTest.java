@@ -22,7 +22,6 @@ public class PriebesJoomlaImporterServiceTest {
 	@Autowired CatalogProductRepository productRepository;
 	@Autowired OrderItemRepository itemRepository;
 	
-//	@Ignore
 	@Rollback(false)
 //	@Transactional
 	@Test

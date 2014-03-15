@@ -204,19 +204,19 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 */
 	public ReportItem toReportItem(){
 		ReportItem item = new ReportItem();
-		item.setId(getId());
-		item.setQuantity(getOrderedQuantity());
-		item.setQuantityLeft(getOrderedQuantity() - getHandledQuantity(HandlingEventType.CONFIRM));
+		item.setCreated(getCreated());
 		item.setCustomer(getOrder().getCustomer().getId());
+		item.setCustomerNumber(getOrder().getCustomer().getCustomerNumber());
+		item.setCustomerName(getOrder().getCustomer().getLastName());
 		item.setId(getId());
-		item.setOrderNumber(getOrder().getOrderNumber());
 		if (getNegotiatedPriceNet() != null)
 			item.setPriceNet(getNegotiatedPriceNet().getValue());
+		item.setOrderNumber(getOrder().getOrderNumber());
 		item.setProduct(getProduct().getProductNumber());
 		item.setProductName(getProduct().getName());
 		item.setStatus(provideStatus());
-		item.setCustomerNumber(getOrder().getCustomer().getCustomerNumber());
-		item.setCreated(getCreated());
+		item.setQuantity(getOrderedQuantity());
+		item.setQuantityLeft(getOrderedQuantity() - getHandledQuantity(HandlingEventType.CONFIRM));
 		return item;
 	}
 	

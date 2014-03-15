@@ -15,8 +15,8 @@ Ext.define('MyApp.view.CustomerComboBox', {
 	queryMode : 'local',
 	store : 'KundeDataStore',
 	tpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
-			'<div class="x-boundlist-item">Kundennr:{customerNumber} - {customerNumber}</div>', '</tpl>'),
+			'<div class="x-boundlist-item">{customerNumber} - {firstName} {lastName}</div>', '</tpl>'),
 	displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
-			'{customerNumber} - {customerNumber}', '</tpl>')
+			'{customerNumber} - {firstName} {lastName}', '</tpl>')
 
 });

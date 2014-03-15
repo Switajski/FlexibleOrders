@@ -15,11 +15,11 @@ var filters = {
 };
 
 var grouping = {
-        ftype: 'grouping'
-        ,groupHeaderTpl: 'Dok.nr.: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
-        hideGroupedHeader: false,
-        startCollapsed: false
-    };
+	ftype : 'grouping',
+	groupHeaderTpl : 'Dok.nr.: {name} ({rows.length} Position{[values.rows.length > 1 ? "en" : ""]}) {[values.rows[0].created]}',
+	hideGroupedHeader : false,
+	startCollapsed : false
+};
 
 Ext.define('MyApp.view.PositionGridPanel', {
 	extend : 'Ext.grid.Panel',
@@ -32,23 +32,21 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 
 		Ext.applyIf(me, {
-			/*plugins : [this.editing],
 			/*
-			 * tbar : [{ itemid: 'add', dock : 'top', icon : 'images/add.png',
-			 * text : 'hinzuf&uuml;gen', scope : this, handler : this.onAddClick }, {
-			 * itemid : 'delete', icon : 'images/delete.png', text :
-			 * 'l&ouml;schen', scope : this, handler : this.onDeleteClick }],
-			 * dockedItems : [{ xtype : 'toolbar', dock : 'bottom', text :
-			 * 'sync', scope : this }],
+			 * plugins : [this.editing], /* tbar : [{ itemid: 'add', dock :
+			 * 'top', icon : 'images/add.png', text : 'hinzuf&uuml;gen', scope :
+			 * this, handler : this.onAddClick }, { itemid : 'delete', icon :
+			 * 'images/delete.png', text : 'l&ouml;schen', scope : this, handler :
+			 * this.onDeleteClick }], dockedItems : [{ xtype : 'toolbar', dock :
+			 * 'bottom', text : 'sync', scope : this }],
 			 */
 
 			listeners : {
 				itemdblclick : this.onitemdblclick
 			},
-			features : 
-				[grouping],
-				
-			//based on MyApp.model.BestellpositionData'
+			features : [grouping],
+
+			// based on MyApp.model.BestellpositionData'
 			columns : [{
 						xtype : 'gridcolumn',
 						dataIndex : 'product',
@@ -72,12 +70,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'orderNumber',
 						width : 90,
 						text : 'Bestellung'
-					//}, {
-					//	xtype : 'gridcolumn',
-					//	dataIndex : 'invoiceNumber',
-					//	width : 80,
-					//	text : 'Rechnung'
-					}, {
+						// }, {
+					// xtype : 'gridcolumn',
+					// dataIndex : 'invoiceNumber',
+					// width : 80,
+					// text : 'Rechnung'
+				}	, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantity',
 						width : 50,
@@ -87,7 +85,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'quantityLeft',
 						width : 50,
 						text : 'offen'
-					},{
+					}, {
 						xtype : 'numbercolumn',
 						dataIndex : 'priceNet',
 						width : 50,
@@ -98,23 +96,23 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'status',
 						width : 90,
 						text : 'Status'
-					}, {
+					}, /*{
 						xtype : 'gridcolumn',
 						dataIndex : 'customerNumber',
 						width : 70,
 						text : 'Kundennr'
-					}, {
+					},*/ {
 						xtype : 'gridcolumn',
 						dataIndex : 'customerName',
 						width : 120,
 						text : 'Name'
-					//}, {
-					//	xtype : 'gridcolumn',
-					//	dataIndex : 'expectedDelivery',
-					//	text : 'Geplante Auslieferung',
-					//	width : 20,
-					//	format : 'd/m/Y'
-					}, {
+						// }, {
+					// xtype : 'gridcolumn',
+					// dataIndex : 'expectedDelivery',
+					// text : 'Geplante Auslieferung',
+					// width : 20,
+					// format : 'd/m/Y'
+				}	, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
@@ -145,11 +143,11 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						sortable : false,
 						menuDisabled : true,
 						items : [{
-									icon : '/FlexibleOrders/images/delete.png',
-									tooltip : 'In den vorherigen Abschnitt verschieben',
-									scope : this,
-									handler : this.onRemoveClick
-								}]
+							icon : '/FlexibleOrders/images/delete.png',
+							tooltip : 'In den vorherigen Abschnitt verschieben',
+							scope : this,
+							handler : this.onRemoveClick
+						}]
 					}
 
 			],
@@ -177,9 +175,9 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		MyApp.getApplication().getController('MyController').showTransition(
 				grid, record);
 	},
-	onRemoveClick: function(grid, rowIndex, a, b, c, d, e, f, g){
-        this.getStore().removeAt(rowIndex);
-        this.getStore().sync();
-    }
+	onRemoveClick : function(grid, rowIndex, a, b, c, d, e, f, g) {
+		this.getStore().removeAt(rowIndex);
+		this.getStore().sync();
+	}
 
 });

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -51,7 +50,6 @@ public class OrderPdfFileTest {
 		order.addOrderItem(item2);
 	}
 	
-	@Ignore
 	@Transactional
 	@Test
 	public void shouldGenerateOrder() throws Exception{
@@ -59,7 +57,7 @@ public class OrderPdfFileTest {
 		bpf.setFileNameAndPath(O_PDF_FILE);
 
 		Map<String,Object> model = new HashMap<String,Object>();
-		model.put("Order", order);
+		model.put(order.getClass().getSimpleName(), order);
 
 		bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 

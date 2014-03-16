@@ -32,6 +32,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		ConfirmationReport confirmationReport =  (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		insertHeader(document);
         insertAdresse(document, confirmationReport.getInvoiceAddress());
+        //TODO: A-Umlaut wird nicht angezeigt
         insertSubject(document,"Auftragsbestätigung Nr." 
         		+ confirmationReport.getDocumentNumber());
         insertInfo(document,"Auftragsdatum: " + dateFormat.format(confirmationReport.getCreated()));
@@ -58,7 +59,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		Amount net = AmountCalculator.calculateNetAmount(cReport);
 		Amount vat = AmountCalculator.calculateVatAmount(cReport, VAT_RATE);
 		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-		.addFooterRow("zzgl. " + VAT_RATE + "% MwSt.   " + vat.toString())
+		.addFooterRow("zzgl. 19% MwSt.   " + vat.toString())
 		.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat).toString());
 		return builder.build();
 	}

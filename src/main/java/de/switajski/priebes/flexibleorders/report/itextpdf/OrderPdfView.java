@@ -65,7 +65,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
 			Amount net = AmountCalculator.calculateNetAmount(order);
 			Amount vat = AmountCalculator.calculateVatAmount(order, order.getVatRate());
 			builder.addFooterRow("Warenwert netto:   " + net.toString())
-			.addFooterRow("zzgl. " + order.getVatRate() + "% MwSt.   " + vat.toString())
+			.addFooterRow("zzgl. 19% MwSt.   " + vat.toString())
 			.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat).toString());
 		} else {
 			builder.addFooterRow("Warenwert netto:   " + "           -    ");

@@ -25,7 +25,7 @@ public class Address {
 
     @NotNull
     @Enumerated
-    private Country country = Country.GERMANY;
+    private Country country = Country.DEUTSCHLAND;
 
     public Address(){};
 

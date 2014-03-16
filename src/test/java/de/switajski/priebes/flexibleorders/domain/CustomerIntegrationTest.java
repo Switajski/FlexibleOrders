@@ -20,7 +20,7 @@ public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer>{
 						"name1", "name2", 
 						"street",
 						1234, "city",
-						Country.GERMANY)
+						Country.DEUTSCHLAND)
 						).build();
 	}
 

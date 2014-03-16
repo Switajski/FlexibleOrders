@@ -136,7 +136,7 @@ public class JsonCustomer {
 		if (name1 == null) name1 = firstName;
 		if (name2 == null) name2 = lastName;
 		Address a = new Address(getName1(), getName2(), getStreet(), getPostalCode(), 
-				getCity(), Country.GERMANY);
+				getCity(), Country.DEUTSCHLAND);
 		Customer customer = new Customer(getCustomerNumber(), getEmail(), a);
 		customer.setFirstName(getFirstName());
 		customer.setLastName(getLastName());

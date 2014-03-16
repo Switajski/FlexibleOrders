@@ -155,7 +155,7 @@ public class JsonDeliverRequest {
 	
 	public Address createAddress(){
 		return new Address(getName1(), getName2(), getStreet(), getPostalCode(), getCity(),
-				Country.GERMANY);
+				Country.DEUTSCHLAND);
 	}
 
 	public String getOrderConfirmationNumber() {

@@ -15,7 +15,7 @@ public class AddressBuilder implements Builder<Address>{
 
     private String city;
 
-    private Country country = Country.GERMANY;
+    private Country country = Country.DEUTSCHLAND;
 	
     public AddressBuilder withCountry(Country country){
     	this.country = country;

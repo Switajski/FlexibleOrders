@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class DeliveryNotesPdfFileTest {
 	
-	private static final String INVOICE_PDF_PATH = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/InvoicePdfFileTest.pdf";
+	private static final String INVOICE_PDF_PATH = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/DeliveryNotesPdfFileTest.pdf";
 
 	DeliveryNotes deliveryNotes;
 	
@@ -50,21 +50,15 @@ public class DeliveryNotesPdfFileTest {
 		.generateAttributes(12)
 		.build();
 		
-		item1.addHandlingEvent(
-			new HandlingEventBuilder(
-					HandlingEventType.SHIP, item1, 12)
-			.setReport(deliveryNotes)
-			.build());
-		item1.addHandlingEvent(
-				new HandlingEventBuilder(
-						HandlingEventType.SHIP, item1, 13)
-				.setReport(deliveryNotes)
-				.build()
-		);
-		
+		for (int i = 0; i< 35; i++){
+			item1.addHandlingEvent(
+					new HandlingEventBuilder(
+							HandlingEventType.SHIP, item1, i+1)
+					.setReport(deliveryNotes)
+					.build());
+		}
 	}
 	
-	@Ignore
 	@Transactional
 	@Test
 	public void shouldGenerateInvoice() throws Exception{

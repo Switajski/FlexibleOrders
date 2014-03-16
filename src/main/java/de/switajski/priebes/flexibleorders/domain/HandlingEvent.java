@@ -158,7 +158,7 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	private String provideStatus() {
 		String status = "";
 		switch (type){
-			case CONFIRM: status = "bestätigt"; break;
+			case CONFIRM: status = "best&auml;tigt"; break;
 			case SHIP: status = "ausgeliefert"; break;
 			case INVOICE: status = "in Rechnung gestellt"; break;
 			case PAID: status = "bezahlt"; break;

@@ -45,13 +45,13 @@
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'name1',
-					fieldLabel : 'Name 1',
+					fieldLabel : 'Firma',
 					allowBlank : false
 				}, {
 					xtype : 'textfield',
 					anchor : '100%',
 					name : 'name2',
-					fieldLabel : 'Name 2',
+					fieldLabel : 'Name',
 					allowBlank : false
 				}, {
 					xtype : 'textfield',

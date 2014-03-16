@@ -35,6 +35,9 @@ Ext.define('MyApp.model.BestellpositionData', {
 			 name: 'customerName'
 		 },
 		 {
+			 name: 'customerNumber'
+		 },
+		 {
 			 name: 'orderNumber'
 		 }, 
 		 {

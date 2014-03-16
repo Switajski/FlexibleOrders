@@ -138,20 +138,20 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		if (this.getReport() instanceof Receipt){
 			item.setReceiptNumber(getReport().getDocumentNumber());
 		}
-		item.setId(getId());
 		item.setCreated(getCreated());
 		item.setCustomer(getOrderItem().getOrder().getCustomer().getId());
+		item.setCustomerNumber(getOrderItem().getOrder().getCustomer().getCustomerNumber());
+		item.setCustomerName(getOrderItem().getOrder().getCustomer().getLastName());
+		item.setDocumentNumber(this.getReport().getDocumentNumber());
 		item.setId(getId());
 		item.setOrderNumber(getOrderItem().getOrder().getOrderNumber());
 		if (getOrderItem().getNegotiatedPriceNet() != null)
 			item.setPriceNet(getOrderItem().getNegotiatedPriceNet().getValue());
 		item.setProduct(getOrderItem().getProduct().getProductNumber());
 		item.setProductName(getOrderItem().getProduct().getName());
-		item.setStatus(provideStatus());
-		item.setCustomerNumber(getOrderItem().getOrder().getCustomer().getCustomerNumber());
-		item.setDocumentNumber(this.getReport().getDocumentNumber());
 		item.setQuantity(getQuantity());
 		item.setQuantityLeft(getOrderItem().getOrderedQuantity() - quantity);
+		item.setStatus(provideStatus());
 		return item;
 	}
 

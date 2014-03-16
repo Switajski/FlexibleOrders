@@ -33,7 +33,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		insertHeader(document);
         insertAdresse(document, confirmationReport.getInvoiceAddress());
         //TODO: A-Umlaut wird nicht angezeigt
-        insertSubject(document,"Auftragsbestätigung Nr." 
+        insertSubject(document,"Auftragsbestaetigungsnr. " 
         		+ confirmationReport.getDocumentNumber());
         insertInfo(document,"Auftragsdatum: " + dateFormat.format(confirmationReport.getCreated()));
         //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());

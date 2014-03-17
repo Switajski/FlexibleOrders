@@ -70,8 +70,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			builder.addFooterRow("Versandkosten:     " + price.toString());
 			shippingCosts.add(price);
 		}
+		net = net.add(vat);
+		net = net.add(shippingCosts);
 		builder.addFooterRow("Gesamtbetrag brutto:   " + 
-				net.add(vat).add(shippingCosts).toString());
+				net.toString());
 		return builder.build();
 	}
 

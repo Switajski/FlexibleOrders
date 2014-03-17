@@ -65,7 +65,7 @@ public class Amount {
 	public String toString(){
 		String currencyChar = "";
 		switch (getCurrency()) {
-			case EUR: currencyChar+= " €"; break;
+			case EUR: currencyChar+= " \u20ac"; break;
 			case PLN: currencyChar+= " zl";
 		}
 		String s = DECIMAL_FORMAT.format(value) + currencyChar;

@@ -31,7 +31,8 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 		DeliveryNotes invoice =  (DeliveryNotes) model.get(DeliveryNotes.class.getSimpleName());
 		insertHeader(document);
         insertAdresse(document, invoice.getShippedAddress());
-        insertSubject(document, "Lieferschein Nr." + invoice.getDocumentNumber());
+        //TODO
+        insertSubject(document, "Lieferschein Nr." + invoice.getDocumentNumber() + "                                Kundennr.: ");
         insertInfo(document,"Lieferdatum: " + dateFormat.format(invoice.getCreated()));
         this.insertEmptyLines(document, 1);
         document.add(createTable(invoice, document));

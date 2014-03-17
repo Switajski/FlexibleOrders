@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuil
 public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
 	//TODO: make VAT_RATE dependent from order
-	private static final Double VAT_RATE = 0.019d;
+	private static final Double VAT_RATE = 0.19d;
 
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
@@ -33,7 +33,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		insertHeader(document);
         insertAdresse(document, confirmationReport.getInvoiceAddress());
         //TODO: A-Umlaut wird nicht angezeigt
-        insertSubject(document,"Auftragsbestaetigungsnr. " 
+        insertSubject(document,"Auftragsbestaetigungsnr.                                   Kundennr.:" 
         		+ confirmationReport.getDocumentNumber());
         insertInfo(document,"Auftragsdatum: " + dateFormat.format(confirmationReport.getCreated()));
         //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());

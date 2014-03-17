@@ -14,7 +14,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.FourStrings;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;

@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,12 +63,12 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString());
 		
 		Amount shippingCosts = new Amount();
-		for (HandlingEvent shipment:invoice.getShippingCosts()){
-			Amount price = shipment.getOrderItem().getNegotiatedPriceNet();
+		for (Entry<String, Amount> shipment:invoice.getShippingCosts().entrySet()){
+			Amount price = shipment.getValue();
 			if (!price.isGreaterZero())
 				throw new IllegalStateException("Versand ohne Preis angegeben!");
-			builder.addFooterRow("Versandkosten:     " + price.toString());
-			shippingCosts.add(price);
+			builder.addFooterRow("Versandkosten aus Lieferschein " + shipment.getKey() +":     " + price.toString());
+			shippingCosts = shippingCosts.add(price);
 		}
 		net = net.add(vat);
 		net = net.add(shippingCosts);

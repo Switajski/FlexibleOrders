@@ -51,7 +51,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		PdfPageEvent {
 
 	public final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
-	public static final String FONT = "Arial";
+	public static final String FONT = "Helvetica";
 	protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
 	protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
 	protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";

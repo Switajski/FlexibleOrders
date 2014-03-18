@@ -256,12 +256,12 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 					- getHandledQuantity(HandlingEventType.SHIP);
 			break;
 		case INVOICE:
-			quantityLeft = getHandledQuantity(HandlingEventType.INVOICE) 
-					- getHandledQuantity(HandlingEventType.SHIP);
+			quantityLeft = getHandledQuantity(HandlingEventType.SHIP) 
+					- getHandledQuantity(HandlingEventType.INVOICE);
 			break;
 		case PAID:
-			quantityLeft = getHandledQuantity(HandlingEventType.PAID)
-					- getHandledQuantity(HandlingEventType.INVOICE);
+			quantityLeft = getHandledQuantity(HandlingEventType.INVOICE)
+					- getHandledQuantity(HandlingEventType.PAID);
 			break;
 		}
 		return quantityLeft;

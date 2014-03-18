@@ -105,6 +105,8 @@ Ext.define('MyApp.view.OrderWindow', {
 			dataIndex : 'quantity',
 			width : 75,
 			text : 'Menge',
+			value : 1,
+			minValue : 1,
 			editor : {
 				xtype : 'numberfield',
 				allowBlank : false,

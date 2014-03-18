@@ -175,6 +175,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 					}), edit = this.editing;
 			rec.data.orderNumber = bestellnr;
 			rec.data.customer = customer;
+			rec.data.quantity = 1;
 			this.store.insert(0, rec);
 			edit.startEditByPosition({
 						row : 0,

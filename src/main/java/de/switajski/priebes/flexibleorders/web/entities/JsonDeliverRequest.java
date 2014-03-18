@@ -203,5 +203,8 @@ public class JsonDeliverRequest {
 	public void validate(){
 		if (getItems().isEmpty())
 			throw new IllegalArgumentException("Keine Positionen angegeben!");
+		for (ReportItem item:getItems())
+			if (item.getQuantity() < 1)
+				throw new IllegalArgumentException("Menge von "+item.getProductName()+" ist kleiner als 1");
 	}
 }

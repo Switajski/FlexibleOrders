@@ -115,6 +115,11 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		return 0;
 	}
 	
+	/**
+	 * Not quantity left is set!
+	 * @return
+	 * @see OrderItem#toReportItems(HandlingEventType)
+	 */
 	public ReportItem toReportItem(){
 		//TODO: enhance mapping by a mapping framework
 		ReportItem item = new ReportItem();
@@ -150,7 +155,6 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		item.setProduct(getOrderItem().getProduct().getProductNumber());
 		item.setProductName(getOrderItem().getProduct().getName());
 		item.setQuantity(getQuantity());
-		item.setQuantityLeft(getOrderItem().getOrderedQuantity() - quantity);
 		item.setStatus(provideStatus());
 		return item;
 	}

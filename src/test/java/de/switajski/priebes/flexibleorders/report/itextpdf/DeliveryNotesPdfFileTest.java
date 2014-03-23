@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -13,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
-import de.switajski.priebes.flexibleorders.domain.OriginSystem;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
@@ -65,6 +64,7 @@ public class DeliveryNotesPdfFileTest {
 		
 		DeliveryNotesPdfFile bpf = new DeliveryNotesPdfFile();
 		bpf.setFilePathAndName(INVOICE_PDF_PATH);
+		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
         
 		Map<String,Object> model = new HashMap<String,Object>();
 		model.put("DeliveryNotes", deliveryNotes);

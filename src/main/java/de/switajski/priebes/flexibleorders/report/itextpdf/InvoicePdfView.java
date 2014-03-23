@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -9,14 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.FourStrings;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
 
 @Component
@@ -29,52 +36,86 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		Invoice invoice =  (Invoice) model.get(Invoice.class.getSimpleName());
-		insertHeader(document);
-        insertAdresse(document, invoice.getInvoiceAddress());
-        insertSubject(document, "Rechnungnr. " + invoice.getDocumentNumber());
-        insertInfo(document,"Rechnungsdatum: " + dateFormat.format(invoice.getCreated()));
-        this.insertEmptyLines(document, 1);
-        document.add(createTable(invoice, document));
-        this.insertEmptyLines(document, 1);
-	}
-	
-	private PdfPTable createTable(Invoice invoice, Document doc){
-		PdfPTableBuilder builder = new PdfPTableBuilder(doc)
-		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
-		for (HandlingEvent he: invoice.getEvents()){
-			if (!he.getOrderItem().isShippingCosts()){
-				builder.addBodyRow(
-						new FourStrings("",
-								// product Name
-								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
-								+ he.getOrderItem().getProduct().getName(),
-								// price
-								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
-								// amount of single item
-								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
-								));
-			}
-		}
-		Amount net = AmountCalculator.calculateNetAmount(invoice);
-		//TODO: make vatRate dependent from order
-		Amount vat = AmountCalculator.calculateVatAmount(invoice, VAT_RATE);
-		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString());
+		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 		
-		Amount shippingCosts = new Amount();
-		for (Entry<String, Amount> shipment:invoice.getShippingCosts().entrySet()){
-			Amount price = shipment.getValue();
-			if (!price.isGreaterZero())
-				throw new IllegalStateException("Versand ohne Preis angegeben!");
-			builder.addFooterRow("Versandkosten aus Lieferschein " + shipment.getKey() +":     " + price.toString());
-			shippingCosts = shippingCosts.add(price);
+		//TODO implement Customer number
+		String customerNumber = "";
+		String created = dateFormat.format(report.getCreated());
+		
+        insertAdresse(document, report.getInvoiceAddress());
+        
+        //TODO: A-Umlaut wird nicht angezeigt
+		insertHeading(document, "Rechnung");
+		
+        CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
+        		report.getDocumentNumber().toString(),
+        		created, "", customerNumber);
+        
+        insertInfoTable(document, infoTableBuilder);
+
+        document.add(createTable(report));
+
+		insertFooter(writer, report);
+	}
+	//TODO: make it an invoiceTable
+//	private PdfPTable createTable(Invoice invoice, Document doc) throws DocumentException{
+//		PdfPTableBuilder builder = PdfPTableBuilder.buildWithFourCols();
+//		for (HandlingEvent he: invoice.getEvents()){
+//			if (!he.getOrderItem().isShippingCosts()){
+//				builder.addBodyRow(
+//						new FourStrings("",
+//								// product Name
+//								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
+//								+ he.getOrderItem().getProduct().getName(),
+//								// price
+//								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
+//								// amount of single item
+//								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
+//								));
+//			}
+//		}
+//		Amount net = AmountCalculator.calculateNetAmount(invoice);
+//		//TODO: make vatRate dependent from order
+//		Amount vat = AmountCalculator.calculateVatAmount(invoice, VAT_RATE);
+//		builder.addFooterRow("Warenwert netto:   "+ net.toString())
+//		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString());
+//		
+//		Amount shippingCosts = new Amount();
+//		for (Entry<String, Amount> shipment:invoice.getShippingCosts().entrySet()){
+//			Amount price = shipment.getValue();
+//			if (!price.isGreaterZero())
+//				throw new IllegalStateException("Versand ohne Preis angegeben!");
+//			builder.addFooterRow("Versandkosten aus Lieferschein " + shipment.getKey() +":     " + price.toString());
+//			shippingCosts = shippingCosts.add(price);
+//		}
+//		net = net.add(vat);
+//		net = net.add(shippingCosts);
+//		builder.addFooterRow("Gesamtbetrag brutto:   " + 
+//				net.toString());
+//		return builder.build();
+//	}
+	
+	private PdfPTable createTable(Report cReport) throws DocumentException{
+		PdfPTableBuilder builder = PdfPTableBuilder.buildWithSixCols();
+		for (HandlingEvent he: cReport.getEvents()){
+			List<String> list = new ArrayList<String>();
+			// Art.Nr.:
+			list.add(he.getOrderItem().getProduct().getProductNumber().toString());
+			// Artikel
+			list.add(he.getOrderItem().getProduct().getName());
+			// Anzahl
+			list.add(String.valueOf(he.getQuantity()));
+			// EK per Stueck
+			list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
+			// Bestellnr
+			list.add(he.getOrderItem().getOrder().getOrderNumber());
+			// gesamt
+			list.add(he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString());
+			
+			builder.addBodyRow(list);
 		}
-		net = net.add(vat);
-		net = net.add(shippingCosts);
-		builder.addFooterRow("Gesamtbetrag brutto:   " + 
-				net.toString());
-		return builder.build();
+		
+		return builder.withFooter(false).build();
 	}
 
 }

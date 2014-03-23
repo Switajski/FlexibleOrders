@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -56,31 +55,27 @@ public class OrderConfirmationPdfFileTest {
 				new ConfirmedSpecification(false, false)
 				);
 		
-		item1.addHandlingEvent(
-			new HandlingEventBuilder(
-					HandlingEventType.SHIP, item1, 12)
-			.setReport(orderConfirmation)
-			.build());
-		item1.addHandlingEvent(
-				new HandlingEventBuilder(
-						HandlingEventType.SHIP, item1, 13)
-				.setReport(orderConfirmation)
-				.build()
-		);
+		for (int i = 0; i<28 ;i++){
+			item1.addHandlingEvent(
+					new HandlingEventBuilder(
+							HandlingEventType.SHIP, item1, i)
+					.setReport(orderConfirmation)
+					.build());
+		}
 		
 	}
 
-	@Ignore
 	@Transactional
 	@Test
 	public void shouldGenerateOrder(){
 
 		OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
 		bpf.setFilePathAndName(OC_PDF_FILE);
+		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
         
 		try {
 			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("OrderConfirmation", orderConfirmation);
+			model.put("ConfirmationReport", orderConfirmation);
 			
 			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 

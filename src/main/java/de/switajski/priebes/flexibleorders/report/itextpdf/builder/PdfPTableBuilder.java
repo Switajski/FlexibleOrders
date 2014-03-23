@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.report.itextpdf.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -17,132 +16,178 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.PriebesIText5PdfView;
 
 public class PdfPTableBuilder {
 	
-	private int COLUMNS = 4;
-	int[] widths = new int[]{100, 245, 90, 65};
-	private static int align1 = Element.ALIGN_LEFT;
-	private static int align2 = Element.ALIGN_LEFT;
-	private static int align3 = Element.ALIGN_RIGHT;
-	private static int align4 = Element.ALIGN_RIGHT;
-
-	private List<FourStrings> bodyList = new ArrayList<FourStrings>();
+	private List<List<String>> bodyList = new ArrayList<List<String>>();
 	private List<String> footerList = new ArrayList<String>();
-	private float totalWidth = 500;
-	private FourStrings headerStrings;
+	private boolean createFooter = true; 
 	
-	private String firstColumn = null;
-	//FIXME add page handling (Builder pattern won't work here)
-	private Document doc;
+	private ArrayList<TableProperties> tableProperties;
+	private boolean createHeader = true;
 	
-	public PdfPTableBuilder(Document doc) {
-		this.doc = doc;
+	/**
+	 * Constructor with least arguments to build a {@link PdfPTable} table
+	 * @param rowProperties 
+	 */
+	public PdfPTableBuilder(ArrayList<TableProperties> rowProperties) {
+		this.tableProperties = rowProperties;
+	}
+	
+	public static PdfPTableBuilder buildWithFourCols(){
+		return new PdfPTableBuilder(createPropertiesWithFourCols());
 	}
 
-	public PdfPTable build(){
-		PdfPTable pdfPTable = new PdfPTable(COLUMNS);
-		pdfPTable = new PdfPTable(COLUMNS);
-		try {
-			pdfPTable.setWidths(widths);
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}        
-		pdfPTable.setTotalWidth(totalWidth);
-		pdfPTable.setLockedWidth(true);
-//		this.getDefaultCell().setFixedHeight(20);
+	private static ArrayList<TableProperties> createPropertiesWithFourCols() {
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties("Bestellpos", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 45));
+		rowProperties.add(new TableProperties("Menge x Preis", Element.ALIGN_RIGHT, 30));
+		rowProperties.add(new TableProperties("Betrag", Element.ALIGN_RIGHT, 15));
+		return rowProperties;
+	}
+	
+	public static PdfPTableBuilder buildWithSixCols(){
+		return new PdfPTableBuilder(createPropertiesWithSixCols());
+	}
+	
+	public static ArrayList<TableProperties> createPropertiesWithSixCols(){
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties("Art. Nr.", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 40));
+		rowProperties.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("EK per Stück", Element.ALIGN_LEFT, 15));
+		rowProperties.add(new TableProperties("Bestellnr.", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
+		return rowProperties;
+	}
+	
+	public static ArrayList<TableProperties> createPropertiesWithTwoCols(){
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 60));
+		rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 40));
+		return rowProperties;
+	}
+
+
+	private float[] getWidths(){
+		ArrayList<Float> iList = new ArrayList<Float>();
+		for (TableProperties prop:tableProperties){
+			iList.add(prop.relativeWidth);
+		}
+		return convertFloats(iList);
+	}
+	
+	public static float[] convertFloats(List<Float> floats){
+	    float[] ret = new float[floats.size()];
+	    for (int i=0; i < ret.length; i++)
+	    {
+	        ret[i] = floats.get(i).intValue();
+	    }
+	    return ret;
+	}
+	
+	public PdfPTable build() throws DocumentException{
+		PdfPTable pdfPTable = new PdfPTable(tableProperties.size());
 		
-		createHeader(pdfPTable, headerStrings);
+		pdfPTable.setWidths(getWidths());
+		pdfPTable.setWidthPercentage(100f);
+//		if (pdfPTable.getTotalWidth() == 0);
+//			pdfPTable.setTotalWidth(583f);
+		
+		if (createHeader)
+			createHeader(pdfPTable);
 		createBody(pdfPTable);
-		createFooter(pdfPTable);
+		if (createFooter)
+			createFooter(pdfPTable);
 		return pdfPTable;
 	}
-	
+
 	private void createFooter(PdfPTable pdfPTable) {
-		int current = 0;
-		int last = footerList.size()-1;
-		for (String string: footerList){
-			
-			Phrase phrase = new Phrase(string);
-			if (current == last)
-				phrase.setFont(FontFactory.getFont(PriebesIText5PdfView.FONT,10,Font.BOLD));
-			PdfPCellBuilder builder = new PdfPCellBuilder(phrase)
-				.setColspan(6)
-				.setRightHorizontalAlignment();
-			if (current == 0) builder.setTopBorder();
-			pdfPTable.addCell(builder.build());
-			current++;
-		
-		}
-	}
-
-	private void createBody(PdfPTable pdfPTable) {
-		int bPos = 1;
-		for (FourStrings bp:bodyList){
-			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
-			
-			String firstColumnContent = null;
-			// if getFirstColumnContent is not overridden by subclasses enumerate positions
-			if (firstColumn==null) 
-				firstColumnContent = String.valueOf(bPos);
-			else 
-				firstColumnContent = firstColumn;
-			
-			// item position
-			PdfPCell bestellpos = PdfPCellBuilder.leftAligned(firstColumnContent);
-			bestellpos.setFixedHeight(20f);
-			cells.add(bestellpos);
-
-			cells.add(PdfPCellBuilder.leftAligned(bp.second));
-
-			cells.add(PdfPCellBuilder.rightAligned(bp.third));
-
-			cells.add(PdfPCellBuilder.rightAligned(bp.forth));
-
-			for (PdfPCell cell:cells){
-				cell.setBorder(Rectangle.NO_BORDER);
-				pdfPTable.addCell(cell);
-			}
-			bPos++;
-			
-		}
-		
-	}
-	
-	private void createHeader(PdfPTable pdfPTable, FourStrings strings) {
-		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
-		PdfPCell bposHeader = new PdfPCell(new Phrase(strings.first));
-		bposHeader.setFixedHeight(25f);
-		bposHeader.setHorizontalAlignment(align1);
-		header.add(bposHeader);
-
-		PdfPCell artikelHeader = new PdfPCell(new Phrase(strings.second));
-		artikelHeader.setHorizontalAlignment(align2);
-		header.add(artikelHeader);
-
-		PdfPCell mengeHeader = new PdfPCell(new Phrase(strings.third));
-		mengeHeader.setHorizontalAlignment(align3);
-		header.add(mengeHeader);
-
-		PdfPCell betragHeader = new PdfPCell(new Phrase(strings.forth));
-		betragHeader.setHorizontalAlignment(align4);
-		header.add(betragHeader);
-
-		for (PdfPCell cell:header){
-			cell.setBorder(Rectangle.BOTTOM);
+		for (PdfPCell cell:createFooter(footerList, tableProperties)){
 			pdfPTable.addCell(cell);
 		}
 	}
 
-	public PdfPTableBuilder addBodyRow(FourStrings row){
-		this.bodyList.add(row);
-		return this;
+	private void createHeader(PdfPTable pdfPTable) {
+		for (PdfPCell cell:createHeaderCells()){
+			pdfPTable.addCell(cell);
+		}
+		pdfPTable.setHeaderRows(1);
+	}
+	
+	public static List<PdfPCell> createFooter(List<String> footerList, ArrayList<TableProperties> tableProperties) {
+		int current = 0;
+		int last = footerList.size()-1;
+		List<PdfPCell> cells = new ArrayList<PdfPCell>();
+
+		for (String string: footerList){
+			Phrase phrase = new Phrase(string, 
+						FontFactory.getFont(PriebesIText5PdfView.FONT, PriebesIText5PdfView.FONT_SIZE, Font.BOLD));
+			PdfPCellBuilder builder = new PdfPCellBuilder(phrase)
+			.setColspan(tableProperties.size())
+			.withRightHorizontalAlignment();
+			if (current == last) {
+				builder.setTopBorder();
+			}
+			cells.add(builder.build());
+			current++;
+		}
+		
+		return cells;
 	}
 
-	public PdfPTableBuilder setHeader(FourStrings header) {
-		this.headerStrings = header;
+	private void createBody(PdfPTable pdfPTable) {
+		for (List<String> bp:bodyList){
+			int i =0;
+			for (String stringOfCell:bp){
+				if (tableProperties.get(i).alignment == Element.ALIGN_RIGHT)
+					pdfPTable.addCell(PdfPCellBuilder.withRightAlignment(stringOfCell));
+				else 
+					pdfPTable.addCell(PdfPCellBuilder.withLeftAlignment(stringOfCell));
+				i++;
+			}
+		}
+		
+	}
+	
+	public ArrayList<PdfPCell> createHeaderCells() {
+		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
+		for (TableProperties prop:tableProperties){
+			PdfPCell bposHeader = new PdfPCell(
+					new PhraseBuilder(prop.heading)
+					.withFont(FontFactory.getFont(PriebesIText5PdfView.FONT, 8, Font.NORMAL))
+					.build());
+			bposHeader.setFixedHeight(12f);
+			bposHeader.setHorizontalAlignment(prop.alignment);
+			bposHeader.setBorder(Rectangle.TOP);
+			bposHeader.setBorderWidth(PriebesIText5PdfView.BORDER_WIDTH);
+			header.add(bposHeader);
+		}
+		return header;
+	}
+
+	/**
+	 * ArrayList must have same size as columns (given by {@link PdfPTableBuilder})
+	 * @param list
+	 * @return
+	 */
+	public PdfPTableBuilder addBodyRow(List<String> list){
+		if (list.size() != this.tableProperties.size())
+			throw new IllegalArgumentException("Row number trying to add does not fit to table");
+		this.bodyList.add(list);
 		return this;
 	}
 
 	public PdfPTableBuilder addFooterRow(String string) {
 		this.footerList.add(string);
+		return this;
+	}
+
+	public PdfPTableBuilder withFooter(boolean createFooter) {
+		this.createFooter = createFooter;
+		return this;
+	}
+
+	public PdfPTableBuilder withHeader(boolean b) {
+		createHeader  = b;
 		return this;
 	}
 

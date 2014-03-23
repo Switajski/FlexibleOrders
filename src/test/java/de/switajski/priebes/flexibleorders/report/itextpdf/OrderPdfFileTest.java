@@ -55,6 +55,7 @@ public class OrderPdfFileTest {
 	public void shouldGenerateOrder() throws Exception{
 		OrderPdfFile bpf = new OrderPdfFile();
 		bpf.setFileNameAndPath(O_PDF_FILE);
+		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
 
 		Map<String,Object> model = new HashMap<String,Object>();
 		model.put(order.getClass().getSimpleName(), order);

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -25,7 +24,6 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.ColumnText;
@@ -35,13 +33,17 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEvent;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
+import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PhraseBuilder;
 
 /**
- * This class generates PDF views and files in DIN A4 and methods to create a
- * letter.
+ * This class generates PDF views and files in DIN A4 in Priebes-style.</br> 
+ * Therefore it has all settings (e.g. {@link Font}) and methods to create letters.
  * 
  * @author Marek
  * 
@@ -50,12 +52,44 @@ import de.switajski.priebes.flexibleorders.domain.Address;
 public abstract class PriebesIText5PdfView extends AbstractView implements
 		PdfPageEvent {
 
-	public final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+	/** 
+	 * font settings
+	 */
+	private static final String ENCODING = BaseFont.CP1252;
 	public static final String FONT = "Helvetica";
+	public static final float FONT_SIZE = 10;
+//	public static final Font font = FontFactory.getFont(FONT, FONT_SIZE, Font.NORMAL);
+	public static final Font font = FontFactory.getFont(FONT, ENCODING, FONT_SIZE);
+	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, FONT_SIZE, Font.BOLD);
+	public static final Font twelveSizefont = FontFactory.getFont(FONT, ENCODING, 12, Font.BOLD);
+	
+
+	/**
+	 * format settings
+	 */
+	public final static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+	public static final float BORDER_WIDTH = 0.15f;
+	public static final int PAGE_MARGIN_BOTTOM = /*bottom*/160;
+	public static final int PAGE_MARGIN_TOP = /*top*/80;
+	public static final int PAGE_MARGIN_RIGHT = /*right*/72;
+	public static final int PAGE_MARGIN_LEFT = /*left*/60;
+	public static final float WIDTH = 464f;
+	
+	
+	/**
+	 * texts
+	 */
 	protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
 	protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
 	protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";
-	protected static final String HEADER_ZEILE3 = "priebes.eu";
+	protected static final String HEADER_ZEILE3 = "www.priebes.eu";
+	
+	/**
+	 * other properties
+	 */
+	private static final boolean SHOW_PAGE_NUMBERS = false;
+
+	private String logoPath = null;
 
 	public PriebesIText5PdfView() {
 		setContentType("application/pdf");
@@ -90,9 +124,13 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		writeToResponse(response, baos);
 	}
 
+	/**
+	 * sets format and margins of document
+	 * @return
+	 */
 	protected Document newDocument() {
 		Document doc = new Document(PageSize.A4);
-		doc.setMargins(36, 72, 36, 80);
+		doc.setMargins(PAGE_MARGIN_LEFT, PAGE_MARGIN_RIGHT, PAGE_MARGIN_TOP, PAGE_MARGIN_BOTTOM);
 		return doc;
 	}
 
@@ -137,57 +175,47 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	 * inserts the address
 	 * 
 	 * @param doc
-	 * @param adresse
-	 *            die EmpfängerAdresse
+	 * @param adresse die EmpfaengerAdresse
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
 	public void insertAdresse(Document doc, Address adresse)
 			throws MalformedURLException, IOException, DocumentException {
-		insertEmptyLines(doc, 6);
-		Image img = createLogo();
-		img.scaleToFit(70, 35);
-		img.setAbsolutePosition(50, 693);
-		Chunk tab1 = new Chunk(new VerticalPositionMark(), 90, true);
-		Paragraph p = new Paragraph();
-		p.add(tab1);
-		p.setFont(FontFactory.getFont(FONT, 10, Font.NORMAL));
-		p.add(UEBER_EMPFAENGERADRESSE);
-		doc.add(p);
-		doc.add(img);
-
-		p = new Paragraph();
+		doc.add(ParagraphBuilder.createEmptyLine());
+		doc.add(ParagraphBuilder.createEmptyLine());
+		doc.add(ParagraphBuilder.createEmptyLine());
+		doc.add(ParagraphBuilder.createEmptyLine());
+		
 		if (adresse == null) {
-			insertEmptyLines(doc, 4);
+			doc.add(ParagraphBuilder.createEmptyLine());
+			doc.add(ParagraphBuilder.createEmptyLine());
+			doc.add(ParagraphBuilder.createEmptyLine());
 		} else {
-			int verticalSpace = 30;
-			p.add(Chunk.NEWLINE);
-			p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-			p.add(new Phrase(adresse.getName1()));
-			p.add(Chunk.NEWLINE);
-			p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-			p.add(new Phrase(adresse.getName2()));
-			p.add(Chunk.NEWLINE);
-			p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-			p.add(new Phrase(adresse.getStreet()));
-			p.add(Chunk.NEWLINE);
-			p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-			p.add(new Phrase(adresse.getPostalCode() + " " + adresse.getCity()));
-			p.add(Chunk.NEWLINE);
-			p.add(new Chunk(new VerticalPositionMark(), verticalSpace, true));
-			p.add(new Phrase(adresse.getCountry().toString()));
+			doc.add(new ParagraphBuilder(adresse.getName1())
+			.withIndentationLeft(36f)
+			.withLineSpacing(12f)
+			.addTextLine(adresse.getName2())
+			.addTextLine(adresse.getStreet())
+			.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
+			.addTextLine(adresse.getCountry().toString())
+			.build());
 		}
-		doc.add(p);
+		
+		doc.add(ParagraphBuilder.createEmptyLine());
+		doc.add(ParagraphBuilder.createEmptyLine());
 
 	}
 
 	private Image createLogo() throws BadElementException,
 	MalformedURLException, IOException {
+		if (logoPath != null)
+			return Image.getInstance(logoPath);
+		else
 		return Image.getInstance(this.getServletContext()
 				.getRealPath("/images").concat("/LogoGross.jpg"));
 	}
-
+	
 	/**
 	 * Einf�gen eines Betreffs / Titels des Dokuments
 	 * 
@@ -201,13 +229,9 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	public void insertSubject(Document doc, String title)
 			throws MalformedURLException, IOException, DocumentException {
 
-		Paragraph p = new Paragraph();
-
-		p.setFont(FontFactory.getFont(FONT, 16, Font.BOLD));
-		insertEmptyLines(doc, 3);
-
-		p.add(title);
-		doc.add(p);
+		doc.add(new ParagraphBuilder(title)
+			.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
+			.build());
 	}
 
 	public void insertSmallText(Document doc, String text)
@@ -220,41 +244,27 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	}
 
 	/**
-	 * 
+	 * @deprecated
 	 * @param doc
-	 * @param info
-	 *            Der Dokumententitel wie z.B. "Rechnung"
+	 * @param info Der Dokumententitel wie z.B. "Rechnung"
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
 	public void insertInfo(Document doc, String info)
 			throws MalformedURLException, IOException, DocumentException {
-
-		Paragraph p = new Paragraph();
-
-		p.setFont(FontFactory.getFont(FONT, 12, Font.NORMAL));
-		insertEmptyLines(doc, 1);
-
-		p.add(info);
-		doc.add(p);
-	}
-
-	public void insertEmptyLines(Document doc, int lines)
-			throws DocumentException {
-		Paragraph p = new Paragraph();
-		for (int i = 0; i < lines; i++) {
-			p.add(Chunk.NEWLINE);
-		}
-		doc.add(p);
+		doc.add(new ParagraphBuilder(info).build());
 	}
 
 	@Override
 	public void onOpenDocument(PdfWriter writer, Document document) {
 		total = writer.getDirectContent().createTemplate(30, 16);
-		addBigLogo(writer);
+		insertBigLogo(writer);
 	}
 
+	/**
+	 * Creates PDF-Footer
+	 */
 	@Override
 	public void onStartPage(PdfWriter writer, Document document) {
 
@@ -263,27 +273,26 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		footer.setLockedWidth(true);
 		footer.setHorizontalAlignment(Element.ALIGN_CENTER);
 		footer.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		Paragraph fPara = new Paragraph();
-		fPara.setAlignment(Element.ALIGN_CENTER);
-		fPara.setFont(FontFactory.getFont(FONT, 10, Font.NORMAL));
-		fPara.setAlignment(Element.ALIGN_CENTER);
-		fPara.add("priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg\n"
-				+ "www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)\n"
-				+ "KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390\n"
-				+ "IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG");
+		Paragraph fPara = new ParagraphBuilder("priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg")
+			.addTextLine("www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)")
+			.addTextLine("KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
+			.addTextLine("IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
+			.withAlignment(Element.ALIGN_CENTER)
+			.withFont(FontFactory.getFont(FONT, 9, Font.NORMAL))
+			.withLineSpacing(12f)
+			.build();
 		PdfPCell footerCell = new PdfPCell();
 		footerCell.addElement(fPara);
-		footerCell.setBorder(Rectangle.TOP);
+		//footerCell.setBorder(Rectangle.TOP);
+		footerCell.setBorder(Rectangle.NO_BORDER);
 		footer.addCell(footerCell);
-		footer.writeSelectedRows(0, -1, 34, 75, writer.getDirectContent());
+		footer.writeSelectedRows(0, -1, /*xPos*/34, /*yPos*/120, writer.getDirectContent());
 
-		addPageNumber(writer, document);
-
-		// Adresse
+		if (SHOW_PAGE_NUMBERS) addPageNumber(writer, document);
 
 	}
 
-	private void addBigLogo(PdfWriter writer) {
+	public void insertBigLogo(PdfWriter writer) {
 		try {
 			Image img = Image.getInstance(createLogo());
 			img.setAlignment(Image.RIGHT);
@@ -291,20 +300,18 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 
 			PdfPTable table = new PdfPTable(3);
 			// Adresse im Header
-			Paragraph addresse = new Paragraph("priebes OHG");
-			addresse.setFont(FontFactory.getFont(FONT, 10, Font.NORMAL));
-			addresse.setAlignment(Element.ALIGN_RIGHT);
-			addresse.add(Chunk.NEWLINE);
-			addresse.add(HEADER_ZEILE1);
-			addresse.add(Chunk.NEWLINE);
-			addresse.add(HEADER_ZEILE2);
-			addresse.add(Chunk.NEWLINE);
-			addresse.add(HEADER_ZEILE3);
-			addresse.add(Chunk.NEWLINE);
 			PdfPCell headerCell = new PdfPCell();
 			headerCell.setBorder(Rectangle.NO_BORDER);
 			headerCell.addElement(img);
-			headerCell.addElement(addresse);
+			headerCell.addElement(
+					new ParagraphBuilder("priebes OHG")
+					.withFont(FontFactory.getFont(FONT, 12, Font.NORMAL))
+					.withAlignment(Element.ALIGN_RIGHT)
+					.withLineSpacing(25f)
+					.build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE1).withAlignment(Element.ALIGN_RIGHT).build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE2).withAlignment(Element.ALIGN_RIGHT).build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE3).withAlignment(Element.ALIGN_RIGHT).build());
 
 			table.setWidths(new int[] { 10, 10, 30 });
 			table.setTotalWidth(527);
@@ -315,24 +322,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			table.addCell("");
 			table.addCell("");
 			table.addCell(headerCell);
-			table.writeSelectedRows(0, -1, 34, 803, writer.getDirectContent());
-
-			/*
-			 * PdfPTable footer = new PdfPTable(2); footer.setWidths(new
-			 * int[]{525, 2}); footer.setTotalWidth(527);
-			 * footer.setLockedWidth(true);
-			 * footer.getDefaultCell().setFixedHeight(20);
-			 * footer.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-			 * footer.getDefaultCell
-			 * ().setHorizontalAlignment(Element.ALIGN_CENTER);
-			 * footer.addCell("priebes OHG / Maxstraße 1 / 71636 Ludwigsburg"
-			 * );footer.addCell(""); footer.addCell(
-			 * "www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)"
-			 * );footer.addCell(""); footer.addCell(
-			 * "KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390"
-			 * );footer.addCell(""); footer.writeSelectedRows(0, -1, 34, 100,
-			 * writer.getDirectContent());
-			 */
+			table.writeSelectedRows(0, -1, 0, 788, writer.getDirectContent());
 
 		} catch (DocumentException de) {
 			throw new ExceptionConverter(de);
@@ -365,19 +355,19 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			e.printStackTrace();
 		}
 		absText(writer, String.format("S. %d / ", writer.getPageNumber()),
-				x - 32, y + 2);
+					x - 25, y + 2);
 
 	}
 
 	private static void absText(PdfWriter writer, String text, int x, int y) {
 		PdfContentByte cb = writer.getDirectContent();
 		try {
-			BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
-					BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+			BaseFont bf = BaseFont.createFont(PriebesIText5PdfView.FONT,
+					ENCODING, BaseFont.NOT_EMBEDDED);
 			cb.saveState();
 			cb.beginText();
 			cb.moveText(x, y);
-			cb.setFontAndSize(bf, 12);
+			cb.setFontAndSize(bf, PriebesIText5PdfView.FONT_SIZE);
 			cb.showText(text);
 			cb.endText();
 			cb.restoreState();
@@ -390,9 +380,9 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 
 	@Override
 	public void onCloseDocument(PdfWriter writer, Document document) {
-		ColumnText
-				.showTextAligned(total, Element.ALIGN_LEFT,
-						new Phrase(String.valueOf(writer.getPageNumber() - 1)),
+		if ((writer.getPageNumber() - 1) > 1)
+		ColumnText.showTextAligned(total, Element.ALIGN_LEFT,
+						new PhraseBuilder(String.valueOf(writer.getPageNumber() - 1)).build(),
 						2, 2, 0);
 
 	}
@@ -438,5 +428,48 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			Rectangle rect, String text) {
 
 	}
+
+	public String getLogoPath() {
+		return logoPath;
+	}
+
+	public void setLogoPath(String logoPath) {
+		this.logoPath = logoPath;
+	}
+	
+	public void insertInfoTable(Document document,
+			CustomPdfPTableBuilder infoTableBuilder) throws DocumentException {
+		PdfPTable infoTable = infoTableBuilder.build();
+		infoTable.setWidthPercentage(100);
+        
+		document.add(infoTable);
+        //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
+        document.add(ParagraphBuilder.createEmptyLine());
+	}
+	
+	/**
+	 * @param writer
+	 */
+	public void insertFooter(PdfWriter writer, Report report) {
+		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
+				AmountCalculator.calculateNetAmount(report), 
+				AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE));
+	    
+	    PdfPTable footer = footerBuilder.withTotalWidth(PriebesIText5PdfView.WIDTH).build();
+	    
+	    footer.writeSelectedRows(0, -1,
+	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
+	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + 30, 
+	    		writer.getDirectContent());
+	}
+	
+	public void insertHeading(Document document, String heading)
+			throws DocumentException {
+		document.add(new ParagraphBuilder(heading)
+			.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
+			.build());
+		document.add(ParagraphBuilder.createEmptyLine());
+	}
+
 
 }

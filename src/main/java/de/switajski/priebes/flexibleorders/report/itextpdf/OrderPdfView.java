@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -15,7 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.FourStrings;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
 
 /**
@@ -36,29 +39,24 @@ public class OrderPdfView extends PriebesIText5PdfView {
         insertAdresse(document, bestellung.getCustomer().getAddress());
         insertSubject(document,"Bestellung Nr." + bestellung.getOrderNumber());
         insertInfo(document,"Bestelldatum: " + dateFormat.format(bestellung.getCreated()));
-        this.insertEmptyLines(document, 1);
+        document.add(ParagraphBuilder.createEmptyLine());
         document.add(createTable(bestellung, document));
 
 	}
 	
-	private PdfPTable createTable(FlexibleOrder order,Document document){
+	private PdfPTable createTable(FlexibleOrder order,Document document) throws DocumentException{
 		
-		PdfPTableBuilder builder = new PdfPTableBuilder(document)
-		.setHeader(new FourStrings("Bestellpos.", "Artikel", "Menge x Preis", "Betrag"));
+		PdfPTableBuilder builder = PdfPTableBuilder.buildWithFourCols();
 		for (OrderItem he: order.getItems()){
 			if (!he.isShippingCosts()){
 				String priceString = getPriceString(he);
 				String priceXquantity = getPriceXquantity(he);
-				builder.addBodyRow(
-						new FourStrings("",
-								// product Name
-								"Art.Nr.: " + he.getProduct().getProductNumber() + " - "
-								+ he.getProduct().getName(),
-								// price
-								priceString,
-								// amount of single item
-								priceXquantity
-								));
+				List<String> strings = new ArrayList<String>();
+				strings.add("");
+				strings.add("Art.Nr.: " + he.getProduct().getProductNumber() + " - "+ he.getProduct().getName());
+				strings.add(priceString);
+				strings.add(priceXquantity);
+				builder.addBodyRow(strings);
 			}
 		}
 		if (hasRecommendedPrices(order) && hasVat(order)){

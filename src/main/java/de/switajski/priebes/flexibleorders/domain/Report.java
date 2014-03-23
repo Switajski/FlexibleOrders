@@ -51,5 +51,5 @@ public abstract class Report extends GenericEntity{
 		events.add(handlingEvent);
 		handlingEvent.setReport(this);
 	}
-	
+
 }

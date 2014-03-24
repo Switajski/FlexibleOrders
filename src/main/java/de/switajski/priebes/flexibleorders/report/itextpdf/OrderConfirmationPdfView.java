@@ -38,9 +38,10 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		
 		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		
+		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
 		String expectedDelivery = "";
 		String customerNumber = "";
-		String created = dateFormat.format(report.getCreated());
+		String created = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
 		String heading = "Auftragsbestätigung";
 		
@@ -79,8 +80,8 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		
 
 		// info table
-        CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
-        		report.getDocumentNumber().toString(),
+		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
+        		leftTop,
         		created, expectedDelivery, customerNumber);
         PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);

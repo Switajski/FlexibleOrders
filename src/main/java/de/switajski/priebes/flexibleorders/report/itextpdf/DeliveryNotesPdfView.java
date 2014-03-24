@@ -88,18 +88,18 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         document.add(createTable(report));
 
 		
-        // insert footer table
-        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-				AmountCalculator.calculateNetAmount(report), 
-				AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE), null, null, null)
-				.withTotalWidth(PriebesIText5PdfView.WIDTH);
-	    
-	    PdfPTable footer = footerBuilder.build();
-	    
-	    footer.writeSelectedRows(0, -1,
-	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
-	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
-	    		writer.getDirectContent());
+//        // insert footer table
+//        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
+//				AmountCalculator.calculateNetAmount(report), 
+//				AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE), null, null, null)
+//				.withTotalWidth(PriebesIText5PdfView.WIDTH);
+//	    
+//	    PdfPTable footer = footerBuilder.build();
+//	    
+//	    footer.writeSelectedRows(0, -1,
+//	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
+//	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
+//	    		writer.getDirectContent());
 	}
 	
 //	private PdfPTable createTable(DeliveryNotes deliveryNotes, Document doc) throws DocumentException{

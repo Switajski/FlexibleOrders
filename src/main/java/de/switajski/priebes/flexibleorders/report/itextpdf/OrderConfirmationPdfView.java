@@ -42,7 +42,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		String customerNumber = "";
 		String created = dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
-		String heading = "Lieferschein";
+		String heading = "Auftragsbestätigung";
 		
 		Amount net = AmountCalculator.calculateNetAmount(report);
 		Amount vat = AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE);

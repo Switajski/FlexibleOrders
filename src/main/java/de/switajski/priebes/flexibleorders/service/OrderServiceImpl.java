@@ -131,10 +131,8 @@ public class OrderServiceImpl {
 			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered.getOrderItem();
 			
 			//TODO: move into validation layer
-			Integer quantityToDeliver = entry.getQuantityLeft();
-			if (quantityToDeliver == null || quantityToDeliver < 1 || 
-					quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(HandlingEventType.CONFIRM))
-				throw new IllegalArgumentException("Menge ist nicht valide");
+			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeDelivered,
+					HandlingEventType.CONFIRM);
 			
 			deliveryNotes.addEvent(new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, 
 					orderItemToBeDelivered, quantityToDeliver, new Date()));
@@ -153,6 +151,15 @@ public class OrderServiceImpl {
 					);
 
 		return reportRepo.save(deliveryNotes);
+	}
+
+	private Integer validateQuantity(ReportItem entry, OrderItem orderItemToBeDelivered,
+			HandlingEventType type) {
+		Integer quantityToDeliver = entry.getQuantityLeft();
+		if (quantityToDeliver == null || quantityToDeliver < 1 || 
+				quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(type))
+			throw new IllegalArgumentException("Menge ist nicht valide");
+		return quantityToDeliver;
 	}
 
 	@Transactional
@@ -316,12 +323,12 @@ public class OrderServiceImpl {
 				
 		for (ReportItem entry: shipEvents){
 			HandlingEvent shipEventToBeInvoiced = heRepo.findOne(entry.getId());
-			OrderItem oiToBeInvoiced = shipEventToBeInvoiced.getOrderItem();
 			
-			Integer quantityToDeliver = entry.getQuantityLeft();
-			if (quantityToDeliver == null || quantityToDeliver < 1 ||
-					quantityToDeliver > oiToBeInvoiced.calculateQuantityLeft(HandlingEventType.SHIP))
-				throw new IllegalArgumentException("Menge ist nicht valide");
+			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced.getOrderItem(); 
+			
+			//TODO: move into validation layer
+			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeInvoiced,
+					HandlingEventType.SHIP);
 			
 			invoice.addEvent(new HandlingEvent(invoice, HandlingEventType.INVOICE, 
 					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));

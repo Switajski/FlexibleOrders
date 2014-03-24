@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +13,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.HandlingEventBuilder;
@@ -47,17 +51,30 @@ public class InvoicePdfFileTest {
 		.generateAttributes(12)
 		.build();
 		
-		item1.addHandlingEvent(
-			new HandlingEventBuilder(
-					HandlingEventType.SHIP, item1, 12)
-			.setReport(invoice)
-			.build());
-		item1.addHandlingEvent(
-				new HandlingEventBuilder(
-						HandlingEventType.SHIP, item1, 13)
-				.setReport(invoice)
+		OrderItem shipping = new ItemBuilder(
+				new FlexibleOrder(
+					"email@nowhere.com", 
+					OriginSystem.FLEXIBLE_ORDERS, 
+					I_NR),
+				new CatalogProductBuilder("Versand", 0L, ProductType.SHIPPING)
+				.setRecommendedPriceNet(new Amount(BigDecimal.valueOf(4.5d), Currency.EUR))
 				.build()
-		);
+				.toProduct(), 
+				0)
+			.generateAttributes(12)
+			.build();
+		for (int i =0;i<24;i++){
+			item1.addHandlingEvent(
+					new HandlingEventBuilder(
+							HandlingEventType.SHIP, item1, i+1)
+					.setReport(invoice)
+					.build());
+		}
+		shipping.addHandlingEvent(
+				new HandlingEventBuilder(
+						HandlingEventType.SHIP, shipping, 4)
+				.setReport(invoice)
+				.build());
 		
 	}
 	

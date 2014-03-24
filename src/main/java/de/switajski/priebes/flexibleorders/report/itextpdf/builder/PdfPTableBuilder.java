@@ -31,21 +31,13 @@ public class PdfPTableBuilder {
 		this.tableProperties = rowProperties;
 	}
 	
-	public static PdfPTableBuilder buildWithFourCols(){
-		return new PdfPTableBuilder(createPropertiesWithFourCols());
-	}
-
-	private static ArrayList<TableProperties> createPropertiesWithFourCols() {
+	public static ArrayList<TableProperties> createPropertiesWithFourCols() {
 		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties("Bestellpos", Element.ALIGN_LEFT, 10));
-		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 45));
-		rowProperties.add(new TableProperties("Menge x Preis", Element.ALIGN_RIGHT, 30));
-		rowProperties.add(new TableProperties("Betrag", Element.ALIGN_RIGHT, 15));
+		rowProperties.add(new TableProperties("Anzahl", Element.ALIGN_RIGHT, 10));
+		rowProperties.add(new TableProperties("Art. Nr.", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 50));
+		rowProperties.add(new TableProperties("Bestellnr.", Element.ALIGN_RIGHT, 30));
 		return rowProperties;
-	}
-	
-	public static PdfPTableBuilder buildWithSixCols(){
-		return new PdfPTableBuilder(createPropertiesWithSixCols());
 	}
 	
 	public static ArrayList<TableProperties> createPropertiesWithSixCols(){
@@ -55,6 +47,16 @@ public class PdfPTableBuilder {
 		rowProperties.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
 		rowProperties.add(new TableProperties("EK per Stück", Element.ALIGN_LEFT, 15));
 		rowProperties.add(new TableProperties("Bestellnr.", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
+		return rowProperties;
+	}
+	
+	public static ArrayList<TableProperties> createPropertiesWithFiveCols(){
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties("Art. Nr.", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 50));
+		rowProperties.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new TableProperties("EK per Stück", Element.ALIGN_LEFT, 15));
 		rowProperties.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
 		return rowProperties;
 	}

@@ -50,43 +50,44 @@ public class CustomPdfPTableBuilder {
 	 * @param vat
 	 * @return
 	 */
-	public static CustomPdfPTableBuilder createFooterBuilder(Amount net, Amount vat) {
+	public static CustomPdfPTableBuilder createFooterBuilder(Amount net, Amount vat, Amount shipping, Amount gross, String paymentConditions) {
 		PhraseBuilder bold = new PhraseBuilder("Betrag").withFont(FontFactory.getFont(PriebesIText5PdfView.FONT, PriebesIText5PdfView.FONT_SIZE, Font.BOLD));
 		PdfPCellBuilder leftAlign = new PdfPCellBuilder(bold.build());
 		PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build()).withRightHorizontalAlignment();
 		
 		CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(PdfPTableBuilder.createPropertiesWithTwoCols())
         .addCell(leftAlign.withPhrase(bold.withText("Betrag").build()).build())
-        .addCell(rightAlign.withPhrase(bold.withText(net.toString()).build()).build())
-        
-        .addCell(leftAlign.withPhrase(bold.withText("zzgl. 19% MwSt.").build()).build())
+        .addCell(rightAlign.withPhrase(bold.withText(net.toString()).build()).build());
+		
+		if (shipping != null)
+			footerBuilder.addCell(leftAlign.withPhrase(bold.withText("Versand").build()).build())
+	        .addCell(rightAlign.withPhrase(bold.withText(shipping.toString()).build()).build());
+			
+        footerBuilder.addCell(leftAlign.withPhrase(bold.withText("zzgl. 19% MwSt.").build()).build())
         .addCell(rightAlign.withPhrase(bold.withText(vat.toString()).build()).build())
         
         .addCell(leftAlign.withPhrase(bold.withText("Gesamtbetrag brutto").build()).withBorder(Rectangle.TOP).build())
-        .addCell(rightAlign.withPhrase(bold.withText(net.add(vat).toString()).build()).withBorder(Rectangle.TOP).build());
+        .addCell(rightAlign.withPhrase(bold.withText(gross.toString()).build()).withBorder(Rectangle.TOP).build());
+        
+        if (paymentConditions != null)
+			footerBuilder.addCell(leftAlign.withPhrase(new PhraseBuilder(paymentConditions).build()).withBorder(Rectangle.NO_BORDER).build())
+	        .addCell(rightAlign.withPhrase(bold.withText("").build()).withBorder(Rectangle.NO_BORDER).build());
 
 		return footerBuilder;
 	}
 
-	public static CustomPdfPTableBuilder createInfoTable(String documentNumber, String created,
-			String expectedDelivery, String customerNumber) {
-		if (expectedDelivery != null &&  expectedDelivery != "")
-			expectedDelivery = "vorraussichtl. Liefertermin: "+expectedDelivery;
-		else expectedDelivery = "";
-		
-		if (customerNumber != null &&  customerNumber != "")
-			customerNumber = "Kundennr.: "+customerNumber;
-		else customerNumber = "";
+	public static CustomPdfPTableBuilder createInfoTable(String leftTop, String leftBottom,
+			String rightTop, String rightBottom) {
 		
 		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(PdfPTableBuilder.createPropertiesWithTwoCols())
     	.addCell(new PdfPCellBuilder(
-    			new PhraseBuilder("Auftragsnummer: "  + documentNumber).build()).build())
+    			new PhraseBuilder(leftTop).build()).build())
     	.addCell(new PdfPCellBuilder(
-    			new PhraseBuilder(expectedDelivery).build()).build())
+    			new PhraseBuilder(rightTop).build()).build())
     	.addCell(new PdfPCellBuilder(
-    			new PhraseBuilder("Auftragsdatum: "  + created).build()).build())
+    			new PhraseBuilder(leftBottom).build()).build())
     	.addCell(new PdfPCellBuilder(
-    			new PhraseBuilder(customerNumber).build()).build());
+    			new PhraseBuilder(rightBottom).build()).build());
 		return infoTableBuilder;
 	}
 }

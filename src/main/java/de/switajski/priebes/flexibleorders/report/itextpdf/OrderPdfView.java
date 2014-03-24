@@ -11,13 +11,17 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
+import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
 
@@ -35,54 +39,112 @@ public class OrderPdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		FlexibleOrder bestellung =  (FlexibleOrder) model.get(FlexibleOrder.class.getSimpleName());
-        insertAdresse(document, bestellung.getCustomer().getAddress());
-        insertSubject(document,"Bestellung Nr." + bestellung.getOrderNumber());
-        insertInfo(document,"Bestelldatum: " + dateFormat.format(bestellung.getCreated()));
+		FlexibleOrder report =  (FlexibleOrder) model.get(FlexibleOrder.class.getSimpleName());
+
+		String rightTop = "";
+		String rightBottom = "";
+		String leftTop = "Bestellnummer: " + report.getOrderNumber().toString();
+		String leftBottom = "Bestelldatum: " + dateFormat.format(report.getCreated());
+		Address adresse = report.getCustomer().getAddress();
+		String heading = "Bestellung";
+		
+		Amount net = AmountCalculator.calculateNetAmount(report);
+		Amount vat = AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE);
+		Amount gross = net.add(vat);
+
+		// insert address
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
+		if (adresse == null) {
+			document.add(ParagraphBuilder.createEmptyLine());
+			document.add(ParagraphBuilder.createEmptyLine());
+			document.add(ParagraphBuilder.createEmptyLine());
+		} else {
+			document.add(new ParagraphBuilder(adresse.getName1())
+			.withIndentationLeft(36f)
+			.withLineSpacing(12f)
+			.addTextLine(adresse.getName2())
+			.addTextLine(adresse.getStreet())
+			.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
+			.addTextLine(adresse.getCountry().toString())
+			.build());
+		}
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
+        
+		
+        // insert heading
+		document.add(new ParagraphBuilder(heading)
+		.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
+		.build());
+		document.add(ParagraphBuilder.createEmptyLine());
+		
+
+		// info table
+		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
+        		leftTop, leftBottom, rightTop, rightBottom);
+        PdfPTable infoTable = infoTableBuilder.build();
+		infoTable.setWidthPercentage(100);
+		document.add(infoTable);
+        //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
         document.add(ParagraphBuilder.createEmptyLine());
-        document.add(createTable(bestellung, document));
+
+        
+        // insert main table
+        document.add(createTable(report));
+
+		
+        // insert footer table
+        if (hasRecommendedPrices(report) && hasVat(report)){
+        	CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
+        			net, vat, null, gross, null)
+        			.withTotalWidth(PriebesIText5PdfView.WIDTH);
+
+        	PdfPTable footer = footerBuilder.build();
+
+        	footer.writeSelectedRows(0, -1,
+        			/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
+        			/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
+        			writer.getDirectContent());
+        }
 
 	}
 	
-	private PdfPTable createTable(FlexibleOrder order,Document document) throws DocumentException{
+	private PdfPTable createTable(FlexibleOrder order) throws DocumentException{
 		
-		PdfPTableBuilder builder = PdfPTableBuilder.buildWithFourCols();
-		for (OrderItem he: order.getItems()){
-			if (!he.isShippingCosts()){
-				String priceString = getPriceString(he);
-				String priceXquantity = getPriceXquantity(he);
-				List<String> strings = new ArrayList<String>();
-				strings.add("");
-				strings.add("Art.Nr.: " + he.getProduct().getProductNumber() + " - "+ he.getProduct().getName());
-				strings.add(priceString);
-				strings.add(priceXquantity);
-				builder.addBodyRow(strings);
+		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithFiveCols());
+		for (OrderItem oi: order.getItems()){
+			if (!oi.isShippingCosts()){
+				List<String> row = new ArrayList<String>();
+				row.add(oi.getProduct().getProductNumber().toString());
+				// Artikel
+				row.add(oi.getProduct().getName());
+				// Anzahl
+				row.add(String.valueOf(oi.getOrderedQuantity()));
+				// EK per Stueck
+				row.add(getPriceString(oi));
+				// gesamt
+				row.add(getPriceXquantity(oi));
+				builder.addBodyRow(row);
 			}
 		}
-		if (hasRecommendedPrices(order) && hasVat(order)){
-			Amount net = AmountCalculator.calculateNetAmount(order);
-			Amount vat = AmountCalculator.calculateVatAmount(order, order.getVatRate());
-			builder.addFooterRow("Warenwert netto:   " + net.toString())
-			.addFooterRow("zzgl. 19% MwSt.   " + vat.toString())
-			.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat).toString());
-		} else {
-			builder.addFooterRow("Warenwert netto:   " + "           -    ");
-		}
-		return builder.build();
+		return builder.withFooter(false).build();
 	}
 
 	private String getPriceXquantity(OrderItem he) {
 		if (he.getNegotiatedPriceNet() != null && he.getNegotiatedPriceNet().getValue() != null)
 			return he.getNegotiatedPriceNet().multiply(he.getOrderedQuantity()).toString();
 		else 
-			return " -     ";
+			return "-";
 	}
 
 	private String getPriceString(OrderItem he) {
 		String priceString ="";
 		if (he.getNegotiatedPriceNet() != null && he.getOrderedQuantity() != null
 				&& he.getNegotiatedPriceNet().getValue() != null)
-			priceString = he.getOrderedQuantity()+ " x " + he.getNegotiatedPriceNet().toString();
+			priceString = he.getNegotiatedPriceNet().toString();
 		else 
 			priceString = "Preis n. verf.";
 		return priceString;

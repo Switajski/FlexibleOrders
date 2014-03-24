@@ -1,9 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;

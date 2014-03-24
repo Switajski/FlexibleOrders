@@ -34,9 +34,6 @@ import com.itextpdf.text.pdf.PdfPageEvent;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PhraseBuilder;
@@ -69,10 +66,11 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	 */
 	public final static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
 	public static final float BORDER_WIDTH = 0.15f;
-	public static final int PAGE_MARGIN_BOTTOM = /*bottom*/160;
+	public static final int PAGE_MARGIN_BOTTOM = /*bottom*/180;
 	public static final int PAGE_MARGIN_TOP = /*top*/80;
 	public static final int PAGE_MARGIN_RIGHT = /*right*/72;
 	public static final int PAGE_MARGIN_LEFT = /*left*/60;
+	public static final int FOOTER_MARGIN_BOTTOM = 30;
 	public static final float WIDTH = 464f;
 	
 	
@@ -168,42 +166,6 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	 */
 	public void insertHeader(Document document) throws BadElementException,
 			MalformedURLException, DocumentException, IOException {
-
-	}
-
-	/**
-	 * inserts the address
-	 * 
-	 * @param doc
-	 * @param adresse die EmpfaengerAdresse
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws DocumentException
-	 */
-	public void insertAdresse(Document doc, Address adresse)
-			throws MalformedURLException, IOException, DocumentException {
-		doc.add(ParagraphBuilder.createEmptyLine());
-		doc.add(ParagraphBuilder.createEmptyLine());
-		doc.add(ParagraphBuilder.createEmptyLine());
-		doc.add(ParagraphBuilder.createEmptyLine());
-		
-		if (adresse == null) {
-			doc.add(ParagraphBuilder.createEmptyLine());
-			doc.add(ParagraphBuilder.createEmptyLine());
-			doc.add(ParagraphBuilder.createEmptyLine());
-		} else {
-			doc.add(new ParagraphBuilder(adresse.getName1())
-			.withIndentationLeft(36f)
-			.withLineSpacing(12f)
-			.addTextLine(adresse.getName2())
-			.addTextLine(adresse.getStreet())
-			.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
-			.addTextLine(adresse.getCountry().toString())
-			.build());
-		}
-		
-		doc.add(ParagraphBuilder.createEmptyLine());
-		doc.add(ParagraphBuilder.createEmptyLine());
 
 	}
 
@@ -439,37 +401,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	
 	public void insertInfoTable(Document document,
 			CustomPdfPTableBuilder infoTableBuilder) throws DocumentException {
-		PdfPTable infoTable = infoTableBuilder.build();
-		infoTable.setWidthPercentage(100);
-        
-		document.add(infoTable);
-        //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
-        document.add(ParagraphBuilder.createEmptyLine());
+		
 	}
 	
-	/**
-	 * @param writer
-	 */
-	public void insertFooter(PdfWriter writer, Report report) {
-		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-				AmountCalculator.calculateNetAmount(report), 
-				AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE));
-	    
-	    PdfPTable footer = footerBuilder.withTotalWidth(PriebesIText5PdfView.WIDTH).build();
-	    
-	    footer.writeSelectedRows(0, -1,
-	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
-	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + 30, 
-	    		writer.getDirectContent());
-	}
-	
-	public void insertHeading(Document document, String heading)
-			throws DocumentException {
-		document.add(new ParagraphBuilder(heading)
-			.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
-			.build());
-		document.add(ParagraphBuilder.createEmptyLine());
-	}
-
-
 }

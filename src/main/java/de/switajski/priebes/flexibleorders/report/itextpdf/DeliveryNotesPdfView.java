@@ -20,7 +20,6 @@ import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
 import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
@@ -39,8 +38,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 		String leftBottom = "Lieferdatum: " + dateFormat.format(report.getCreated());
 		String rightTop = "";
 		//TODO
-//		String rightBottom = "Kundennr.: " + "TODO";
-		String rightBottom = "";
+		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		Address adresse = report.getShippedAddress();
 		String heading = "Lieferschein";
 

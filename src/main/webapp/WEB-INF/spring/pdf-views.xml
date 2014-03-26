@@ -9,8 +9,8 @@
  	<bean id="OrderPdfView"
    		class="de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfView">
    	</bean>
-   	<bean id="OrderConfirmationPdfView"
-   		class="de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfView">
+   	<bean id="ConfirmationReportPdfView"
+   		class="de.switajski.priebes.flexibleorders.report.itextpdf.ConfirmationReportPdfView">
    	</bean>
    	<bean id="DeliveryNotesPdfView"
    		class="de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfView">

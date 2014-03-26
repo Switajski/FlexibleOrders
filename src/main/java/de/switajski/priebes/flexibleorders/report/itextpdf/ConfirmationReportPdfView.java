@@ -26,7 +26,7 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuil
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
 
 @Component
-public class OrderConfirmationPdfView extends PriebesIText5PdfView {
+public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 
 	//TODO: make VAT_RATE dependent from order
 	public static final Double VAT_RATE = 0.19d;
@@ -40,13 +40,13 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		
 		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
 		String expectedDelivery = "";
-		String customerNumber = "";
+		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		String created = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
 		String heading = "Auftragsbestätigung";
 		
 		Amount net = AmountCalculator.calculateNetAmount(report);
-		Amount vat = AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE);
+		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
 		Amount gross = net.add(vat);
 
 		// insert address
@@ -82,7 +82,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		// info table
 		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
         		leftTop,
-        		created, expectedDelivery, customerNumber);
+        		created, expectedDelivery, rightBottom);
         PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);
 		document.add(infoTable);

@@ -1,8 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -14,6 +12,9 @@ public class Invoice extends Report {
 	@NotNull
 	private Address invoiceAddress;
 	
+	@Embedded
+	private Amount shippingCosts; 
+	
 	protected Invoice() {}
 	
 	public Invoice(String invoiceNumber, String paymentConditions, Address invoiceAddress) {
@@ -21,7 +22,6 @@ public class Invoice extends Report {
 		this.paymentConditions = paymentConditions;
 		this.invoiceAddress = invoiceAddress;
 	}
-	
 	
 	public String getPaymentConditions() {
 		return paymentConditions;
@@ -31,28 +31,24 @@ public class Invoice extends Report {
 		this.paymentConditions = paymentConditions;
 	}
 
-
 	public Address getInvoiceAddress() {
 		return invoiceAddress;
 	}
-
 
 	public void setInvoiceAddress(Address invoiceAddress) {
 		this.invoiceAddress = invoiceAddress;
 	}
 
-	public Map<String, Amount> getShippingCosts() {
-		Map<String, Amount> shippingCosts = new HashMap<String, Amount>();
-		for (HandlingEvent he : this.getEvents()){
-			OrderItem orderItem = he.getOrderItem();
-			if (orderItem.isShippingCosts())
-				shippingCosts.put(getDeliveryNotesNoOfShippingCosts(orderItem), orderItem.getNegotiatedPriceNet());
-		}
+	public Amount getShippingCosts() {
 		return shippingCosts;
 	}
+
+	public void setShippingCosts(Amount shippingCosts) {
+		this.shippingCosts = shippingCosts;
+	}
 	
-	public String getDeliveryNotesNoOfShippingCosts(OrderItem shippingCostsItem){
-		return shippingCostsItem.getAllHesOfType(HandlingEventType.SHIP).iterator().next().getReport().getDocumentNumber();
+	public void addShippingCosts(Amount shippingCost){
+		this.shippingCosts.add(shippingCost);
 	}
 
 }

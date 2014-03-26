@@ -188,6 +188,7 @@ public class ReportItemServiceImpl {
 	public Page<ReportItem> retrieveAllToBePaid(PageRequest pageable,
 			boolean byOrder) {
 		if (byOrder){
+			//TODO: I messed it up with types - move it to Specification
 			return extractReportItemsFromOrders(
 					orderRepo.findAllToBePaid(pageable), pageable, HandlingEventType.INVOICE);
 		}
@@ -293,7 +294,7 @@ public class ReportItemServiceImpl {
 					ris.addAll(oi.toReportItems(heType));
 			}
 		}
-		return new PageImpl<ReportItem>(ris, pageable, countOrders(ris));
+		return new PageImpl<ReportItem>(ris, pageable, orders.getTotalElements());
 	}
 	
 	private static int countOrders(List<ReportItem> ris){

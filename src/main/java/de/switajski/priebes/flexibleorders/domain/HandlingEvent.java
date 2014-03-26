@@ -65,7 +65,13 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		return report;
 	}
 	
-	public DeliveryNotes getInvoice(){
+	public Invoice getInvoice(){
+		if (getReport() instanceof Invoice)
+			return (Invoice) getReport();
+		return null;
+	}
+	
+	public DeliveryNotes getDeliveryNotes(){
 		if (getReport() instanceof DeliveryNotes)
 			return (DeliveryNotes) getReport();
 		return null;

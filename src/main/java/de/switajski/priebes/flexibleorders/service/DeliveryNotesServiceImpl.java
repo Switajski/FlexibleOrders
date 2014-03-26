@@ -30,7 +30,7 @@ public class DeliveryNotesServiceImpl implements DeliveryNotesService{
 	@Override
 	public List<Long> findInvoiceNumbersLike(Long invoiceNumber) {
 		// TODO Auto-generated method stub
-		return null;
+		throw new NotImplementedException();
 	}
 
 	public List<Long> getInvoiceNumbersByCustomer(Customer customer,

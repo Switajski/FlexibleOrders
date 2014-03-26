@@ -2,7 +2,9 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,6 +101,7 @@ public class OrderServiceImpl {
 		ConfirmationReport cr = new ConfirmationReport(confirmNumber, 
 				address, address, new ConfirmedSpecification(false, false));
 		cr.setExpectedDelivery(expectedDelivery);
+		cr.setCustomerNumber(order.getCustomer().getCustomerNumber());
 		
 		for (ReportItem entry: orderItems){
 			OrderItem oi = itemRepo.findOne(entry.getId());
@@ -123,7 +126,7 @@ public class OrderServiceImpl {
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
 		DeliveryNotes deliveryNotes = new DeliveryNotes(deliveryNotesNumber,
-				new ShippedSpecification(false, false), shippingAddress);
+				new ShippedSpecification(false, false), shippingAddress, shipment);
 				
 		FlexibleOrder firstOrder = null;
 		for (ReportItem entry: confirmEvents){
@@ -141,15 +144,7 @@ public class OrderServiceImpl {
 				firstOrder = orderItemToBeDelivered.getOrder();
 		}
 
-		// add shipping costs as new HandlingEvent
-		if (shipment != null && shipment.isGreaterZero())
-			deliveryNotes.addEvent(
-					new HandlingEvent(
-							deliveryNotes, HandlingEventType.SHIP,
-							createShippingCosts(shipment, firstOrder), 
-							1, new Date())
-					);
-
+		deliveryNotes.setCustomerNumber(firstOrder.getCustomer().getCustomerNumber());
 		return reportRepo.save(deliveryNotes);
 	}
 
@@ -286,6 +281,7 @@ public class OrderServiceImpl {
 			if (orderItem.isShippingCosts())
 				orderItem.getOrder().remove(orderItem);
 			orderRepo.save(orderItem.getOrder());
+			r.removeEvent(he);
 		}
 	}
 
@@ -320,7 +316,9 @@ public class OrderServiceImpl {
 		
 		Invoice invoice = new Invoice(invoiceNumber, paymentConditions,
 				invoiceAddress);
-				
+		
+		FlexibleOrder order = null;
+		HashMap<String, DeliveryNotes> deliveryNotes = new HashMap<String, DeliveryNotes>();
 		for (ReportItem entry: shipEvents){
 			HandlingEvent shipEventToBeInvoiced = heRepo.findOne(entry.getId());
 			
@@ -332,9 +330,25 @@ public class OrderServiceImpl {
 			
 			invoice.addEvent(new HandlingEvent(invoice, HandlingEventType.INVOICE, 
 					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));
+
+			for (HandlingEvent he :orderItemToBeInvoiced.getAllHesOfType(HandlingEventType.SHIP)){
+				DeliveryNotes dn = he.getDeliveryNotes();
+				deliveryNotes.put(dn.getDocumentNumber(), dn); 
+			}
+			
+			if (order == null) order = orderItemToBeInvoiced.getOrder();
 		}
+		
+		Amount summedShippingCosts = new Amount();
+		for (Entry<String, DeliveryNotes> entry2:deliveryNotes.entrySet()){
+			if (entry2.getValue().getShippingCosts().isGreaterZero())
+			summedShippingCosts = summedShippingCosts.add(entry2.getValue().getShippingCosts());
+		}
+		invoice.setShippingCosts(summedShippingCosts);
+		
+		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
 		
 		return reportRepo.save(invoice);
 	}
-
+	
 }

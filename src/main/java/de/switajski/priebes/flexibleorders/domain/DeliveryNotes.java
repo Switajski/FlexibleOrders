@@ -40,14 +40,17 @@ public class DeliveryNotes extends Report{
 	private String trackNumber;
 	
 	private String packageNumber;
+
+	private Amount shippingCosts;
 	
 	protected DeliveryNotes(){};
 	
 	public DeliveryNotes(String deliveryNotesNumber, ShippedSpecification shippedSpec,
-			Address shippedAdress) {
+			Address shippedAdress, Amount shippingCosts) {
 		super(deliveryNotesNumber);
 		this.shippedSpecification = shippedSpec;
 		this.shippedAddress = shippedAdress;
+		this.shippingCosts = shippingCosts;
 	}
 	
 	public ShippedSpecification getShippedSpecification() {
@@ -95,6 +98,14 @@ public class DeliveryNotes extends Report{
 
 	public void setTrackNumber(String trackNumber) {
 		this.trackNumber = trackNumber;
+	}
+
+	public Amount getShippingCosts() {
+		return shippingCosts;
+	}
+
+	public void setShippingCosts(Amount shippingCosts) {
+		this.shippingCosts = shippingCosts;
 	}
 
 }

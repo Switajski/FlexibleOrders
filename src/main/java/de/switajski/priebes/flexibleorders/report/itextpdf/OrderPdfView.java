@@ -42,14 +42,14 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		FlexibleOrder report =  (FlexibleOrder) model.get(FlexibleOrder.class.getSimpleName());
 
 		String rightTop = "";
-		String rightBottom = "";
+		String rightBottom = "Kundennummer: " + report.getCustomer().getCustomerNumber();
 		String leftTop = "Bestellnummer: " + report.getOrderNumber().toString();
 		String leftBottom = "Bestelldatum: " + dateFormat.format(report.getCreated());
 		Address adresse = report.getCustomer().getAddress();
 		String heading = "Bestellung";
 		
 		Amount net = AmountCalculator.calculateNetAmount(report);
-		Amount vat = AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE);
+		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
 		Amount gross = net.add(vat);
 
 		// insert address

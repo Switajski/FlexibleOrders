@@ -231,8 +231,8 @@ public class OrderServiceTest {
 		for (HandlingEvent he : dn.getEvents()){
 			assertTrue(he.getType() == HandlingEventType.SHIP);
 			assertTrue(he.getId() != null);
-			assertTrue(he.getInvoice() != null);
-			assertTrue(he.getInvoice().getId() != null);
+			assertTrue(he.getDeliveryNotes().getId() != null);
+			assertTrue(he.getOrderConfirmation().getId() != null);
 			assertTrue(he.getQuantity() > 0);
 		}
 		

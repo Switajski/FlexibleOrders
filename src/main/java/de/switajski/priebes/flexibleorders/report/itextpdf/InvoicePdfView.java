@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.report.itextpdf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,15 +40,15 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		//TODO
 //		String rightTop = "Kundennummer: " + "TODO";
 		String rightTop = "";
-		String rightBottom = "";
+		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		String leftTop = "Rechnungsnummer: " + report.getDocumentNumber().toString();
 		String leftBottom = "Rechnungsdatum: " + dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
 		String heading = "Rechnung";
 		
-		Amount vat = AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE);
+		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
         Amount net = AmountCalculator.calculateNetAmount(report);
-        Amount shippingCosts = calculateShippingCosts(report);
+        Amount shippingCosts = report.getShippingCosts();
         Amount gross = net.add(vat);
 		gross = gross.add(shippingCosts);
 
@@ -173,15 +172,5 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		return builder.withFooter(false).build();
 	}
 	
-	public Amount calculateShippingCosts(Invoice invoice){
-		Amount shippingCosts = new Amount();
-		for (Entry<String, Amount> shipment:invoice.getShippingCosts().entrySet()){
-			Amount price = shipment.getValue();
-			if (!price.isGreaterZero())
-				throw new IllegalStateException("Versand ohne Preis angegeben!");
-			shippingCosts = shippingCosts.add(price);
-		}
-		return shippingCosts;	
-	}
 	
 }

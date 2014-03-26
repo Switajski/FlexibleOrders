@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfView;
+import de.switajski.priebes.flexibleorders.report.itextpdf.ConfirmationReportPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfView;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -60,7 +60,7 @@ public class ReportController extends ExceptionController{
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
 	        ConfirmationReport record = (ConfirmationReport) reportRepo.findByDocumentNumber(id); 
-            return new ModelAndView(OrderConfirmationPdfView.class.getSimpleName(),
+            return new ModelAndView(ConfirmationReportPdfView.class.getSimpleName(),
             		ConfirmationReport.class.getSimpleName(),
             		record);
 			
@@ -69,7 +69,7 @@ public class ReportController extends ExceptionController{
 			e.printStackTrace();
 		}
 		
-        return new ModelAndView(OrderConfirmationPdfView.class.getName(),ConfirmationReport.class.getSimpleName(),null);
+        return new ModelAndView(ConfirmationReportPdfView.class.getName(),ConfirmationReport.class.getSimpleName(),null);
     }
 	
 	@RequestMapping(value = "/deliveryNotes/{id}.pdf", headers = "Accept=application/pdf")

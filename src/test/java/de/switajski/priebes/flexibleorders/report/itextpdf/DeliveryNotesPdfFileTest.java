@@ -37,7 +37,7 @@ public class DeliveryNotesPdfFileTest {
 	@Before
 	public void initData(){
 		deliveryNotes = new DeliveryNotes(I_NR, new ShippedSpecification(false, false),
-				AddressBuilder.buildWithGeneratedAttributes(123));
+				AddressBuilder.buildWithGeneratedAttributes(123), null);
 
 		OrderItem item1 = new ItemBuilder(
 			new FlexibleOrder(

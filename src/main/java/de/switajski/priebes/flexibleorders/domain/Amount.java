@@ -50,6 +50,8 @@ public class Amount {
 	 * @return
 	 */
 	public Amount add(Amount negotiatedPriceNet) {
+		if (negotiatedPriceNet == null)
+			return this;
 		if (this.currency == null)
 			currency = negotiatedPriceNet.getCurrency();
 		

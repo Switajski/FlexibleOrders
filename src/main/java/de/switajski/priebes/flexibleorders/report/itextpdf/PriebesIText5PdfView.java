@@ -56,7 +56,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	public static final String FONT = BaseFont.COURIER;
 	public static final float FONT_SIZE = 10;
 	public static final Font font = FontFactory.getFont(FONT, ENCODING, true, FONT_SIZE);
-	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, FONT_SIZE, Font.BOLD);
+	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, FONT_SIZE + 2 );
 	public static final Font twelveSizefont = FontFactory.getFont(FONT, ENCODING, 12, Font.BOLD);
 	
 

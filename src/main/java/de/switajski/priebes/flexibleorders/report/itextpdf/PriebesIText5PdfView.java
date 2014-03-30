@@ -52,12 +52,13 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	/** 
 	 * font settings
 	 */
-	private static final String ENCODING = BaseFont.CP1252;
+	public static final String ENCODING = "UTF-8";
+	public static final String encFromDb = BaseFont.CP1252;
 	public static final String FONT = BaseFont.HELVETICA;
 	public static final float FONT_SIZE = 10;
 	public static final Font font = FontFactory.getFont(FONT, ENCODING, true, FONT_SIZE);
-	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, FONT_SIZE + 2 );
-	public static final Font twelveSizefont = FontFactory.getFont(FONT, ENCODING, 12, Font.BOLD);
+	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, true, FONT_SIZE + 2 );
+	public static final Font twelveSizefont = FontFactory.getFont(FONT, 12, Font.BOLD);
 	
 
 	/**
@@ -324,7 +325,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		PdfContentByte cb = writer.getDirectContent();
 		try {
 			BaseFont bf = BaseFont.createFont(PriebesIText5PdfView.FONT,
-					ENCODING, BaseFont.NOT_EMBEDDED);
+					BaseFont.CP1250, BaseFont.NOT_EMBEDDED);
 			cb.saveState();
 			cb.beginText();
 			cb.moveText(x, y);

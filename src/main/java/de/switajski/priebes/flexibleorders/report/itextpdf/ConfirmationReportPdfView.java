@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -38,12 +36,15 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		
-		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
-		String expectedDelivery = "";
-		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
-		String created = "Auftragsdatum: " + dateFormat.format(report.getCreated());
-		Address adresse = report.getInvoiceAddress();
 		String heading = "Auftragsbestätigung";
+		Address adresse = report.getInvoiceAddress();
+
+		String leftTop = heading;
+		String rightTop = "";
+		String leftMiddle = "Auftragsnummer: " + report.getDocumentNumber().toString(); 
+		String rightMiddle = "";
+		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
+		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		
 		Amount net = AmountCalculator.calculateNetAmount(report);
 		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
@@ -81,8 +82,9 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 
 		// info table
 		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
-        		leftTop,
-        		created, expectedDelivery, rightBottom);
+        		leftTop, rightTop,
+        		leftMiddle, rightMiddle,
+        		leftBottom, rightBottom);
         PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);
 		document.add(infoTable);

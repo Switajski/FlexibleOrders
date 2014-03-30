@@ -68,7 +68,6 @@ public class PdfPTableBuilder {
 		return rowProperties;
 	}
 
-
 	private float[] getWidths(){
 		ArrayList<Float> iList = new ArrayList<Float>();
 		for (TableProperties prop:tableProperties){

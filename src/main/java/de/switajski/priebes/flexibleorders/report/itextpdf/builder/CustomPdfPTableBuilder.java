@@ -90,4 +90,25 @@ public class CustomPdfPTableBuilder {
     			new PhraseBuilder(rightBottom).build()).build());
 		return infoTableBuilder;
 	}
+	
+	public static CustomPdfPTableBuilder createInfoTable(
+			String leftTop, String rightTop,
+			String leftMiddle, String rightMiddle,
+			String leftBottom, String rightBottom) {
+		
+		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(PdfPTableBuilder.createPropertiesWithTwoCols())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(leftTop).build()).build())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(rightTop).build()).build())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(leftMiddle).build()).build())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(rightMiddle).build()).build())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(leftBottom).build()).build())
+    	.addCell(new PdfPCellBuilder(
+    			new PhraseBuilder(rightBottom).build()).build());
+		return infoTableBuilder;
+	}
 }

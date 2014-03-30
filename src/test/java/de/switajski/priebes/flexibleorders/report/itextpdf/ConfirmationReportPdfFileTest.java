@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,14 +25,14 @@ import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class OrderConfirmationPdfFileTest {
+public class ConfirmationReportPdfFileTest {
 		
 	ConfirmationReport orderConfirmation;
 	
 	private static final String OC_NR = "98732645";
 	private static final String O_NR = "3465897";
 
-	private static final String OC_PDF_FILE = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/OrderConfirmationPdfFileTest.pdf";
+	private static final String OC_PDF_FILE = "src/test/resources/ConfirmationReportPdfFileTest.pdf";
 	
 	@Before
 	public void initData(){
@@ -67,22 +65,18 @@ public class OrderConfirmationPdfFileTest {
 
 	@Transactional
 	@Test
-	public void shouldGenerateOrder(){
+	public void shouldGenerateOrder() throws Exception{
 
-		OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
+		ConfirmationReportPdfFile bpf = new ConfirmationReportPdfFile();
 		bpf.setFilePathAndName(OC_PDF_FILE);
 		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
-        
-		try {
-			Map<String,Object> model = new HashMap<String,Object>();
-			model.put("ConfirmationReport", orderConfirmation);
-			
-			bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.toString());
-		}
+
+		Map<String,Object> model = new HashMap<String,Object>();
+		model.put("ConfirmationReport", orderConfirmation);
+
+		bpf.render(model, new MockHttpServletRequest(), new MockHttpServletResponse());
+
 		
 	}
 	

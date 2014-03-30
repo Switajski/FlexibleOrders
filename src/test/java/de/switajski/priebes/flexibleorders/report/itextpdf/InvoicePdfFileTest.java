@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class InvoicePdfFileTest {
 	
-	private static final String INVOICE_PDF_PATH = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/InvoicePdfFileTest.pdf";
+	private static final String INVOICE_PDF_PATH = "src/test/resources/InvoicePdfFileTest.pdf";
 
 	Invoice invoice;
 	

@@ -74,7 +74,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
         // insert heading
 		document.add(new ParagraphBuilder(heading)
-		.withFont(FontFactory.getFont(FONT, 13, Font.NORMAL))
+//		.withFont(FontFactory.getFont(FONT, 13, Font.NORMAL))
 		.build());
 		document.add(ParagraphBuilder.createEmptyLine());
 		

@@ -8,6 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public abstract class AbstractTestWithSpringContext {
+public abstract class AbstractTestWithProductiveSpringContext {
 
 }

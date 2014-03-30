@@ -8,7 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.CategoryIntegrationTest;
 import de.switajski.priebes.flexibleorders.domain.CustomerIntegrationTest;
 import de.switajski.priebes.flexibleorders.domain.ProductIntegrationTest;
 import de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfFileTest;
-import de.switajski.priebes.flexibleorders.report.itextpdf.OrderConfirmationPdfFileTest;
+import de.switajski.priebes.flexibleorders.report.itextpdf.ConfirmationReportPdfFileTest;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfFileTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
 import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
@@ -21,7 +21,7 @@ import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 	JacksonDeserializationTest.class,
 	OrderPdfFileTest.class,
 	OrderServiceTest.class,
-	OrderConfirmationPdfFileTest.class,
+	ConfirmationReportPdfFileTest.class,
 	ProductIntegrationTest.class})
 public class AllTestSuite {
 

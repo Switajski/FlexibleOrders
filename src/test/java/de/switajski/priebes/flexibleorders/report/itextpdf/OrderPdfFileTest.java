@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class OrderPdfFileTest {
 
-	private final static String O_PDF_FILE = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/OrderPdfFileTest.pdf";
+	private final static String O_PDF_FILE = "src/test/resources/OrderPdfFileTest.pdf";
 	
 	private FlexibleOrder order;
 	

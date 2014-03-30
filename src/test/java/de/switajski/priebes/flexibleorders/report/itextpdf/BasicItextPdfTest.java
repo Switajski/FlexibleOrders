@@ -35,7 +35,7 @@ public class BasicItextPdfTest {
  
     /** Path to the resulting PDF file. */
     public static final String RESULT
-        = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/priebes.pdf";
+        = "src/test/resources/priebes.pdf";
     
     public static final String LOGO 
     	= "src/main/webapp/images/Logo.jpg";
@@ -143,7 +143,7 @@ public class BasicItextPdfTest {
 		header.add(new PdfPCell(new Phrase("Bestellpos.")));
 		header.add(new PdfPCell(new Phrase("Artikelnr.")));
 		header.add(new PdfPCell(new Phrase("Artikel")));
-		header.add(new PdfPCell(new Phrase("Stück")));
+		header.add(new PdfPCell(new Phrase("Stueck")));
 		header.add(new PdfPCell(new Phrase("Preis")));
 		header.add(new PdfPCell(new Phrase("Betrag")));
 		for (PdfPCell cell:header){

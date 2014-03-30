@@ -51,7 +51,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												anchor : '100%',
 												name : 'name1',
 												fieldLabel : 'Firma',
-												allowBlank : false
+												allowBlank : true
 											}, {
 												xtype : 'textfield',
 												anchor : '100%',

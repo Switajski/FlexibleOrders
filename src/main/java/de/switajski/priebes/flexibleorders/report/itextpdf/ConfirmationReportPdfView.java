@@ -30,7 +30,6 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 
 	//TODO: make VAT_RATE dependent from order
 	public static final Double VAT_RATE = 0.19d;
-	private static final String SMALL_AUML = "\u00e4";
 
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
@@ -39,13 +38,11 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		
-		String heading = "Auftragsbest" + SMALL_AUML + "tigung";
+		String heading = "Auftragsbest\u00e4tigung";
 		Address adresse = report.getInvoiceAddress();
 
-		String leftTop = heading;
+		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
 		String rightTop = "";
-		String leftMiddle = "Auftragsnummer: " + report.getDocumentNumber().toString(); 
-		String rightMiddle = "";
 		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		

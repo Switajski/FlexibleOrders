@@ -82,8 +82,8 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		// info table
 		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
-        		leftTop, rightTop,
-        		leftBottom, rightBottom);
+        		leftTop, leftBottom, 
+        		rightTop, rightBottom);
         PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);
 		document.add(infoTable);

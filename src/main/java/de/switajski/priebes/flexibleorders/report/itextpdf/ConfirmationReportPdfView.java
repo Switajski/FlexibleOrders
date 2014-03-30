@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -28,6 +30,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 
 	//TODO: make VAT_RATE dependent from order
 	public static final Double VAT_RATE = 0.19d;
+	private static final String SMALL_AUML = "\u00e4";
 
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
@@ -36,7 +39,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		
-		String heading = "Auftragsbest\u00e4tigung";
+		String heading = "Auftragsbest" + SMALL_AUML + "tigung";
 		Address adresse = report.getInvoiceAddress();
 
 		String leftTop = heading;
@@ -73,17 +76,16 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		document.add(ParagraphBuilder.createEmptyLine());
         
 		
-        // insert heading
+		// insert heading
 		document.add(new ParagraphBuilder(heading)
-//		.withFont(FontFactory.getFont(FONT, 13, Font.NORMAL))
+		.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
 		.build());
-		document.add(ParagraphBuilder.createEmptyLine());
-		
+		document.add(ParagraphBuilder.createEmptyLine());		
 
+		
 		// info table
 		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
         		leftTop, rightTop,
-        		leftMiddle, rightMiddle,
         		leftBottom, rightBottom);
         PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);

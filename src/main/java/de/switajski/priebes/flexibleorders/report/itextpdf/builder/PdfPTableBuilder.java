@@ -56,7 +56,7 @@ public class PdfPTableBuilder {
 		rowProperties.add(new TableProperties("Art. Nr.", Element.ALIGN_LEFT, 10));
 		rowProperties.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 50));
 		rowProperties.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
-		rowProperties.add(new TableProperties("EK per Stück", Element.ALIGN_LEFT, 15));
+		rowProperties.add(new TableProperties("EK per St\u00fcck", Element.ALIGN_LEFT, 15));
 		rowProperties.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
 		return rowProperties;
 	}

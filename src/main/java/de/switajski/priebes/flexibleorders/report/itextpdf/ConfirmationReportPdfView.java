@@ -36,7 +36,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
 		
-		String heading = "Auftragsbestätigung";
+		String heading = "Auftragsbest\u00e4tigung";
 		Address adresse = report.getInvoiceAddress();
 
 		String leftTop = heading;

@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf.builder;
 
-import java.io.UnsupportedEncodingException;
-
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 
@@ -18,11 +16,7 @@ public class PhraseBuilder {
 
 	public Phrase build(){
 		Phrase p;
-		try {
-			p = new Phrase(new String(text.getBytes("UTF-8")), font);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		p = new Phrase(text, font);
 		return p;
 	}
 	

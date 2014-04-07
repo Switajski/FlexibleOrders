@@ -126,13 +126,13 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
 //			+ "dh.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL")
 //	Page<OrderItem> findAllToBePaidByCustomer(Customer customer, Pageable pageable);
 
-	@Query("SELECT oi from OrderItem oi where oi.flexibleOrder.customer = ?1")
+	@Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
 	Page<OrderItem> findByCustomer(Customer customer, Pageable pageable);
 
-	@Query("SELECT oi from OrderItem oi where oi.flexibleOrder.customer = ?1")
+	@Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
 	List<OrderItem> findByCustomer(Customer customer);
 
-	@Query("SELECT oi from OrderItem oi where oi.flexibleOrder.orderNumber = ?1")
+	@Query("SELECT oi from OrderItem oi where oi.customerOrder.orderNumber = ?1")
 	List<OrderItem> findByOrderNumber(String orderNumber);
 
 }

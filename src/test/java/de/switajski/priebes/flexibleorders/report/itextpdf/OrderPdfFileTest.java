@@ -12,12 +12,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
@@ -25,21 +25,21 @@ public class OrderPdfFileTest {
 
 	private final static String O_PDF_FILE = "src/test/resources/OrderPdfFileTest.pdf";
 	
-	private FlexibleOrder order;
+	private Order order;
 	
 	@Before
 	public void initData(){
-		order = new FlexibleOrder(CustomerBuilder.buildWithGeneratedAttributes(123), 
+		order = new Order(CustomerBuilder.buildWithGeneratedAttributes(123), 
 				OriginSystem.FLEXIBLE_ORDERS, "123561");
 		
-		OrderItem item1 = new ItemBuilder(
+		OrderItem item1 = new OrderItemBuilder(
 				order,
 				CatalogProductBuilder.buildWithGeneratedAttributes(98760).toProduct(), 
 				5)
 			.generateAttributes(15)
 			.build();
 		
-		OrderItem item2 = new ItemBuilder(
+		OrderItem item2 = new OrderItemBuilder(
 				order,
 				CatalogProductBuilder.buildWithGeneratedAttributes(98760).toProduct(), 
 				12)

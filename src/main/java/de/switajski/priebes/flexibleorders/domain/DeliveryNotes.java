@@ -71,7 +71,7 @@ public class DeliveryNotes extends Report{
 
 	public Amount getNetAmount() {
 		Amount summed = new Amount();
-		for (HandlingEvent he: this.getEvents())
+		for (ReportItem he: this.getItems())
 			summed.add(he.getOrderItem().getNegotiatedPriceNet());
 		return summed;
 	}

@@ -12,12 +12,13 @@ import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 /**
- * View class for GUI - Build on BestellpositionData
+ * Data Transfer Object for ExtJs GUI </br>
+ * Build on <code>BestellpositionData</code>, which is written in JavaScript.
  * @author Marek Switajski
  *
  */
 @JsonAutoDetect
-public class ReportItem {
+public class ItemDto {
 
 	private Long id;
 	private Date created;

@@ -5,7 +5,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 public class PaidSpecification extends ItemSpecification {
@@ -20,8 +20,8 @@ public class PaidSpecification extends ItemSpecification {
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
 		if (item.getDeliveryHistory().isEmpty()) return false;
-		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
-		if (item.getAllHesOfType(HandlingEventType.PAID).isEmpty())
+		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
+		if (item.getAllHesOfType(ReportItemType.PAID).isEmpty())
 			return false;
 		else return true;
 	}

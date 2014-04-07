@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {
 		"classpath*:/applicationContext-test.xml", 
 		"classpath*:/applicationContext-jpa.xml"})
-public abstract class AbstractTestWithTestSpringContext {
+public abstract class AbstractSpringIntegrationTest {
 
 }

@@ -19,9 +19,9 @@ import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
@@ -33,11 +33,11 @@ import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecifica
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.HandlingEventRepository;
+import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 @Service
 public class OrderServiceImpl {
@@ -45,25 +45,33 @@ public class OrderServiceImpl {
 	private ReportRepository reportRepo;
 	private OrderItemRepository itemRepo;
 	private CatalogProductRepository cProductRepo;
-	private HandlingEventRepository heRepo;
+	private ReportItemRepository heRepo;
 	private CustomerRepository customerRepo;
 	private OrderRepository orderRepo;
 	
 	@Autowired
 	public OrderServiceImpl(ReportRepository reportRepo, CustomerRepository customerRepo,
-			OrderItemRepository itemRepo, OrderRepository orderRepo,
-			CatalogProductRepository cProductRepo, HandlingEventRepository heRepo) {
+			OrderItemRepository orderItemRepo, OrderRepository orderRepo,
+			CatalogProductRepository cProductRepo, ReportItemRepository heRepo) {
 		this.reportRepo = reportRepo;
-		this.itemRepo = itemRepo;
+		this.itemRepo = orderItemRepo;
 		this.cProductRepo = cProductRepo;
 		this.orderRepo = orderRepo;
 		this.heRepo = heRepo;
 		this.customerRepo = customerRepo;
 	}
 	
+	/**
+	 * Creates initially an order with its order items
+	 * 
+	 * @param customerId
+	 * @param orderNumber
+	 * @param reportItems
+	 * @return created order, when successfully persisted
+	 */
 	@Transactional
-	public FlexibleOrder order(Long customerId, String orderNumber, List<ReportItem> ris){
-		if (customerId == null || orderNumber == null || ris.isEmpty())
+	public Order order(Long customerId, String orderNumber, List<ItemDto> reportItems){
+		if (customerId == null || orderNumber == null || reportItems.isEmpty())
 			throw new IllegalArgumentException();
 		if (orderRepo.findByOrderNumber(orderNumber) != null)
 			throw new IllegalArgumentException("Bestellnr existiert bereits");
@@ -71,8 +79,8 @@ public class OrderServiceImpl {
 		if (customer == null)
 			throw new IllegalArgumentException("Keinen Kunden mit gegebener Kundennr. gefunden");
 		
-		FlexibleOrder order = new FlexibleOrder(customer, OriginSystem.FLEXIBLE_ORDERS, orderNumber);
-		for (ReportItem ri:ris){
+		Order order = new Order(customer, OriginSystem.FLEXIBLE_ORDERS, orderNumber);
+		for (ItemDto ri:reportItems){
 			CatalogProduct cProduct = cProductRepo.findByProductNumber(ri.getProduct());
 			if (cProduct == null) throw new IllegalArgumentException("Artikelnr nicht gefunden");
 			
@@ -87,13 +95,13 @@ public class OrderServiceImpl {
 	
 	@Transactional
 	public ConfirmationReport confirm(String orderNumber, String confirmNumber,
-			Date expectedDelivery, List<ReportItem> orderItems){
+			Date expectedDelivery, List<ItemDto> orderItems){
 		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
 			throw new IllegalArgumentException("Auftragsnr. "+ confirmNumber +" besteht bereits");
 		if (orderItems.isEmpty())
 			throw new IllegalArgumentException("Keine Positionen angegeben");
 		
-		FlexibleOrder order = orderRepo.findByOrderNumber(orderNumber);
+		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null) throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 		
 		Address address = order.getCustomer().getAddress();
@@ -101,13 +109,14 @@ public class OrderServiceImpl {
 		ConfirmationReport cr = new ConfirmationReport(confirmNumber, 
 				address, address, new ConfirmedSpecification(false, false));
 		cr.setExpectedDelivery(expectedDelivery);
+		//TODO: Refactor: DRY!
 		cr.setCustomerNumber(order.getCustomer().getCustomerNumber());
 		
-		for (ReportItem entry: orderItems){
+		for (ItemDto entry: orderItems){
 			OrderItem oi = itemRepo.findOne(entry.getId());
 			if (oi == null) 
 				throw new IllegalArgumentException("Bestellposition nicht gefunden");
-			cr.addEvent(new HandlingEvent(cr, HandlingEventType.CONFIRM, oi, 
+			cr.addItem(new ReportItem(cr, ReportItemType.CONFIRM, oi, 
 					entry.getQuantityLeft(), new Date()));
 		}
 		return reportRepo.save(cr);
@@ -121,35 +130,36 @@ public class OrderServiceImpl {
 	
 	@Transactional
 	public DeliveryNotes deliver(String deliveryNotesNumber, String trackNumber, String packageNumber,
-			Address shippingAddress, Amount shipment, List<ReportItem> confirmEvents){
+			Address shippingAddress, Amount shipment, List<ItemDto> confirmEvents){
 		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
 		DeliveryNotes deliveryNotes = new DeliveryNotes(deliveryNotesNumber,
 				new ShippedSpecification(false, false), shippingAddress, shipment);
 				
-		FlexibleOrder firstOrder = null;
-		for (ReportItem entry: confirmEvents){
-			HandlingEvent confirmEventToBeDelivered = heRepo.findOne(entry.getId());
+		Order firstOrder = null;
+		for (ItemDto entry: confirmEvents){
+			ReportItem confirmEventToBeDelivered = heRepo.findOne(entry.getId());
 			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered.getOrderItem();
 			
 			//TODO: move into validation layer
 			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeDelivered,
-					HandlingEventType.CONFIRM);
+					ReportItemType.CONFIRM);
 			
-			deliveryNotes.addEvent(new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, 
+			deliveryNotes.addItem(new ReportItem(deliveryNotes, ReportItemType.SHIP, 
 					orderItemToBeDelivered, quantityToDeliver, new Date()));
 			
 			if (firstOrder == null)
 				firstOrder = orderItemToBeDelivered.getOrder();
 		}
 
+		//TODO:Refactor: DRY!
 		deliveryNotes.setCustomerNumber(firstOrder.getCustomer().getCustomerNumber());
 		return reportRepo.save(deliveryNotes);
 	}
 
-	private Integer validateQuantity(ReportItem entry, OrderItem orderItemToBeDelivered,
-			HandlingEventType type) {
+	private Integer validateQuantity(ItemDto entry, OrderItem orderItemToBeDelivered,
+			ReportItemType type) {
 		Integer quantityToDeliver = entry.getQuantityLeft();
 		if (quantityToDeliver == null || quantityToDeliver < 1 || 
 				quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(type))
@@ -158,7 +168,7 @@ public class OrderServiceImpl {
 	}
 
 	@Transactional
-	private OrderItem createShippingCosts(Amount shipment, FlexibleOrder order) {
+	private OrderItem createShippingCosts(Amount shipment, Order order) {
 		Product product = new Product();
 		product.setProductType(ProductType.SHIPPING);
 		product.setName("Versand");
@@ -178,7 +188,7 @@ public class OrderServiceImpl {
 	 */
 	@Transactional
 	public Receipt markAsPayed(String documentNumber, String receiptNumber, 
-			Date receivedPaymentDate, List<ReportItem> ris) {
+			Date receivedPaymentDate, List<ItemDto> ris) {
 		if (receivedPaymentDate == null) 
 			receivedPaymentDate = new Date();
 		
@@ -188,12 +198,14 @@ public class OrderServiceImpl {
 		
 		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
 		
-		for (ReportItem ri: ris){
-			HandlingEvent he = heRepo.findOne(ri.getId());
-			receipt.addEvent(
-					new HandlingEvent(receipt, HandlingEventType.PAID, he.getOrderItem(), 
+		for (ItemDto ri: ris){
+			ReportItem he = heRepo.findOne(ri.getId());
+			receipt.addItem(
+					new ReportItem(receipt, ReportItemType.PAID, he.getOrderItem(), 
 							he.getQuantity(), receivedPaymentDate));
 		}
+		//TODO: refactor
+		receipt.setCustomerNumber(report.getItems().iterator().next().getOrderItem().getOrder().getCustomer().getCustomerNumber());
 		return reportRepo.save(receipt);
 	}
 
@@ -203,7 +215,7 @@ public class OrderServiceImpl {
 		throw new NotImplementedException();
 	}
 
-	public HandlingEvent withdrawPayment(Report item) {
+	public ReportItem withdrawPayment(Report item) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
@@ -214,12 +226,12 @@ public class OrderServiceImpl {
 
 	public ConfirmationReport confirm(String orderNumber) {
 		List<OrderItem> ois = itemRepo.findByOrderNumber(orderNumber);
-		List<ReportItem> ris = convertToReportItems(ois);
+		List<ItemDto> ris = convertToReportItems(ois);
 		return confirm(orderNumber, "AB"+orderNumber, new Date(), ris);
 	}
 
-	private List<ReportItem> convertToReportItems(List<OrderItem> ois) {
-		List<ReportItem> ris = new ArrayList<ReportItem>();
+	private List<ItemDto> convertToReportItems(List<OrderItem> ois) {
+		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (OrderItem oi:ois){
 			ris.add(oi.toReportItem());
 		}
@@ -228,7 +240,7 @@ public class OrderServiceImpl {
 
 	@Transactional
 	public boolean deleteOrder(String orderNumber) { 
-		FlexibleOrder order = orderRepo.findByOrderNumber(orderNumber);
+		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
 			throw new IllegalArgumentException("Bestellnr. zum löschen nicht gefunden");
 		orderRepo.delete(order);
@@ -255,8 +267,8 @@ public class OrderServiceImpl {
 
 	private CancelReport createCancelReport(Report cr) {
 		CancelReport cancelReport = new CancelReport("ABGEBROCHEN-"+cr.getDocumentNumber());
-		for (HandlingEvent he :cr.getEvents()){
-			cancelReport.addEvent(new HandlingEvent(cancelReport, HandlingEventType.CANCEL, 
+		for (ReportItem he :cr.getItems()){
+			cancelReport.addItem(new ReportItem(cancelReport, ReportItemType.CANCEL, 
 					he.getOrderItem(), he.getQuantity(), new Date()));
 		}
 		return cancelReport;
@@ -276,12 +288,12 @@ public class OrderServiceImpl {
 
 	@Transactional
 	private void deleteShippingCosts(Report r) {
-		for (HandlingEvent he:r.getEvents()){
+		for (ReportItem he:r.getItems()){
 			OrderItem orderItem = he.getOrderItem();
 			if (orderItem.isShippingCosts())
 				orderItem.getOrder().remove(orderItem);
 			orderRepo.save(orderItem.getOrder());
-			r.removeEvent(he);
+			r.removeItem(he);
 		}
 	}
 
@@ -293,9 +305,9 @@ public class OrderServiceImpl {
 		
 		Invoice invoice = (Invoice) r;
 		Receipt receipt = new Receipt(receiptNumber, date);
-		for (HandlingEvent he:invoice.getEvents()){
-			receipt.addEvent(
-					new HandlingEvent(receipt, HandlingEventType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
+		for (ReportItem he:invoice.getItems()){
+			receipt.addItem(
+					new ReportItem(receipt, ReportItemType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
 		}
 		return reportRepo.save(receipt);
 	}
@@ -310,28 +322,28 @@ public class OrderServiceImpl {
 	 */
 	@Transactional
 	public Invoice invoice(String invoiceNumber, String paymentConditions, Address invoiceAddress,
-			List<ReportItem> shipEvents) {
+			List<ItemDto> shipEvents) {
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 		
 		Invoice invoice = new Invoice(invoiceNumber, paymentConditions,
 				invoiceAddress);
 		
-		FlexibleOrder order = null;
+		Order order = null;
 		HashMap<String, DeliveryNotes> deliveryNotes = new HashMap<String, DeliveryNotes>();
-		for (ReportItem entry: shipEvents){
-			HandlingEvent shipEventToBeInvoiced = heRepo.findOne(entry.getId());
+		for (ItemDto entry: shipEvents){
+			ReportItem shipEventToBeInvoiced = heRepo.findOne(entry.getId());
 			
 			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced.getOrderItem(); 
 			
 			//TODO: move into validation layer
 			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeInvoiced,
-					HandlingEventType.SHIP);
+					ReportItemType.SHIP);
 			
-			invoice.addEvent(new HandlingEvent(invoice, HandlingEventType.INVOICE, 
+			invoice.addItem(new ReportItem(invoice, ReportItemType.INVOICE, 
 					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));
 
-			for (HandlingEvent he :orderItemToBeInvoiced.getAllHesOfType(HandlingEventType.SHIP)){
+			for (ReportItem he :orderItemToBeInvoiced.getAllHesOfType(ReportItemType.SHIP)){
 				DeliveryNotes dn = he.getDeliveryNotes();
 				deliveryNotes.put(dn.getDocumentNumber(), dn); 
 			}
@@ -345,7 +357,7 @@ public class OrderServiceImpl {
 			summedShippingCosts = summedShippingCosts.add(entry2.getValue().getShippingCosts());
 		}
 		invoice.setShippingCosts(summedShippingCosts);
-		
+		//TODO: refactor DRY!
 		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
 		
 		return reportRepo.save(invoice);

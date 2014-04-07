@@ -5,9 +5,9 @@ import java.util.Date;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Report;
@@ -32,7 +32,7 @@ public class WholesaleOrderHandlingFactory {
 	 * @param priceNet 
 	 * @return
 	 */
-	public OrderItem addOrderItem(FlexibleOrder order, Product product,
+	public OrderItem addOrderItem(Order order, Product product,
 			int orderedQuantity, Amount priceNet) {
 		if (orderPolicy.isAllowed(order.getCustomer())){
 			OrderItem item = new OrderItem(order, product, orderedQuantity);
@@ -46,7 +46,7 @@ public class WholesaleOrderHandlingFactory {
 	public OrderItem addToOrderConfirmation(Report orderConfirmation, OrderItem itemToConfirm, 
 			int quantity, Amount negotiatedPriceNet, Date created){
 		if (created == null) created = new Date();
-		HandlingEvent he = new HandlingEvent(orderConfirmation, HandlingEventType.CONFIRM,  
+		ReportItem he = new ReportItem(orderConfirmation, ReportItemType.CONFIRM,  
 				itemToConfirm, quantity, created);
 		itemToConfirm.addHandlingEvent(he);
 		itemToConfirm.setNegotiatedPriceNet(negotiatedPriceNet);
@@ -58,8 +58,8 @@ public class WholesaleOrderHandlingFactory {
 			Date expectedDelivery){
 		if (created == null) created = new Date();
 		
-		HandlingEvent he = 
-				new HandlingEvent(orderConfirmation, HandlingEventType.CONFIRM, itemToConfirm, quantity, created);
+		ReportItem he = 
+				new ReportItem(orderConfirmation, ReportItemType.CONFIRM, itemToConfirm, quantity, created);
 		itemToConfirm.setNegotiatedPriceNet(negotiatedPriceNet);
 		itemToConfirm.addHandlingEvent(he);
 		return itemToConfirm;
@@ -69,7 +69,7 @@ public class WholesaleOrderHandlingFactory {
 			Integer quantity, Date created) {
 		if (created == null) created = new Date();
 		
-		HandlingEvent he = new HandlingEvent(deliveryNotes, HandlingEventType.SHIP, shippingItemToDeliver, quantity, created);
+		ReportItem he = new ReportItem(deliveryNotes, ReportItemType.SHIP, shippingItemToDeliver, quantity, created);
 		shippingItemToDeliver.addHandlingEvent(he);
 		return shippingItemToDeliver;
 	}
@@ -77,7 +77,7 @@ public class WholesaleOrderHandlingFactory {
 	public OrderItem addToInvoice(Report invoice, OrderItem shippingItemToDeliver, int quantity,
 			String invoiceNo, Date created) {
 		if (created == null) created = new Date();
-		HandlingEvent he = new HandlingEvent(invoice, HandlingEventType.SHIP ,shippingItemToDeliver, quantity, created);
+		ReportItem he = new ReportItem(invoice, ReportItemType.SHIP ,shippingItemToDeliver, quantity, created);
 		shippingItemToDeliver.addHandlingEvent(he);
 		return shippingItemToDeliver;
 	}

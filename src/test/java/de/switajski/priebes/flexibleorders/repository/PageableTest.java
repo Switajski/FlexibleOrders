@@ -23,7 +23,6 @@ public class PageableTest extends AbstractTestWithProductiveSpringContext{
 	@Ignore
 	@Test
 	public void shouldReturnPage(){
-		
 		int page = 2;
 		int size = 5;
 		PageRequest pageRequest = new PageRequest(page, size);

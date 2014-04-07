@@ -5,11 +5,11 @@ import java.util.Collection;
 import org.springframework.data.domain.Page;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 public class ExtJsResponseCreator {
 	
-	public static JsonObjectResponse createResponse(Page<ReportItem> reportItems, boolean byOrder, boolean byOrderNumber) throws Exception{
+	public static JsonObjectResponse createResponse(Page<ItemDto> reportItems) throws Exception{
 		JsonObjectResponse response = new JsonObjectResponse();
 		response.setData(reportItems.getContent());
 		response.setTotal(reportItems.getTotalElements());

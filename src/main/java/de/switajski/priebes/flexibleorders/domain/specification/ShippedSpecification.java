@@ -8,9 +8,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @Embeddable
@@ -31,11 +31,11 @@ public class ShippedSpecification extends ItemSpecification {
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
 		if (item.getDeliveryHistory().isEmpty()) return false;
-		if (item.getAllHesOfType(HandlingEventType.SHIP).isEmpty()) return false;
-		if (!item.getAllHesOfType(HandlingEventType.CANCEL).isEmpty()) return false;
+		if (item.getAllHesOfType(ReportItemType.SHIP).isEmpty()) return false;
+		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
 		
-		if (getHandledQuantityFromEvents(item, HandlingEventType.CONFIRM) <= 
-				getHandledQuantityFromEvents(item, HandlingEventType.SHIP))
+		if (getHandledQuantityFromEvents(item, ReportItemType.CONFIRM) <= 
+				getHandledQuantityFromEvents(item, ReportItemType.SHIP))
 			return true;
 		
 		return false;
@@ -44,15 +44,15 @@ public class ShippedSpecification extends ItemSpecification {
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		SetJoin<OrderItem, HandlingEvent> heJoin = root.joinSet("deliveryHistory");
+		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("deliveryHistory");
 		
 		Expression<Long> shippedQuantity = cb.count(heJoin.get("quantity"));
 		Expression<Long> confirmedQuantity;
 		
 		Predicate shippedPred = cb.and(
-				cb.isNotNull(root.<FlexibleOrder>get("flexibleOrder")),
-				cb.equal(heJoin.<HandlingEventType>get("type"), 
-						cb.literal(HandlingEventType.SHIP))
+				cb.isNotNull(root.<Order>get("flexibleOrder")),
+				cb.equal(heJoin.<ReportItemType>get("type"), 
+						cb.literal(ReportItemType.SHIP))
 //						,cb.equal(shippedQuantity, 1) FEHLER: Aggregatfunktionen sind nicht in der WHERE-Klausel erlaubt
 				);
 		return shippedPred;

@@ -9,93 +9,93 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 
-public interface OrderRepository extends JpaRepository<FlexibleOrder, Long>, JpaSpecificationExecutor<FlexibleOrder>{
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order>{
 
-	FlexibleOrder findByOrderNumber(String orderNumber);
+	Order findByOrderNumber(String orderNumber);
 
-	Page<FlexibleOrder> findByCustomer(Customer customer, Pageable pageable);
+	Page<Order> findByCustomer(Customer customer, Pageable pageable);
 
-	List<FlexibleOrder> findByOrderNumberLike(String orderNumber);
+	List<Order> findByOrderNumberLike(String orderNumber);
 
-	List<FlexibleOrder> findByCustomer(Customer customer);
+	List<Order> findByCustomer(Customer customer);
 	
-	@Query("SELECT distinct(o) from FlexibleOrder o join o.items oi where oi.deliveryHistory is empty")
-	Page<FlexibleOrder> findAllToBeConfirmed(Pageable pageable);
+	@Query("SELECT distinct(o) from Order o join o.items oi where oi.deliveryHistory is empty")
+	Page<Order> findAllToBeConfirmed(Pageable pageable);
 	
-	@Query("SELECT distinct(o) from FlexibleOrder o join o.items oi where oi.deliveryHistory is empty "
+	@Query("SELECT distinct(o) from Order o join o.items oi where oi.deliveryHistory is empty "
 			+ "and o.customer = ?1")
-	Page<FlexibleOrder> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
+	Page<Order> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
 	
 	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi IN "
-			+ "(SELECT he.orderItem from HandlingEvent he where he.orderItem = oi and "
-				+ "(SELECT sum(confirmEvent.quantity) from HandlingEvent confirmEvent where confirmEvent.orderItem = oi and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM) "
-				+ " > "
-				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from HandlingEvent shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP)"
-			+ ")"
-			+ "and oi.flexibleOrder.customer = ?1")
-	Page<FlexibleOrder> findAllToBeShippedByCustomer(Customer customer, Pageable pageable);
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi IN "
-			+ "(SELECT he.orderItem from HandlingEvent he where he.orderItem = oi and "
-				+ "(SELECT sum(confirmEvent.quantity) from HandlingEvent confirmEvent where confirmEvent.orderItem = oi and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CONFIRM) "
-				+ " > "
-				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from HandlingEvent shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP)"
-			+ ")")
-	Page<FlexibleOrder> findAllToBeShipped(Pageable pageable);
-	
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.PAID and he.orderItem = oi) and "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP and he.orderItem = oi) "
-			+ "and oi.flexibleOrder.customer = ?1")
-	Page<FlexibleOrder> findAllToBePaidByCustomer(Customer customer, Pageable pageable);
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.PAID and he.orderItem = oi) and "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP and he.orderItem = oi) ")
-	Page<FlexibleOrder> findAllToBePaid(Pageable pageable);
-	
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) or "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.PAID and he.orderItem = oi) "
-			+ "and oi.flexibleOrder.customer = ?1")
-	Page<FlexibleOrder> findAllCompletedByCustomer(Customer customer, Pageable pageable);
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.PAID and he.orderItem = oi) or "
-			+ "oi IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi)")
-	Page<FlexibleOrder> findAllCompleted(Pageable pageable);
-
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi IN "
-			+ "(SELECT he.orderItem from HandlingEvent he where he.orderItem = oi and "
-				+ "(SELECT sum(shipEvent.quantity) from HandlingEvent shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP) "
-				+ " > "
-				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from HandlingEvent invoiceEvent where invoiceEvent.orderItem = oi and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.INVOICE)"
-			+ ")")
-	Page<FlexibleOrder> findAllToBeInvoiced(Pageable pageable);
-	
-	@Query("SELECT distinct(oi.flexibleOrder) from OrderItem oi where "
-			+ "oi NOT IN (SELECT he.orderItem from HandlingEvent he where he.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.CANCEL and he.orderItem = oi) and "
-			+ "oi IN "
-			+ "(SELECT he.orderItem from HandlingEvent he where he.orderItem = oi and "
-				+ "(SELECT sum(shipEvent.quantity) from HandlingEvent shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.SHIP) "
-				+ " > "
-				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from HandlingEvent invoiceEvent where invoiceEvent.orderItem = oi and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.HandlingEventType.INVOICE)"
-			+ ") "
-			+ "and oi.flexibleOrder.customer = ?1")
-	Page<FlexibleOrder> findAllToBeInvoicedByCustomer(Customer customer, Pageable pageable);
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi IN "
+//			+ "(SELECT he.orderItem from ReportItem he where he.orderItem = oi and "
+//				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent where confirmEvent.orderItem = oi and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
+//				+ " > "
+//				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
+//			+ ")"
+//			+ "and oi.customerOrder.customer = ?1")
+//	Page<Order> findAllToBeShippedByCustomer(Customer customer, Pageable pageable);
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi IN "
+//			+ "(SELECT he.orderItem from ReportItem he where he.orderItem = oi and "
+//				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent where confirmEvent.orderItem = oi and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
+//				+ " > "
+//				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
+//			+ ")")
+//	Page<Order> findAllToBeShipped(Pageable pageable);
+//	
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.PAID and he.orderItem = oi) and "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP and he.orderItem = oi) "
+//			+ "and oi.customerOrder.customer = ?1")
+//	Page<Order> findAllToBePaidByCustomer(Customer customer, Pageable pageable);
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.PAID and he.orderItem = oi) and "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP and he.orderItem = oi) ")
+//	Page<Order> findAllToBePaid(Pageable pageable);
+//	
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) or "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.PAID and he.orderItem = oi) "
+//			+ "and oi.customerOrder.customer = ?1")
+//	Page<Order> findAllCompletedByCustomer(Customer customer, Pageable pageable);
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.PAID and he.orderItem = oi) or "
+//			+ "oi IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi)")
+//	Page<Order> findAllCompleted(Pageable pageable);
+//
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi IN "
+//			+ "(SELECT he.orderItem from ReportItem he where he.orderItem = oi and "
+//				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
+//				+ " > "
+//				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent where invoiceEvent.orderItem = oi and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
+//			+ ")")
+//	Page<Order> findAllToBeInvoiced(Pageable pageable);
+//	
+//	@Query("SELECT distinct(oi.customerOrder) from OrderItem oi where "
+//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
+//			+ "oi IN "
+//			+ "(SELECT he.orderItem from ReportItem he where he.orderItem = oi and "
+//				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent where shipEvent.orderItem = oi and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
+//				+ " > "
+//				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent where invoiceEvent.orderItem = oi and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
+//			+ ") "
+//			+ "and oi.customerOrder.customer = ?1")
+//	Page<Order> findAllToBeInvoicedByCustomer(Customer customer, Pageable pageable);
 	
 
 }

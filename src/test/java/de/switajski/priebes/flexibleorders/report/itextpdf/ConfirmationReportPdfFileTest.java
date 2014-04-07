@@ -13,15 +13,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.test.EntityBuilder.HandlingEventBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemBuilder;
+import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
@@ -36,8 +36,8 @@ public class ConfirmationReportPdfFileTest {
 	
 	@Before
 	public void initData(){
-		OrderItem item1 = new ItemBuilder(
-			new FlexibleOrder(
+		OrderItem item1 = new OrderItemBuilder(
+			new Order(
 				"email@nowhere.com", 
 				OriginSystem.FLEXIBLE_ORDERS, 
 				O_NR),
@@ -56,7 +56,7 @@ public class ConfirmationReportPdfFileTest {
 		for (int i = 0; i<28 ;i++){
 			item1.addHandlingEvent(
 					new HandlingEventBuilder(
-							HandlingEventType.SHIP, item1, i)
+							ReportItemType.SHIP, item1, i)
 					.setReport(orderConfirmation)
 					.build());
 		}

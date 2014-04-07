@@ -8,9 +8,9 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 
-public class OrderHasCustomerSpecification implements Specification<FlexibleOrder> {
+public class OrderHasCustomerSpecification implements Specification<Order> {
 
 	private Customer customer;
 
@@ -19,7 +19,7 @@ public class OrderHasCustomerSpecification implements Specification<FlexibleOrde
 	}
 	
 	@Override
-	public Predicate toPredicate(Root<FlexibleOrder> root,
+	public Predicate toPredicate(Root<Order> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
 		return cb.equal(root.get(Customer.class.getSimpleName().toLowerCase()), customer);
 	}

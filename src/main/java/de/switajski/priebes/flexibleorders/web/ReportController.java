@@ -16,21 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.report.itextpdf.ConfirmationReportPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.report.itextpdf.ConfirmationReportPdfView;
 import de.switajski.priebes.flexibleorders.report.itextpdf.OrderPdfView;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.DeliveryNotesServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 
 /**
@@ -47,7 +47,6 @@ public class ReportController extends ExceptionController{
 	@Autowired ReportRepository reportRepo;
 	@Autowired OrderRepository orderRepo;
 	@Autowired ReportItemServiceImpl itemService;
-	@Autowired DeliveryNotesServiceImpl invoiceService;
 	@Autowired CustomerRepository customerService;
 	
 	/*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
@@ -93,7 +92,7 @@ public class ReportController extends ExceptionController{
 	
 	@RequestMapping(value = "/invoices/{id}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showInvoicePdf(@PathVariable("id") String id) {
-        //TODO: duplicate code
+        //TODO: duplicate code - factory? cc s. 69
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
@@ -117,49 +116,49 @@ public class ReportController extends ExceptionController{
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        FlexibleOrder record = itemService.retrieveOrder(orderNumber);
+	        Order record = itemService.retrieveOrder(orderNumber);
             return new ModelAndView(OrderPdfView.class.getSimpleName(),
-            		FlexibleOrder.class.getSimpleName(),record);
+            		Order.class.getSimpleName(),record);
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
-        return new ModelAndView(OrderPdfView.class.getSimpleName(),FlexibleOrder.class.getSimpleName(),null);
+        return new ModelAndView(OrderPdfView.class.getSimpleName(),Order.class.getSimpleName(),null);
     }
 	
-	
-	@RequestMapping(value="/deliveryNotes/listDeliveryNotesNumbers", method=RequestMethod.GET)
+	@RequestMapping(value="/listDocumentNumbersLike", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listInvoiceNumbers(
 			@RequestParam(value = "query", required = false) Long orderNumberObject) 
 					throws Exception {
 
 		log.debug("listOrderNumbers request:"+orderNumberObject);
-		JsonObjectResponse response = new JsonObjectResponse();	
-
-		if (orderNumberObject != null){
-			List<Long> orderNumbers = invoiceService.findInvoiceNumbersLike(orderNumberObject);
-			if (!orderNumbers.isEmpty()){
-				response.setTotal(orderNumbers.size());
-				response.setData(formatInvoiceNumbers(orderNumbers));			
-			}
-			else {
-				response.setTotal(0l);
-			}
-		} 
-		else { //orderNumber == null
-			List<Customer> customers = customerService.findAll();
-			ArrayList<Long> list = new ArrayList<Long>();
-			for (Customer customer:customers)
-				list.addAll(invoiceService.getInvoiceNumbersByCustomer(customer, new PageRequest(1,20)));
-			response.setTotal(list.size());
-			response.setData(formatInvoiceNumbers(list));
-		}
-			
-		response.setMessage("All entities retrieved.");
-		response.setSuccess(true);
-
-		return response;
+		//TODO unify docNumbers
+		throw new NotImplementedException();
+//		JsonObjectResponse response = new JsonObjectResponse();	
+//		if (orderNumberObject != null){
+//			List<Long> orderNumbers = reportRepo...findInvoiceNumbersLike(orderNumberObject);
+//			if (!orderNumbers.isEmpty()){
+//				response.setTotal(orderNumbers.size());
+//				response.setData(formatInvoiceNumbers(orderNumbers));			
+//			}
+//			else {
+//				response.setTotal(0l);
+//			}
+//		} 
+//		else { //orderNumber == null
+//			List<Customer> customers = customerService.findAll();
+//			ArrayList<Long> list = new ArrayList<Long>();
+//			for (Customer customer:customers)
+//				list.addAll(invoiceService.getInvoiceNumbersByCustomer(customer, new PageRequest(1,20)));
+//			response.setTotal(list.size());
+//			response.setData(formatInvoiceNumbers(list));
+//		}
+//			
+//		response.setMessage("All entities retrieved.");
+//		response.setSuccess(true);
+//
+//		return response;
 	}
 	
 	private invoiceNumber[] formatInvoiceNumbers(List<Long> invoiceNumberList){
@@ -186,7 +185,7 @@ public class ReportController extends ExceptionController{
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts){
 		JsonObjectResponse response = new JsonObjectResponse();
-		Page<FlexibleOrder> customer = orderRepo.findAll(new PageRequest(page-1, limit));
+		Page<Order> customer = orderRepo.findAll(new PageRequest(page-1, limit));
 		response.setData(customer.getContent());
 		response.setTotal(customer.getTotalElements());
 		response.setMessage("All entities retrieved.");

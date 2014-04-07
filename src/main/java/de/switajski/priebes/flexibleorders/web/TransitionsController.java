@@ -18,13 +18,13 @@ import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @Controller
@@ -53,7 +53,7 @@ public class TransitionsController extends ExceptionController{
 					throws Exception {
 		deliverRequest.validate();
 		
-		FlexibleOrder order = orderService.order(deliverRequest.getCustomerId(), 
+		Order order = orderService.order(deliverRequest.getCustomerId(), 
 				deliverRequest.getOrderNumber(), deliverRequest.getItems());
 		
 		return ExtJsResponseCreator.createResponse(order);
@@ -87,7 +87,7 @@ public class TransitionsController extends ExceptionController{
 	
 	@RequestMapping(value="/deleteOrder", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse deleteOrder(
-			@RequestBody ReportItem reportItem){
+			@RequestBody ItemDto reportItem){
 		orderService.deleteOrder(reportItem.getOrderNumber());
 		return ExtJsResponseCreator.createResponse(reportItem.getOrderNumber());
 	}

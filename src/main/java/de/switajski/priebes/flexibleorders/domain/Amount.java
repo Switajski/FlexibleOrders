@@ -70,7 +70,17 @@ public class Amount {
 			case EUR: currencyChar+= " \u20ac"; break;
 			case PLN: currencyChar+= " zl";
 		}
-		String s = DECIMAL_FORMAT.format(value) + currencyChar;
+		
+		String s = "";
+		if (value != null)			
+			s += DECIMAL_FORMAT.format(value);
+		else 
+			s += " - ";
+		if (currency != null)
+			s += currencyChar;
+		else 
+			s += " undefined";
+		
 		return s;
 	}
 
@@ -90,5 +100,20 @@ public class Amount {
 		if (this.getValue().compareTo(BigDecimal.ZERO) > 0)
 			return true;
 		return false;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Amount))
+			return false;
+		else {
+			Amount a = (Amount) obj;
+			if (a.currency != this.currency)
+				return false;
+			if (a.getValue().compareTo(this.getValue()) == 0)
+				return true;
+			else 
+				return false;
+		}
 	}
 }

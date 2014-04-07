@@ -34,7 +34,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerServiceImpl;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 @RequestMapping("/orderitems")
 @Controller
@@ -142,7 +142,7 @@ public class OrderItemsController extends ExceptionController{
 	}
 
 	
-	protected Page<ReportItem> findByFilterable(PageRequest pageRequest,
+	protected Page<ItemDto> findByFilterable(PageRequest pageRequest,
 			HashMap<String, String> filter) {
 		if (filter.get("status") != null)
 			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
@@ -157,7 +157,7 @@ public class OrderItemsController extends ExceptionController{
 //				return this.orderRepo.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
 		if (filter.get("status")!=null)
 			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<ReportItem> reportItems = reportService.retrieveAllToBeShipped(null, pageRequest, true);
+				Page<ItemDto> reportItems = reportService.retrieveAllToBeShipped(null, pageRequest);
 				return reportItems;
 			}
 		return null;

@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 public class HasEmptyDeliveryHistorySpecification implements Specification<OrderItem>{
@@ -18,7 +18,7 @@ public class HasEmptyDeliveryHistorySpecification implements Specification<Order
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
 			CriteriaBuilder cb) {
-		Path<Set<HandlingEvent>> deliveryHistory = root.get("deliveryHistory");
+		Path<Set<ReportItem>> deliveryHistory = root.get("deliveryHistory");
 		Predicate emptyDeliveryHistoryPredicate = 
 				cb.isEmpty(deliveryHistory);
 		return emptyDeliveryHistoryPredicate;

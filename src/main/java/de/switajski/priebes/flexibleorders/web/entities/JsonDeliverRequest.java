@@ -38,7 +38,7 @@ public class JsonDeliverRequest {
 	
 	private String country;
 	
-	private List<ReportItem> items;
+	private List<ItemDto> items;
 
 	private String invoiceNumber;
 	
@@ -89,11 +89,11 @@ public class JsonDeliverRequest {
 		this.packageNumber = packageNumber;
 	}
 
-	public List<ReportItem> getItems() {
+	public List<ItemDto> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ReportItem> items) {
+	public void setItems(List<ItemDto> items) {
 		this.items = items;
 	}
 
@@ -203,7 +203,7 @@ public class JsonDeliverRequest {
 	public void validate(){
 		if (getItems().isEmpty())
 			throw new IllegalArgumentException("Keine Positionen angegeben!");
-		for (ReportItem item:getItems())
+		for (ItemDto item:getItems())
 			if (item.getQuantity() < 1)
 				throw new IllegalArgumentException("Menge von "+item.getProductName()+" ist kleiner als 1");
 	}

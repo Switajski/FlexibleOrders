@@ -18,7 +18,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
@@ -128,7 +128,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 	
 	private PdfPTable createTable(Report cReport) throws DocumentException{
 		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithFourCols());
-		for (HandlingEvent he: cReport.getEvents()){
+		for (ReportItem he: cReport.getItems()){
 			if (!he.getOrderItem().isShippingCosts()){
 				List<String> row = new ArrayList<String>();
 				// Anzahl

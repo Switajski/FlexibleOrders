@@ -18,7 +18,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
@@ -147,7 +147,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	
 	private PdfPTable createTable(Report cReport) throws DocumentException{
 		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithSixCols());
-		for (HandlingEvent he: cReport.getEvents()){
+		for (ReportItem he: cReport.getItems()){
 			if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING){
 				List<String> list = new ArrayList<String>();
 				// Art.Nr.:

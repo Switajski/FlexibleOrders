@@ -2,8 +2,8 @@ package de.switajski.priebes.flexibleorders.domain.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 /**
@@ -21,9 +21,9 @@ public abstract class ItemSpecification implements Specification<OrderItem>{
 
 	public abstract boolean isSatisfiedBy(OrderItem item);
 	
-	public int getHandledQuantityFromEvents(OrderItem item, HandlingEventType type) {
+	public int getHandledQuantityFromEvents(OrderItem item, ReportItemType type) {
 		int summedQuan = 0;
-		for (HandlingEvent orderEvent: item.getDeliveryHistory()){
+		for (ReportItem orderEvent: item.getDeliveryHistory()){
 			if (orderEvent.getType() == type)
 				summedQuan += orderEvent.getQuantity();
 		}

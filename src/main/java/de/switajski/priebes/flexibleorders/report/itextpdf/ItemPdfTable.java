@@ -14,12 +14,12 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
 public abstract class ItemPdfTable {
 
 	protected final static int COLUMNS = 4;
-	public ArrayList<HandlingEvent> bpList;
+	public ArrayList<ReportItem> bpList;
 	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
 	public static final float TOTAL_WIDTH = 500;
 
@@ -30,7 +30,7 @@ public abstract class ItemPdfTable {
 	
 	private PdfPTable pdfPTable;
 	
-	public ItemPdfTable(Set<HandlingEvent> set) {
+	public ItemPdfTable(Set<ReportItem> set) {
 		pdfPTable = new PdfPTable(COLUMNS);
 		try {
 			pdfPTable.setWidths(new int[]{100, 245, 90, 65});
@@ -85,7 +85,7 @@ public abstract class ItemPdfTable {
 	private void createBody() {
 		
 		int bPos = 1;
-		for (HandlingEvent bp:bpList){
+		for (ReportItem bp:bpList){
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
 			
 			String firstColumnContent = null;
@@ -138,7 +138,7 @@ public abstract class ItemPdfTable {
 	 * Method to override for invoice and archive 
 	 * @return
 	 */
-	public String getFirstColumnContent(HandlingEvent item) {
+	public String getFirstColumnContent(ReportItem item) {
 		return null;
 	}
 
@@ -148,11 +148,11 @@ public abstract class ItemPdfTable {
 	 */
 	protected abstract void createFooter();
 
-	private ArrayList<HandlingEvent> getSortedItemen(
-			Collection<HandlingEvent> bestellpositionen) {
+	private ArrayList<ReportItem> getSortedItemen(
+			Collection<ReportItem> bestellpositionen) {
 		
-		ArrayList<HandlingEvent> bps = new ArrayList<HandlingEvent>();
-		for (HandlingEvent bp:bestellpositionen){
+		ArrayList<ReportItem> bps = new ArrayList<ReportItem>();
+		for (ReportItem bp:bestellpositionen){
 			bps.add(bp);
 		}
 		Collections.sort(bps);

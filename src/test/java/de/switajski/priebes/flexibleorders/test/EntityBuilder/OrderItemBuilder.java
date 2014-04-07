@@ -6,23 +6,23 @@ import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.Currency;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.OriginSystem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 
-public class ItemBuilder implements Builder<OrderItem> {
+public class OrderItemBuilder implements Builder<OrderItem> {
 
-	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
+	private Set<ReportItem> deliveryHistory = new HashSet<ReportItem>();
 	private Integer orderedQuantity;
 	private Amount negotiatedPriceNet;
 	private Product product;
 	private String packageNumber;
 	private String trackingNumber;
-	private FlexibleOrder order;
+	private Order order;
 	
-	public ItemBuilder(FlexibleOrder order, Product product, int orderedQuantity) {
+	public OrderItemBuilder(Order order, Product product, int orderedQuantity) {
 		this.order = order;
 		this.product = product;
 		this.orderedQuantity = orderedQuantity;
@@ -38,7 +38,7 @@ public class ItemBuilder implements Builder<OrderItem> {
 		return item;
 	}
 	
-	public ItemBuilder generateAttributes(Integer i){
+	public OrderItemBuilder generateAttributes(Integer i){
 		orderedQuantity = i;
 		negotiatedPriceNet = new Amount(new BigDecimal(i), Currency.EUR);
 		packageNumber = i.toString();
@@ -47,8 +47,8 @@ public class ItemBuilder implements Builder<OrderItem> {
 	}
 	
 	public static OrderItem buildWithGeneratedAttributes(Integer i){
-		return new ItemBuilder(
-				new FlexibleOrder(
+		return new OrderItemBuilder(
+				new Order(
 					"", 
 					OriginSystem.FLEXIBLE_ORDERS, 
 					i.toString()), 
@@ -57,42 +57,42 @@ public class ItemBuilder implements Builder<OrderItem> {
 		.generateAttributes(i).build();
 	}
 
-	public ItemBuilder setDeliveryHistory(Set<HandlingEvent> deliveryHistory) {
+	public OrderItemBuilder setDeliveryHistory(Set<ReportItem> deliveryHistory) {
 		this.deliveryHistory = deliveryHistory;
 		return this;
 	}
 
-	public ItemBuilder setOrderedQuantity(Integer orderedQuantity) {
+	public OrderItemBuilder setOrderedQuantity(Integer orderedQuantity) {
 		this.orderedQuantity = orderedQuantity;
 		return this;
 	}
 
-	public ItemBuilder setNegotiatedPriceNet(Amount negotiatedPriceNet) {
+	public OrderItemBuilder setNegotiatedPriceNet(Amount negotiatedPriceNet) {
 		this.negotiatedPriceNet = negotiatedPriceNet;
 		return this;
 	}
 
-	public ItemBuilder setProduct(Product product) {
+	public OrderItemBuilder setProduct(Product product) {
 		this.product = product;
 		return this;
 	}
 
-	public ItemBuilder setPackageNumber(String packageNumber) {
+	public OrderItemBuilder setPackageNumber(String packageNumber) {
 		this.packageNumber = packageNumber;
 		return this;
 	}
 
-	public ItemBuilder setTrackingNumber(String trackingNumber) {
+	public OrderItemBuilder setTrackingNumber(String trackingNumber) {
 		this.trackingNumber = trackingNumber;
 		return this;
 	}
 
-	public ItemBuilder setOrder(FlexibleOrder order) {
+	public OrderItemBuilder setOrder(Order order) {
 		this.order = order;
 		return this;
 	}
 	
-	public ItemBuilder addHandlingEvent(HandlingEvent handlingEvent){
+	public OrderItemBuilder addHandlingEvent(ReportItem handlingEvent){
 		this.deliveryHistory.add(handlingEvent);
 		return this;
 	}

@@ -18,7 +18,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
 import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
@@ -39,7 +39,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		FlexibleOrder report =  (FlexibleOrder) model.get(FlexibleOrder.class.getSimpleName());
+		Order report =  (Order) model.get(Order.class.getSimpleName());
 
 		String rightTop = "";
 		String rightBottom = "Kundennummer: " + report.getCustomer().getCustomerNumber();
@@ -112,7 +112,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
 	}
 	
-	private PdfPTable createTable(FlexibleOrder order) throws DocumentException{
+	private PdfPTable createTable(Order order) throws DocumentException{
 		
 		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithFiveCols());
 		for (OrderItem oi: order.getItems()){
@@ -150,11 +150,11 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		return priceString;
 	}
 	
-	private boolean hasVat(FlexibleOrder order) {
+	private boolean hasVat(Order order) {
 		return !(order.getVatRate() == null);
 	}
 
-	private boolean hasRecommendedPrices(FlexibleOrder order) {
+	private boolean hasRecommendedPrices(Order order) {
 		for (OrderItem oi:order.getItems()){
 			if (oi.getNegotiatedPriceNet()==null || oi.getNegotiatedPriceNet().getValue()==null)
 				return false;

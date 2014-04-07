@@ -12,10 +12,13 @@ import java.util.List;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 public class JacksonDeserializationTest {
@@ -63,14 +66,31 @@ public class JacksonDeserializationTest {
 			+ "\"priceNet\":14.24,"
 			+ "\"status\":\"CONFIRMED\","
 			+ "\"expectedDelivery\":\""
-			+ "\"}";			
+			+ "\"}";	
+	
+	public static final String CREATE_SHIPPING_ITEM_REQUEST_JSON = "{"
+			+ "\"id\":1015808,"
+			+ "\"product\":10071,"
+			+ "\"customer\":2,"
+			+ "\"orderNumber\":777,"
+			+ "\"invoiceNumber\":null,"
+			+ "\"orderConfirmationNumber\":777,"
+			+ "\"quantity\":17,"
+			+ "\"priceNet\":14.24,"
+			+ "\"status\":\"CONFIRMED\","
+			+ "\"expectedDelivery\":\""
+			+ "\"}";	
+
+	public static final String FILTER_REQUEST_URL_DECODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]&page=1&start=0&limit=25";
+	public static final String FILTER_REQUEST_DECODED = "[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]";
+	public static final String FILTER_REQUEST_URL_ENCODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=%5B%7B%22type%22%3A%22string%22%2C%22value%22%3A%2245%22%2C%22field%22%3A%22orderNumber%22%7D%5D&page=1&start=0&limit=25";
 	
 	@Test
 	public void shouldDeserializeReportItem() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		ReportItem reportItem = mapper.readValue(CREATE_REPORTITEM_REQUEST_JSON, 
-				ReportItem.class);
+		ItemDto reportItem = mapper.readValue(CREATE_REPORTITEM_REQUEST_JSON, 
+				ItemDto.class);
 		assertTrue(reportItem.getProduct().equals(1809935791l));
 	}
 
@@ -78,10 +98,10 @@ public class JacksonDeserializationTest {
 	public void shouldDeserializeReporItems() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		ReportItem[] ois = mapper.readValue(CREATE_REPORTITEMS_REQUEST_JSON, 
-				ReportItem[].class);
+		ItemDto[] ois = mapper.readValue(CREATE_REPORTITEMS_REQUEST_JSON, 
+				ItemDto[].class);
 		HashSet<Long> productNumbers = new HashSet<Long>();
-		for (ReportItem oi:ois)
+		for (ItemDto oi:ois)
 			productNumbers.add(oi.getProduct());
 
 		assertTrue(productNumbers.contains(10055l));
@@ -91,14 +111,9 @@ public class JacksonDeserializationTest {
 	@Test
 	public void shouldDeserializeReportItems() 
 			throws JsonParseException, JsonMappingException, IOException {
-		List<ReportItem> reportItems = JsonSerializationHelper.deserializeReportItems(CREATE_REPORTITEMS_REQUEST_JSON);
+		List<ItemDto> reportItems = JsonSerializationHelper.deserializeReportItems(CREATE_REPORTITEMS_REQUEST_JSON);
 		assertFalse(reportItems.isEmpty());
 	}
-
-	
-	public static final String FILTER_REQUEST_URL_DECODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]&page=1&start=0&limit=25";
-	public static final String FILTER_REQUEST_DECODED = "[{\"type\":\"string\",\"value\":\"45\",\"field\":\"orderNumber\"}]";
-	public static final String FILTER_REQUEST_URL_ENCODED = "http://localhost:8080/FlexibleOrders/orderitems/json?_dc=1375176055721&filter=%5B%7B%22type%22%3A%22string%22%2C%22value%22%3A%2245%22%2C%22field%22%3A%22orderNumber%22%7D%5D&page=1&start=0&limit=25";
 
 	@Test
 	public void shouldDeserializeFilter() throws JsonParseException, JsonMappingException, IOException{
@@ -111,6 +126,17 @@ public class JacksonDeserializationTest {
 		
 		assertNotNull(filter.getType());
 		assertNotNull(filter.getValue());
+	}
+	
+	@Ignore
+	@Transactional
+	@Test
+	public void shouldDeserializeShippingItem() throws Exception{
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.getSerializationConfig();
+		OrderItem oi = mapper.readValue(CREATE_SHIPPING_ITEM_REQUEST_JSON, 
+				OrderItem.class);
+		assertTrue(oi.getProduct().getProductNumber().equals(10071l));
 	}
 	
 }

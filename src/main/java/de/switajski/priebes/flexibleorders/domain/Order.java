@@ -8,12 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
-public class FlexibleOrder extends GenericEntity {
+@Table(name="FLEXIBLE_ORDER")
+public class Order extends GenericEntity {
 
 	/** 
 	 * natural id
@@ -39,9 +41,9 @@ public class FlexibleOrder extends GenericEntity {
 	@NotNull
 	private Double vatRate = 0.19d;
 	
-	public FlexibleOrder() {}
+	public Order() {}
 	
-	public FlexibleOrder(Customer customer, OriginSystem originSystem, String orderNumber){
+	public Order(Customer customer, OriginSystem originSystem, String orderNumber){
 		this.customer = customer;
 		this.customerEmail = customer.getEmail();
 		this.originSystem = originSystem;
@@ -54,7 +56,7 @@ public class FlexibleOrder extends GenericEntity {
 	 * @param originSystem
 	 * @param orderNumber
 	 */
-	public FlexibleOrder(String customerEmail, OriginSystem originSystem, String orderNumber){
+	public Order(String customerEmail, OriginSystem originSystem, String orderNumber){
 		this.customerEmail = customerEmail;
 		this.originSystem = originSystem;
 		this.orderNumber = orderNumber;
@@ -124,6 +126,10 @@ public class FlexibleOrder extends GenericEntity {
 		String s = "#"+getId().toString() + " Cust.:" + getCustomer().getId()+" "
 				+ "(items: "+itemsString +")";
 		return s;
+	}
+
+	public void setVatRate(Double vatRate) {
+		this.vatRate = vatRate;
 	}
 
 }

@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
 
-public enum HandlingEventType {
+public enum ReportItemType {
 	
 	CONFIRM, 
 	FORWARD_TO_THIRD_PARTY, 

@@ -14,15 +14,15 @@ import org.springframework.stereotype.Service;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
-import de.switajski.priebes.flexibleorders.domain.HandlingEventType;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.specification.ItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 @Service
 public class ReportItemServiceImpl {
@@ -44,16 +44,11 @@ public class ReportItemServiceImpl {
 	 * @param byOrder
 	 * @return
 	 */
-	public Page<ReportItem> retrieveAllCompleted(Pageable pageRequest, boolean byOrder){
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orderRepo.findAllCompleted(pageRequest), pageRequest, HandlingEventType.PAID);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems( 
-//				itemRepo.findAllConfirmed(pageRequest), pageRequest); 
+	public Page<ItemDto> retrieveAllCompleted(PageRequest pageRequest){
+		return extractReportItemsFromReports(
+				reportRepo.findAllCompleted(pageRequest), pageRequest, ReportItemType.PAID);
 	}
-	
+
 	/**
 	 * 
 	 * @param customer
@@ -61,14 +56,57 @@ public class ReportItemServiceImpl {
 	 * @param byOrder
 	 * @return
 	 */
-	public Page<ReportItem> retrieveAllCompleted(Customer customer, PageRequest pageRequest, boolean byOrder){
-		if (byOrder){
+	public Page<ItemDto> retrieveAllCompleted(Customer customer, PageRequest pageRequest){
+		return extractReportItemsFromReports(
+				reportRepo.findAllCompletedByCustomer(customer.getCustomerNumber(), pageRequest), pageRequest, ReportItemType.PAID);
+	}
+
+	/**
+	 * 
+	 * @param customer
+	 * @param pageable
+	 * @param byOrder
+	 * @return
+	 */
+	public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,Pageable pageable){
 			return extractReportItemsFromOrders(
-					orderRepo.findAllCompletedByCustomer(customer, pageRequest), pageRequest, HandlingEventType.PAID);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(
-//				itemRepo.findAllCompletedByCustomer(customer, pageRequest), pageRequest);
+					orderRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable, null);
+	}
+	
+	/**
+	 * 
+	 * @param pageable
+	 * @param byOrder
+	 * @return
+	 */
+	public Page<ItemDto> retrieveAllToBeConfirmed(PageRequest pageable) {
+		return extractReportItemsFromOrders(
+				orderRepo.findAllToBeConfirmed(pageable), pageable, null);
+	}
+
+	/**
+	 * retrieves all report item to be shipped. Paging is fixed on reports. 
+	 * @param customer
+	 * @param pageable
+	 * @return empty page if none found
+	 */
+	public Page<ItemDto> retrieveAllToBeShipped(Customer customer, PageRequest pageable) {
+		Page<Report> reports = reportRepo.findAllToBeShippedByCustomerNumber(
+				customer.getCustomerNumber(), pageable);
+		return extractReportItemsFromReports(
+				reports, pageable, ReportItemType.CONFIRM);
+	}
+	
+	/**
+	 * 
+	 * @param pageable
+	 * @param byOrder
+	 * @return
+	 */
+	public Page<ItemDto> retrieveAllToBeShipped(PageRequest pageable) {
+		Page<Report> orders = reportRepo.findAllToBeShipped(pageable);
+		return extractReportItemsFromReports(
+				orders, pageable, ReportItemType.CONFIRM);
 	}
 	
 	/**
@@ -78,35 +116,11 @@ public class ReportItemServiceImpl {
 	 * @param byOrder
 	 * @return
 	 */
-	public Page<ReportItem> retrieveAllToBeConfirmedByCustomer(Customer customer,
-			Pageable pageable, boolean byOrder){
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orderRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable, null);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(itemRepo.findAllToBeConfirmedByCustomer(customer, pageable), pageable);
+	public Page<ItemDto> retrieveAllToBePaid(Customer customer,
+			PageRequest pageable) {
+		return extractReportItemsFromReports(
+				reportRepo.findAllToBePaidByCustomer(customer.getCustomerNumber(), pageable), pageable, ReportItemType.INVOICE);
 	}
-	
-//	private Page<ReportItem> extractSpecifiedReportItemsFromOrderItems(
-//			HandlingEventType type, ToBeConfirmedSpecification spec, Pageable pageable,
-//			Page<OrderItem> page) {
-//
-//		List<ReportItem> ris = new ArrayList<ReportItem>();
-//		for (OrderItem oi:page){
-//			if (spec.isSatisfiedBy(oi)){
-//				if (type== null)
-//					ris.add(oi.toReportItem());
-//				else {
-//					for (HandlingEvent he:oi.getDeliveryHistory())
-//						if (he.getType()==type)
-//							ris.add(he.toReportItem());
-//				}
-//
-//			}
-//		}
-//		return new PageImpl<ReportItem>(ris, pageable, ris.size());
-//	}
 
 	/**
 	 * 
@@ -114,96 +128,20 @@ public class ReportItemServiceImpl {
 	 * @param byOrder
 	 * @return
 	 */
-	public Page<ReportItem> retrieveAllToBeConfirmed(PageRequest pageable,
-			boolean byOrder) {
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orderRepo.findAllToBeConfirmed(pageable), pageable, null);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(itemRepo.findAllToBeConfirmed(pageable), 
-//				pageable);
-	}
-	
-	/**
-	 * 
-	 * @param customer
-	 * @param pageable
-	 * @param byOrder
-	 * @return empty page if none found
-	 */
-	public Page<ReportItem> retrieveAllToBeShipped(Customer customer,
-			PageRequest pageable, boolean byOrder) {
-		Page<FlexibleOrder> orders = orderRepo.findAllToBeShippedByCustomer(customer, pageable);
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orders, pageable, HandlingEventType.CONFIRM);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(itemRepo.findAllToBeShippedByCustomer(customer, pageable), pageable);
-	}
-	
-	/**
-	 * 
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	public Page<ReportItem> retrieveAllToBeShipped(PageRequest pageable,
-			boolean byOrder) {
-		if (byOrder){
-			Page<FlexibleOrder> orders = orderRepo.findAllToBeShipped(pageable);
-			return extractReportItemsFromOrders(
-					orders, pageable, HandlingEventType.CONFIRM);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(itemRepo.findAllToBeShipped(pageable), pageable);
-	}
-	
-	/**
-	 * 
-	 * @param customer
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	public Page<ReportItem> retrieveAllToBePaid(Customer customer,
-			PageRequest pageable, boolean byOrder) {
-		
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orderRepo.findAllToBePaidByCustomer(customer, pageable), pageable, HandlingEventType.INVOICE);
-		}
-		throw new NotImplementedException();
-//		Page<OrderItem> page = itemRepo.findAllToBePaidByCustomer(customer, pageable);
-//		return extractReportItems(page, pageable);
-	}
-	
-	/**
-	 * 
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	public Page<ReportItem> retrieveAllToBePaid(PageRequest pageable,
-			boolean byOrder) {
-		if (byOrder){
-			//TODO: I messed it up with types - move it to Specification
-			return extractReportItemsFromOrders(
-					orderRepo.findAllToBePaid(pageable), pageable, HandlingEventType.INVOICE);
-		}
-		throw new NotImplementedException();
-//		return extractReportItems(itemRepo.findAllToBePaid(pageable), pageable);
+	public Page<ItemDto> retrieveAllToBePaid(PageRequest pageable) {
+		//TODO: I messed it up with types - move it to Specification
+		return extractReportItemsFromReports(
+				reportRepo.findAllToBePaid(pageable), pageable, ReportItemType.INVOICE);
 	}
 
 	public List<String> retrieveOrderNumbersLike(String orderNumber) {
-		List<FlexibleOrder> orders = orderRepo.findByOrderNumberLike(orderNumber);
+		List<Order> orders = orderRepo.findByOrderNumberLike(orderNumber);
 		return extractOrderNumbers(orders);
 	}
 
-	private List<String> extractOrderNumbers(List<FlexibleOrder> orders) {
+	private List<String> extractOrderNumbers(List<Order> orders) {
 		List<String> orderNumbers = new ArrayList<String>();
-		for (FlexibleOrder order:orders){
+		for (Order order:orders){
 			orderNumbers.add(order.getOrderNumber());
 		}
 		return orderNumbers;
@@ -212,18 +150,18 @@ public class ReportItemServiceImpl {
 	public Page<String> retrieveOrderNumbersByCustomer(Customer customer,
 			PageRequest pageRequest) {
 				
-		Page<FlexibleOrder> orders = orderRepo.findByCustomer(customer, pageRequest);
+		Page<Order> orders = orderRepo.findByCustomer(customer, pageRequest);
 		Page<String> result = extractOrderNumber(orders);
 		return result;
 	}
 
-	private Page<String> extractOrderNumber(Page<FlexibleOrder> orders) {
+	private Page<String> extractOrderNumber(Page<Order> orders) {
 		//if no orders are found return empty list
 		if (orders.getSize() < 1) 
 			return new PageImpl<String>(new ArrayList<String>());
 		
 		List<String> ordersList = new ArrayList<String>();
-		for (FlexibleOrder order:orders)
+		for (Order order:orders)
 			ordersList.add(order.getOrderNumber());
 		
 		Page<String> result = new PageImpl<String>(
@@ -233,12 +171,12 @@ public class ReportItemServiceImpl {
 		return result;
 	}
 
-	public List<ReportItem> retrieveAllByDocumentNumber(String string) {
+	public List<ItemDto> retrieveAllByDocumentNumber(String string) {
 		if (string == null)
 			throw new IllegalArgumentException("Dokumentennummer nicht angegeben");
 		Report report = reportRepo.findByDocumentNumber(string);
-		List<ReportItem> reportItems = new ArrayList<ReportItem>();
-		for (HandlingEvent he : report.getEvents())
+		List<ItemDto> reportItems = new ArrayList<ItemDto>();
+		for (ReportItem he : report.getItems())
 			reportItems.add(he.toReportItem());
 		return reportItems;
 	}
@@ -248,33 +186,33 @@ public class ReportItemServiceImpl {
 		throw new NotImplementedException();
 	}
 
-	public FlexibleOrder retrieveOrder(String orderNumber) {
-		FlexibleOrder order = orderRepo.findByOrderNumber(orderNumber);
+	public Order retrieveOrder(String orderNumber) {
+		Order order = orderRepo.findByOrderNumber(orderNumber);
 		order.getCustomer();
 		order.getItems();
 		return orderRepo.findByOrderNumber(orderNumber);
 	}
 	
-	public static Page<ReportItem> extractReportItems(
+	public static Page<ItemDto> extractReportItems(
 			Page<OrderItem> ois, Pageable pageable) {			
-		List<ReportItem> ris = new ArrayList<ReportItem>();
+		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (OrderItem oi:ois){
 			ris.add(oi.toReportItem());
 		}
-		return new PageImpl<ReportItem>(ris, pageable, ois.getTotalElements());
+		return new PageImpl<ItemDto>(ris, pageable, ois.getTotalElements());
 	}
 	
-	public static Page<ReportItem> extractSpecifiedReportItems(HandlingEventType type, ItemSpecification spec,
+	public static Page<ItemDto> extractSpecifiedReportItems(ReportItemType type, ItemSpecification spec,
 			Pageable pageable, Page<OrderItem> ois) {			
-		List<ReportItem> ris = new ArrayList<ReportItem>();
+		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (OrderItem oi:ois){
 			if (spec.isSatisfiedBy(oi)){
-				for (HandlingEvent he:oi.getDeliveryHistory())
+				for (ReportItem he:oi.getDeliveryHistory())
 					if (he.getType()==type)
 						ris.add(he.toReportItem());
 			}
 		}
-		return new PageImpl<ReportItem>(ris, pageable, ois.getTotalElements());
+		return new PageImpl<ItemDto>(ris, pageable, ois.getTotalElements());
 	}
 	
 	/**
@@ -283,10 +221,10 @@ public class ReportItemServiceImpl {
 	 * @param pageable
 	 * @return empty page if orders empty
 	 */
-	public static Page<ReportItem> extractReportItemsFromOrders(
-			Page<FlexibleOrder> orders, Pageable pageable, HandlingEventType heType) {
-		List<ReportItem> ris = new ArrayList<ReportItem>();
-		for (FlexibleOrder order:orders){
+	public static Page<ItemDto> extractReportItemsFromOrders(
+			Page<Order> orders, Pageable pageable, ReportItemType heType) {
+		List<ItemDto> ris = new ArrayList<ItemDto>();
+		for (Order order:orders){
 			for (OrderItem oi:order.getItems()){
 				if (heType == null)
 					ris.add(oi.toReportItem());
@@ -294,12 +232,26 @@ public class ReportItemServiceImpl {
 					ris.addAll(oi.toReportItems(heType));
 			}
 		}
-		return new PageImpl<ReportItem>(ris, pageable, orders.getTotalElements());
+		return new PageImpl<ItemDto>(ris, pageable, orders.getTotalElements());
 	}
 	
-	private static int countOrders(List<ReportItem> ris){
+	private Page<ItemDto> extractReportItemsFromReports(Page<Report> reports,
+			PageRequest pageable, ReportItemType heType) {
+		List<ItemDto> ris = new ArrayList<ItemDto>();
+		for (Report report:reports){
+			for (ReportItem ri:report.getItems()){
+				if (heType == null)
+					ris.add(ri.toReportItem());
+				else 
+					ris.addAll(ri.getOrderItem().toReportItems(heType));
+			}
+		}
+		return new PageImpl<ItemDto>(ris, pageable, reports.getTotalElements());
+	}
+	
+	private static int countOrders(List<ItemDto> ris){
 		Set<String> set = new HashSet<String>();
-		for (ReportItem ri : ris)
+		for (ItemDto ri : ris)
 			set.add(ri.getOrderNumber());
 		return set.size();
 	}
@@ -312,41 +264,33 @@ public class ReportItemServiceImpl {
 	 * @param orders
 	 * @return
 	 */
-	public static Page<ReportItem> extractSpecifiedReportItemsFromOrders(HandlingEventType type, ItemSpecification spec,
-			Pageable pageable, Page<FlexibleOrder> orders) {			
-		List<ReportItem> ris = new ArrayList<ReportItem>();
-		for (FlexibleOrder order:orders)
+	public static Page<ItemDto> extractSpecifiedReportItemsFromOrders(ReportItemType type, ItemSpecification spec,
+			Pageable pageable, Page<Order> orders) {			
+		List<ItemDto> ris = new ArrayList<ItemDto>();
+		for (Order order:orders)
 			for (OrderItem oi:order.getItems()){
 				if (spec.isSatisfiedBy(oi)){
 					if (type== null)
 						ris.add(oi.toReportItem());
 					else {
-						for (HandlingEvent he:oi.getDeliveryHistory())
+						for (ReportItem he:oi.getDeliveryHistory())
 							if (he.getType()==type)
 								ris.add(he.toReportItem());
 					}
 
 				}
 			}
-		return new PageImpl<ReportItem>(ris, pageable, ris.size());
+		return new PageImpl<ItemDto>(ris, pageable, ris.size());
 	}
 
-	public Page<ReportItem> retrieveAllToBeInvoiced(
-			PageRequest pageable, boolean byOrder) {
-		if (byOrder){
-			return extractReportItemsFromOrders(
-					orderRepo.findAllToBeInvoiced(pageable), pageable, HandlingEventType.SHIP);
-		}
-		throw new NotImplementedException();
+	public Page<ItemDto> retrieveAllToBeInvoiced(PageRequest pageable) {
+			return extractReportItemsFromReports(
+					reportRepo.findAllToBeInvoiced(pageable), pageable, ReportItemType.SHIP);
 	}
 
-	public Page<ReportItem> retrieveAllToBeInvoiced(Customer customer,
-			PageRequest pageable, boolean byOrder) {
-			if (byOrder){
-				return extractReportItemsFromOrders(
-						orderRepo.findAllToBeInvoicedByCustomer(customer, pageable), pageable, HandlingEventType.SHIP);
-			}
-			throw new NotImplementedException();
+	public Page<ItemDto> retrieveAllToBeInvoiced(Customer customer,PageRequest pageable) {
+				return extractReportItemsFromReports(
+						reportRepo.findAllToBeInvoicedByCustomer(customer.getCustomerNumber(), pageable), pageable, ReportItemType.SHIP);
 	}
 
 }

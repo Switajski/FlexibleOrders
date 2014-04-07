@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.FlexibleOrder;
-import de.switajski.priebes.flexibleorders.domain.HandlingEvent;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.exception.BusinessException;
@@ -56,26 +56,26 @@ public class AmountCalculator {
 	}
 	
 	/**
-	 * Convenience method for calculating net amount of an {@link FlexibleOrder} directly
+	 * Convenience method for calculating net amount of an {@link Order} directly
 	 * @param order
 	 * @return
 	 */
-	public static Amount calculateNetAmount(FlexibleOrder order){
+	public static Amount calculateNetAmount(Order order){
 		AmountCalculator calc = sum(order);
 		return calc.calculateNetAmount();
 	}
 	
 	/**
-	 * Convenience method for calculating VAT amount of an {@link FlexibleOrder} directly
+	 * Convenience method for calculating VAT amount of an {@link Order} directly
 	 * @param order
 	 * @return
 	 */
-	public static Amount calculateVatAmount(FlexibleOrder order, Double vatRate){
+	public static Amount calculateVatAmount(Order order, Double vatRate){
 		AmountCalculator calc = AmountCalculator.sum(order);
 		return calc.calculateVatAmount(vatRate);
 	}
 
-	private static AmountCalculator sum(FlexibleOrder order) {
+	private static AmountCalculator sum(Order order) {
 		AmountCalculator calc = new AmountCalculator();
 		for (OrderItem oi: order.getItems()){
 			if (oi.getNegotiatedPriceNet() == null || oi.getNegotiatedPriceNet().getValue() == null) 
@@ -107,7 +107,7 @@ public class AmountCalculator {
 	
 	private static AmountCalculator sum(Report report) {
 		AmountCalculator calc = new AmountCalculator();
-		for (HandlingEvent oi: report.getEvents()){
+		for (ReportItem oi: report.getItems()){
 			if (!oi.getOrderItem().isShippingCosts()){
 				Amount priceNet = oi.getOrderItem().getNegotiatedPriceNet();
 				if (priceNet == null)

@@ -9,11 +9,11 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Entity
-public class HandlingEvent extends GenericEntity implements Comparable<HandlingEvent>{
+public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 
 	@NotNull
 	private Integer quantity;
@@ -22,16 +22,16 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	private Report report;
 	
 	@NotNull
-	private HandlingEventType type;
+	private ReportItemType type;
 	
 	@NotNull
 	@ManyToOne
 	private OrderItem orderItem;
 
-	protected HandlingEvent() {}
+	protected ReportItem() {}
 
 	//TODO: refactor to constructor with minimal attributes
-	public HandlingEvent(Report report, HandlingEventType handlingEventType, OrderItem item, 
+	public ReportItem(Report report, ReportItemType handlingEventType, OrderItem item, 
 			Integer quantity, Date created) {
 		if (report == null || handlingEventType == null || item == null || quantity == null) 
 			throw new IllegalArgumentException();
@@ -43,8 +43,8 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		
 		if (!orderItem.getDeliveryHistory().contains(this))
 			orderItem.addHandlingEvent(this);
-		if (report.getEvents().contains(this)) return ;
-		report.addEvent(this);
+		if (report.getItems().contains(this)) return ;
+		report.addItem(this);
 	}
 	
 	public String toString(){
@@ -90,9 +90,9 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	}
 	
 	public void setReport(Report report) {
-		if (report.getEvents().contains(this)) return;
+		if (report.getItems().contains(this)) return;
 		this.report = report;
-		report.addEvent(this);
+		report.addItem(this);
 	}
 
 	public OrderItem getOrderItem() {
@@ -107,16 +107,16 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 		item.addHandlingEvent(this);
 	}
 
-	public HandlingEventType getType() {
+	public ReportItemType getType() {
 		return type;
 	}
 
-	public void setType(HandlingEventType type) {
+	public void setType(ReportItemType type) {
 		this.type = type;
 	}
 
 	@Override
-	public int compareTo(HandlingEvent o) {
+	public int compareTo(ReportItem o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -124,11 +124,11 @@ public class HandlingEvent extends GenericEntity implements Comparable<HandlingE
 	/**
 	 * Not quantity left is set!
 	 * @return
-	 * @see OrderItem#toReportItems(HandlingEventType)
+	 * @see OrderItem#toReportItems(ReportItemType)
 	 */
-	public ReportItem toReportItem(){
+	public ItemDto toReportItem(){
 		//TODO: enhance mapping by a mapping framework
-		ReportItem item = new ReportItem();
+		ItemDto item = new ItemDto();
 		item.setDocumentNumber(getReport().getDocumentNumber());
 		
 		if (this.getReport() instanceof ConfirmationReport){

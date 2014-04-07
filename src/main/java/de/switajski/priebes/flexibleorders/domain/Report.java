@@ -26,7 +26,7 @@ public abstract class Report extends GenericEntity{
 	
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
-	private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
+	private Set<ReportItem> items = new HashSet<ReportItem>();
 	
 	private Long customerNumber;
 	
@@ -40,18 +40,18 @@ public abstract class Report extends GenericEntity{
 		return documentNumber;
 	}
 
-	public Set<HandlingEvent> getEvents() {
-		return events;
+	public Set<ReportItem> getItems() {
+		return items;
 	}
 	
 	public void setDocumentNumber(String documentNumber) {
 		this.documentNumber = documentNumber;
 	}
 	
-	public void addEvent(HandlingEvent handlingEvent){
-		if (events.contains(handlingEvent)) return ;
-		events.add(handlingEvent);
-		handlingEvent.setReport(this);
+	public void addItem(ReportItem item){
+		if (items.contains(item)) return ;
+		items.add(item);
+		item.setReport(this);
 	}
 
 	public Long getCustomerNumber() {
@@ -62,8 +62,8 @@ public abstract class Report extends GenericEntity{
 		this.customerNumber = customerNumber;
 	}
 	
-	public void removeEvent(HandlingEvent event){
-		this.events.remove(event);
+	public void removeItem(ReportItem item){
+		this.items.remove(item);
 	}
 
 }

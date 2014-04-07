@@ -18,7 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecifi
 import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
 import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.web.entities.ReportItem;
+import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
 @Entity
 @JsonAutoDetect
@@ -27,7 +27,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	@JsonIgnore
 	@NotNull
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
-	private Set<HandlingEvent> deliveryHistory = new HashSet<HandlingEvent>();
+	private Set<ReportItem> deliveryHistory = new HashSet<ReportItem>();
 	
 	@NotNull
 	private Integer orderedQuantity;
@@ -44,8 +44,8 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	
 	@JsonIgnore
 	@NotNull
-	@ManyToOne
-	private FlexibleOrder flexibleOrder;
+	@ManyToOne()
+	private Order customerOrder;
 
 	protected OrderItem() {}
 	
@@ -55,9 +55,9 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * @param product
 	 * @param orderedQuantity
 	 */
-	public OrderItem(FlexibleOrder order, Product product, int orderedQuantity){
-		this.deliveryHistory = new HashSet<HandlingEvent>();
-		this.flexibleOrder = order;
+	public OrderItem(Order order, Product product, int orderedQuantity){
+		this.deliveryHistory = new HashSet<ReportItem>();
+		this.customerOrder = order;
 		this.orderedQuantity = orderedQuantity;
 		setProduct(product);
 		
@@ -78,11 +78,11 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return 0;
 	}
 	
-	public Set<HandlingEvent> getDeliveryHistory() {
+	public Set<ReportItem> getDeliveryHistory() {
 		return deliveryHistory;
 	}
 
-	public void setDeliveryHistory(Set<HandlingEvent> deliveryHistory) {
+	public void setDeliveryHistory(Set<ReportItem> deliveryHistory) {
 		this.deliveryHistory = deliveryHistory;
 	}
 
@@ -102,14 +102,14 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		this.orderedQuantity = orderedQuantity;
 	}
 
-	public FlexibleOrder getOrder() {
-		return flexibleOrder;
+	public Order getOrder() {
+		return customerOrder;
 	}
 
-	public void setOrder(FlexibleOrder order) {
+	public void setOrder(Order order) {
 		if (!order.getItems().contains(this))
 			order.getItems().add(this);
-		this.flexibleOrder = order;
+		this.customerOrder = order;
 	}
 
 	public Product getProduct() {
@@ -136,9 +136,9 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		this.trackingNumber = trackingNumber;
 	}
 
-	public Set<HandlingEvent> getAllHesOfType(HandlingEventType type) {
-		Set<HandlingEvent> hesOfType = new HashSet<HandlingEvent>();
-		for (HandlingEvent he: deliveryHistory){
+	public Set<ReportItem> getAllHesOfType(ReportItemType type) {
+		Set<ReportItem> hesOfType = new HashSet<ReportItem>();
+		for (ReportItem he: deliveryHistory){
 			if (he.getType() == type)
 				hesOfType.add(he);
 		}
@@ -149,21 +149,21 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * handles bidirectional relationship
 	 * @param handlingEvent has no other Report than this. If null, this orderItem will be set.
 	 */
-	public void addHandlingEvent(HandlingEvent handlingEvent) {
+	public void addHandlingEvent(ReportItem handlingEvent) {
 		//prevent endless loop
 		if (deliveryHistory.contains(handlingEvent)) return;
 		deliveryHistory.add(handlingEvent);
 		handlingEvent.setOrderItem(this);
 	}
 	
-	public void removeHandlingEvent(HandlingEvent handlingEvent){
+	public void removeHandlingEvent(ReportItem handlingEvent){
 		if (!deliveryHistory.contains(handlingEvent)) return;
 		deliveryHistory.remove(handlingEvent);
 		handlingEvent.setOrderItem(null);
 	}
 
 	public Report getReport(String invoiceNo) {
-		for (HandlingEvent he: getDeliveryHistory())
+		for (ReportItem he: getDeliveryHistory())
 			if (he.getReport().getDocumentNumber().equals(invoiceNo))
 				return he.getReport();
 		return null;
@@ -174,11 +174,11 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * 
 	 * @return null if no HandlingEvents of given type found
 	 */
-	public Integer getHandledQuantity(HandlingEventType type) {
-		Set<HandlingEvent> hes = getAllHesOfType(type);
+	public Integer getHandledQuantity(ReportItemType type) {
+		Set<ReportItem> hes = getAllHesOfType(type);
 		if (hes.isEmpty()) return 0;
 		int summed = 0;
-		for (HandlingEvent he: hes){
+		for (ReportItem he: hes){
 			summed = summed + he.getQuantity();
 		}
 		return summed;
@@ -202,8 +202,10 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * 
 	 * @return
 	 */
-	public ReportItem toReportItem(){
-		ReportItem item = new ReportItem();
+	//TODO SRP: ReportItem should created by ReportItemMapper and in the Responsibility of 
+	// handling event (a HandlingEventDTO instead of ReportItem)
+	public ItemDto toReportItem(){
+		ItemDto item = new ItemDto();
 		item.setCreated(getCreated());
 		item.setCustomer(getOrder().getCustomer().getId());
 		item.setCustomerNumber(getOrder().getCustomer().getCustomerNumber());
@@ -216,7 +218,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		item.setProductName(getProduct().getName());
 		item.setStatus(provideStatus());
 		item.setQuantity(getOrderedQuantity());
-		item.setQuantityLeft(getOrderedQuantity() - getHandledQuantity(HandlingEventType.CONFIRM));
+		item.setQuantityLeft(getOrderedQuantity() - getHandledQuantity(ReportItemType.CONFIRM));
 		return item;
 	}
 	
@@ -226,11 +228,12 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * @param type
 	 * @return
 	 */
-	public Set<ReportItem> toReportItems(HandlingEventType type){
-		Set<ReportItem> ris = new HashSet<ReportItem>();
+	//TODO SRP: ReportItem should be a mapping matter (e.g. DTO) matter using a framework like dozer
+	public Set<ItemDto> toReportItems(ReportItemType type){
+		Set<ItemDto> ris = new HashSet<ItemDto>();
 		if (type != null){
-			for (HandlingEvent he: this.getAllHesOfType(type)){
-				ReportItem item = he.toReportItem();
+			for (ReportItem he: this.getAllHesOfType(type)){
+				ItemDto item = he.toReportItem();
 				item.setQuantityLeft(calculateQuantityLeft(type));
 				ris.add(item);
 			}
@@ -240,28 +243,35 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	}
 
 	/**
-	 * Provides the quantity stuck in given {@link HandlingEventType}.
+	 * Provides the quantity stuck in given {@link ReportItemType}.
 	 * @param type HandlingEventType representing a state
-	 * @return quantity left in given {@link HandlingEventType}
-	 * @see ReportItem#getQuantityLeft
+	 * @return quantity left in given {@link ReportItemType}
+	 * @see ItemDto#getQuantityLeft
 	 */
-	public int calculateQuantityLeft(HandlingEventType type) {
+	//TODO: srp!!! move to Handling Event or make a factory
+	public int calculateQuantityLeft(ReportItemType type) {
 		int quantityLeft = 0;
 		switch (type) {
 		case CONFIRM:
-			quantityLeft = getOrderedQuantity() - getHandledQuantity(HandlingEventType.SHIP);
+			quantityLeft = getOrderedQuantity() - getHandledQuantity(ReportItemType.SHIP);
 			break;
 		case SHIP:
-			quantityLeft = getHandledQuantity(HandlingEventType.SHIP) 
-					- getHandledQuantity(HandlingEventType.INVOICE);
+			quantityLeft = getHandledQuantity(ReportItemType.SHIP) 
+					- getHandledQuantity(ReportItemType.INVOICE);
 			break;
 		case INVOICE:
-			quantityLeft = getHandledQuantity(HandlingEventType.INVOICE) 
-					- getHandledQuantity(HandlingEventType.PAID);
+			quantityLeft = getHandledQuantity(ReportItemType.INVOICE) 
+					- getHandledQuantity(ReportItemType.PAID);
 			break;
 		case PAID:
-			quantityLeft = getHandledQuantity(HandlingEventType.PAID);
+			quantityLeft = getHandledQuantity(ReportItemType.PAID);
 //					- getHandledQuantity(HandlingEventType.INVOICE);
+			break;
+		case CANCEL:
+			break;
+		case FORWARD_TO_THIRD_PARTY:
+			break;
+		default:
 			break;
 		}
 		return quantityLeft;

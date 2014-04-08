@@ -177,10 +177,6 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 			rec.data.customer = customer;
 			rec.data.quantity = 1;
 			this.store.insert(0, rec);
-			edit.startEditByPosition({
-						row : 0,
-						column : 0
-					});
 		}
 	},
 	onDeleteClick : function() {

@@ -55,7 +55,7 @@ Ext.define('MyApp.view.OrderWindow', {
 			dataIndex : 'product',
 			text : 'Artikel',
 			width : 250,
-			// name: 'productNumber',
+//			tpl : Ext.create('Ext.Template','{name}'),
 			editor : {
 				id : 'ArtikelComboBox',
 				xtype : 'combobox',
@@ -66,6 +66,9 @@ Ext.define('MyApp.view.OrderWindow', {
 				forceSelection : true,
 				queryMode : 'local',
 				store : 'ArtikelDataStore',
+				tpl : Ext.create('Ext.XTemplate','<tpl for="."><div class="x-boundlist-item" >{productNumber} - {name}</div></tpl>'),
+				displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
+						'{productNumber} - {name}', '</tpl>'),
 				listeners : {
 					'blur' : function(xObject, state, eOpts) {
 						var request = Ext.Ajax.request({
@@ -75,21 +78,16 @@ Ext.define('MyApp.view.OrderWindow', {
 									},
 									method:'GET',
 									success : function(response) {
+										rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
+										
 										var json = Ext.decode(response.responseText);
 										store = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
-										record = store.getAt(0);
+										record = store.getAt(rowPos);
 										record.set('priceNet', json.data.value);
 									}
 								});
 					}
-				},
-				tpl : Ext.create(
-								'Ext.XTemplate',
-								'<tpl for=".">',
-								'<div class="x-boundlist-item">{productNumber} - {name}</div>',
-								'</tpl>'),
-				displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
-						'{productNumber} - {name}', '</tpl>')
+				}
 			}
 		}, {
 			xtype : 'gridcolumn',

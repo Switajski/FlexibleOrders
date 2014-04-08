@@ -4,12 +4,17 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Embeddable
 public class Amount {
 
+	@Transient
 	private final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
+	
+	@Transient
+	public final static Amount ZERO_EURO = new Amount(BigDecimal.ZERO, Currency.EUR);
 	
 	@NotNull
 	private BigDecimal value = BigDecimal.ZERO;
@@ -84,9 +89,18 @@ public class Amount {
 		return s;
 	}
 
-	public Amount multiply(Integer quantity) {
-		return new Amount(value.multiply(new BigDecimal(quantity)), currency);
-		
+	public Amount multiply(Integer multiplicand) {
+		return new Amount(value.multiply(new BigDecimal(multiplicand)), currency);
+	}
+	
+	public Amount multiply(double multiplicand){
+		return new Amount(value.multiply(new BigDecimal(multiplicand)), currency);
+	}
+	
+	public Amount multiply(Amount multiplicand) {
+		if (this.currency != multiplicand.currency)
+			throw new IllegalArgumentException("Different currencies");
+		return new Amount(value.multiply(multiplicand.getValue()), currency);
 	}
 
 	public Amount devide(double divisor) {
@@ -116,4 +130,5 @@ public class Amount {
 				return false;
 		}
 	}
+	
 }

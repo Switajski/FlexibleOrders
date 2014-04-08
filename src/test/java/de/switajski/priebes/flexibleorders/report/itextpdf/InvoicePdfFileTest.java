@@ -40,6 +40,7 @@ public class InvoicePdfFileTest {
 	@Before
 	public void initData(){
 		invoice = new Invoice(I_NR, "paymentCondition", AddressBuilder.buildWithGeneratedAttributes(123));
+		invoice.setShippingCosts(new Amount(BigDecimal.TEN, Currency.EUR));
 
 		OrderItem item1 = new OrderItemBuilder(
 			new Order(
@@ -56,11 +57,11 @@ public class InvoicePdfFileTest {
 					"email@nowhere.com", 
 					OriginSystem.FLEXIBLE_ORDERS, 
 					I_NR),
-				new CatalogProductBuilder("Versand", 0L, ProductType.SHIPPING)
+				new CatalogProductBuilder("hfhf", 0L, ProductType.PRODUCT)
 				.setRecommendedPriceNet(new Amount(BigDecimal.valueOf(4.5d), Currency.EUR))
 				.build()
 				.toProduct(), 
-				0)
+				4)
 			.generateAttributes(12)
 			.build();
 		for (int i =0;i<24;i++){

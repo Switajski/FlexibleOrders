@@ -58,15 +58,15 @@ public class CustomPdfPTableBuilder {
 		CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(PdfPTableBuilder.createPropertiesWithTwoCols())
         .addCell(leftAlign.withPhrase(bold.withText("Betrag").build()).build())
         .addCell(rightAlign.withPhrase(bold.withText(net.toString()).build()).build());
-		
+
 		if (shipping != null)
 			footerBuilder.addCell(leftAlign.withPhrase(bold.withText("Versand").build()).build())
 	        .addCell(rightAlign.withPhrase(bold.withText(shipping.toString()).build()).build());
-			
+		
         footerBuilder.addCell(leftAlign.withPhrase(bold.withText("zzgl. 19% MwSt.").build()).build())
-        .addCell(rightAlign.withPhrase(bold.withText(vat.toString()).build()).build())
+        .addCell(rightAlign.withPhrase(bold.withText(vat.toString()).build()).build());
         
-        .addCell(leftAlign.withPhrase(bold.withText("Gesamtbetrag brutto").build()).withBorder(Rectangle.TOP).build())
+        footerBuilder.addCell(leftAlign.withPhrase(bold.withText("Gesamtbetrag brutto").build()).withBorder(Rectangle.TOP).build())
         .addCell(rightAlign.withPhrase(bold.withText(gross.toString()).build()).withBorder(Rectangle.TOP).build());
         
         if (paymentConditions != null)

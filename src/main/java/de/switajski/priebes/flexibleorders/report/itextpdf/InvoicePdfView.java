@@ -30,6 +30,8 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuil
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
 
+	private static final double VAT_RATE = 0.19;
+	
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
 			Document document, PdfWriter writer, HttpServletRequest request,
@@ -37,20 +39,20 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 		
-		//TODO
-//		String rightTop = "Kundennummer: " + "TODO";
 		String rightTop = "";
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		String leftTop = "Rechnungsnummer: " + report.getDocumentNumber().toString();
 		String leftBottom = "Rechnungsdatum: " + dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
 		String heading = "Rechnung";
+
+		Amount shippingCosts = Amount.ZERO_EURO;
+		if (report.getShippingCosts() != null)
+			shippingCosts = report.getShippingCosts();
 		
-		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
-        Amount net = AmountCalculator.calculateNetAmount(report);
-        Amount shippingCosts = report.getShippingCosts();
-        Amount gross = net.add(vat);
-		gross = gross.add(shippingCosts);
+		Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
+		Amount vat = (netGoods.add(shippingCosts)).multiply(VAT_RATE);
+		Amount gross = netGoods.add(vat).add(shippingCosts);
 
 		// insert address
 		document.add(ParagraphBuilder.createEmptyLine());
@@ -97,7 +99,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
         // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-				net, vat, shippingCosts, gross, report.getPaymentConditions())
+				netGoods, vat, shippingCosts, gross, report.getPaymentConditions())
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 	    
 	    PdfPTable footer = footerBuilder.build();
@@ -107,43 +109,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
 	    		writer.getDirectContent());
 	}
-	//TODO: make it an invoiceTable
-//	private PdfPTable createTable(Invoice invoice, Document doc) throws DocumentException{
-//		PdfPTableBuilder builder = PdfPTableBuilder.buildWithFourCols();
-//		for (HandlingEvent he: invoice.getEvents()){
-//			if (!he.getOrderItem().isShippingCosts()){
-//				builder.addBodyRow(
-//						new FourStrings("",
-//								// product Name
-//								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
-//								+ he.getOrderItem().getProduct().getName(),
-//								// price
-//								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
-//								// amount of single item
-//								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
-//								));
-//			}
-//		}
-//		Amount net = AmountCalculator.calculateNetAmount(invoice);
-//		//TODO: make vatRate dependent from order
-//		Amount vat = AmountCalculator.calculateVatAmount(invoice, VAT_RATE);
-//		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-//		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString());
-//		
-//		Amount shippingCosts = new Amount();
-//		for (Entry<String, Amount> shipment:invoice.getShippingCosts().entrySet()){
-//			Amount price = shipment.getValue();
-//			if (!price.isGreaterZero())
-//				throw new IllegalStateException("Versand ohne Preis angegeben!");
-//			builder.addFooterRow("Versandkosten aus Lieferschein " + shipment.getKey() +":     " + price.toString());
-//			shippingCosts = shippingCosts.add(price);
-//		}
-//		net = net.add(vat);
-//		net = net.add(shippingCosts);
-//		builder.addFooterRow("Gesamtbetrag brutto:   " + 
-//				net.toString());
-//		return builder.build();
-//	}
 	
 	private PdfPTable createTable(Report cReport) throws DocumentException{
 		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithSixCols());

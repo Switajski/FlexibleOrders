@@ -12,6 +12,9 @@ public class Invoice extends Report {
 	@NotNull
 	private Address invoiceAddress;
 	
+	/**
+	 * net shipping costs
+	 */
 	@Embedded
 	private Amount shippingCosts; 
 	

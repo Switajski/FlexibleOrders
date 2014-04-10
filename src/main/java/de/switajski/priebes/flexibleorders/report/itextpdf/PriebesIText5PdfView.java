@@ -64,6 +64,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	 * format settings
 	 */
 	public final static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+	public final static DateFormat weekDateFormat = new SimpleDateFormat("w");
 	public static final float BORDER_WIDTH = 0.15f;
 	public static final int PAGE_MARGIN_BOTTOM = /*bottom*/180;
 	public static final int PAGE_MARGIN_TOP = /*top*/80;

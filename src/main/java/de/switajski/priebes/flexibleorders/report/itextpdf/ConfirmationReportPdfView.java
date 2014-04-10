@@ -42,7 +42,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		Address adresse = report.getInvoiceAddress();
 
 		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
-		String rightTop = "";
+		String rightTop = "voraussichtliche Lieferwoche: KW " + weekDateFormat.format(report.getExpectedDelivery());
 		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		

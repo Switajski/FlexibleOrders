@@ -32,9 +32,9 @@ public class CatalogProductController extends ExceptionController{
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts){
 		JsonObjectResponse response = new JsonObjectResponse();
-		Page<CatalogProduct> customer = cProductRepo.findAll(new PageRequest(page-1, limit));
-		response.setData(customer.getContent());
-		response.setTotal(customer.getTotalElements());
+		Page<CatalogProduct> catalogProduct = cProductRepo.findAll(new PageRequest(page-1, limit));
+		response.setData(catalogProduct.getContent());
+		response.setTotal(catalogProduct.getTotalElements());
 		response.setMessage("All entities retrieved.");
 		response.setSuccess(true);
 

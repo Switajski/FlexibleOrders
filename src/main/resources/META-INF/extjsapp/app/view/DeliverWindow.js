@@ -183,8 +183,6 @@ Ext.define('MyApp.view.DeliverWindow', {
 				});
 
 		me.callParent(arguments);
-		if (this.record == null)
-			console.error('no record set!');
 
 		// set the listeners to update record onChange
 		/*

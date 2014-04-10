@@ -36,6 +36,9 @@ Ext.define('MyApp.model.ArtikelData', {
         },
         {
             name: 'active'
+        },
+        {
+        	name: 'recommendedPriceNet'
         }
     ]
 });

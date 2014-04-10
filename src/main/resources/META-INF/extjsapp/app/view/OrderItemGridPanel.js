@@ -6,13 +6,12 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
 				var ocnr = record.data.orderNumber;
-				MyApp.getApplication().getController('MyController').confirm(
-						"ok", ocnr, record);
+				MyApp.getApplication().getController('MyController').onConfirm(record);
 
 			},
-			onPdfClick : function(view, a, b, column, event, record, f){
-				var win = window.open('/FlexibleOrders/reports/orders/' + record.data.orderNumber
-						+ '.pdf', '_blank');
+			onPdfClick : function(view, a, b, column, event, record, f) {
+				var win = window.open('/FlexibleOrders/reports/orders/'
+								+ record.data.orderNumber + '.pdf', '_blank');
 				win.focus();
 			}
 

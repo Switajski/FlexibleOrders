@@ -50,7 +50,8 @@ Ext.define('MyApp.controller.MyController', {
 			'ArchiveItemDataStore', 'OrderNumberDataStore',
 			'DeliveryNotesItemDataStore', 'InvoiceNumberDataStore',
 			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
-			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore'],
+			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore',
+			'CreateConfirmationReportItemDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
 			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
@@ -354,36 +355,33 @@ Ext.define('MyApp.controller.MyController', {
 			}
 		}
 	},
-	confirm : function(event, ocnr, record) {
+
+	confirm : function(event, record, createConfirmationReportStore) {
+		var form = Ext.getCmp('ConfirmWindow').down('form').getForm();
 		if (event == "ok") {
-			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.orderNumber);
 
 			var request = Ext.Ajax.request({
 				url : '/FlexibleOrders/transitions/confirm/json',
-				params : {
-					orderConfirmationNumber : "AB" + ocnr,
-					orderNumber : ocnr,
-					items : Ext
-							.pluck(
-									MyApp
-											.getApplication()
-											.getStore('BestellpositionDataStore').data.items,
-									'data')
+				jsonData : {
+					orderNumber : form.getValues().orderNumber,
+					orderConfirmationNumber : form.getValues().orderConfirmationNumber,
+					customerId : form.getValues().id,
+					expectedDelivery : form.getValues().expectedDelivery,
+					items : Ext.pluck(createConfirmationReportStore.data.items,
+							'data')
 				},
 				success : function(response) {
 					var text = response.responseText;
+					// Sync
+					MyApp.getApplication().getController('MyController')
+							.sleep(500);
+					var allGrids = Ext.ComponentQuery.query('PositionGrid');
+					allGrids.forEach(function(grid) {
+								grid.getStore().load();
+							});
+					Ext.getCmp("ConfirmWindow").close();
 				}
 			});
-			if (this.debug)
-				console.log('confirm order');
-
-			// Sync
-			MyApp.getApplication().getController('MyController').sleep(500);
-			var allGrids = Ext.ComponentQuery.query('PositionGrid');
-			allGrids.forEach(function(grid) {
-						grid.getStore().load();
-					});
 		}
 	},
 
@@ -600,6 +598,51 @@ Ext.define('MyApp.controller.MyController', {
 		orderWindow.focus();
 	},
 
+	onConfirm : function(record) {
+		confirmationReportNumber = 'AB' + record.data.orderNumber;
+
+		record.data.confirmationReportNumber = record.data.documentNumber;
+		var createConfirmationReportStore = MyApp.getApplication()
+				.getStore('CreateConfirmationReportItemDataStore');
+		createConfirmationReportStore.filter('customer', record.data.customer);
+
+		var confirmWindow = Ext.create('MyApp.view.ConfirmWindow', {
+					id : "ConfirmWindow",
+					onSave : function() {
+						MyApp.getApplication().getController('MyController')
+								.confirm("ok", kunde,
+										createConfirmationReportStore);
+					}
+				});
+		kunde = Ext.getStore('KundeDataStore').findRecord("id",
+				record.data.customer);
+		kundeId = kunde.data.id;
+		email = kunde.data.email;
+
+		confirmWindow.show();
+		confirmWindow.down('form').getForm().setValues({
+					name1 : kunde.data.name1,
+					name2 : kunde.data.name2,
+					city : kunde.data.city,
+					country : kunde.data.country,
+					email : kunde.data.email,
+					firstName : kunde.data.firstName,
+					id : kunde.data.id,
+					lastName : kunde.data.lastName,
+					phone : kunde.data.phone,
+					postalCode : kunde.data.postalCode,
+					customerNumber : kunde.data.customerNumber,
+					street : kunde.data.street
+				});
+		// somehow the id is deleted onShow
+		// Ext.getCmp('confirmationReportNumber')
+		// .setValue(confirmationReportNumber);
+		// Ext.getStore('KundeDataStore').findRecord("email", email).data.id =
+		// kundeId;
+		Ext.getCmp('newOrderConfirmationNumber')
+				.setValue(confirmationReportNumber);
+	},
+
 	/**
 	 * 
 	 * @param {}
@@ -774,8 +817,8 @@ Ext.define('MyApp.controller.MyController', {
 					});
 		}
 	},
-	
-	deleteReport : function(varDocumentNumber){
+
+	deleteReport : function(varDocumentNumber) {
 		console.error('Not Implemented!');
 		var request = Ext.Ajax.request({
 			url : '/FlexibleOrders/transitions/deleteReport',

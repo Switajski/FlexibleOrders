@@ -39,6 +39,14 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
 
+/**
+ * TODO: Add validation to service layer:</br>
+ * see <a href="http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html">
+ * http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html</a>
+ * 
+ * @author Marek Switajski
+ *
+ */
 @Service
 public class OrderServiceImpl {
 
@@ -96,10 +104,7 @@ public class OrderServiceImpl {
 	@Transactional
 	public ConfirmationReport confirm(String orderNumber, String confirmNumber,
 			Date expectedDelivery, List<ItemDto> orderItems){
-		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
-			throw new IllegalArgumentException("Auftragsnr. "+ confirmNumber +" besteht bereits");
-		if (orderItems.isEmpty())
-			throw new IllegalArgumentException("Keine Positionen angegeben");
+		validateConfirm(orderNumber, confirmNumber, orderItems);
 		
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null) throw new IllegalArgumentException("Bestellnr. nicht gefunden");
@@ -120,6 +125,18 @@ public class OrderServiceImpl {
 					entry.getQuantityLeft(), new Date()));
 		}
 		return reportRepo.save(cr);
+	}
+
+	private void validateConfirm(String orderNumber, String confirmNumber,
+			List<ItemDto> orderItems) {
+		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
+			throw new IllegalArgumentException("Auftragsnr. "+ confirmNumber +" besteht bereits");
+		if (orderItems.isEmpty())
+			throw new IllegalArgumentException("Keine Positionen angegeben");
+		if (orderNumber == null)
+			throw new IllegalArgumentException("Keine Bestellnr angegeben");
+		if (confirmNumber == null)
+			throw new IllegalArgumentException("Keine AB-nr angegeben");
 	}
 
 	@Transactional

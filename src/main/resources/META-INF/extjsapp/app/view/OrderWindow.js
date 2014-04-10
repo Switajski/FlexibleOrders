@@ -55,7 +55,10 @@ Ext.define('MyApp.view.OrderWindow', {
 			dataIndex : 'product',
 			text : 'Artikel',
 			width : 250,
-//			tpl : Ext.create('Ext.Template','{name}'),
+			renderer: function(value, metaData, record, row, col, store, gridView){
+			    console.log(value);
+				return (value + ' - ' + record.data.productName);
+			},
 			editor : {
 				id : 'ArtikelComboBox',
 				xtype : 'combobox',
@@ -71,21 +74,29 @@ Ext.define('MyApp.view.OrderWindow', {
 						'{productNumber} - {name}', '</tpl>'),
 				listeners : {
 					'blur' : function(xObject, state, eOpts) {
-						var request = Ext.Ajax.request({
-									url : '/FlexibleOrders/products/retrieveRecommededPriceNet',
-									params : {
-										productNumber : xObject.value
-									},
-									method:'GET',
-									success : function(response) {
-										rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
-										
-										var json = Ext.decode(response.responseText);
-										store = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
-										record = store.getAt(rowPos);
-										record.set('priceNet', json.data.value);
-									}
-								});
+						rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
+						data = Ext.getStore('ArtikelDataStore').query('productNumber', xObject.value).getAt(0).data;
+						
+						createOrderStore = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
+						record = createOrderStore.getAt(rowPos);
+						record.set('priceNet', data.recommendedPriceNet.value);
+						record.set('productName', data.name);
+						
+//						var request = Ext.Ajax.request({
+//									url : '/FlexibleOrders/products/retrieveRecommededPriceNet',
+//									params : {
+//										productNumber : xObject.value
+//									},
+//									method:'GET',
+//									success : function(response) {
+//										rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
+//										
+//										var json = Ext.decode(response.responseText);
+//										store = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
+//										record = store.getAt(rowPos);
+//										record.set('priceNet', json.data.value);
+//									}
+//								});
 					}
 				}
 			}

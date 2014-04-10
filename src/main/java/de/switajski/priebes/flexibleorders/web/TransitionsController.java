@@ -41,11 +41,20 @@ public class TransitionsController extends ExceptionController{
 	
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse confirm(
-			@RequestParam(value = "orderNumber", required = true) String orderNumber) 
+	public @ResponseBody JsonObjectResponse confirm(@RequestBody JsonDeliverRequest confirmRequest) 
 					throws Exception {
-		ConfirmationReport confirmationReport = orderService.confirm(orderNumber);
+		
+		ConfirmationReport confirmationReport = orderService.confirm(extractOrderNumber(confirmRequest),
+				confirmRequest.getOrderConfirmationNumber(), confirmRequest.getExpectedDelivery(), 
+				confirmRequest.getItems());
 		return ExtJsResponseCreator.createResponse(confirmationReport);
+	}
+
+
+	private String extractOrderNumber(JsonDeliverRequest confirmRequest) {
+		if (confirmRequest.getItems().isEmpty())
+			throw new IllegalArgumentException("Liste der Auftragspositionen ist leer");
+		return confirmRequest.getItems().iterator().next().getOrderNumber();
 	}
 	
 	@RequestMapping(value="/order", method=RequestMethod.POST)

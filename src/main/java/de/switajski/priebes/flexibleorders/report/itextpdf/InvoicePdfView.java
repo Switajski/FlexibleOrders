@@ -30,8 +30,6 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuil
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
 
-	private static final double VAT_RATE = 0.19;
-	
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
 			Document document, PdfWriter writer, HttpServletRequest request,
@@ -51,7 +49,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			shippingCosts = report.getShippingCosts();
 		
 		Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
-		Amount vat = (netGoods.add(shippingCosts)).multiply(VAT_RATE);
+		Amount vat = (netGoods.add(shippingCosts)).multiply(report.getVatRate());
 		Amount gross = netGoods.add(vat).add(shippingCosts);
 
 		// insert address

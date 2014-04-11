@@ -48,9 +48,9 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		Address adresse = report.getCustomer().getAddress();
 		String heading = "Bestellung";
 		
-		Amount net = AmountCalculator.calculateNetAmount(report);
-		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
-		Amount gross = net.add(vat);
+		Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
+		Amount vat = netGoods.multiply(Order.VAT_RATE);
+		Amount gross = netGoods.add(vat);
 
 		// insert address
 		document.add(ParagraphBuilder.createEmptyLine());
@@ -99,7 +99,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         // insert footer table
         if (hasRecommendedPrices(report) && hasVat(report)){
         	CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-        			net, vat, null, gross, null)
+        			netGoods, vat, null, gross, null)
         			.withTotalWidth(PriebesIText5PdfView.WIDTH);
 
         	PdfPTable footer = footerBuilder.build();

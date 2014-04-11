@@ -84,47 +84,8 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         
         // insert main table
         document.add(createTable(report));
-
 		
-//        // insert footer table
-//        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-//				AmountCalculator.calculateNetAmount(report), 
-//				AmountCalculator.calculateVatAmount(report, OrderConfirmationPdfView.VAT_RATE), null, null, null)
-//				.withTotalWidth(PriebesIText5PdfView.WIDTH);
-//	    
-//	    PdfPTable footer = footerBuilder.build();
-//	    
-//	    footer.writeSelectedRows(0, -1,
-//	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
-//	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
-//	    		writer.getDirectContent());
 	}
-	
-//	private PdfPTable createTable(DeliveryNotes deliveryNotes, Document doc) throws DocumentException{
-//		PdfPTableBuilder builder = PdfPTableBuilder.buildWithFourCols();
-//		for (HandlingEvent he: deliveryNotes.getEvents()){
-//			if (!he.getOrderItem().isShippingCosts()){
-//				builder.addBodyRow(
-//						new FourStrings("",
-//								// product Name
-//								"Art.Nr.: " + he.getOrderItem().getProduct().getProductNumber() + " - "
-//								+ he.getOrderItem().getProduct().getName(),
-//								// price
-//								he.getQuantity()+ " x " + he.getOrderItem().getNegotiatedPriceNet().toString(),
-//								// amount of single item
-//								he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString()
-//								));
-//			}
-//		}
-//		Amount net = AmountCalculator.calculateNetAmount(deliveryNotes);
-//		//TODO: make vatRate dependent from order
-//		Amount vat = AmountCalculator.calculateVatAmount(deliveryNotes, VAT_RATE);
-//		builder.addFooterRow("Warenwert netto:   "+ net.toString())
-//		.addFooterRow("zzgl. 19% MwSt.:     " + vat.toString())
-////		.addFooterRow("Versandkosten:     " + deliveryNotes.getShipment().getShippingCosts().toString())
-//		.addFooterRow("Gesamtbetrag brutto:   " + net.add(vat));
-//		return builder.build();
-//	}
 	
 	private PdfPTable createTable(Report cReport) throws DocumentException{
 		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithFourCols());

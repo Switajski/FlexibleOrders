@@ -46,9 +46,9 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		
-		Amount net = AmountCalculator.calculateNetAmount(report);
-		Amount vat = AmountCalculator.calculateVatAmount(report, ConfirmationReportPdfView.VAT_RATE);
-		Amount gross = net.add(vat);
+		Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
+		Amount vat = netGoods.multiply(report.getVatRate());
+		Amount gross = netGoods.add(vat);
 
 		// insert address
 		document.add(ParagraphBuilder.createEmptyLine());
@@ -97,7 +97,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
         // insert footer table
 		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-				net, vat, null, gross, null)
+				netGoods, vat, null, gross, null)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 	    
 	    PdfPTable footer = footerBuilder.build();

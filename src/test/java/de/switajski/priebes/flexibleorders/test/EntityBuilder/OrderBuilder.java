@@ -15,7 +15,6 @@ public class OrderBuilder {
 	private String customerEmail;
 	private OriginSystem originSystem;
 	private Set<OrderItem> items = new HashSet<OrderItem>();
-	private Double vatRate = 0.19d;
 	
 	public Order build() {
 		Order order = new Order();
@@ -24,7 +23,6 @@ public class OrderBuilder {
 		order.setCustomerEmail(customerEmail);
 		order.setOriginSystem(originSystem);
 		order.setItems(items);
-		order.setVatRate(vatRate);
 		return order;
 	}
 
@@ -53,11 +51,6 @@ public class OrderBuilder {
 		return this;
 	}
 
-	public OrderBuilder setVatRate(Double vatRate) {
-		this.vatRate = vatRate;
-		return this;
-	}
-	
 	public OrderBuilder addOrderItem(OrderItem orderItem){
 		this.items.add(orderItem);
 		return this;

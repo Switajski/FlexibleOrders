@@ -9,14 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
-@Table(name="FLEXIBLE_ORDER")
+@Table(name="c_order")
 public class Order extends GenericEntity {
 
+	@Transient
+	public static final double VAT_RATE = 0.19d;
+	
 	/** 
 	 * natural id
 	 */
@@ -126,10 +130,6 @@ public class Order extends GenericEntity {
 		String s = "#"+getId().toString() + " Cust.:" + getCustomer().getId()+" "
 				+ "(items: "+itemsString +")";
 		return s;
-	}
-
-	public void setVatRate(Double vatRate) {
-		this.vatRate = vatRate;
 	}
 
 }

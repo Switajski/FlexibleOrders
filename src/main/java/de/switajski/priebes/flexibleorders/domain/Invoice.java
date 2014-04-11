@@ -54,4 +54,8 @@ public class Invoice extends Report {
 		this.shippingCosts.add(shippingCost);
 	}
 
+	public double getVatRate() {
+		return Order.VAT_RATE;
+	}
+
 }

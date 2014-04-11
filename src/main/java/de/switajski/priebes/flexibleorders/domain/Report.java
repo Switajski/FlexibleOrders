@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -16,6 +17,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
 public abstract class Report extends GenericEntity{
+	
+	@Transient
+	private static final double VAT_RATE = Order.VAT_RATE;
 	
 	/**
 	 * Natural id of a Report.
@@ -64,6 +68,10 @@ public abstract class Report extends GenericEntity{
 	
 	public void removeItem(ReportItem item){
 		this.items.remove(item);
+	}
+	
+	public double getVatRate(){
+		return Order.VAT_RATE;
 	}
 
 }

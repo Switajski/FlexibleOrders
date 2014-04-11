@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.OrderWindow', {
 	extend : 'MyApp.view.DeliverWindow',
 	title : 'Bestellung aufgeben',
-	width : 700,
+	width : 550,
 	id : 'OrderWindow',
 	headerForm : {
 		xtype : 'fieldset',
@@ -130,19 +130,6 @@ Ext.define('MyApp.view.OrderWindow', {
 			editor : {
 				xtype : 'numberfield',
 				allowBlank : true
-			}
-		}, {
-			xtype : 'gridcolumn',
-			dataIndex : 'expectedDelivery',
-			text : 'Geplante Auslieferung',
-			width : 130,
-			format : 'd/m/Y',
-			editor : {
-				xtype : 'datefield',
-				format : 'd/m/Y',
-				allowBlank : true,
-				minValue : Ext.Date.format(new Date(), 'd/m/Y'),
-				minText : 'Datum liegt in der Vergangenheit'
 			}
 		}]
 	},

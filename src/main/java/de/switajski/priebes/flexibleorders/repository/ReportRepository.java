@@ -15,23 +15,25 @@ public interface ReportRepository extends JpaRepository<Report, String>, JpaSpec
 	Report findByDocumentNumber(String documentNumber);
 	
 	@Query("SELECT distinct(ri.report) from ReportItem ri where "
-//			+ "ri NOT IN (SELECT he from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = ri) and "
 			+ "ri IN "
 			+ "(SELECT he from ReportItem he where he = ri and "
-				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent where confirmEvent = ri and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
+				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent "
+				+ "where confirmEvent = ri and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
 				+ " > "
-				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
+				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent "
+				+ "where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
 			+ ")"
 			+ "and ri.report.customerNumber = ?1")
 	Page<Report> findAllToBeShippedByCustomerNumber(Long customerNumber, Pageable pageable);
 	
 	@Query("SELECT distinct(ri.report) from ReportItem ri where "
-//			+ "oi NOT IN (SELECT he.orderItem from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he.orderItem = oi) and "
 			+ "ri IN "
 			+ "(SELECT he from ReportItem he where he = ri and "
-				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent where confirmEvent = ri and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
+				+ "(SELECT sum(confirmEvent.quantity) from ReportItem confirmEvent "
+				+ "where confirmEvent = ri and confirmEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CONFIRM) "
 				+ " > "
-				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
+				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ReportItem shipEvent "
+				+ "where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP)"
 			+ ")")
 	Page<Report> findAllToBeShipped(Pageable pageable);
 	
@@ -64,12 +66,13 @@ public interface ReportRepository extends JpaRepository<Report, String>, JpaSpec
 	Page<Report> findAllCompleted(Pageable pageable);
 
 	@Query("SELECT distinct(ri.report) from ReportItem ri where "
-			+ "ri NOT IN (SELECT he from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he = ri) and "
 			+ "ri IN "
 			+ "(SELECT he from ReportItem he where he = ri and "
-				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
+				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent "
+				+ "where shipEvent = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
 				+ " > "
-				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent where invoiceEvent = ri and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
+				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent "
+				+ "where invoiceEvent = ri and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
 			+ ")")
 	Page<Report> findAllToBeInvoiced(Pageable pageable);
 	
@@ -77,9 +80,11 @@ public interface ReportRepository extends JpaRepository<Report, String>, JpaSpec
 			+ "ri NOT IN (SELECT he  from ReportItem he where he.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.CANCEL and he  = ri) and "
 			+ "ri IN "
 			+ "(SELECT he  from ReportItem he where he = ri and "
-				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent where shipEvent  = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
+				+ "(SELECT sum(shipEvent.quantity) from ReportItem shipEvent "
+				+ "where shipEvent  = ri and shipEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.SHIP) "
 				+ " > "
-				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent where invoiceEvent  = ri and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
+				+ "(SELECT coalesce(sum(invoiceEvent.quantity),0) from ReportItem invoiceEvent "
+				+ "where invoiceEvent  = ri and invoiceEvent.type = de.switajski.priebes.flexibleorders.domain.ReportItemType.INVOICE)"
 			+ ") "
 			+ "and ri.report.customerNumber = ?1")
 	Page<Report> findAllToBeInvoicedByCustomer(Long customerNumber, Pageable pageable);

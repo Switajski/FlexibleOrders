@@ -85,7 +85,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	//TODO:Remove after test passes mvn test run
 	@Transactional
 	@Test
-	public void confirm_OrderConfirmationShouldBePersistedAndShippable(){
+	public void confirm_OrderConfirmationShouldBePersistedAndShippableAndNotConfimable(){
 		//given
 		Customer customer = givenCustomer(38255821);
 		List<CatalogProduct> products = givenCatalogProducts();
@@ -102,15 +102,21 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		//then
 		assertPersisted(confirmationReport, customer);
 		assertShippable(customer);
+		assertNotConfirmable(customer);
 		
 		//tearDown
 		tearDown(customer, order, products, confirmationReport);
 	}
 	
+	private void assertNotConfirmable(Customer customer){
+		Page<ItemDto> risToBeShipped = reportItemService.retrieveAllToBeConfirmedByCustomer(customer, createPageRequest());
+		assertThat(risToBeShipped.getContent().isEmpty(), is(true));
+	}
+	
 	//TODO:Remove after test passes mvn test run
 	@Transactional
 	@Test
-	public void invoice_InvoiceShouldBePersistedAndPayable(){
+	public void invoice_InvoiceShouldBePayableAndPersisted(){
 		//given
 		Customer customer = givenCustomer(715883956);
 		List<CatalogProduct> products = givenCatalogProducts();
@@ -128,7 +134,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 				extractItemDtos(deliveryNotes));
 
 		//then
-		assertInvoiceAsExpected(invoice);
+		assertInvoiceAndItemsPersisted(invoice);
 		//TODO: assertPayable
 
 		//tearDown
@@ -136,9 +142,9 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	}
 	
 	//TODO:Remove after test passes mvn test run
-	@Transactional
+//	@Transactional
 	@Test
-	public void deliver_DeliveryNotesShouldBePersistedAndInvoicable(){
+	public void deliver_DeliveryNotesShouldBeInvoicableAndNotShippableAndPersisted(){
 		//given
 		Customer customer = givenCustomer(9872347);
 		List<CatalogProduct> products = givenCatalogProducts();
@@ -147,7 +153,9 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		Order order = orderService.order(customer.getId(), "4", items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
-
+		
+		assertShippable(customer);
+		
 		//when
 		DeliveryNotes deliveryNotes = orderService.deliver(
 				"R4",
@@ -160,11 +168,17 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		//then
 		assertPersisted(deliveryNotes, customer);
 		assertInvoicable(customer);
+		assertNotShippable(deliveryNotes.getItems());
 		
 		//tearDown
 		tearDown(customer, order, products, confirmationReport, deliveryNotes);
 	}
 	
+	private void assertNotShippable(Set<ReportItem> notShippables){
+		List<ItemDto> shipables = reportItemService.retrieveAllToBeShipped(createPageRequest()).getContent();
+		assertThat(shipables.isEmpty(), is(true));
+	}
+
 	//TODO:Remove after test passes mvn test run
 	@Transactional
 	@Test
@@ -205,7 +219,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	//TODO:Remove after test passes mvn test run
 	@Transactional
 	@Test
-	public void markAsPayed_ReceiptShouldBePersistedAndCompleted(){
+	public void markAsPayed_ReceiptShouldBeCompletedAndNotInvoicableAndPersisted(){
 		//given
 		Customer customer = givenCustomer(781264823);
 		List<CatalogProduct> products = givenCatalogProducts();
@@ -221,16 +235,23 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 				extractItemDtos(deliveryNotes));
 		
 		//when
-		Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(), extractItemDtos(invoice));
+//		Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(), extractItemDtos(invoice));
+		Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date());
 
 		//then
 		assertPersisted(receipt);
 		assertCompleted();
+		assertNotInvoiceable();
 
 		//tearDown
 		tearDown(customer, order, products, confirmationReport, deliveryNotes, invoice, receipt);
 	}
 	
+	private void assertNotInvoiceable() {
+		List<ItemDto> items = reportItemService.retrieveAllToBeInvoiced(createPageRequest()).getContent();
+		assertThat(items.isEmpty(), is(true));
+	}
+
 	private Customer givenCustomer(int i){
 		return customerService.create(
 				CustomerBuilder.buildWithGeneratedAttributes(i));
@@ -324,7 +345,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	private void assertShippable(Customer customer) {
 		Page<ItemDto> risToBeShipped = reportItemService.retrieveAllToBeShipped(customer, createPageRequest());
 		assertTrue(risToBeShipped != null);
-		assertTrue(risToBeShipped.getTotalElements() != 0l);
+		assertThat(risToBeShipped.getTotalElements(), is(2L));
+		assertThat(risToBeShipped.getContent().size(), equalTo(2));
 	}
 
 	private void assertPersisted(DeliveryNotes deliveryNotes, Customer customer) {
@@ -374,17 +396,17 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	}
 
 	private PageRequest createPageRequest() {
-		return new PageRequest(0, 1);
+		return new PageRequest(0, 100);
 	}
 
 	private void assertCompleted() {
-		Page<ItemDto> risCompleted = reportItemService.retrieveAllCompleted(createPageRequest());
-		assertTrue(risCompleted != null);
-		assertTrue(risCompleted.getTotalElements() != 0l);
+		List<ItemDto> risCompleted = reportItemService.retrieveAllCompleted(createPageRequest()).getContent();
+		assertThat(risCompleted.isEmpty(), is(false));
 	}
 
 	private void assertPersisted(Receipt receipt) {
 		assertTrue(receipt.getId() != null);
+		assertThat(receipt.getCustomerNumber(), notNullValue());
 		assertFalse(receipt.getItems().isEmpty());
 		for (ReportItem he : receipt.getItems()){
 			assertTrue(he.getType() == ReportItemType.PAID);
@@ -395,7 +417,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		}
 	}
 
-	private void assertInvoiceAsExpected(Invoice invoice) {
+	private void assertInvoiceAndItemsPersisted(Invoice invoice) {
 		assertTrue(invoice.getId() != null);
 		assertTrue(invoice.getDocumentNumber() != null);
 		

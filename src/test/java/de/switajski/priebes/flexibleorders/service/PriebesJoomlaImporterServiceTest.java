@@ -23,8 +23,8 @@ public class PriebesJoomlaImporterServiceTest {
 	@Autowired CatalogProductRepository productRepository;
 	@Autowired OrderItemRepository itemRepository;
 	
-	@Ignore
 	@Rollback(false)
+	@Ignore
 //	@Transactional
 	@Test
 	public void shouldImportOrderItems(){

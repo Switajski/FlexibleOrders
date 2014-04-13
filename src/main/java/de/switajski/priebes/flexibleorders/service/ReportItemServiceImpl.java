@@ -192,6 +192,7 @@ public class ReportItemServiceImpl {
 		return reportItems;
 	}
 
+	//TODO: move to OrderServiceImpl
 	@Transactional(readOnly=true)
 	public Order retrieveOrder(String orderNumber) {
 		Order order = orderRepo.findByOrderNumber(orderNumber);

@@ -308,10 +308,14 @@ public class OrderServiceImpl {
 		
 		Invoice invoice = (Invoice) r;
 		Receipt receipt = new Receipt(receiptNumber, date);
+		ReportItem reportItem = null;
 		for (ReportItem he:invoice.getItems()){
 			receipt.addItem(
 					new ReportItem(receipt, ReportItemType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
+			if (reportItem == null)
+				reportItem = he;
 		}
+		receipt.setCustomerNumber(reportItem.getOrderItem().getOrder().getCustomer().getCustomerNumber());
 		return reportRepo.save(receipt);
 	}
 

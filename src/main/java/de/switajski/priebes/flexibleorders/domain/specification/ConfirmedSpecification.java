@@ -46,8 +46,8 @@ public class ConfirmedSpecification extends ItemSpecification{
 		if (item.getDeliveryHistory().isEmpty()) return false;
 		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
 		for (ReportItem he: item.getAllHesOfType(ReportItemType.CONFIRM)){
-			if (he.getReport() == null || he.getOrderConfirmation() == null ||
-					he.getOrderConfirmation().getInvoiceAddress() == null ||
+			if (he.getReport() == null || he.getConfirmationReport() == null ||
+					he.getConfirmationReport().getInvoiceAddress() == null ||
 					//TODO: check VAT_RATE
 					item.getNegotiatedPriceNet() == null ||
 					item.getOrder().getCustomer() == null) 

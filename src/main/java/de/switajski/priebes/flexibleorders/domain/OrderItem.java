@@ -204,7 +204,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 */
 	//TODO SRP: ReportItem should created by ReportItemMapper and in the Responsibility of 
 	// handling event (a HandlingEventDTO instead of ReportItem)
-	public ItemDto toReportItem(){
+	public ItemDto toItemDto(){
 		ItemDto item = new ItemDto();
 		item.setCreated(getCreated());
 		item.setCustomer(getOrder().getCustomer().getId());
@@ -233,12 +233,12 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		Set<ItemDto> ris = new HashSet<ItemDto>();
 		if (type != null){
 			for (ReportItem he: this.getAllHesOfType(type)){
-				ItemDto item = he.toReportItem();
+				ItemDto item = he.toItemDto();
 				item.setQuantityLeft(calculateQuantityLeft(type));
 				ris.add(item);
 			}
 		} else 
-			ris.add(this.toReportItem());
+			ris.add(this.toItemDto());
 		return ris;
 	}
 

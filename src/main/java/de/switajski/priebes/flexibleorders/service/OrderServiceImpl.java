@@ -137,6 +137,10 @@ public class OrderServiceImpl {
 			throw new IllegalArgumentException("Keine Bestellnr angegeben");
 		if (confirmNumber == null)
 			throw new IllegalArgumentException("Keine AB-nr angegeben");
+		for (ItemDto item: orderItems){
+			if (item.getId() == null)
+				throw new IllegalArgumentException("Position hat keine Id");
+		}
 	}
 
 	@Transactional
@@ -178,9 +182,12 @@ public class OrderServiceImpl {
 	private Integer validateQuantity(ItemDto entry, OrderItem orderItemToBeDelivered,
 			ReportItemType type) {
 		Integer quantityToDeliver = entry.getQuantityLeft();
-		if (quantityToDeliver == null || quantityToDeliver < 1 || 
-				quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(type))
-			throw new IllegalArgumentException("Menge ist nicht valide");
+		if (quantityToDeliver == null)
+			throw new IllegalArgumentException("Menge nicht angegeben");
+		if (quantityToDeliver < 1)
+			throw new IllegalArgumentException("Menge kleiner eins");
+		if (quantityToDeliver > orderItemToBeDelivered.calculateQuantityLeft(type))
+			throw new IllegalArgumentException("angeforderte Menge ist zu gross");
 		return quantityToDeliver;
 	}
 
@@ -196,13 +203,6 @@ public class OrderServiceImpl {
 		return itemRepo.save(shipOi);
 	}
 
-	/**
-	 * adds a HandlingEvent of type PAID to each item of given document
-	 * 
-	 * @param documentNumber not null
-	 * @param receivedPaymentDate
-	 * @return
-	 */
 	@Transactional
 	public Receipt markAsPayed(String documentNumber, String receiptNumber, 
 			Date receivedPaymentDate, List<ItemDto> ris) {
@@ -250,7 +250,7 @@ public class OrderServiceImpl {
 	private List<ItemDto> convertToReportItems(List<OrderItem> ois) {
 		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (OrderItem oi:ois){
-			ris.add(oi.toReportItem());
+			ris.add(oi.toItemDto());
 		}
 		return ris;
 	}
@@ -296,22 +296,8 @@ public class OrderServiceImpl {
 		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
 		if (r == null)
 			throw new IllegalArgumentException("Bericht zum löschen nicht gefunden");
-		if (r instanceof DeliveryNotes){
-			deleteShippingCosts(r);
-		}
 		reportRepo.delete(r);
 		return true;
-	}
-
-	@Transactional
-	private void deleteShippingCosts(Report r) {
-		for (ReportItem he:r.getItems()){
-			OrderItem orderItem = he.getOrderItem();
-			if (orderItem.isShippingCosts())
-				orderItem.getOrder().remove(orderItem);
-			orderRepo.save(orderItem.getOrder());
-			r.removeItem(he);
-		}
 	}
 
 	@Transactional
@@ -370,7 +356,7 @@ public class OrderServiceImpl {
 		
 		Amount summedShippingCosts = new Amount();
 		for (Entry<String, DeliveryNotes> entry2:deliveryNotes.entrySet()){
-			if (entry2.getValue().getShippingCosts().isGreaterZero())
+			if (entry2.getValue().hasShippingCosts())
 			summedShippingCosts = summedShippingCosts.add(entry2.getValue().getShippingCosts());
 		}
 		invoice.setShippingCosts(summedShippingCosts);

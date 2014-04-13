@@ -110,12 +110,12 @@ public class Order extends GenericEntity {
 		return this.items.remove(orderItem);
 	}
 	
-	public void addOrderItem(OrderItem item1) {
-		if (item1.getOrder() == null)
-			item1.setOrder(item1.getOrder());
-		else if (!item1.getOrder().equals(this))
+	public void addOrderItem(OrderItem item) {
+		if (item.getOrder() == null)
+			item.setOrder(item.getOrder());
+		else if (!item.getOrder().equals(this))
 			throw new IllegalArgumentException("Item has already other order set");
-		this.items.add(item1);
+		this.items.add(item);
 	}
 
 	public Double getVatRate() {

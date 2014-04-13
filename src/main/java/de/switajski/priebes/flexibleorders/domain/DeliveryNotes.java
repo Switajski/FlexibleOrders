@@ -108,4 +108,12 @@ public class DeliveryNotes extends Report{
 		this.shippingCosts = shippingCosts;
 	}
 
+	public boolean hasShippingCosts() {
+		if (getShippingCosts() == null)
+			return false;
+		if (getShippingCosts().isGreaterZero())
+			return true;
+		return false;
+	}
+
 }

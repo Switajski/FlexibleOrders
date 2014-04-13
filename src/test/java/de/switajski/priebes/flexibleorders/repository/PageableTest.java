@@ -9,14 +9,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractTestWithProductiveSpringContext;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractProductiveSpringContextTest;
 
 /**
  * Exploratory test to figure out the Pageable functionality of Spring Data's repository
  * @author Marek Switajski
  *
  */
-public class PageableTest extends AbstractTestWithProductiveSpringContext{
+public class PageableTest extends AbstractProductiveSpringContextTest{
 
 	@Autowired private OrderItemRepository orderItemRepo;
 	

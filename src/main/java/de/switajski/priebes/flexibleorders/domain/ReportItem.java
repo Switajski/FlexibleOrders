@@ -83,7 +83,7 @@ public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 		return null;
 	}
 	
-	public ConfirmationReport getOrderConfirmation(){
+	public ConfirmationReport getConfirmationReport(){
 		if (getReport() instanceof ConfirmationReport)
 			return (ConfirmationReport) getReport();
 		return null;
@@ -126,7 +126,7 @@ public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 	 * @return
 	 * @see OrderItem#toReportItems(ReportItemType)
 	 */
-	public ItemDto toReportItem(){
+	public ItemDto toItemDto(){
 		//TODO: enhance mapping by a mapping framework
 		ItemDto item = new ItemDto();
 		item.setDocumentNumber(getReport().getDocumentNumber());

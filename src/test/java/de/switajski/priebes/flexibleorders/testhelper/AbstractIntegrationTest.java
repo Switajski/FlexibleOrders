@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback;
 
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 
-public abstract class AbstractIntegrationTest<T extends GenericEntity> extends AbstractSpringIntegrationTest {
+public abstract class AbstractIntegrationTest<T extends GenericEntity> extends AbstractTestSpringContextTest {
 
 	//TODO: Sollte eine Name is null exception werfen
 	@Test

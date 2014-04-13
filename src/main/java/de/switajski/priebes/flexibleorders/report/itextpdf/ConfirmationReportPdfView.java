@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.report.itextpdf;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +41,12 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		String heading = "Auftragsbest\u00e4tigung";
 		Address adresse = report.getInvoiceAddress();
+		Date expectedDelivery = report.getExpectedDelivery();
 
 		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
-		String rightTop = "voraussichtliche Lieferwoche: KW " + weekDateFormat.format(report.getExpectedDelivery());
+		String rightTop = "";
+		if (expectedDelivery != null) 
+			rightTop = "voraussichtliche Lieferwoche: KW " + weekDateFormat.format(expectedDelivery);
 		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		

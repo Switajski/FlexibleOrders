@@ -110,6 +110,7 @@ public class ReportItemTest {
 	private List<ItemDto> givenItemDtos() {
 		List<ItemDto> reportItems = new ArrayList<ItemDto>();
 		reportItems.add(new ItemDtoBuilder()
+			.setId(142L)
 			.setCustomer(CUSTOMER_ID)
 			.setProduct(PRODUCT_NO)
 			.setPriceNet(PRICE_NET)

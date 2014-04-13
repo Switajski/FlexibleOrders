@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
@@ -67,7 +67,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	@Test
 	public void order_OrderShouldBePersistedAndConfirmable(){
 		//given
-		Customer customer = givenCustomer(2);
+		Customer customer = givenCustomer(78687);
 		List<CatalogProduct> products = givenCatalogProducts();
 		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products.get(0).toProduct());
 
@@ -82,6 +82,155 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		tearDown(customer, order, products);
 	}
 	
+	//TODO:Remove after test passes mvn test run
+	@Transactional
+	@Test
+	public void confirm_OrderConfirmationShouldBePersistedAndShippable(){
+		//given
+		Customer customer = givenCustomer(38255821);
+		List<CatalogProduct> products = givenCatalogProducts();
+		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
+		Order order = orderService.order(customer.getId(), "3", items);
+
+		//when
+		ConfirmationReport confirmationReport = orderService.confirm(
+				order.getOrderNumber(), 
+				"AB-4", 
+				new Date(), 
+				extractItemDtos(order));
+		
+		//then
+		assertPersisted(confirmationReport, customer);
+		assertShippable(customer);
+		
+		//tearDown
+		tearDown(customer, order, products, confirmationReport);
+	}
+	
+	//TODO:Remove after test passes mvn test run
+	@Transactional
+	@Test
+	public void invoice_InvoiceShouldBePersistedAndPayable(){
+		//given
+		Customer customer = givenCustomer(715883956);
+		List<CatalogProduct> products = givenCatalogProducts();
+		List<ItemDto> items = givenItemDtos(
+				QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
+
+		Order order = orderService.order(customer.getId(), "4", items);
+		ConfirmationReport confirmationReport = orderService.confirm(
+				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
+		DeliveryNotes deliveryNotes = orderService.deliver("L4","trackNumber", "packNo", INVOICE_ADDRESS, null, 
+				extractItemDtos(confirmationReport));
+
+		//when
+		Invoice invoice = orderService.invoice("R4", "paymentCondition", INVOICE_ADDRESS, 
+				extractItemDtos(deliveryNotes));
+
+		//then
+		assertInvoiceAsExpected(invoice);
+		//TODO: assertPayable
+
+		//tearDown
+		tearDown(customer, order, products, confirmationReport, deliveryNotes, invoice);
+	}
+	
+	//TODO:Remove after test passes mvn test run
+	@Transactional
+	@Test
+	public void deliver_DeliveryNotesShouldBePersistedAndInvoicable(){
+		//given
+		Customer customer = givenCustomer(9872347);
+		List<CatalogProduct> products = givenCatalogProducts();
+		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
+		
+		Order order = orderService.order(customer.getId(), "4", items);
+		ConfirmationReport confirmationReport = orderService.confirm(
+				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
+
+		//when
+		DeliveryNotes deliveryNotes = orderService.deliver(
+				"R4",
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				extractItemDtos(confirmationReport));
+		
+		//then
+		assertPersisted(deliveryNotes, customer);
+		assertInvoicable(customer);
+		
+		//tearDown
+		tearDown(customer, order, products, confirmationReport, deliveryNotes);
+	}
+	
+	//TODO:Remove after test passes mvn test run
+	@Transactional
+	@Test
+	public void deliver_PartiallyShippedDeliveryNotesShouldBeShippableAndInvoiceable(){
+		//given
+		int orderQty = 10;
+		int shipQty = 2;
+		
+		Customer customer = givenCustomer(7125759);
+		List<CatalogProduct> products = givenCatalogProducts();
+		List<ItemDto> items = givenItemDtos(orderQty, products.get(0).toProduct(), products.get(1).toProduct());
+
+		Order order = orderService.order(customer.getId(), "4", items);
+		ConfirmationReport confirmationReport = orderService.confirm(
+				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
+
+		//when
+		DeliveryNotes deliveryNotes = orderService.deliver(
+				"L4",
+				"trackNumber", 
+				"packNo", 
+				INVOICE_ADDRESS, 
+				null, 
+				itemDtosWithQty(shipQty, extractItemDtos(confirmationReport)));
+
+		//then
+		assertShippable();
+		assertShippableQtyOfItemsIs(orderQty - shipQty);
+
+		assertPersisted(deliveryNotes, customer);
+		assertInvoicable(customer);
+		assertInvoicableQtyOfItemsIs(shipQty);
+
+		//tearDown
+		tearDown(customer, order, products, confirmationReport, deliveryNotes);
+	}
+	
+	//TODO:Remove after test passes mvn test run
+	@Transactional
+	@Test
+	public void markAsPayed_ReceiptShouldBePersistedAndCompleted(){
+		//given
+		Customer customer = givenCustomer(781264823);
+		List<CatalogProduct> products = givenCatalogProducts();
+		List<ItemDto> items = givenItemDtos(
+				QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
+
+		Order order = orderService.order(customer.getId(), "4", items);
+		ConfirmationReport confirmationReport = orderService.confirm(
+				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
+		DeliveryNotes deliveryNotes = orderService.deliver("L4","trackNumber", "packNo", INVOICE_ADDRESS, null, 
+				extractItemDtos(confirmationReport));
+		Invoice invoice = orderService.invoice("R4", "paymentCondition", INVOICE_ADDRESS, 
+				extractItemDtos(deliveryNotes));
+		
+		//when
+		Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(), extractItemDtos(invoice));
+
+		//then
+		assertPersisted(receipt);
+		assertCompleted();
+
+		//tearDown
+		tearDown(customer, order, products, confirmationReport, deliveryNotes, invoice, receipt);
+	}
+	
 	private Customer givenCustomer(int i){
 		return customerService.create(
 				CustomerBuilder.buildWithGeneratedAttributes(i));
@@ -91,7 +240,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		List<CatalogProduct> persistentProducts = new ArrayList<CatalogProduct>();
 		for (int i = 0;i<PRODUCT_NUMBER;i++){
 		persistentProducts.add(
-				productService.create(CatalogProductBuilder.buildWithGeneratedAttributes(i)));
+				productService.create(CatalogProductBuilder.buildWithGeneratedAttributes(i+76152)));
 		}
 		return persistentProducts;
 	}
@@ -131,30 +280,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 			ris.add(reportItem);
 		}
 		return ris;
-	}
-
-	@Rollback
-	@Test
-	public void confirm_OrderConfirmationShouldBePersistedAndShippable(){
-		//given
-		Customer customer = givenCustomer(3);
-		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
-		Order order = orderService.order(customer.getId(), "3", items);
-
-		//when
-		ConfirmationReport confirmationReport = orderService.confirm(
-				order.getOrderNumber(), 
-				"AB-4", 
-				new Date(), 
-				extractItemDtos(order));
-		
-		//then
-		assertPersisted(confirmationReport, customer);
-		assertShippable(customer);
-		
-		//tearDown
-		tearDown(customer, order, products, confirmationReport);
 	}
 
 	private List<ItemDto> extractItemDtos(Order order) {
@@ -202,34 +327,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		assertTrue(risToBeShipped.getTotalElements() != 0l);
 	}
 
-	@Test
-	public void deliver_DeliveryNotesShouldBePersistedAndInvoicable(){
-		//given
-		Customer customer = givenCustomer(3);
-		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
-		
-		Order order = orderService.order(customer.getId(), "4", items);
-		ConfirmationReport confirmationReport = orderService.confirm(
-				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
-
-		//when
-		DeliveryNotes deliveryNotes = orderService.deliver(
-				"R4",
-				"trackNumber", 
-				"packNo", 
-				INVOICE_ADDRESS, 
-				null, 
-				extractItemDtos(confirmationReport));
-		
-		//then
-		assertPersisted(deliveryNotes, customer);
-		assertInvoicable(customer);
-		
-		//tearDown
-		tearDown(customer, order, products, confirmationReport, deliveryNotes);
-	}
-
 	private void assertPersisted(DeliveryNotes deliveryNotes, Customer customer) {
 		assertThat(deliveryNotes.getId(), is(notNullValue()));
 		assertThat(deliveryNotes.getItems().isEmpty(), is(false));
@@ -248,42 +345,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		assertThat(risToBeInvoiced.getTotalElements(), is(greaterThan(0l)));
 	}
 	
-	@Rollback
-	@Test
-	public void deliver_PartiallyShippedDeliveryNotesShouldBeShippableAndInvoiceable(){
-		//given
-		int orderQty = 10;
-		int shipQty = 2;
-		
-		Customer customer = givenCustomer(3);
-		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(orderQty, products.get(0).toProduct(), products.get(1).toProduct());
-
-		Order order = orderService.order(customer.getId(), "4", items);
-		ConfirmationReport confirmationReport = orderService.confirm(
-				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
-
-		//when
-		DeliveryNotes deliveryNotes = orderService.deliver(
-				"L4",
-				"trackNumber", 
-				"packNo", 
-				INVOICE_ADDRESS, 
-				null, 
-				itemDtosWithQty(shipQty, extractItemDtos(confirmationReport)));
-
-		//then
-		assertShippable();
-		assertShippableQtyOfItemsIs(orderQty - shipQty);
-
-		assertPersisted(deliveryNotes, customer);
-		assertInvoicable(customer);
-		assertInvoicableQtyOfItemsIs(shipQty);
-
-		//tearDown
-		tearDown(customer, order, products, confirmationReport, deliveryNotes);
-	}
-
 	private List<ItemDto> itemDtosWithQty(int quantityToBeSet, List<ItemDto> ris) {
 		for (ItemDto ri : ris){
 			ri.setQuantityLeft(quantityToBeSet);
@@ -316,33 +377,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		return new PageRequest(0, 1);
 	}
 
-	@Test
-	public void markAsPayed_ReceiptShouldBePersistedAndCompleted(){
-		//given
-		Customer customer = givenCustomer(3);
-		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(
-				QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
-
-		Order order = orderService.order(customer.getId(), "4", items);
-		ConfirmationReport confirmationReport = orderService.confirm(
-				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
-		DeliveryNotes deliveryNotes = orderService.deliver("L4","trackNumber", "packNo", INVOICE_ADDRESS, null, 
-				extractItemDtos(confirmationReport));
-		Invoice invoice = orderService.invoice("R4", "paymentCondition", INVOICE_ADDRESS, 
-				extractItemDtos(deliveryNotes));
-		
-		//when
-		Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(), extractItemDtos(invoice));
-
-		//then
-		assertPersisted(receipt);
-		assertCompleted();
-
-		//tearDown
-		tearDown(customer, order, products, confirmationReport, deliveryNotes, invoice, receipt);
-	}
-
 	private void assertCompleted() {
 		Page<ItemDto> risCompleted = reportItemService.retrieveAllCompleted(createPageRequest());
 		assertTrue(risCompleted != null);
@@ -359,32 +393,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 			assertTrue(he.getReceipt().getId() != null);
 			assertTrue(he.getQuantity() > 0);
 		}
-	}
-
-	@Test
-	public void invoice_InvoiceShouldBePersistedAndPayable(){
-		//given
-		Customer customer = givenCustomer(3);
-		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(
-				QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
-
-		Order order = orderService.order(customer.getId(), "4", items);
-		ConfirmationReport confirmationReport = orderService.confirm(
-				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
-		DeliveryNotes deliveryNotes = orderService.deliver("L4","trackNumber", "packNo", INVOICE_ADDRESS, null, 
-				extractItemDtos(confirmationReport));
-
-		//when
-		Invoice invoice = orderService.invoice("R4", "paymentCondition", INVOICE_ADDRESS, 
-				extractItemDtos(deliveryNotes));
-
-		//then
-		assertInvoiceAsExpected(invoice);
-		//TODO: assertPayable
-
-		//tearDown
-		tearDown(customer, order, products, confirmationReport, deliveryNotes, invoice);
 	}
 
 	private void assertInvoiceAsExpected(Invoice invoice) {

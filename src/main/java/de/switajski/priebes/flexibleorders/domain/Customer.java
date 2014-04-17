@@ -21,19 +21,13 @@ public class Customer extends GenericEntity{
     @Embedded
     private Address address;
 
-    /**
-     */
     @NotNull
     @Column(unique=true)
     private String email;
 
-    /**
-     */
     @JsonIgnore
     private String password;
 
-    /**
-     */
     private String phone;
     
     private String firstName;

@@ -1,8 +1,14 @@
 package de.switajski.priebes.flexibleorders.domain;
 
+import java.util.Date;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Invoice extends Report {
@@ -17,6 +23,13 @@ public class Invoice extends Report {
 	 */
 	@Embedded
 	private Amount shippingCosts; 
+	
+	/**
+	 * Date on which due date is calculated.
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date evaluationDate;
 	
 	protected Invoice() {}
 	
@@ -56,6 +69,14 @@ public class Invoice extends Report {
 
 	public double getVatRate() {
 		return Order.VAT_RATE;
+	}
+	
+	public Date getEvaluationDate() {
+		return evaluationDate;
+	}
+
+	public void setEvaluationDate(Date evaluationDate) {
+		this.evaluationDate = evaluationDate;
 	}
 
 }

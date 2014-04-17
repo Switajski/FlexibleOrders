@@ -10,10 +10,10 @@ import de.switajski.priebes.flexibleorders.domain.ProductIntegrationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	CustomerIntegrationTest.class,
-	ProductIntegrationTest.class,
-	CategoryIntegrationTest.class
-	})
+		CustomerIntegrationTest.class,
+		ProductIntegrationTest.class,
+		CategoryIntegrationTest.class
+})
 public class IntegrationTestSuite {
 
 }

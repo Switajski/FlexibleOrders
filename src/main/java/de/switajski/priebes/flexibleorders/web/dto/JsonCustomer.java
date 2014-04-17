@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.web.entities;
+package de.switajski.priebes.flexibleorders.web.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 

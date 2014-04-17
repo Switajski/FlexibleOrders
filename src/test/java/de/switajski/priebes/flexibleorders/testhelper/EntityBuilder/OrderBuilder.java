@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.test.EntityBuilder;
+package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.OriginSystem;
+import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 
 public class OrderBuilder {
 
@@ -15,7 +15,7 @@ public class OrderBuilder {
 	private String customerEmail;
 	private OriginSystem originSystem;
 	private Set<OrderItem> items = new HashSet<OrderItem>();
-	
+
 	public Order build() {
 		Order order = new Order();
 		order.setOrderNumber(orderNumber);
@@ -51,9 +51,9 @@ public class OrderBuilder {
 		return this;
 	}
 
-	public OrderBuilder addOrderItem(OrderItem orderItem){
+	public OrderBuilder addOrderItem(OrderItem orderItem) {
 		this.items.add(orderItem);
 		return this;
 	}
-	
+
 }

@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.data.domain.Page;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ExtJsResponseCreator {
 	

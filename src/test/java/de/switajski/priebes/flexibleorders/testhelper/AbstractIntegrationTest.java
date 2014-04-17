@@ -13,45 +13,45 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 
 @Transactional
-public abstract class AbstractIntegrationTest<T extends GenericEntity> extends AbstractTestSpringContextTest {
+public abstract class AbstractIntegrationTest<T extends GenericEntity> extends
+		AbstractTestSpringContextTest {
 
 	@Rollback(true)
-	public void shouldCreate(){
+	public void shouldCreate() {
 		T savedEntity = persistEntity();
-		
+
 		assertNotNull(savedEntity.getId());
-		
+
 	}
-	
+
 	@Test
-	public void shouldRead(){
+	public void shouldRead() {
 		T savedEntity = persistEntity();
-		
+
 		T retrievedEntity = getRepository().findOne(savedEntity.getId());
 		assertNotNull(retrievedEntity);
 	}
-	
+
 	@Test
-	public void shouldUpdate(){
+	public void shouldUpdate() {
 		T savedEntity = persistEntity();
 		Long oldId = savedEntity.getId();
-		
+
 		savedEntity.setVersion(5);
 		getRepository().saveAndFlush(savedEntity);
-		
+
 		assertEquals("Id of updated entity changed", oldId, savedEntity.getId());
 	}
 
 	@Ignore("fails because of dependencies between entities, that are not being resolved yet")
 	@Test
-	public void shouldDelete(){
+	public void shouldDelete() {
 		T savedEntity = persistEntity();
 		Long oldId = savedEntity.getId();
-		
+
 		getRepository().delete(oldId);
 		assertNull(getRepository().findOne(oldId));
 	}
-
 
 	private T persistEntity() {
 		T entity = createEntity();
@@ -60,6 +60,6 @@ public abstract class AbstractIntegrationTest<T extends GenericEntity> extends A
 	}
 
 	protected abstract T createEntity();
-	
+
 	protected abstract JpaRepository<T, Long> getRepository();
 }

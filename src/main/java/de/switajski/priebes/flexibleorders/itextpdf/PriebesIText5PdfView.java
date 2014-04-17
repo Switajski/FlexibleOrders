@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf;
+package de.switajski.priebes.flexibleorders.itextpdf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,13 +34,14 @@ import com.itextpdf.text.pdf.PdfPageEvent;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PhraseBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 
 /**
- * This class generates PDF views and files in DIN A4 in Priebes-style.</br> 
- * Therefore it has all settings (e.g. {@link Font}) and methods to create letters.
+ * This class generates PDF views and files in DIN A4 in Priebes-style.</br>
+ * Therefore it has all settings (e.g. {@link Font}) and methods to create
+ * letters.
  * 
  * @author Marek
  * 
@@ -49,31 +50,41 @@ import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PhraseBuilder
 public abstract class PriebesIText5PdfView extends AbstractView implements
 		PdfPageEvent {
 
-	/** 
+	/**
 	 * font settings
 	 */
 	public static final String ENCODING = BaseFont.CP1252;
 	public static final String FONT = BaseFont.HELVETICA;
 	public static final float FONT_SIZE = 10;
-	public static final Font font = FontFactory.getFont(FONT, ENCODING, true, FONT_SIZE);
-	public static final Font boldFont = FontFactory.getFont(FONT, ENCODING, true, FONT_SIZE + 2 );
-	public static final Font twelveSizefont = FontFactory.getFont(FONT, 12, Font.BOLD);
-	
+	public static final Font font = FontFactory.getFont(
+			FONT,
+			ENCODING,
+			true,
+			FONT_SIZE);
+	public static final Font boldFont = FontFactory.getFont(
+			FONT,
+			ENCODING,
+			true,
+			FONT_SIZE + 2);
+	public static final Font twelveSizefont = FontFactory.getFont(
+			FONT,
+			12,
+			Font.BOLD);
 
 	/**
 	 * format settings
 	 */
-	public final static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+	public final static DateFormat dateFormat = new SimpleDateFormat(
+			"dd.MM.yyyy");
 	public final static DateFormat weekDateFormat = new SimpleDateFormat("w");
 	public static final float BORDER_WIDTH = 0.15f;
-	public static final int PAGE_MARGIN_BOTTOM = /*bottom*/180;
-	public static final int PAGE_MARGIN_TOP = /*top*/80;
-	public static final int PAGE_MARGIN_RIGHT = /*right*/72;
-	public static final int PAGE_MARGIN_LEFT = /*left*/60;
+	public static final int PAGE_MARGIN_BOTTOM = /* bottom */180;
+	public static final int PAGE_MARGIN_TOP = /* top */80;
+	public static final int PAGE_MARGIN_RIGHT = /* right */72;
+	public static final int PAGE_MARGIN_LEFT = /* left */60;
 	public static final int FOOTER_MARGIN_BOTTOM = 30;
 	public static final float WIDTH = 464f;
-	
-	
+
 	/**
 	 * texts
 	 */
@@ -81,7 +92,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
 	protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";
 	protected static final String HEADER_ZEILE3 = "www.priebes.eu";
-	
+
 	/**
 	 * other properties
 	 */
@@ -124,11 +135,16 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 
 	/**
 	 * sets format and margins of document
+	 * 
 	 * @return
 	 */
 	protected Document newDocument() {
 		Document doc = new Document(PageSize.A4);
-		doc.setMargins(PAGE_MARGIN_LEFT, PAGE_MARGIN_RIGHT, PAGE_MARGIN_TOP, PAGE_MARGIN_BOTTOM);
+		doc.setMargins(
+				PAGE_MARGIN_LEFT,
+				PAGE_MARGIN_RIGHT,
+				PAGE_MARGIN_TOP,
+				PAGE_MARGIN_BOTTOM);
 		return doc;
 	}
 
@@ -170,14 +186,14 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	}
 
 	private Image createLogo() throws BadElementException,
-	MalformedURLException, IOException {
+			MalformedURLException, IOException {
 		if (logoPath != null)
 			return Image.getInstance(logoPath);
 		else
-		return Image.getInstance(this.getServletContext()
-				.getRealPath("/images").concat("/LogoGross.jpg"));
+			return Image.getInstance(this.getServletContext()
+					.getRealPath("/images").concat("/LogoGross.jpg"));
 	}
-	
+
 	/**
 	 * Einfügen eines Betreffs / Titels des Dokuments
 	 * 
@@ -192,8 +208,8 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			throws MalformedURLException, IOException, DocumentException {
 
 		doc.add(new ParagraphBuilder(title)
-			.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
-			.build());
+				.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
+				.build());
 	}
 
 	public void insertSmallText(Document doc, String text)
@@ -208,7 +224,8 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	/**
 	 * @deprecated
 	 * @param doc
-	 * @param info Der Dokumententitel wie z.B. "Rechnung"
+	 * @param info
+	 *            Der Dokumententitel wie z.B. "Rechnung"
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws DocumentException
@@ -235,22 +252,32 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		footer.setLockedWidth(true);
 		footer.setHorizontalAlignment(Element.ALIGN_CENTER);
 		footer.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		Paragraph fPara = new ParagraphBuilder("priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg")
-			.addTextLine("www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)")
-			.addTextLine("KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
-			.addTextLine("IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
-			.withAlignment(Element.ALIGN_CENTER)
-			.withFont(FontFactory.getFont(FONT, 9, Font.NORMAL))
-			.withLineSpacing(12f)
-			.build();
+		Paragraph fPara = new ParagraphBuilder(
+				"priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg")
+				.addTextLine(
+						"www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)")
+				.addTextLine(
+						"KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
+				.addTextLine(
+						"IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
+				.withAlignment(Element.ALIGN_CENTER)
+				.withFont(FontFactory.getFont(FONT, 9, Font.NORMAL))
+				.withLineSpacing(12f)
+				.build();
 		PdfPCell footerCell = new PdfPCell();
 		footerCell.addElement(fPara);
-		//footerCell.setBorder(Rectangle.TOP);
+		// footerCell.setBorder(Rectangle.TOP);
 		footerCell.setBorder(Rectangle.NO_BORDER);
 		footer.addCell(footerCell);
-		footer.writeSelectedRows(0, -1, /*xPos*/34, /*yPos*/120, writer.getDirectContent());
+		footer.writeSelectedRows(
+				0,
+				-1, /* xPos */
+				34, /* yPos */
+				120,
+				writer.getDirectContent());
 
-		if (SHOW_PAGE_NUMBERS) addPageNumber(writer, document);
+		if (SHOW_PAGE_NUMBERS)
+			addPageNumber(writer, document);
 
 	}
 
@@ -267,13 +294,20 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			headerCell.addElement(img);
 			headerCell.addElement(
 					new ParagraphBuilder("priebes OHG")
-					.withFont(FontFactory.getFont(FONT, 12, Font.NORMAL))
+							.withFont(
+									FontFactory.getFont(FONT, 12, Font.NORMAL))
+							.withAlignment(Element.ALIGN_RIGHT)
+							.withLineSpacing(25f)
+							.build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE1)
 					.withAlignment(Element.ALIGN_RIGHT)
-					.withLineSpacing(25f)
 					.build());
-			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE1).withAlignment(Element.ALIGN_RIGHT).build());
-			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE2).withAlignment(Element.ALIGN_RIGHT).build());
-			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE3).withAlignment(Element.ALIGN_RIGHT).build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE2)
+					.withAlignment(Element.ALIGN_RIGHT)
+					.build());
+			headerCell.addElement(new ParagraphBuilder(HEADER_ZEILE3)
+					.withAlignment(Element.ALIGN_RIGHT)
+					.build());
 
 			table.setWidths(new int[] { 10, 10, 30 });
 			table.setTotalWidth(527);
@@ -317,7 +351,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			e.printStackTrace();
 		}
 		absText(writer, String.format("S. %d / ", writer.getPageNumber()),
-					x - 25, y + 2);
+				x - 25, y + 2);
 
 	}
 
@@ -343,9 +377,15 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	@Override
 	public void onCloseDocument(PdfWriter writer, Document document) {
 		if ((writer.getPageNumber() - 1) > 1)
-		ColumnText.showTextAligned(total, Element.ALIGN_LEFT,
-						new PhraseBuilder(String.valueOf(writer.getPageNumber() - 1)).build(),
-						2, 2, 0);
+			ColumnText
+					.showTextAligned(
+							total,
+							Element.ALIGN_LEFT,
+							new PhraseBuilder(String.valueOf(writer
+									.getPageNumber() - 1)).build(),
+							2,
+							2,
+							0);
 
 	}
 
@@ -398,10 +438,10 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 	public void setLogoPath(String logoPath) {
 		this.logoPath = logoPath;
 	}
-	
+
 	public void insertInfoTable(Document document,
 			CustomPdfPTableBuilder infoTableBuilder) throws DocumentException {
-		
+
 	}
-	
+
 }

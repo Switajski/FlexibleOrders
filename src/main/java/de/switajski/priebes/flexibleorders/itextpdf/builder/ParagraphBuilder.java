@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf.builder;
+package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,13 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 
-import de.switajski.priebes.flexibleorders.report.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
 
 /**
  * Builder to ease creation of IText's {@link Paragraph}
+ * 
  * @author Marek Switajski
- *
+ * 
  */
 public class ParagraphBuilder {
 
@@ -28,12 +29,12 @@ public class ParagraphBuilder {
 	public ParagraphBuilder(String text) {
 		this.texts.add(text);
 	}
-	
-	public ParagraphBuilder(List<String> texts){
+
+	public ParagraphBuilder(List<String> texts) {
 		this.texts = texts;
 	}
-	
-	public Paragraph build(){
+
+	public Paragraph build() {
 		Paragraph p = new Paragraph(lineSpacing);
 		p.setFont(font);
 		p.setAlignment(alignment);
@@ -42,25 +43,25 @@ public class ParagraphBuilder {
 		if (indentationRight != 0f)
 			p.setIndentationRight(indentationRight);
 		ListIterator<String> itr = texts.listIterator();
-		while (itr.hasNext()){
+		while (itr.hasNext()) {
 			p.add(itr.next());
 			if (itr.hasNext())
 				p.add(Chunk.NEWLINE);
 		}
 		return p;
 	}
-	
+
 	/**
 	 * 
 	 * @param {@link Element} alignment
 	 * @return
 	 */
-	public ParagraphBuilder withAlignment(int alignment){
+	public ParagraphBuilder withAlignment(int alignment) {
 		this.alignment = alignment;
 		return this;
 	}
-	
-	public ParagraphBuilder addTextLine(String text){
+
+	public ParagraphBuilder addTextLine(String text) {
 		this.texts.add(text);
 		return this;
 	}

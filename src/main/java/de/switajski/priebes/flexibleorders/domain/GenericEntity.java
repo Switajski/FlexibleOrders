@@ -25,12 +25,10 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 public abstract class GenericEntity {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-	
-	/**
-	 */
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
+
 	@NotNull
 	@Column(updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -38,47 +36,48 @@ public abstract class GenericEntity {
 	protected Date created = new Date();
 
 	@Version
-    @Column(name = "version")
-    private Integer version;
+	@Column(name = "version")
+	private Integer version;
 
 	public Long getId() {
-        return this.id;
-    }
+		return this.id;
+	}
 
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
 	public Integer getVersion() {
-        return this.version;
-    }
+		return this.version;
+	}
 
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
-	
-	@JsonSerialize(using=JsonDateSerializer.class)
-	public Date getCreated(){
+		this.version = version;
+	}
+
+	@JsonSerialize(using = JsonDateSerializer.class)
+	public Date getCreated() {
 		return this.created;
 	}
-	
-	@JsonDeserialize(using=JsonDateDeserializer.class)
-	public void setCreated(Date created){
+
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 
-	//TODO: implement equals method - suggested from http://notesonjava.wordpress.com/2008/11/03/managing-the-bidirectional-relationship/
-//	public boolean equals(Object object) {
-//        if (object == this)
-//            return true;
-//        if ((object == null) || !(object instanceof A))
-//            return false;
-// 
-//        final A a = (A)object;
-// 
-//        if (id != null && a.getId() != null) {
-//            return id.equals(a.getId());
-//        }
-//        return false;
-//    }
+	// TODO: implement equals method - suggested from
+	// http://notesonjava.wordpress.com/2008/11/03/managing-the-bidirectional-relationship/
+	// public boolean equals(Object object) {
+	// if (object == this)
+	// return true;
+	// if ((object == null) || !(object instanceof A))
+	// return false;
+	//
+	// final A a = (A)object;
+	//
+	// if (id != null && a.getId() != null) {
+	// return id.equals(a.getId());
+	// }
+	// return false;
+	// }
 }

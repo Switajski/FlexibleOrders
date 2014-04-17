@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain.specification;
+package de.switajski.priebes.flexibleorders.application.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 

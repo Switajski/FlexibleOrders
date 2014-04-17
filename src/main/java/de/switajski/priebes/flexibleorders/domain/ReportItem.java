@@ -9,7 +9,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Entity
@@ -30,7 +30,7 @@ public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 
 	protected ReportItem() {}
 
-	//TODO: refactor to constructor with minimal attributes
+	//TODO: refactor to no constructor - use factory instead
 	public ReportItem(Report report, ReportItemType handlingEventType, OrderItem item, 
 			Integer quantity, Date created) {
 		if (report == null || handlingEventType == null || item == null || quantity == null) 

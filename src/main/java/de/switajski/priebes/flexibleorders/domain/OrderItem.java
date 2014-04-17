@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.domain.specification.CompletedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
-import de.switajski.priebes.flexibleorders.domain.specification.ShippedSpecification;
+import de.switajski.priebes.flexibleorders.application.specification.CompletedSpecification;
+import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
+import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
+import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Entity
 @JsonAutoDetect

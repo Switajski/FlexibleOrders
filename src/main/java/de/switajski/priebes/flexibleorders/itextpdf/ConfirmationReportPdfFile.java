@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf;
+package de.switajski.priebes.flexibleorders.itextpdf;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,16 +14,18 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class ConfirmationReportPdfFile extends ConfirmationReportPdfView {
 
 	public String filePathAndName;
-	
-	protected PdfWriter newWriter(Document document, OutputStream os) throws DocumentException {
+
+	protected PdfWriter newWriter(Document document, OutputStream os)
+			throws DocumentException {
 		PdfWriter writer;
-			try {
-				writer = PdfWriter.getInstance(document, new FileOutputStream(filePathAndName));
-				return writer;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return null;
-			}
+		try {
+			writer = PdfWriter.getInstance(document, new FileOutputStream(
+					filePathAndName));
+			return writer;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public String getFilePathAndName() {

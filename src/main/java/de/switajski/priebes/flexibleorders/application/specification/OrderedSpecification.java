@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain.specification;
+package de.switajski.priebes.flexibleorders.application.specification;
 
 import javax.persistence.Embeddable;
 import javax.persistence.criteria.CriteriaBuilder;

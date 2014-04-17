@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf.builder;
+package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
 //TODO: replace with anonymous class, array, enum.
 public class FourStrings {
@@ -6,7 +6,7 @@ public class FourStrings {
 	String second;
 	String third;
 	String forth;
-	
+
 	public FourStrings(String first,
 			String second,
 			String third,

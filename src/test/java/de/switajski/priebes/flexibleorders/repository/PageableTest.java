@@ -12,23 +12,26 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractProductiveSpringContextTest;
 
 /**
- * Exploratory test to figure out the Pageable functionality of Spring Data's repository
+ * Exploratory test to figure out the Pageable functionality of Spring Data's
+ * repository
+ * 
  * @author Marek Switajski
- *
+ * 
  */
-public class PageableTest extends AbstractProductiveSpringContextTest{
+public class PageableTest extends AbstractProductiveSpringContextTest {
 
-	@Autowired private OrderItemRepository orderItemRepo;
-	
+	@Autowired
+	private OrderItemRepository orderItemRepo;
+
 	@Ignore
 	@Test
-	public void shouldReturnPage(){
+	public void shouldReturnPage() {
 		int page = 2;
 		int size = 5;
 		PageRequest pageRequest = new PageRequest(page, size);
-		
+
 		Page<OrderItem> pageList = orderItemRepo.findAll(pageRequest);
-		
-		assertFalse(pageList.getContent().isEmpty());		
+
+		assertFalse(pageList.getContent().isEmpty());
 	}
 }

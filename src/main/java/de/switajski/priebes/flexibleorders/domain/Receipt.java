@@ -14,9 +14,7 @@ public class Receipt extends Report {
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date paymentReceivedDate;
-	
-	protected Receipt(){};
-	
+
 	public Receipt(String receiptNumber, Date paymentReceivedDate) {
 		super(receiptNumber);
 		this.paymentReceivedDate = paymentReceivedDate;

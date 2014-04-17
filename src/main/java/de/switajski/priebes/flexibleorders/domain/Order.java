@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.reference.OriginSystem;
+
 @Entity
 @Table(name="c_order")
 public class Order extends GenericEntity {

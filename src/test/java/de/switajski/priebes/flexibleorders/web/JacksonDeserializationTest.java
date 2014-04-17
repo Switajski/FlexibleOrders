@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 public class JacksonDeserializationTest {
@@ -109,13 +109,6 @@ public class JacksonDeserializationTest {
 	}
 	
 	@Test
-	public void shouldDeserializeReportItems() 
-			throws JsonParseException, JsonMappingException, IOException {
-		List<ItemDto> reportItems = JsonSerializationHelper.deserializeReportItems(CREATE_REPORTITEMS_REQUEST_JSON);
-		assertFalse(reportItems.isEmpty());
-	}
-
-	@Test
 	public void shouldDeserializeFilter() throws JsonParseException, JsonMappingException, IOException{
 		JsonFilter[] typedArray = (JsonFilter[]) Array.newInstance(JsonFilter.class,1);
 		
@@ -126,17 +119,6 @@ public class JacksonDeserializationTest {
 		
 		assertNotNull(filter.getType());
 		assertNotNull(filter.getValue());
-	}
-	
-	@Ignore
-	@Transactional
-	@Test
-	public void shouldDeserializeShippingItem() throws Exception{
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
-		OrderItem oi = mapper.readValue(CREATE_SHIPPING_ITEM_REQUEST_JSON, 
-				OrderItem.class);
-		assertTrue(oi.getProduct().getProductNumber().equals(10071l));
 	}
 	
 }

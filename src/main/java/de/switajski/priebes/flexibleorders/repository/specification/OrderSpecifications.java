@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain.specification.spring;
+package de.switajski.priebes.flexibleorders.repository.specification;
 
 import java.util.Set;
 

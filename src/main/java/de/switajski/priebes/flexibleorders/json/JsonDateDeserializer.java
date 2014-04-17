@@ -12,27 +12,29 @@ import org.codehaus.jackson.map.JsonDeserializer;
 import org.springframework.stereotype.Component;
 
 /**
- * Used to deserialize Java.util.Date, which is not a common JSON
- * type, so we have to create a custom serialize method;.
+ * Used to deserialize Java.util.Date, which is not a common JSON type, so we
+ * have to create a custom serialize method;.
  */
 @Component
-public class JsonDateDeserializer extends JsonDeserializer<Date>{
+public class JsonDateDeserializer extends JsonDeserializer<Date> {
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"dd/MM/yyyy");
+
 	@Override
-    public Date deserialize(JsonParser jsonparser,
-            DeserializationContext deserializationcontext) throws IOException, JsonProcessingException {
+	public Date deserialize(JsonParser jsonparser,
+			DeserializationContext deserializationcontext) throws IOException,
+			JsonProcessingException {
 
-        SimpleDateFormat format = dateFormat;
-        String date = jsonparser.getText();
-        if (date.equals(""))
-        	return null;
-        try {
-            return format.parse(date);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+		SimpleDateFormat format = dateFormat;
+		String date = jsonparser.getText();
+		if (date.equals(""))
+			return null;
+		try {
+			return format.parse(date);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 
-    }
+	}
 }

@@ -16,30 +16,31 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
-public abstract class Report extends GenericEntity{
-	
+public abstract class Report extends GenericEntity {
+
 	@Transient
 	private static final double VAT_RATE = Order.VAT_RATE;
-	
+
 	/**
 	 * Natural id of a Report.
 	 */
 	@NotNull
 	@Column(unique = true)
 	private String documentNumber;
-	
+
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<ReportItem> items = new HashSet<ReportItem>();
-	
+
 	private Long customerNumber;
-	
-	protected Report() {}
-	
+
+	protected Report() {
+	}
+
 	public Report(String documentNumber) {
 		this.documentNumber = documentNumber;
 	}
-	
+
 	public String getDocumentNumber() {
 		return documentNumber;
 	}
@@ -47,13 +48,14 @@ public abstract class Report extends GenericEntity{
 	public Set<ReportItem> getItems() {
 		return items;
 	}
-	
+
 	public void setDocumentNumber(String documentNumber) {
 		this.documentNumber = documentNumber;
 	}
-	
-	public void addItem(ReportItem item){
-		if (items.contains(item)) return ;
+
+	public void addItem(ReportItem item) {
+		if (items.contains(item))
+			return;
 		items.add(item);
 		item.setReport(this);
 	}
@@ -65,12 +67,12 @@ public abstract class Report extends GenericEntity{
 	public void setCustomerNumber(Long customerNumber) {
 		this.customerNumber = customerNumber;
 	}
-	
-	public void removeItem(ReportItem item){
+
+	public void removeItem(ReportItem item) {
 		this.items.remove(item);
 	}
-	
-	public double getVatRate(){
+
+	public double getVatRate() {
 		return Order.VAT_RATE;
 	}
 

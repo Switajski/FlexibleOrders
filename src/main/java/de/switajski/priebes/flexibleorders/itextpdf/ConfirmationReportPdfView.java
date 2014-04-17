@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf;
+package de.switajski.priebes.flexibleorders.itextpdf;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,40 +17,45 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.helper.AmountCalculator;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.CustomPdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.report.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 
 @Component
 public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 
-	//TODO: make VAT_RATE dependent from order
+	// TODO: make VAT_RATE dependent from order
 	public static final Double VAT_RATE = 0.19d;
 
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model,
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
-		ConfirmationReport report = (ConfirmationReport) model.get(ConfirmationReport.class.getSimpleName());
-		
+
+		ConfirmationReport report = (ConfirmationReport) model
+				.get(ConfirmationReport.class.getSimpleName());
+
 		String heading = "Auftragsbest\u00e4tigung";
 		Address adresse = report.getInvoiceAddress();
 		Date expectedDelivery = report.getExpectedDelivery();
 
-		String leftTop = "Auftragsnummer: " + report.getDocumentNumber().toString();
+		String leftTop = "Auftragsnummer: "
+				+ report.getDocumentNumber().toString();
 		String rightTop = "";
-		if (expectedDelivery != null) 
-			rightTop = "voraussichtliche Lieferwoche: KW " + weekDateFormat.format(expectedDelivery);
-		String leftBottom = "Auftragsdatum: " + dateFormat.format(report.getCreated());
+		if (expectedDelivery != null)
+			rightTop = "voraussichtliche Lieferwoche: KW "
+					+ weekDateFormat.format(expectedDelivery);
+		String leftBottom = "Auftragsdatum: "
+				+ dateFormat.format(report.getCreated());
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
-		
-		Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
+
+		Amount netGoods = AmountCalculator.sum(AmountCalculator
+				.getAmountsTimesQuantity(report));
 		Amount vat = netGoods.multiply(report.getVatRate());
 		Amount gross = netGoods.add(vat);
 
@@ -65,59 +70,67 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 			document.add(ParagraphBuilder.createEmptyLine());
 		} else {
 			document.add(new ParagraphBuilder(adresse.getName1())
-			.withIndentationLeft(36f)
-			.withLineSpacing(12f)
-			.addTextLine(adresse.getName2())
-			.addTextLine(adresse.getStreet())
-			.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
-			.addTextLine(adresse.getCountry().toString())
-			.build());
+					.withIndentationLeft(36f)
+					.withLineSpacing(12f)
+					.addTextLine(adresse.getName2())
+					.addTextLine(adresse.getStreet())
+					.addTextLine(
+							adresse.getPostalCode() + " " + adresse.getCity())
+					.addTextLine(adresse.getCountry().toString())
+					.build());
 		}
 		document.add(ParagraphBuilder.createEmptyLine());
 		document.add(ParagraphBuilder.createEmptyLine());
-        
-		
+
 		// insert heading
 		document.add(new ParagraphBuilder(heading)
-		.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
-		.build());
-		document.add(ParagraphBuilder.createEmptyLine());		
+				.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
+				.build());
+		document.add(ParagraphBuilder.createEmptyLine());
 
-		
 		// info table
-		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder.createInfoTable(
-        		leftTop, leftBottom, 
-        		rightTop, rightBottom);
-        PdfPTable infoTable = infoTableBuilder.build();
+		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
+				.createInfoTable(
+						leftTop, leftBottom,
+						rightTop, rightBottom);
+		PdfPTable infoTable = infoTableBuilder.build();
 		infoTable.setWidthPercentage(100);
 		document.add(infoTable);
-        //TODO: if (auftragsbestaetigung.getAusliefDatum==null) insertInfo(document,"Voraussichtliches Auslieferungsdatum:" + auftragsbestaetigung.getGeplAusliefDatum());
-        document.add(ParagraphBuilder.createEmptyLine());
+		// TODO: if (auftragsbestaetigung.getAusliefDatum==null)
+		// insertInfo(document,"Voraussichtliches Auslieferungsdatum:" +
+		// auftragsbestaetigung.getGeplAusliefDatum());
+		document.add(ParagraphBuilder.createEmptyLine());
 
-        
-        // insert main table
-        document.add(createTable(report));
+		// insert main table
+		document.add(createTable(report));
 
-		
-        // insert footer table
-		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder.createFooterBuilder(
-				netGoods, vat, null, gross, null)
+		// insert footer table
+		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
+				.createFooterBuilder(
+						netGoods, vat, null, gross, null)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
-	    
-	    PdfPTable footer = footerBuilder.build();
-	    
-	    footer.writeSelectedRows(0, -1,
-	    		/*xPos*/ PriebesIText5PdfView.PAGE_MARGIN_LEFT, 
-	    		/*yPos*/ PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + FOOTER_MARGIN_BOTTOM, 
-	    		writer.getDirectContent());
+
+		PdfPTable footer = footerBuilder.build();
+
+		footer.writeSelectedRows(0, -1,
+				/* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
+				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
+						+ FOOTER_MARGIN_BOTTOM,
+				writer.getDirectContent());
 	}
 
-	private PdfPTable createTable(ConfirmationReport cReport) throws DocumentException{
-		PdfPTableBuilder builder = new PdfPTableBuilder(PdfPTableBuilder.createPropertiesWithSixCols());
-		for (ReportItem he: cReport.getItems()){
+	private PdfPTable createTable(ConfirmationReport cReport)
+			throws DocumentException {
+		PdfPTableBuilder builder = new PdfPTableBuilder(
+				PdfPTableBuilder.createPropertiesWithSixCols());
+		for (ReportItem he : cReport.getItems()) {
 			List<String> list = new ArrayList<String>();
 			// Art.Nr.:
-			list.add(he.getOrderItem().getProduct().getProductNumber().toString());
+			list.add(he
+					.getOrderItem()
+					.getProduct()
+					.getProductNumber()
+					.toString());
 			// Artikel
 			list.add(he.getOrderItem().getProduct().getName());
 			// Anzahl
@@ -127,12 +140,16 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 			// Bestellnr
 			list.add(he.getOrderItem().getOrder().getOrderNumber());
 			// gesamt
-			list.add(he.getOrderItem().getNegotiatedPriceNet().multiply(he.getQuantity()).toString());
-			
+			list.add(he
+					.getOrderItem()
+					.getNegotiatedPriceNet()
+					.multiply(he.getQuantity())
+					.toString());
+
 			builder.addBodyRow(list);
 		}
-		
+
 		return builder.withFooter(false).build();
 	}
-	
+
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.web.entities.JsonCustomer;
+import de.switajski.priebes.flexibleorders.web.dto.JsonCustomer;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 

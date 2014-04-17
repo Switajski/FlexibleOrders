@@ -16,7 +16,7 @@ public class CustomerToIdSerializer extends JsonSerializer<Customer> {
 			SerializerProvider provider) throws IOException,
 			JsonProcessingException {
 		jgen.writeNumber(value.getId());
-		
+
 	}
 
 }

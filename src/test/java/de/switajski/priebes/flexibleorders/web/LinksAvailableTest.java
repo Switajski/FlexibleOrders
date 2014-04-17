@@ -35,55 +35,74 @@ public class LinksAvailableTest {
 	@Ignore
 	@Test
 	public void getFoo() throws Exception {
-		this.mockMvc.perform(get("reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get("reports/orders/listOrderNumbers").accept(
+								MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
-	
+
 	@Ignore
 	@Test
 	public void getFoo2() throws Exception {
-		this.mockMvc.perform(get("/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get("/reports/orders/listOrderNumbers").accept(
+								MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
-	
+
 	@Ignore
 	@Test
 	public void getFoo3() throws Exception {
-		this.mockMvc.perform(get("FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get("FlexibleOrders/reports/orders/listOrderNumbers")
+								.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
-	
+
 	@Ignore
 	@Test
 	public void getFoo4() throws Exception {
-		this.mockMvc.perform(get("/FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get("/FlexibleOrders/reports/orders/listOrderNumbers")
+								.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
-	
+
 	@Ignore
 	@Test
 	public void getFoo5() throws Exception {
-		this.mockMvc.perform(get("http://localhost:8080/FlexibleOrders/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get(
+								"http://localhost:8080/FlexibleOrders/reports/orders/listOrderNumbers")
+								.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
-	
+
 	@Ignore
 	@Test
 	public void getFoo6() throws Exception {
-		this.mockMvc.perform(get("/reports/orders/listOrderNumbers").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-//		.andExpect(content().mimeType())
-		.andExpect(jsonPath("$.name").value("Lee"));
+		this.mockMvc
+				.perform(
+						get("/reports/orders/listOrderNumbers").accept(
+								MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				// .andExpect(content().mimeType())
+				.andExpect(jsonPath("$.name").value("Lee"));
 	}
 
 }

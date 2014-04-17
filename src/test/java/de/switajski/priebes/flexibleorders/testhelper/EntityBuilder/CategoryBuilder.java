@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.test.EntityBuilder;
+package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import de.switajski.priebes.flexibleorders.domain.Category;
 
@@ -11,29 +11,29 @@ public class CategoryBuilder implements Builder<Category> {
 	private String imageGalery;
 	private int sortOrder;
 	private Boolean activated;
-	
+
 	public CategoryBuilder(String name, boolean activated) {
 		this.name = name;
 		this.activated = activated;
 	}
-	
-	public static Category buildWithGeneratedAttributes(Integer i){
+
+	public static Category buildWithGeneratedAttributes(Integer i) {
 		return new CategoryBuilder(
-				"Category"+i.toString(), true)
-			.generateAttributes(i).build();
+				"Category" + i.toString(), true)
+				.generateAttributes(i).build();
 	}
-	
-	public CategoryBuilder generateAttributes(Integer i){
-		intro = "Intro"+i.toString();
-		description = "Description"+i.toString();
-		image = "Image"+i.toString();
-		imageGalery = "ImageGallery"+i.toString();
+
+	public CategoryBuilder generateAttributes(Integer i) {
+		intro = "Intro" + i.toString();
+		description = "Description" + i.toString();
+		image = "Image" + i.toString();
+		imageGalery = "ImageGallery" + i.toString();
 		sortOrder = i;
 		return this;
 	}
-	
+
 	@Override
-	public Category build(){
+	public Category build() {
 		Category c = new Category();
 		c.setName(name);
 		c.setIntro(intro);

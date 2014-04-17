@@ -11,7 +11,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 @Entity
 public class CatalogProduct extends GenericEntity {
-	
+
 	@Column(unique = true)
 	@NotNull
 	private Long productNumber;
@@ -27,14 +27,13 @@ public class CatalogProduct extends GenericEntity {
 	private Amount recommendedPriceNet;
 
 	private boolean active;
-	
+
 	private String imageGalery;
-	
+
 	private Long sortOrder;
-	
+
 	@ManyToOne
 	private Category category;
-	
 
 	public Long getProductNumber() {
 		return productNumber;
@@ -99,8 +98,8 @@ public class CatalogProduct extends GenericEntity {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-	public Product toProduct(){
+
+	public Product toProduct() {
 		Product product = new Product();
 		product.setName(name);
 		product.setProductNumber(this.productNumber);
@@ -108,5 +107,5 @@ public class CatalogProduct extends GenericEntity {
 		product.setProductType(ProductType.PRODUCT);
 		return product;
 	}
-	
+
 }

@@ -1,4 +1,5 @@
 package de.switajski.priebes.flexibleorders.domain;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
@@ -14,59 +15,54 @@ public class Product {
 	/**
 	 * natural id
 	 */
-    @NotNull
-    private Long productNumber;
+	@NotNull
+	private Long productNumber;
 
-    @NotNull
-    @Enumerated
-    private ProductType productType;
-    
-    @NotNull
-    private String name;
+	@NotNull
+	@Enumerated
+	private ProductType productType;
 
-    @Override
-    public boolean equals(Object obj) {
-    	if (!(obj instanceof Product)) return false;
-    	Product c = (Product) obj;
-    	if (this.getProductNumber()==c.getProductNumber())
-    		return true;
-    	return false;
-    }
+	@NotNull
+	private String name;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Product))
+			return false;
+		Product c = (Product) obj;
+		if (this.getProductNumber() == c.getProductNumber())
+			return true;
+		return false;
+	}
 
 	public Long getProductNumber() {
-        return this.productNumber;
-    }
+		return this.productNumber;
+	}
 
 	public void setProductNumber(Long productNumber) {
-        this.productNumber = productNumber;
-    }
+		this.productNumber = productNumber;
+	}
 
 	public ProductType getProductType() {
-        return this.productType;
-    }
+		return this.productType;
+	}
 
 	public void setProductType(ProductType productType) {
-        this.productType = productType;
-    }
+		this.productType = productType;
+	}
 
 	public String getName() {
-        return this.name;
-    }
+		return this.name;
+	}
 
 	public void setName(String name) {
-        this.name = name;
-    }
+		this.name = name;
+	}
 
 	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-//	public Amount getShippingCosts() {
-//		return shippingCosts;
-//	}
-//
-//	public void setShippingCosts(Amount shippingCosts) {
-//		this.shippingCosts = shippingCosts;
-//	}
+		return ReflectionToStringBuilder.toString(
+				this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
+	}
 
 }

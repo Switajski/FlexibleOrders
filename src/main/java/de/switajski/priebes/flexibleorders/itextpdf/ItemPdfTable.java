@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.report.itextpdf;
+package de.switajski.priebes.flexibleorders.itextpdf;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -20,37 +20,38 @@ public abstract class ItemPdfTable {
 
 	protected final static int COLUMNS = 4;
 	public ArrayList<ReportItem> bpList;
-	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(",##0.00");
+	public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat(
+			",##0.00");
 	public static final float TOTAL_WIDTH = 500;
 
 	private String firstColumnName = "Bestellpos.";
 	private String secondColumnName = "Artikel";
 	private String thirdColumnName = "Menge x Preis";
 	private String forthColumnName = "Betrag";
-	
+
 	private PdfPTable pdfPTable;
-	
+
 	public ItemPdfTable(Set<ReportItem> set) {
 		pdfPTable = new PdfPTable(COLUMNS);
 		try {
-			pdfPTable.setWidths(new int[]{100, 245, 90, 65});
+			pdfPTable.setWidths(new int[] { 100, 245, 90, 65 });
 		} catch (DocumentException e) {
 			e.printStackTrace();
-		}        
+		}
 		pdfPTable.setTotalWidth(TOTAL_WIDTH);
 		pdfPTable.setLockedWidth(true);
-//		this.getDefaultCell().setFixedHeight(20);
+		// this.getDefaultCell().setFixedHeight(20);
 		bpList = getSortedItemen(set);
-		
+
 	}
-	
-	public PdfPTable build(){
+
+	public PdfPTable build() {
 		createHeader();
 		createBody();
 		createFooter();
 		return pdfPTable;
 	}
-	
+
 	/**
 	 * creates the header of the table
 	 */
@@ -73,58 +74,66 @@ public abstract class ItemPdfTable {
 		betragHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		header.add(betragHeader);
 
-		for (PdfPCell cell:header){
+		for (PdfPCell cell : header) {
 			cell.setBorder(Rectangle.BOTTOM);
 			pdfPTable.addCell(cell);
 		}
 	}
-	
+
 	/**
 	 * create the body of the table
 	 */
 	private void createBody() {
-		
+
 		int bPos = 1;
-		for (ReportItem bp:bpList){
+		for (ReportItem bp : bpList) {
 			ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
-			
+
 			String firstColumnContent = null;
-			// if getFirstColumnContent is not overriden by sublasses enumerate positions
-			if (getFirstColumnContent(bp)==null) 
+			// if getFirstColumnContent is not overriden by sublasses enumerate
+			// positions
+			if (getFirstColumnContent(bp) == null)
 				firstColumnContent = String.valueOf(bPos);
-			else 
+			else
 				firstColumnContent = getFirstColumnContent(bp);
 			PdfPCell bestellpos = new PdfPCell(new Phrase(firstColumnContent));
 			bestellpos.setFixedHeight(20f);
 			cells.add(bestellpos);
-			
+
 			PdfPCell artikelname = new PdfPCell(new Phrase(
 					"Art.Nr.: "
-					+ bp.getOrderItem().getProduct().getProductNumber() 
-					+ " - "
-					+ bp.getOrderItem().getProduct().getName()
+							+ bp.getOrderItem().getProduct().getProductNumber()
+							+ " - "
+							+ bp.getOrderItem().getProduct().getName()
 					));
 			artikelname.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cells.add(artikelname);
 
 			PdfPCell preis = new PdfPCell(new Phrase(
 					bp.getQuantity()
-					+ " x "
-					+ DECIMAL_FORMAT.format(bp.getOrderItem().getNegotiatedPriceNet().getValue())
-					+ " €"
+							+ " x "
+							+ DECIMAL_FORMAT.format(bp
+									.getOrderItem()
+									.getNegotiatedPriceNet()
+									.getValue())
+							+ " €"
 					));
 			preis.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cells.add(preis);
 
-			BigDecimal betragValue = bp.getOrderItem().getNegotiatedPriceNet().getValue().multiply(new BigDecimal(bp.getQuantity()));
+			BigDecimal betragValue = bp
+					.getOrderItem()
+					.getNegotiatedPriceNet()
+					.getValue()
+					.multiply(new BigDecimal(bp.getQuantity()));
 			PdfPCell betrag = new PdfPCell(new Phrase(
 					DECIMAL_FORMAT.format(betragValue)
-					+ " €"
+							+ " €"
 					));
 			betrag.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cells.add(betrag);
 
-			for (PdfPCell cell:cells){
+			for (PdfPCell cell : cells) {
 				cell.setBorder(Rectangle.NO_BORDER);
 				pdfPTable.addCell(cell);
 			}
@@ -133,9 +142,9 @@ public abstract class ItemPdfTable {
 
 	}
 
-
-	/** 
-	 * Method to override for invoice and archive 
+	/**
+	 * Method to override for invoice and archive
+	 * 
 	 * @return
 	 */
 	public String getFirstColumnContent(ReportItem item) {
@@ -150,15 +159,15 @@ public abstract class ItemPdfTable {
 
 	private ArrayList<ReportItem> getSortedItemen(
 			Collection<ReportItem> bestellpositionen) {
-		
+
 		ArrayList<ReportItem> bps = new ArrayList<ReportItem>();
-		for (ReportItem bp:bestellpositionen){
+		for (ReportItem bp : bestellpositionen) {
 			bps.add(bp);
 		}
 		Collections.sort(bps);
 		return bps;
 	}
-	
+
 	public String getFirstColumnName() {
 		return firstColumnName;
 	}
@@ -190,10 +199,9 @@ public abstract class ItemPdfTable {
 	public void setForthColumnName(String forthColumnName) {
 		this.forthColumnName = forthColumnName;
 	}
-	
-	public PdfPTable getTable(){
+
+	public PdfPTable getTable() {
 		return pdfPTable;
 	}
-	
 
 }

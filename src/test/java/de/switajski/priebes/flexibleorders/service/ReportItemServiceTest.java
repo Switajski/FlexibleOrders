@@ -29,14 +29,14 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemDtoBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.OrderItemBuilder;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ItemDtoBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class ReportItemTest {
+public class ReportItemServiceTest {
 
 	private String orderNumber = "B123";
 	private String confirmNumber = "AB123";

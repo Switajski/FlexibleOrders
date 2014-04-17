@@ -16,18 +16,17 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 @Transactional
 @Component
 public class CustomerIdDeserializer extends JsonDeserializer<Customer> {
-	
+
 	@Transactional
 	@Override
 	public Customer deserialize(JsonParser jp, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		Customer customer = new Customer();
 		ObjectCodec oc = jp.getCodec();
-        JsonNode node = oc.readTree(jp);
-        customer.setId(node.getLongValue());
-        return customer;
-		
+		JsonNode node = oc.readTree(jp);
+		customer.setId(node.getLongValue());
+		return customer;
+
 	}
-	
-	
+
 }

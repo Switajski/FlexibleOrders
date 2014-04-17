@@ -1,51 +1,41 @@
-package de.switajski.priebes.flexibleorders.test.EntityBuilder;
+package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 
 public class CustomerBuilder implements Builder<Customer> {
 
-    private Address address;
-    private String email;
-    private String password;
-    private String phone;
+	private Address address;
+	private String email;
+	private String password;
+	private String phone;
 	private Long customerNumber;
 
-    
-    /**
-     * 
-     * @param street
-     * @param city
-     * @param postalCode
-     * @param email
-     */
-    public CustomerBuilder(
-    		Long customerNumber,
-    		String email,
-    		Address address
-    		) {
-    	this.email = email;
-    	this.address = address;
-    	this.customerNumber = customerNumber;
-    }
-    
-    public CustomerBuilder generateAttributes(Integer i){
-    	customerNumber = new Long(i.toString());
-    	address = AddressBuilder.buildWithGeneratedAttributes(i);
-    	email = "name@somewhere.com".concat(i.toString());
-    	password = "password".concat(i.toString());
-    	phone = "0049".concat(i.toString());
-    	return this;
-    }
-    
-    public static Customer buildWithGeneratedAttributes(Integer i){
-    	return new CustomerBuilder(Long.valueOf(i.toString()),
-    			"name@somewhere.com".concat(i.toString()),
-    			AddressBuilder.buildWithGeneratedAttributes(i)
-    			)
-    	.build();
-    }
-    
+	public CustomerBuilder(
+			Long customerNumber,
+			String email,
+			Address address) {
+		this.email = email;
+		this.address = address;
+		this.customerNumber = customerNumber;
+	}
+
+	public CustomerBuilder generateAttributes(Integer i) {
+		customerNumber = new Long(i.toString());
+		address = AddressBuilder.buildWithGeneratedAttributes(i);
+		email = "name@somewhere.com".concat(i.toString());
+		password = "password".concat(i.toString());
+		phone = "0049".concat(i.toString());
+		return this;
+	}
+
+	public static Customer buildWithGeneratedAttributes(Integer i) {
+		return new CustomerBuilder(Long.valueOf(i.toString()),
+				"name@somewhere.com".concat(i.toString()),
+				AddressBuilder.buildWithGeneratedAttributes(i))
+				.build();
+	}
+
 	@Override
 	public Customer build() {
 		Customer c = new Customer();
@@ -54,7 +44,7 @@ public class CustomerBuilder implements Builder<Customer> {
 		c.setPassword(password);
 		c.setPhone(phone);
 		c.setAddress(address);
-		
+
 		return c;
 	}
 
@@ -82,6 +72,5 @@ public class CustomerBuilder implements Builder<Customer> {
 		this.customerNumber = customerNumber;
 		return this;
 	}
-	
 
 }

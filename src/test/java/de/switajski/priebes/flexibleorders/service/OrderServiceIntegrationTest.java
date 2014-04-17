@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
@@ -36,12 +37,11 @@ import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
-import de.switajski.priebes.flexibleorders.domain.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.AddressBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 
 /**

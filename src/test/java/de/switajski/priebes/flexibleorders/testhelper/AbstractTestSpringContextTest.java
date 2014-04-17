@@ -6,8 +6,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-		"classpath*:/applicationContext-test.xml", 
-		"classpath*:/applicationContext-jpa-test.xml"})
+		"classpath*:/applicationContext-test.xml",
+		"classpath*:/applicationContext-jpa-test.xml" })
 public abstract class AbstractTestSpringContextTest {
 
 }

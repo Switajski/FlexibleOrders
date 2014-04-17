@@ -14,8 +14,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
-import de.switajski.priebes.flexibleorders.web.entities.JsonCustomer;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.JsonCustomer;
 
 /**
  * NOT USED - Backup for filters implementation. Method from former controller-filter-method:
@@ -92,26 +92,6 @@ public class JsonSerializationHelper {
 		return jsonFilters;
 	}
 	
-	public static List<ItemDto> deserializeReportItems(String jsonReportItems) 
-			throws JsonParseException, JsonMappingException, IOException{
-		ItemDto[] typedArray = (ItemDto[]) Array.newInstance(ItemDto.class,1);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
-		ItemDto[] records = (ItemDto[]) mapper.readValue(jsonReportItems, typedArray.getClass());
-
-		ArrayList<ItemDto> list = new ArrayList<ItemDto>();
-		for (ItemDto record:records)
-			list.add(record);
-
-		return list;
-	}
-	
-	public static ItemDto deserializeReportItem(String json) throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
-		return (ItemDto) mapper.readValue(json, ItemDto.class); 
-	}
-
 	public static List<JsonCustomer> convertToJsonCustomers(
 			Collection<Customer> customers) {
 		List<JsonCustomer> jsonCustomers = new ArrayList<JsonCustomer>();

@@ -16,15 +16,15 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
-import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
-import de.switajski.priebes.flexibleorders.web.entities.JsonDeliverRequest;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.JsonDeliverRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @Controller

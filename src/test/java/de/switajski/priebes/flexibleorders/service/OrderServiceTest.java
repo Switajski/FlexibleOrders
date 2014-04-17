@@ -14,21 +14,21 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.Currency;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.specification.OrderedSpecification;
+import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.test.EntityBuilder.ItemDtoBuilder;
-import de.switajski.priebes.flexibleorders.web.entities.ItemDto;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ItemDtoBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderServiceTest {
 	

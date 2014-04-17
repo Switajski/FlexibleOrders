@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.test.EntityBuilder;
+package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
@@ -11,13 +11,14 @@ public class HandlingEventBuilder implements Builder<ReportItem> {
 	private Report report = null;
 	private ReportItemType type;
 	private OrderItem item;
-	
-	public HandlingEventBuilder(ReportItemType type, OrderItem item, Integer quantity) {
+
+	public HandlingEventBuilder(ReportItemType type, OrderItem item,
+			Integer quantity) {
 		this.type = type;
 		this.item = item;
 		this.quantity = quantity;
 	}
-	
+
 	@Override
 	public ReportItem build() {
 		ReportItem he = new ReportItem(report, type, item, quantity, null);

@@ -17,27 +17,34 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class PriebesJoomlaImporterServiceTest {
-	
-	@Autowired ImporterService pji;
-	@Autowired CustomerRepository customerRepository;
-	@Autowired CatalogProductRepository productRepository;
-	@Autowired OrderItemRepository itemRepository;
-	
+
+	@Autowired
+	ImporterService pji;
+	@Autowired
+	CustomerRepository customerRepository;
+	@Autowired
+	CatalogProductRepository productRepository;
+	@Autowired
+	OrderItemRepository itemRepository;
+
 	@Rollback(false)
 	@Ignore
-//	@Transactional
 	@Test
-	public void shouldImportOrderItems(){
-//		pji.importCustomers();
-//		customerRepository.flush();
-//		assertFalse("OrderItemRepository repository is empty!", customerRepository.count()==0);
+	public void shouldImportOrderItems() {
+		// pji.importCustomers();
+		// customerRepository.flush();
+		// assertFalse("OrderItemRepository repository is empty!",
+		// customerRepository.count()==0);
 
 		pji.importProducts();
 		pji.importPrices();
-		assertFalse("OrderItemRepository repository is empty!", productRepository.count()==0);
+		assertFalse(
+				"OrderItemRepository repository is empty!",
+				productRepository.count() == 0);
 
-//		pji.importOrderItems();
-//		assertFalse("OrderItemRepository repository is empty!", itemRepository.count()==0);
+		// pji.importOrderItems();
+		// assertFalse("OrderItemRepository repository is empty!",
+		// itemRepository.count()==0);
 	}
-	
+
 }

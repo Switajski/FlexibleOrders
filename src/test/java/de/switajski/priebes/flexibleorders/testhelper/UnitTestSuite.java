@@ -5,10 +5,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculatorTest;
+import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		AmountCalculatorTest.class
+		AmountCalculatorTest.class,
+		JacksonDeserializationTest.class
 })
 public class UnitTestSuite {
 

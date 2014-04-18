@@ -3,7 +3,7 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 
 public class PhraseBuilder {
 

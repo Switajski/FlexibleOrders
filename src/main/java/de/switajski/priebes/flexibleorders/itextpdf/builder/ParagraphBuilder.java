@@ -9,7 +9,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 
 /**
  * Builder to ease creation of IText's {@link Paragraph}

@@ -18,7 +18,6 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.itextpdf.InvoicePdfFile;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -26,6 +25,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuild
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.HandlingEventBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfFile;
 
 //TODO: split application context to use one part as unit test
 @RunWith(SpringJUnit4ClassRunner.class)

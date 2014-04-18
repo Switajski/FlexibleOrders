@@ -22,16 +22,16 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.itextpdf.ConfirmationReportPdfView;
-import de.switajski.priebes.flexibleorders.itextpdf.DeliveryNotesPdfView;
-import de.switajski.priebes.flexibleorders.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.itextpdf.OrderPdfView;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs 

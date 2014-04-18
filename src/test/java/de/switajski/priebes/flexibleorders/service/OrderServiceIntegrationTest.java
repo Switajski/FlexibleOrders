@@ -123,7 +123,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 		List<ItemDto> items = givenItemDtos(
 				QUANTITY_INITIAL, products.get(0).toProduct(), products.get(1).toProduct());
 
-		Order order = orderService.order(customer.getId(), "4", items);
+		Order order = orderService.order(customer.getId(), "3246", items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(), "AB4", new Date(), extractItemDtos(order));
 		DeliveryNotes deliveryNotes = orderService.deliver("L4","trackNumber", "packNo", INVOICE_ADDRESS, null, 
@@ -142,7 +142,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest{
 	}
 	
 	//TODO:Remove after test passes mvn test run
-//	@Transactional
+	@Transactional
 	@Test
 	public void deliver_DeliveryNotesShouldBeInvoicableAndNotShippableAndPersisted(){
 		//given

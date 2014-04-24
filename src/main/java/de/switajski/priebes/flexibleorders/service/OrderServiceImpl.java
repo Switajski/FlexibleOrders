@@ -22,12 +22,12 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -351,7 +351,7 @@ public class OrderServiceImpl {
 					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));
 
 			for (ReportItem he :orderItemToBeInvoiced.getAllHesOfType(ReportItemType.SHIP)){
-				DeliveryNotes dn = he.getDeliveryNotes();
+				DeliveryNotes dn = (DeliveryNotes) he.getReport();
 				deliveryNotes.put(dn.getDocumentNumber(), dn); 
 			}
 			

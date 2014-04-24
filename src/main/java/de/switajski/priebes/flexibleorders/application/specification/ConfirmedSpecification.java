@@ -7,10 +7,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
+import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
 /**
  * Defines and validates an item in a confirmed state.</br>
@@ -46,8 +47,7 @@ public class ConfirmedSpecification extends ItemSpecification{
 		if (item.getDeliveryHistory().isEmpty()) return false;
 		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
 		for (ReportItem he: item.getAllHesOfType(ReportItemType.CONFIRM)){
-			if (he.getReport() == null || he.getConfirmationReport() == null ||
-					he.getConfirmationReport().getInvoiceAddress() == null ||
+			if (he.getReport() == null || ((ConfirmationReport) he.getReport()).getInvoiceAddress() == null ||
 					//TODO: check VAT_RATE
 					item.getNegotiatedPriceNet() == null ||
 					item.getOrder().getCustomer() == null) 

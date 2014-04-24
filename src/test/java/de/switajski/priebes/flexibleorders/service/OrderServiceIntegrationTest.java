@@ -443,10 +443,10 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 					.getAllHesOfType(ReportItemType.CONFIRM);
 			assertThat(confirmationReportItem.size(), equalTo(1));
 
-			ConfirmationReport crByReportItem = confirmationReportItem
+			ConfirmationReport crByReportItem = (ConfirmationReport) confirmationReportItem
 					.iterator()
 					.next()
-					.getConfirmationReport();
+					.getReport();
 			assertThat(crByReportItem.getDocumentNumber(), notNullValue());
 			assertThat(crByReportItem.getInvoiceAddress(), notNullValue());
 			assertThat(crByReportItem.getShippingAddress(), notNullValue());
@@ -470,7 +470,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 			assertThat(reportItem.getType(), equalTo(ReportItemType.SHIP));
 			assertThat(reportItem.getId(), is(notNullValue()));
 			assertThat(
-					reportItem.getDeliveryNotes().getId(),
+					reportItem.getReport().getId(),
 					is(notNullValue()));
 			assertThat(reportItem.getQuantity(), is(greaterThan(0)));
 		}
@@ -536,8 +536,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		for (ReportItem he : receipt.getItems()) {
 			assertTrue(he.getType() == ReportItemType.PAID);
 			assertTrue(he.getId() != null);
-			assertTrue(he.getReceipt() != null);
-			assertTrue(he.getReceipt().getId() != null);
+			assertTrue(he.getReport() != null);
+			assertTrue(he.getReport().getId() != null);
 			assertTrue(he.getQuantity() > 0);
 		}
 	}

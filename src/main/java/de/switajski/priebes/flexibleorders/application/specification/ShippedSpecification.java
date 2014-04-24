@@ -10,8 +10,8 @@ import javax.persistence.criteria.SetJoin;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
 @Embeddable
 public class ShippedSpecification extends ItemSpecification {

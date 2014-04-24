@@ -3,8 +3,8 @@ package de.switajski.priebes.flexibleorders.application.specification;
 import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
 /**
  * Validates and defines states of items. Its responsibility is to identify an object that

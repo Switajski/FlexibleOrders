@@ -4,7 +4,7 @@
     
     <display-name>FlexibleOrders</display-name>
     
-    <description>Pdf Printing Machine for Orders, Invoices, Shipping Info. It's gonna be big!</description>
+    <description>Pdf printing machine for orders, invoices, shipping Info. It's gonna be big!</description>
 
     
     <!-- Enable escaping of form submission contents -->

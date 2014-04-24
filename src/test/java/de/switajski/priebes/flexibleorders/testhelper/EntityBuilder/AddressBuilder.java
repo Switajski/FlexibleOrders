@@ -17,11 +17,6 @@ public class AddressBuilder implements Builder<Address> {
 
 	private Country country = Country.DEUTSCHLAND;
 
-	public AddressBuilder withCountry(Country country) {
-		this.country = country;
-		return this;
-	}
-
 	@Override
 	public Address build() {
 		Address address = new Address(
@@ -40,6 +35,36 @@ public class AddressBuilder implements Builder<Address> {
 
 	public static Address buildWithGeneratedAttributes(int i) {
 		return new AddressBuilder().generateAttributes(i).build();
+	}
+
+	public AddressBuilder setName1(String name1) {
+		this.name1 = name1;
+		return this;
+	}
+
+	public AddressBuilder setName2(String name2) {
+		this.name2 = name2;
+		return this;
+	}
+
+	public AddressBuilder setStreet(String street) {
+		this.street = street;
+		return this;
+	}
+
+	public AddressBuilder setPostalCode(int postalCode) {
+		this.postalCode = postalCode;
+		return this;
+	}
+
+	public AddressBuilder setCity(String city) {
+		this.city = city;
+		return this;
+	}
+
+	public AddressBuilder setCountry(Country country) {
+		this.country = country;
+		return this;
 	}
 
 }

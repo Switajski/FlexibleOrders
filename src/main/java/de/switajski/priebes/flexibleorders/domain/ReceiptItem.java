@@ -15,4 +15,9 @@ public class ReceiptItem extends ReportItem {
 		super(receipt, paid, orderItem, quantity, receivedPaymentDate);
 	}
 
+	@Override
+	public String provideStatus() {
+		return "bezahlt";
+	}
+
 }

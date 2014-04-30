@@ -60,6 +60,8 @@ public class ReportItemServiceTest {
 	private CustomerRepository customerRepo;
 	@Mock
 	private OrderRepository orderRepo;
+	@Mock
+	private ItemDtoConverterService itemDtoConverterService;
 
 	private OrderServiceImpl orderService;
 	
@@ -72,7 +74,7 @@ public class ReportItemServiceTest {
 		order.addOrderItem(new OrderItemBuilder(order, product, ORDERED_QUANTITY).build());
 		
 		MockitoAnnotations.initMocks(this);
-		orderService = new OrderServiceImpl(reportRepo, customerRepo, orderItemRepo, orderRepo, cProductRepo, heRepo);
+		orderService = new OrderServiceImpl(reportRepo, customerRepo, orderItemRepo, orderRepo, cProductRepo, heRepo, itemDtoConverterService);
 		
 		Mockito.when(customerRepo.findOne(CUSTOMER_ID))
 		.thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));

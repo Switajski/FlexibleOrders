@@ -49,6 +49,8 @@ public class OrderServiceTest {
 	private CustomerRepository customerRepoMock;
 	@Mock
 	private OrderRepository orderRepoMock;
+	@Mock
+	private ItemDtoConverterService itemDtoConverterService;
 	
 	private OrderServiceImpl orderService;
 	
@@ -62,7 +64,7 @@ public class OrderServiceTest {
 			.thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(PRODUCT_NO.intValue()));
 		
 		orderService = new OrderServiceImpl(reportRepoMock, customerRepoMock, orderItemRepoMock, 
-				orderRepoMock, cProductRepoMock, heRepoMock);
+				orderRepoMock, cProductRepoMock, heRepoMock, itemDtoConverterService);
 	}
 	
 	@Test

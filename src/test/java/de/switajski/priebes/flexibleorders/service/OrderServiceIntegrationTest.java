@@ -64,6 +64,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	CatalogProductServiceImpl productService;
 	@Autowired
 	OrderServiceImpl orderService;
+	@Autowired 
+	ItemDtoConverterService itemDtoConverterService;
 
 	/**
 	 * Test is intentionally not in one transaction
@@ -405,7 +407,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	private List<ItemDto> extractItemDtos(Order order) {
 		List<ItemDto> items = new ArrayList<ItemDto>();
 		for (OrderItem item : order.getItems())
-			items.add(item.toItemDto());
+			items.add(itemDtoConverterService.convert(item));
 		return items;
 	}
 

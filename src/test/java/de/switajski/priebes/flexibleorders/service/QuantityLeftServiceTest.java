@@ -8,6 +8,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
 import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
@@ -56,7 +57,8 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = orderItem.toItemDto().getQuantityLeft();
+		Integer calculatedQuantity = new QuantityLeftCalculator()
+				.calculate(orderItem, ReportItemType.ORDER);
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -84,8 +86,8 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = orderItem
-				.calculateQuantityLeft(ReportItemType.CONFIRM);
+		Integer calculatedQuantity = new QuantityLeftCalculator()
+				.calculate(orderItem);
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -123,8 +125,9 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = orderItem
-				.calculateQuantityLeft(ReportItemType.SHIP);
+		Integer calculatedQuantity = new QuantityLeftCalculator().calculate(
+				orderItem,
+				ReportItemType.SHIP);
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -146,8 +149,9 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = orderItem
-				.calculateQuantityLeft(ReportItemType.INVOICE);
+		Integer calculatedQuantity = new QuantityLeftCalculator().calculate(
+				orderItem,
+				ReportItemType.INVOICE);
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));

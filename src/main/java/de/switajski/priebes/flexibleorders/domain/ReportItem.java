@@ -141,17 +141,6 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		return item;
 	}
 
-	private String provideStatus() {
-		String status = "";
-		switch (type){
-			case CONFIRM: status = "best&auml;tigt"; break;
-			case SHIP: status = "ausgeliefert"; break;
-			case INVOICE: status = "in Rechnung gestellt"; break;
-			case PAID: status = "bezahlt"; break;
-			case FORWARD_TO_THIRD_PARTY: status = "zur Näherei"; break;
-			case CANCEL: status = "storniert"; break;
-		}
-		return status;
-	}
+	public abstract String provideStatus();
 
 }

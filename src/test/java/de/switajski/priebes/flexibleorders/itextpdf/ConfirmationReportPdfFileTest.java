@@ -20,8 +20,10 @@ import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.HandlingEventBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ReportItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,8 +60,10 @@ public class ConfirmationReportPdfFileTest {
 
 		for (int i = 0; i < 28; i++) {
 			item1.addHandlingEvent(
-					new HandlingEventBuilder(
-							ReportItemType.SHIP, item1, i)
+					new ConfirmationItemBuilder()
+							.setQuantity(i)
+							.setItem(item1)
+							.setType(ReportItemType.CONFIRM)
 							.setReport(orderConfirmation)
 							.build());
 		}

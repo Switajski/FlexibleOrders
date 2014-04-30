@@ -28,7 +28,7 @@ public class PriebesJoomlaImporterServiceTest {
 	OrderItemRepository itemRepository;
 
 	@Rollback(false)
-	@Ignore
+//	@Ignore
 	@Test
 	public void shouldImportOrderItems() {
 		// pji.importCustomers();

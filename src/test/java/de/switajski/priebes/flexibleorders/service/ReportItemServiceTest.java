@@ -85,7 +85,7 @@ public class ReportItemServiceTest {
 	}
 	
 	@Test
-	public void shouldConfirm(){
+	public void confirm_quantityShouldBeConfirmedQuantity(){
 		//GIVEN
 		reportItems = givenItemDtos();
 		
@@ -97,9 +97,9 @@ public class ReportItemServiceTest {
 		
 		assertThat(confirmationReport, notNullValue());
 		assertThat(confirmationReport.getItems(), not(empty()));
-		assertThat(confirmationReport.getItems().iterator().next().getQuantity(), is(8));
+		assertThat(confirmationReport.getItems().iterator().next().getQuantity(), is(QUANTITY_TO_CONFIRM));
 	}
-
+	
 	private ConfirmationReport captureConfirmationReportToBeSaved() {
 		ArgumentCaptor<ConfirmationReport> orderVarToBeSaved = ArgumentCaptor.forClass(ConfirmationReport.class);
 		Mockito.verify(reportRepo).save(orderVarToBeSaved.capture());

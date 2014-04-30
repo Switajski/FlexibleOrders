@@ -189,7 +189,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 		assertThat(toBePaid.isEmpty(), is(false));
 		for (ItemDto payable : toBePaid)
-		assertThat(ids.contains(payable.getId()), is(true));
+			assertThat(ids.contains(payable.getId()), is(true));
 	}
 
 	private Set<Long> extractIds(Set<? extends GenericEntity> entities) {
@@ -376,7 +376,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		Set<Long> orderItemIds = extractIds(order.getItems());
 
 		assertThat(toBeConfirmed.isEmpty(), is(false));
-		for (ItemDto confirmable: toBeConfirmed)
+		for (ItemDto confirmable : toBeConfirmed)
 			assertThat(orderItemIds.contains(confirmable.getId()), is(true));
 	}
 

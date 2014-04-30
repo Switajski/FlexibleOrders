@@ -14,8 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.reference.Currency;
@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.HandlingEventBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfFile;
 
@@ -75,14 +75,18 @@ public class InvoicePdfFileTest {
 				.build();
 		for (int i = 0; i < 24; i++) {
 			item1.addHandlingEvent(
-					new HandlingEventBuilder(
-							ReportItemType.SHIP, item1, i + 1)
+					new InvoiceItemBuilder()
+							.setType(ReportItemType.INVOICE)
+							.setItem(item1)
+							.setQuantity(i+1)
 							.setReport(invoice)
 							.build());
 		}
 		shipping.addHandlingEvent(
-				new HandlingEventBuilder(
-						ReportItemType.SHIP, shipping, 4)
+				new InvoiceItemBuilder()
+						.setType(ReportItemType.INVOICE)
+						.setItem(shipping)
+						.setQuantity(4)
 						.setReport(invoice)
 						.build());
 

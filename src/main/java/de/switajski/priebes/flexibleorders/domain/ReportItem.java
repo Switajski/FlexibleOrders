@@ -13,7 +13,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Entity
-public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
+public abstract class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 
 	@NotNull
 	private Integer quantity;
@@ -31,12 +31,12 @@ public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 	protected ReportItem() {}
 
 	//TODO: refactor to no constructor - use factory instead
-	public ReportItem(Report report, ReportItemType handlingEventType, OrderItem item, 
+	public ReportItem(Report report, ReportItemType reportItemType, OrderItem item, 
 			Integer quantity, Date created) {
-		if (report == null || handlingEventType == null || item == null || quantity == null) 
+		if (report == null || reportItemType == null || item == null || quantity == null) 
 			throw new IllegalArgumentException();
 		this.report = report;
-		this.type = handlingEventType;
+		this.type = reportItemType;
 		this.orderItem = item;
 		this.quantity = quantity;
 		setCreated(created);
@@ -63,30 +63,6 @@ public class ReportItem extends GenericEntity implements Comparable<ReportItem>{
 
 	public Report getReport() {
 		return report;
-	}
-	
-	public Invoice getInvoice(){
-		if (getReport() instanceof Invoice)
-			return (Invoice) getReport();
-		return null;
-	}
-	
-	public DeliveryNotes getDeliveryNotes(){
-		if (getReport() instanceof DeliveryNotes)
-			return (DeliveryNotes) getReport();
-		return null;
-	}
-	
-	public Receipt getReceipt(){
-		if (getReport() instanceof Receipt)
-			return (Receipt) getReport();
-		return null;
-	}
-	
-	public ConfirmationReport getConfirmationReport(){
-		if (getReport() instanceof ConfirmationReport)
-			return (ConfirmationReport) getReport();
-		return null;
 	}
 	
 	public void setReport(Report report) {

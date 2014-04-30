@@ -32,7 +32,6 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderServiceTest {
 	
-	private static final int GENERATE_NUMBER = 2;
 	private static final Integer ORDERED_QUANTITY = 3;
 	private static final Long PRODUCT_NO = 3l;
 	private static final Long CUSTOMER_ID = 2l;

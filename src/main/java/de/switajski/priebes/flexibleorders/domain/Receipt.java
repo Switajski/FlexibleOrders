@@ -13,18 +13,18 @@ public class Receipt extends Report {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
-	private Date paymentReceivedDate;
+	private Date paymentReceived;
 
-	public Receipt(String receiptNumber, Date paymentReceivedDate) {
+	public Receipt(String receiptNumber, Date paymentReceived) {
 		super(receiptNumber);
-		this.paymentReceivedDate = paymentReceivedDate;
+		this.paymentReceived = paymentReceived;
 	}
 
 	public Date getPaymentReceivedDate() {
-		return paymentReceivedDate;
+		return paymentReceived;
 	}
 
 	public void setPaymentReceivedDate(Date paymentReceivedDate) {
-		this.paymentReceivedDate = paymentReceivedDate;
+		this.paymentReceived = paymentReceivedDate;
 	}
 }

@@ -16,11 +16,15 @@ import de.switajski.priebes.flexibleorders.application.specification.ShippedSpec
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
+import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
+import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -28,6 +32,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -121,7 +126,7 @@ public class OrderServiceImpl {
 			OrderItem oi = itemRepo.findOne(entry.getId());
 			if (oi == null) 
 				throw new IllegalArgumentException("Bestellposition nicht gefunden");
-			cr.addItem(new ReportItem(cr, ReportItemType.CONFIRM, oi, 
+			cr.addItem(new ConfirmationItem(cr, ReportItemType.CONFIRM, oi, 
 					entry.getQuantityLeft(), new Date()));
 		}
 		return reportRepo.save(cr);
@@ -167,7 +172,7 @@ public class OrderServiceImpl {
 			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeDelivered,
 					ReportItemType.CONFIRM);
 			
-			deliveryNotes.addItem(new ReportItem(deliveryNotes, ReportItemType.SHIP, 
+			deliveryNotes.addItem(new ShippingItem(deliveryNotes, ReportItemType.SHIP, 
 					orderItemToBeDelivered, quantityToDeliver, new Date()));
 			
 			if (firstOrder == null)
@@ -218,7 +223,7 @@ public class OrderServiceImpl {
 		for (ItemDto ri: ris){
 			ReportItem he = heRepo.findOne(ri.getId());
 			receipt.addItem(
-					new ReportItem(receipt, ReportItemType.PAID, he.getOrderItem(), 
+					new ReceiptItem(receipt, ReportItemType.PAID, he.getOrderItem(), 
 							he.getQuantity(), receivedPaymentDate));
 		}
 		//TODO: refactor
@@ -285,7 +290,7 @@ public class OrderServiceImpl {
 	private CancelReport createCancelReport(Report cr) {
 		CancelReport cancelReport = new CancelReport("ABGEBROCHEN-"+cr.getDocumentNumber());
 		for (ReportItem he :cr.getItems()){
-			cancelReport.addItem(new ReportItem(cancelReport, ReportItemType.CANCEL, 
+			cancelReport.addItem(new CancellationItem(cancelReport, ReportItemType.CANCEL, 
 					he.getOrderItem(), he.getQuantity(), new Date()));
 		}
 		return cancelReport;
@@ -311,7 +316,7 @@ public class OrderServiceImpl {
 		ReportItem reportItem = null;
 		for (ReportItem he:invoice.getItems()){
 			receipt.addItem(
-					new ReportItem(receipt, ReportItemType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
+					new ReceiptItem(receipt, ReportItemType.PAID, he.getOrderItem(), he.getQuantity(), new Date()));
 			if (reportItem == null)
 				reportItem = he;
 		}
@@ -347,7 +352,7 @@ public class OrderServiceImpl {
 			Integer quantityToDeliver = validateQuantity(entry, orderItemToBeInvoiced,
 					ReportItemType.SHIP);
 			
-			invoice.addItem(new ReportItem(invoice, ReportItemType.INVOICE, 
+			invoice.addItem(new InvoiceItem(invoice, ReportItemType.INVOICE, 
 					shipEventToBeInvoiced.getOrderItem(), quantityToDeliver, new Date()));
 
 			for (ReportItem he :orderItemToBeInvoiced.getAllHesOfType(ReportItemType.SHIP)){

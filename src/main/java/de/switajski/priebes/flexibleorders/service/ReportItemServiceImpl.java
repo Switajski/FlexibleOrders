@@ -289,13 +289,6 @@ public class ReportItemServiceImpl {
 		return new PageImpl<ItemDto>(ris, pageable, reports.getTotalElements());
 	}
 
-	private static int countOrders(List<ItemDto> ris) {
-		Set<String> set = new HashSet<String>();
-		for (ItemDto ri : ris)
-			set.add(ri.getOrderNumber());
-		return set.size();
-	}
-
 	/**
 	 * 
 	 * @param type

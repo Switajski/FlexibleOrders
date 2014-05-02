@@ -19,7 +19,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 	private Integer quantity;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	private Report report;
+	protected Report report;
 	
 	@NotNull
 	private ReportItemType type;

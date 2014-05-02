@@ -38,6 +38,29 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 				.generateAttributes(i).build();
 	}
 
+	public static CatalogProduct buildMiladka() {
+		return new CatalogProductBuilder(
+				"Miladka athra stars lime",
+				28189L,
+				ProductType.PRODUCT)
+				.build();
+	}
+
+	public static CatalogProduct buildAmy() {
+		return new CatalogProductBuilder(
+				"Amy Fleece",
+				75195L,
+				ProductType.PRODUCT)
+				.build();
+	}
+
+	public static CatalogProduct buildPaul() {
+		return new CatalogProductBuilder(
+				"Paul anthra dots",
+				43092L,
+				ProductType.PRODUCT).build();
+	}
+
 	public CatalogProductBuilder generateAttributes(Integer i) {
 		productType = ProductType.PRODUCT;
 		name = "product";

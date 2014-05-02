@@ -27,4 +27,8 @@ public class ShippingItem extends ReportItem {
 		return "geliefert";
 	}
 
+	public DeliveryNotes getDeliveryNotes() {
+		return (DeliveryNotes) this.report;
+	}
+
 }

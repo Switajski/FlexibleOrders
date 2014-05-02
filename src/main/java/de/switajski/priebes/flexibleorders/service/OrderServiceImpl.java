@@ -268,15 +268,7 @@ public class OrderServiceImpl {
 							.getOrderItem(),
 							he.getQuantity(), receivedPaymentDate));
 		}
-		// TODO: refactor
-		receipt.setCustomerNumber(report
-				.getItems()
-				.iterator()
-				.next()
-				.getOrderItem()
-				.getOrder()
-				.getCustomer()
-				.getCustomerNumber());
+		receipt.setCustomerNumber(report.getCustomerNumber());
 		return reportRepo.save(receipt);
 	}
 

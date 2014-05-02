@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -97,6 +98,14 @@ public class OrderItemBuilder implements Builder<OrderItem> {
 	public OrderItemBuilder addHandlingEvent(ReportItem handlingEvent) {
 		this.deliveryHistory.add(handlingEvent);
 		return this;
+	}
+
+	public static OrderItem build(CatalogProduct catalogProduct, int quantity) {
+		OrderItem oi = new OrderItemBuilder(
+				null,
+				catalogProduct.toProduct(),
+				quantity).build();
+		return oi;
 	}
 
 }

@@ -30,7 +30,7 @@ public abstract class Report extends GenericEntity {
 
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
-	private Set<ReportItem> items = new HashSet<ReportItem>();
+	protected Set<ReportItem> items = new HashSet<ReportItem>();
 
 	private Long customerNumber;
 

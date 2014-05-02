@@ -8,7 +8,7 @@ public class ShippingItemBuilder extends ReportItemBuilder<ShippingItemBuilder> 
 	public ShippingItem build() {
 		ShippingItem ii = new ShippingItem((DeliveryNotes) report, type, item, quantity, date);
 		ii.setQuantity(quantity);
-		ii.setReport(report);
+		ii.setReport((DeliveryNotes) report);
 		return ii;
 	}
 }

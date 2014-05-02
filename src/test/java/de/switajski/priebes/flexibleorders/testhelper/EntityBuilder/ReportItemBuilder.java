@@ -6,6 +6,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class ReportItemBuilder<T extends ReportItemBuilder> {
 
 	protected Integer quantity;
@@ -14,6 +15,7 @@ public abstract class ReportItemBuilder<T extends ReportItemBuilder> {
 	protected OrderItem item;
 	protected Date date;
 
+	
 	public T setQuantity(Integer quantity) {
 		this.quantity = quantity;
 		return (T) this;

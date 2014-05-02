@@ -9,7 +9,7 @@ public class InvoiceItemBuilder extends ReportItemBuilder<InvoiceItemBuilder> im
 	public InvoiceItem build() {
 		InvoiceItem ii = new InvoiceItem((Invoice) report, type, item, quantity, date);
 		ii.setQuantity(quantity);
-		ii.setReport(report);
+		ii.setReport((Invoice) report);
 		return ii;
 	}
 }

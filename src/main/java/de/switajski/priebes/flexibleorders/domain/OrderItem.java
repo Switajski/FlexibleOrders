@@ -63,7 +63,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		setProduct(product);
 
 		// handle birectional relationship
-		if (!order.getItems().contains(this))
+		if (order != null && !order.getItems().contains(this))
 			order.getItems().add(this);
 	}
 

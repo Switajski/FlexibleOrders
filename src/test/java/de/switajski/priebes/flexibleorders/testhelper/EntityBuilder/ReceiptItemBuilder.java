@@ -14,7 +14,7 @@ public class ReceiptItemBuilder extends ReportItemBuilder<ReceiptItemBuilder>
 				quantity,
 				date);
 		ii.setQuantity(quantity);
-		ii.setReport(report);
+		ii.setReport((Receipt) report);
 		return ii;
 	}
 

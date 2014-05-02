@@ -19,4 +19,5 @@ public class CancellationItem extends ReportItem {
 	public String provideStatus() {
 		return "storniert";
 	}
+
 }

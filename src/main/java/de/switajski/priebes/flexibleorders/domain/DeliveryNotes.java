@@ -1,5 +1,8 @@
 package de.switajski.priebes.flexibleorders.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -96,6 +99,14 @@ public class DeliveryNotes extends Report {
 		if (getShippingCosts().isGreaterZero())
 			return true;
 		return false;
+	}
+	
+	public Set<ShippingItem> getShippingItems(){
+		Set<ShippingItem> shippingItems = new HashSet<ShippingItem>();
+		for (ReportItem reportItem: this.items){
+			shippingItems.add((ShippingItem) reportItem);
+		}
+		return shippingItems;
 	}
 
 }

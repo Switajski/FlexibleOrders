@@ -16,7 +16,7 @@ public class ConfirmationItemBuilder extends
 				quantity,
 				date);
 		ii.setQuantity(quantity);
-		ii.setReport(report);
+		ii.setReport((ConfirmationReport) report);
 		return ii;
 	}
 }

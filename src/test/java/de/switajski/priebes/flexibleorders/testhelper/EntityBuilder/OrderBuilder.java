@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,25 @@ public class OrderBuilder {
 		order.setOriginSystem(originSystem);
 		order.setItems(items);
 		return order;
+	}
+	
+	public static Order B11(){
+		return new OrderBuilder().withB11().build();
+	}
+
+	private OrderBuilder withB11() {
+		Customer yvonne = CustomerBuilder.buildYvonne();
+		this.setOrderNumber("B11")
+		.setCustomer(yvonne)
+		.setItems(new HashSet<OrderItem>(Arrays.asList(
+					OrderItemBuilder.build(CatalogProductBuilder.buildAmy(), 10),
+					OrderItemBuilder.build(CatalogProductBuilder.buildMiladka(), 15),
+					OrderItemBuilder.build(CatalogProductBuilder.buildPaul(), 30)
+				)
+				))
+		.setCustomerEmail(yvonne.getEmail())
+		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
+		return this;
 	}
 
 	public OrderBuilder setOrderNumber(String orderNumber) {

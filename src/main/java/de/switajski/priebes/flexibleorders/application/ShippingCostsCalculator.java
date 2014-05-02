@@ -6,7 +6,6 @@ import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
 public class ShippingCostsCalculator {
@@ -21,14 +20,16 @@ public class ShippingCostsCalculator {
 	}
 
 	private Set<DeliveryNotes> retrieveDeliveryNotesWithShippingCosts(
-			Set<ShippingItem> shippingItemDtos) {
+			Set<ShippingItem> shippingItems) {
 		// using HashMap with documentNumber to not sum up shipping costs from
 		// same document
 		HashMap<String, DeliveryNotes> deliveryNotes = new HashMap<String, DeliveryNotes>();
 
-		for (ShippingItem entry : shippingItemDtos) {
-			for (ReportItem shippingItem : entry.getOrderItem().getShippingItems()) {
-				DeliveryNotes dn = (DeliveryNotes) shippingItem.getReport();
+		for (ShippingItem entry : shippingItems) {
+			for (ShippingItem shippingItem : entry.getOrderItem().getShippingItems()) {
+				DeliveryNotes dn = shippingItem.getDeliveryNotes();
+				if (dn.getDocumentNumber() == null)
+					throw new IllegalStateException("No Documentno. set");
 				if (dn.hasShippingCosts())
 					deliveryNotes.put(dn.getDocumentNumber(), dn);
 			}

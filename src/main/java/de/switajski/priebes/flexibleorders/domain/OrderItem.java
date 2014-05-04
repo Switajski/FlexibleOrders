@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.specification.CompletedSpecification;
 import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
@@ -181,15 +182,6 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return s;
 	}
 
-	public Set<ReportItem> getAllHesOfType(ReportItemType type) {
-		Set<ReportItem> hesOfType = new HashSet<ReportItem>();
-		for (ReportItem he : getReportItems()) {
-			if (he.getType() == type)
-				hesOfType.add(he);
-		}
-		return hesOfType;
-	}
-
 	public Set<ConfirmationItem> getConfirmationItems() {
 		Set<ConfirmationItem> riToReturn = new HashSet<ConfirmationItem>();
 		for (ReportItem ri : getReportItems()) {
@@ -237,6 +229,10 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public boolean isShippingCosts() {
 		return this.getProduct().getProductType().equals(ProductType.SHIPPING);
+	}
+
+	public DeliveryHistory getDeliveryHistory() {
+		return new DeliveryHistory(getReportItems());
 	}
 
 }

@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 

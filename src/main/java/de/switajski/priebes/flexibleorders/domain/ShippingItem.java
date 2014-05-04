@@ -15,7 +15,6 @@ public class ShippingItem extends ReportItem {
 			Date date) {
 		super(
 				deliveryNotes,
-				ReportItemType.SHIP,
 				orderItemToBeDelivered,
 				quantityToDeliver,
 				date);

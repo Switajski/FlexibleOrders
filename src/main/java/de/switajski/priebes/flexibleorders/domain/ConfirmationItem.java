@@ -12,7 +12,7 @@ public class ConfirmationItem extends ReportItem {
 
 	public ConfirmationItem(ConfirmationReport cr, 
 			OrderItem oi, Integer quantityLeft, Date date) {
-		super(cr, ReportItemType.CONFIRM, oi, quantityLeft, date);
+		super(cr, oi, quantityLeft, date);
 	}
 
 	@Override

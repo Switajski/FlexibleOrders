@@ -7,11 +7,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
+import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
 /**
  * Defines and validates an item in a confirmed state.</br>
@@ -45,18 +45,17 @@ public class ConfirmedSpecification extends ItemSpecification{
 	public boolean isSatisfiedBy(final OrderItem item){
 		//TODO: take account to executed tasks (includeTaskExecuted) 
 		if (item.getReportItems().isEmpty()) return false;
-		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
-		for (ReportItem he: item.getAllHesOfType(ReportItemType.CONFIRM)){
+		if (!item.getDeliveryHistory().getCancellationItems().isEmpty()) return false;
+		for (ReportItem he: item.getDeliveryHistory().getConfirmationItems()){
 			if (he.getReport() == null || ((ConfirmationReport) he.getReport()).getInvoiceAddress() == null ||
 					//TODO: check VAT_RATE
 					item.getNegotiatedPriceNet() == null ||
 					item.getOrder().getCustomer() == null) 
 				return false;
 		}
-		
-		int confirmedQuantity = this.getHandledQuantityFromEvents(item, ReportItemType.CONFIRM);
-		if (confirmedQuantity != item.getOrderedQuantity()) return false;
-		return true;
+		if (new QuantityLeftCalculator().toBeShipped(item.getDeliveryHistory()) == 0)
+			return true;
+		return false;
 	}
 	
 	@Override
@@ -66,7 +65,7 @@ public class ConfirmedSpecification extends ItemSpecification{
 		
 		Predicate confirmedPred = cb.and(
 				cb.isNotNull(root.<Order>get("flexibleOrder")),
-				cb.equal(heJoin.<ReportItemType>get("type"), cb.literal(ReportItemType.CONFIRM)),
+//				cb.equal(heJoin.<ReportItemType>get("type"), cb.literal(ReportItemType.CONFIRM)),
 				cb.isNotNull(heJoin.get("report")),
 				//TODO add deliveryNotes check
 //				cb.greaterThan(root.get("flexibleOrder").get("orderedQuantity").as(Integer.class), 0),

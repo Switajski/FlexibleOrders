@@ -24,7 +24,6 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -58,7 +57,7 @@ public class QuantityLeftServiceTest {
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
 		Integer calculatedQuantity = new QuantityLeftCalculator()
-				.calculate(orderItem, ReportItemType.ORDER);
+				.toBeConfirmed(orderItem);
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -69,7 +68,6 @@ public class QuantityLeftServiceTest {
 				.setReport(
 						givenConfirmationReport())
 				.setQuantity(quantityProcessed)
-				.setType(ReportItemType.CONFIRM)
 				.setItem(orderItem)
 				.build();
 	}
@@ -87,7 +85,7 @@ public class QuantityLeftServiceTest {
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
 		Integer calculatedQuantity = new QuantityLeftCalculator()
-				.calculate(orderItem);
+				.toBeShipped(orderItem.getDeliveryHistory());
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -98,7 +96,6 @@ public class QuantityLeftServiceTest {
 				.setReport(
 						givenDeliveryNotes())
 				.setQuantity(qtyProcessed)
-				.setType(ReportItemType.SHIP)
 				.setItem(orderItem)
 				.build();
 	}
@@ -123,9 +120,8 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator().calculate(
-				orderItem,
-				ReportItemType.SHIP);
+		Integer calculatedQuantity = new QuantityLeftCalculator().toBeInvoiced(
+				orderItem.getDeliveryHistory());
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -143,9 +139,8 @@ public class QuantityLeftServiceTest {
 		// WHEN
 		// TODO: Integer calulatedQuantity =
 		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator().calculate(
-				orderItem,
-				ReportItemType.INVOICE);
+		Integer calculatedQuantity = new QuantityLeftCalculator().toBePaid(
+				orderItem.getDeliveryHistory());
 
 		// THEN
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
@@ -156,7 +151,6 @@ public class QuantityLeftServiceTest {
 				.setReport(
 						givenReceipt())
 				.setQuantity(qtyProcessed)
-				.setType(ReportItemType.PAID)
 				.setItem(orderItem)
 				.build();
 	}
@@ -170,7 +164,6 @@ public class QuantityLeftServiceTest {
 				.setReport(
 						givenInvoice())
 				.setQuantity(qtyProcessed)
-				.setType(ReportItemType.INVOICE)
 				.setItem(orderItem)
 				.build();
 	}

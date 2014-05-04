@@ -22,21 +22,17 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 	protected Report report;
 	
 	@NotNull
-	private ReportItemType type;
-	
-	@NotNull
 	@ManyToOne
 	private OrderItem orderItem;
 
 	protected ReportItem() {}
 
 	//TODO: refactor to no constructor - use factory instead
-	public ReportItem(Report report, ReportItemType reportItemType, OrderItem item, 
+	public ReportItem(Report report, OrderItem item, 
 			Integer quantity, Date created) {
-		if (report == null || reportItemType == null || item == null || quantity == null) 
+		if (report == null || item == null || quantity == null) 
 			throw new IllegalArgumentException();
 		this.report = report;
-		this.type = reportItemType;
 		this.orderItem = item;
 		this.quantity = quantity;
 		setCreated(created);
@@ -45,12 +41,6 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 			orderItem.addHandlingEvent(this);
 		if (report.getItems().contains(this)) return ;
 		report.addItem(this);
-	}
-	
-	public String toString(){
-		return (this.getId()+": Report:"+getReport().getDocumentNumber())
-				+" Type: " + getType().toString()
-				+" Quantity: "+getQuantity();
 	}
 	
 	public int getQuantity() {
@@ -83,14 +73,6 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		item.addHandlingEvent(this);
 	}
 
-	public ReportItemType getType() {
-		return type;
-	}
-
-	public void setType(ReportItemType type) {
-		this.type = type;
-	}
-
 	@Override
 	public int compareTo(ReportItem o) {
 		// TODO Auto-generated method stub
@@ -102,6 +84,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 	 * @return
 	 * @see OrderItem#toReportItems(ReportItemType)
 	 */
+	@Deprecated
 	public ItemDto toItemDto(){
 		//TODO: enhance mapping by a mapping framework
 		ItemDto item = new ItemDto();

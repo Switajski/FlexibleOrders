@@ -17,7 +17,6 @@ import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -76,7 +75,6 @@ public class InvoicePdfFileTest {
 		for (int i = 0; i < 24; i++) {
 			item1.addHandlingEvent(
 					new InvoiceItemBuilder()
-							.setType(ReportItemType.INVOICE)
 							.setItem(item1)
 							.setQuantity(i+1)
 							.setReport(invoice)
@@ -84,7 +82,6 @@ public class InvoicePdfFileTest {
 		}
 		shipping.addHandlingEvent(
 				new InvoiceItemBuilder()
-						.setType(ReportItemType.INVOICE)
 						.setItem(shipping)
 						.setQuantity(4)
 						.setReport(invoice)

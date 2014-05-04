@@ -12,7 +12,7 @@ public class CancellationItem extends ReportItem {
 
 	public CancellationItem(CancelReport cancelReport,
 			OrderItem orderItem, int quantity, Date date) {
-		super(cancelReport, ReportItemType.CANCEL, orderItem, quantity, date);
+		super(cancelReport, orderItem, quantity, date);
 	}
 
 	@Override

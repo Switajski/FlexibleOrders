@@ -31,7 +31,6 @@ import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
@@ -196,10 +195,8 @@ public class OrderServiceImpl {
 			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered
 					.getOrderItem();
 
-			validateQuantity(
-					entry,
-					orderItemToBeDelivered,
-					ReportItemType.CONFIRM);
+			validateQuantity(entry, 
+					(ConfirmationItem) confirmEventToBeDelivered);
 
 			deliveryNotes.addItem(new ShippingItem(
 					deliveryNotes,
@@ -221,16 +218,14 @@ public class OrderServiceImpl {
 	}
 
 	private void validateQuantity(ItemDto entry,
-			OrderItem orderItemToBeDelivered,
-			ReportItemType type) {
+			ReportItem reportItem) {
 		Integer quantityToDeliver = entry.getQuantityLeft();
 		if (quantityToDeliver == null)
 			throw new IllegalArgumentException("Menge nicht angegeben");
 		if (quantityToDeliver < 1)
 			throw new IllegalArgumentException("Menge kleiner eins");
 		if (quantityToDeliver > new QuantityLeftCalculator().calculate(
-				orderItemToBeDelivered,
-				type))
+				reportItem))
 			throw new IllegalArgumentException(
 					"angeforderte Menge ist zu gross");
 	}
@@ -402,7 +397,7 @@ public class OrderServiceImpl {
 			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
 					.getOrderItem();
 
-			validateQuantity(entry, orderItemToBeInvoiced, ReportItemType.SHIP);
+			validateQuantity(entry, (ShippingItem) shipEventToBeInvoiced);
 
 			invoice.addItem(new InvoiceItem(
 					invoice,

@@ -22,21 +22,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
+import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
+import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -126,7 +128,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		assertThat(risToBeShipped.getContent().isEmpty(), is(true));
 	}
 
-	// TODO:Remove after test passes mvn test run
+	// TODO:Remove transactional after test passes mvn test run
 	@Transactional
 	@Test
 	public void invoice_InvoiceShouldBePayableNotShippableAndPersisted() {
@@ -276,8 +278,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				itemDtosWithQty(shipQty, extractItemDtos(confirmationReport)));
 
 		// then
-		assertShippable();
-		assertShippableQtyOfItemsIs(orderQty - shipQty);
+		assertShippable(orderQty);
+		assertShippableQtyLeftOfItemsIs(orderQty - shipQty);
 
 		assertPersisted(deliveryNotes, customer);
 		assertInvoicable(customer);
@@ -426,23 +428,19 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		assertThat(confirmationReport, notNullValue());
 		assertThat(confirmationReport.getItems().size(), equalTo(2));
 		assertThat(
-				confirmationReport.getItems().iterator().next().getType(),
-				equalTo(ReportItemType.CONFIRM));
+				confirmationReport.getItems().iterator().next() instanceof ConfirmationItem,
+				is(true));
 
 		for (ReportItem reportItem : confirmationReport.getItems()) {
-			assertThat(
-					new ConfirmedSpecification(false, false).isSatisfiedBy(reportItem
-							.getOrderItem()),
-					is(true));
 			assertThat(confirmationReport.getId(), notNullValue());
 			assertThat(reportItem.getOrderItem().getId(), notNullValue());
 			assertThat(
 					reportItem.getOrderItem().getOrder().getId(),
 					notNullValue());
 
-			Set<ReportItem> confirmationReportItem = reportItem
+			Set<ConfirmationItem> confirmationReportItem = reportItem
 					.getOrderItem()
-					.getAllHesOfType(ReportItemType.CONFIRM);
+					.getDeliveryHistory().getConfirmationItems();
 			assertThat(confirmationReportItem.size(), equalTo(1));
 
 			ConfirmationReport crByReportItem = (ConfirmationReport) confirmationReportItem
@@ -469,7 +467,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		assertThat(deliveryNotes.getItems().isEmpty(), is(false));
 
 		for (ReportItem reportItem : deliveryNotes.getItems()) {
-			assertThat(reportItem.getType(), equalTo(ReportItemType.SHIP));
+			assertThat(reportItem instanceof ShippingItem, is(true));
 			assertThat(reportItem.getId(), is(notNullValue()));
 			assertThat(
 					reportItem.getReport().getId(),
@@ -492,7 +490,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		return ris;
 	}
 
-	private void assertShippable() {
+	private void assertShippable(Integer shippableQty) {
 		Page<ItemDto> risToBeShipped = reportItemService
 				.retrieveAllToBeShipped(createPageRequest());
 		assertTrue(
@@ -501,7 +499,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		for (ItemDto ri : risToBeShipped)
 			assertEquals(
 					"shipped quantity of item is false",
-					new Integer(10),
+					shippableQty,
 					ri.getQuantity());
 	}
 
@@ -513,7 +511,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 			assertThat(ri.getQuantity(), is(equalTo(invoiceableQuantity)));
 	}
 
-	private void assertShippableQtyOfItemsIs(int shippableQty) {
+	private void assertShippableQtyLeftOfItemsIs(int shippableQty) {
 		Page<ItemDto> risToBeShipped = reportItemService
 				.retrieveAllToBeShipped(createPageRequest());
 		assertThat(risToBeShipped.getTotalElements(), is(greaterThan(0L)));
@@ -536,7 +534,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		assertThat(receipt.getCustomerNumber(), notNullValue());
 		assertFalse(receipt.getItems().isEmpty());
 		for (ReportItem he : receipt.getItems()) {
-			assertTrue(he.getType() == ReportItemType.PAID);
+			assertTrue(he instanceof ReceiptItem);
 			assertTrue(he.getId() != null);
 			assertTrue(he.getReport() != null);
 			assertTrue(he.getReport().getId() != null);
@@ -550,7 +548,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 		for (ReportItem he : invoice.getItems()) {
 			assertTrue(he.getId() != null);
-			assertTrue(he.getType() == ReportItemType.INVOICE);
+			assertTrue(he instanceof InvoiceItem);
 			assertTrue(he.getQuantity() > 0);
 		}
 	}

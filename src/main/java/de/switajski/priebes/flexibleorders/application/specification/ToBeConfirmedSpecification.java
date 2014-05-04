@@ -6,13 +6,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
 public class ToBeConfirmedSpecification extends ItemSpecification {
 
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
-		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
+		if (!item.getDeliveryHistory().getCancellationItems().isEmpty()) return false;
 		return !(new ConfirmedSpecification().isSatisfiedBy(item));
 	}
 	

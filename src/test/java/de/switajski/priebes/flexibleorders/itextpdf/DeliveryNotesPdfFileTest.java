@@ -16,11 +16,9 @@ import de.switajski.priebes.flexibleorders.application.specification.ShippedSpec
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ReportItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfFile;
@@ -58,7 +56,6 @@ public class DeliveryNotesPdfFileTest {
 		for (int i = 0; i < 35; i++) {
 			item1.addHandlingEvent(
 					new ShippingItemBuilder()
-							.setType(ReportItemType.SHIP)
 							.setItem(item1)
 							.setQuantity(i+1)
 							.setReport(deliveryNotes)

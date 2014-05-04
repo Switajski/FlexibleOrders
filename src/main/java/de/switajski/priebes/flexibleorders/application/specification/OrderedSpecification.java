@@ -7,7 +7,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 
 
 /**
@@ -26,7 +25,7 @@ public class OrderedSpecification extends ItemSpecification{
 		if (item.getProduct().getProductNumber() == null) return false;
 		if (item.getOrder().getCustomerEmail() == null
 				&& item.getOrder().getCustomer() == null) return false;
-		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
+		if (!item.getDeliveryHistory().getCancellationItems().isEmpty()) return false;
 		
 		return true;
 	}

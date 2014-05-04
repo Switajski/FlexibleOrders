@@ -23,7 +23,7 @@ public abstract class ItemSpecification implements Specification<OrderItem>{
 	
 	public int getHandledQuantityFromEvents(OrderItem item, ReportItemType type) {
 		int summedQuan = 0;
-		for (ReportItem orderEvent: item.getDeliveryHistory()){
+		for (ReportItem orderEvent: item.getReportItems()){
 			if (orderEvent.getType() == type)
 				summedQuan += orderEvent.getQuantity();
 		}

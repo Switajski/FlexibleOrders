@@ -161,7 +161,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 		// then
 		assertInvoiceAndItemsPersisted(invoice);
-		assertToBePaid(invoice);
+		assertPayable(invoice);
 		assertNotShippable(invoice);
 
 		// tearDown
@@ -184,14 +184,14 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 			assertThat(ids.contains(shippable.getId()), is(true));
 	}
 
-	private void assertToBePaid(Invoice invoice) {
+	private void assertPayable(Invoice invoice) {
 		List<ItemDto> toBePaid = reportItemService.retrieveAllToBePaid(
 				createPageRequest()).getContent();
-		Set<Long> ids = extractIds(invoice.getItems());
+		Set<Long> invoiceItems = extractIds(invoice.getItems());
 
 		assertThat(toBePaid.isEmpty(), is(false));
 		for (ItemDto payable : toBePaid)
-			assertThat(ids.contains(payable.getId()), is(true));
+			assertThat(invoiceItems.contains(payable.getId()), is(true));
 	}
 
 	private Set<Long> extractIds(Set<? extends GenericEntity> entities) {

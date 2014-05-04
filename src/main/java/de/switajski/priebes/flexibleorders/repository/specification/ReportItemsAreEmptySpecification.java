@@ -13,15 +13,15 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
-public class HasEmptyDeliveryHistorySpecification implements Specification<OrderItem>{
+public class ReportItemsAreEmptySpecification implements Specification<OrderItem>{
 
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
 			CriteriaBuilder cb) {
-		Path<Set<ReportItem>> deliveryHistory = root.get("deliveryHistory");
-		Predicate emptyDeliveryHistoryPredicate = 
-				cb.isEmpty(deliveryHistory);
-		return emptyDeliveryHistoryPredicate;
+		Path<Set<ReportItem>> reportItems = root.get("reportItems");
+		Predicate emptyReportItemsPredicate = 
+				cb.isEmpty(reportItems);
+		return emptyReportItemsPredicate;
 	}
 
 	

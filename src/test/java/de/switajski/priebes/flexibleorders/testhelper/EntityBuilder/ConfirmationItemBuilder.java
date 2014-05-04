@@ -11,7 +11,6 @@ public class ConfirmationItemBuilder extends
 	public ConfirmationItem build() {
 		ConfirmationItem ii = new ConfirmationItem(
 				(ConfirmationReport) report,
-				type,
 				item,
 				quantity,
 				date);

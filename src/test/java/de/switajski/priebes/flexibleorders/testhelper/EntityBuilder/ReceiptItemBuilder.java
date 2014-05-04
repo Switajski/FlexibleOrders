@@ -9,7 +9,6 @@ public class ReceiptItemBuilder extends ReportItemBuilder<ReceiptItemBuilder>
 	public ReceiptItem build() {
 		ReceiptItem ii = new ReceiptItem(
 				(Receipt) report,
-				type,
 				item,
 				quantity,
 				date);

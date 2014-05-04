@@ -82,7 +82,7 @@ public class QuantityLeftCalculator {
 	
 	private Set<ReportItem> getAllHesOfType(ReportItemType type) {
 		Set<ReportItem> hesOfType = new HashSet<ReportItem>();
-		for (ReportItem he: orderItem.getDeliveryHistory()){
+		for (ReportItem he: orderItem.getReportItems()){
 			if (he.getType() == type)
 				hesOfType.add(he);
 		}

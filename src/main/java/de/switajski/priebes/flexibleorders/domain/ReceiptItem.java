@@ -10,9 +10,9 @@ public class ReceiptItem extends ReportItem {
 	protected ReceiptItem() {
 	}
 
-	public ReceiptItem(Receipt receipt, ReportItemType paid,
+	public ReceiptItem(Receipt receipt,
 			OrderItem orderItem, int quantity, Date receivedPaymentDate) {
-		super(receipt, paid, orderItem, quantity, receivedPaymentDate);
+		super(receipt, ReportItemType.PAID, orderItem, quantity, receivedPaymentDate);
 	}
 
 	@Override

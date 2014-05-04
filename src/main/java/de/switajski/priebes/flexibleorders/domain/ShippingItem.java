@@ -11,12 +11,11 @@ public class ShippingItem extends ReportItem {
 	}
 
 	public ShippingItem(DeliveryNotes deliveryNotes,
-			ReportItemType handlingEventType,
 			OrderItem orderItemToBeDelivered, Integer quantityToDeliver,
 			Date date) {
 		super(
 				deliveryNotes,
-				handlingEventType,
+				ReportItemType.SHIP,
 				orderItemToBeDelivered,
 				quantityToDeliver,
 				date);

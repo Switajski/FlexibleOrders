@@ -146,7 +146,7 @@ public class OrderServiceImpl {
 			if (oi == null)
 				throw new IllegalArgumentException(
 						"Bestellposition nicht gefunden");
-			cr.addItem(new ConfirmationItem(cr, ReportItemType.CONFIRM, oi,
+			cr.addItem(new ConfirmationItem(cr, oi,
 					entry.getQuantityLeft(), new Date()));
 		}
 		return reportRepo.save(cr);
@@ -203,7 +203,6 @@ public class OrderServiceImpl {
 
 			deliveryNotes.addItem(new ShippingItem(
 					deliveryNotes,
-					ReportItemType.SHIP,
 					orderItemToBeDelivered,
 					entry.getQuantityLeft(), // TODO: GUI sets
 												// quanitityToDeliver at this
@@ -262,11 +261,11 @@ public class OrderServiceImpl {
 		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
 
 		for (ItemDto ri : ris) {
-			ReportItem he = heRepo.findOne(ri.getId());
+			ReportItem reportItem = heRepo.findOne(ri.getId());
 			receipt.addItem(
-					new ReceiptItem(receipt, ReportItemType.PAID, he
+					new ReceiptItem(receipt, reportItem
 							.getOrderItem(),
-							he.getQuantity(), receivedPaymentDate));
+							reportItem.getQuantity(), receivedPaymentDate));
 		}
 		receipt.setCustomerNumber(report.getCustomerNumber());
 		return reportRepo.save(receipt);
@@ -336,7 +335,6 @@ public class OrderServiceImpl {
 		for (ReportItem he : cr.getItems()) {
 			cancelReport.addItem(new CancellationItem(
 					cancelReport,
-					ReportItemType.CANCEL,
 					he.getOrderItem(),
 					he.getQuantity(),
 					new Date()));
@@ -364,12 +362,12 @@ public class OrderServiceImpl {
 		Invoice invoice = (Invoice) r;
 		Receipt receipt = new Receipt(receiptNumber, date);
 		ReportItem reportItem = null;
-		for (ReportItem he : invoice.getItems()) {
+		for (ReportItem ri : invoice.getItems()) {
 			receipt.addItem(
-					new ReceiptItem(receipt, ReportItemType.PAID, he
-							.getOrderItem(), he.getQuantity(), new Date()));
+					new ReceiptItem(receipt, ri.getOrderItem(), ri
+							.getQuantity(), new Date()));
 			if (reportItem == null)
-				reportItem = he;
+				reportItem = ri;
 		}
 		receipt.setCustomerNumber(reportItem
 				.getOrderItem()
@@ -408,7 +406,6 @@ public class OrderServiceImpl {
 
 			invoice.addItem(new InvoiceItem(
 					invoice,
-					ReportItemType.INVOICE,
 					shipEventToBeInvoiced.getOrderItem(),
 					entry.getQuantityLeft(), // TODO: GUI sets the quantity to
 												// this nonsense place
@@ -419,7 +416,8 @@ public class OrderServiceImpl {
 		}
 
 		invoice.setShippingCosts(new ShippingCostsCalculator()
-				.calculate(itemDtoConverterService.convertToShippingItems(shippingItemDtos)));
+				.calculate(itemDtoConverterService
+						.convertToShippingItems(shippingItemDtos)));
 		// TODO: refactor DRY!
 		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
 

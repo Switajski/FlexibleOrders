@@ -41,7 +41,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		this.quantity = quantity;
 		setCreated(created);
 		
-		if (!orderItem.getDeliveryHistory().contains(this))
+		if (!orderItem.getReportItems().contains(this))
 			orderItem.addHandlingEvent(this);
 		if (report.getItems().contains(this)) return ;
 		report.addItem(this);
@@ -79,7 +79,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		this.orderItem = item;
 		
 		// handle bidirectional relationship:
-		if (item.getDeliveryHistory().contains(this)) return;
+		if (item.getReportItems().contains(this)) return;
 		item.addHandlingEvent(this);
 	}
 

@@ -242,7 +242,7 @@ public class ReportItemServiceImpl {
 		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (OrderItem oi : ois) {
 			if (spec.isSatisfiedBy(oi)) {
-				for (ReportItem he : oi.getDeliveryHistory())
+				for (ReportItem he : oi.getReportItems())
 					if (he.getType() == type)
 						ris.add(he.toItemDto());
 			}
@@ -309,7 +309,7 @@ public class ReportItemServiceImpl {
 					if (type == null)
 						ris.add(itemDtoConverterService.convert(oi));
 					else {
-						for (ReportItem he : oi.getDeliveryHistory())
+						for (ReportItem he : oi.getReportItems())
 							if (he.getType() == type)
 								ris.add(he.toItemDto());
 					}

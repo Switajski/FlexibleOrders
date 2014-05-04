@@ -30,7 +30,7 @@ public class ShippedSpecification extends ItemSpecification {
 	
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
-		if (item.getDeliveryHistory().isEmpty()) return false;
+		if (item.getReportItems().isEmpty()) return false;
 		if (item.getAllHesOfType(ReportItemType.SHIP).isEmpty()) return false;
 		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
 		
@@ -44,7 +44,7 @@ public class ShippedSpecification extends ItemSpecification {
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("deliveryHistory");
+		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("reportItems");
 		
 		Expression<Long> shippedQuantity = cb.count(heJoin.get("quantity"));
 		Expression<Long> confirmedQuantity;

@@ -28,12 +28,12 @@ public class OrderSpecifications {
 		};
 	}
 	
-	public static Specification<Order> hasEmptyDeliveryHistory(){
+	public static Specification<Order> reportItemsAreEmptySpecification(){
 		return new Specification<Order>() {
 			@Override
 			public Predicate toPredicate(Root<Order> root,
 					CriteriaQuery<?> query, CriteriaBuilder cb) {
-				Path<Set<ReportItem>> itemsJoin = root.<Set<OrderItem>>get("items").<Set<ReportItem>>get("deliveryHistory");
+				Path<Set<ReportItem>> itemsJoin = root.<Set<OrderItem>>get("items").<Set<ReportItem>>get("reportItems");
 				Predicate emptyDeliveryHistoryPredicate = 
 						cb.isEmpty(itemsJoin);
 				return emptyDeliveryHistoryPredicate;

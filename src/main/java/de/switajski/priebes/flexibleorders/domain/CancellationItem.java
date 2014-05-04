@@ -10,9 +10,9 @@ public class CancellationItem extends ReportItem {
 	protected CancellationItem() {
 	}
 
-	public CancellationItem(CancelReport cancelReport, ReportItemType cancel,
+	public CancellationItem(CancelReport cancelReport,
 			OrderItem orderItem, int quantity, Date date) {
-		super(cancelReport, cancel, orderItem, quantity, date);
+		super(cancelReport, ReportItemType.CANCEL, orderItem, quantity, date);
 	}
 
 	@Override

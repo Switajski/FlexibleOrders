@@ -10,9 +10,9 @@ public class InvoiceItem extends ReportItem {
 	protected InvoiceItem() {
 	}
 
-	public InvoiceItem(Invoice invoice, ReportItemType invoice2,
+	public InvoiceItem(Invoice invoice, 
 			OrderItem orderItem, Integer quantityToDeliver, Date date) {
-		super(invoice, invoice2, orderItem, quantityToDeliver, date);
+		super(invoice, ReportItemType.INVOICE, orderItem, quantityToDeliver, date);
 	}
 
 	@Override

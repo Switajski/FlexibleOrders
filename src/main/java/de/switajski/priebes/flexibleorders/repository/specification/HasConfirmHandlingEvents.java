@@ -18,7 +18,7 @@ public class HasConfirmHandlingEvents implements Specification<OrderItem> {
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
 			CriteriaBuilder cb) {
-		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("deliveryHistory");
+		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("reportItems");
 		Predicate hasConfirmHe = 
 				cb.equal(heJoin.<ReportItemType>get("type"), cb.literal(ReportItemType.CONFIRM));
 		return hasConfirmHe;

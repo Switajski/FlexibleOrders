@@ -15,7 +15,7 @@ import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 
 public class OrderItemBuilder implements Builder<OrderItem> {
 
-	private Set<ReportItem> deliveryHistory = new HashSet<ReportItem>();
+	private Set<ReportItem> reportItems = new HashSet<ReportItem>();
 	private Integer orderedQuantity;
 	private Amount negotiatedPriceNet;
 	private Product product;
@@ -32,7 +32,7 @@ public class OrderItemBuilder implements Builder<OrderItem> {
 	@Override
 	public OrderItem build() {
 		OrderItem item = new OrderItem(order, product, orderedQuantity);
-		item.setDeliveryHistory(deliveryHistory);
+		item.setReportItems(reportItems);
 		item.setNegotiatedPriceNet(negotiatedPriceNet);
 		item.setPackageNumber(packageNumber);
 		item.setTrackingNumber(trackingNumber);
@@ -60,8 +60,8 @@ public class OrderItemBuilder implements Builder<OrderItem> {
 				.generateAttributes(i).build();
 	}
 
-	public OrderItemBuilder setDeliveryHistory(Set<ReportItem> deliveryHistory) {
-		this.deliveryHistory = deliveryHistory;
+	public OrderItemBuilder setReportItems(Set<ReportItem> reportItems) {
+		this.reportItems = reportItems;
 		return this;
 	}
 
@@ -95,8 +95,8 @@ public class OrderItemBuilder implements Builder<OrderItem> {
 		return this;
 	}
 
-	public OrderItemBuilder addHandlingEvent(ReportItem handlingEvent) {
-		this.deliveryHistory.add(handlingEvent);
+	public OrderItemBuilder addHandlingEvent(ReportItem reportItem) {
+		this.reportItems.add(reportItem);
 		return this;
 	}
 

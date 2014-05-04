@@ -10,9 +10,9 @@ public class ConfirmationItem extends ReportItem {
 	protected ConfirmationItem() {
 	}
 
-	public ConfirmationItem(ConfirmationReport cr, ReportItemType confirm,
+	public ConfirmationItem(ConfirmationReport cr, 
 			OrderItem oi, Integer quantityLeft, Date date) {
-		super(cr, confirm, oi, quantityLeft, date);
+		super(cr, ReportItemType.CONFIRM, oi, quantityLeft, date);
 	}
 
 	@Override

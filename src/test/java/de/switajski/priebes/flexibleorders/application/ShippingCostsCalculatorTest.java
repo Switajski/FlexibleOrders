@@ -8,14 +8,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItemType;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
@@ -57,7 +55,6 @@ public class ShippingCostsCalculatorTest {
 		for (OrderItem oi : order.getItems()) {
 			oi.addHandlingEvent(new ShippingItem(
 					l13,
-					ReportItemType.SHIP,
 					oi,
 					5,
 					new Date()));
@@ -73,7 +70,6 @@ public class ShippingCostsCalculatorTest {
 		for (OrderItem oi : order.getItems()) {
 			oi.addHandlingEvent(new ShippingItem(
 					l12,
-					ReportItemType.SHIP,
 					oi,
 					5,
 					new Date()));

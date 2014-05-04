@@ -44,7 +44,7 @@ public class ConfirmedSpecification extends ItemSpecification{
 	
 	public boolean isSatisfiedBy(final OrderItem item){
 		//TODO: take account to executed tasks (includeTaskExecuted) 
-		if (item.getDeliveryHistory().isEmpty()) return false;
+		if (item.getReportItems().isEmpty()) return false;
 		if (!item.getAllHesOfType(ReportItemType.CANCEL).isEmpty()) return false;
 		for (ReportItem he: item.getAllHesOfType(ReportItemType.CONFIRM)){
 			if (he.getReport() == null || ((ConfirmationReport) he.getReport()).getInvoiceAddress() == null ||
@@ -62,7 +62,7 @@ public class ConfirmedSpecification extends ItemSpecification{
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root,
 			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("deliveryHistory");
+		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("reportItems");
 		
 		Predicate confirmedPred = cb.and(
 				cb.isNotNull(root.<Order>get("flexibleOrder")),

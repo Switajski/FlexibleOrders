@@ -7,7 +7,7 @@ public class InvoiceItemBuilder extends ReportItemBuilder<InvoiceItemBuilder> im
 
 	@Override
 	public InvoiceItem build() {
-		InvoiceItem ii = new InvoiceItem((Invoice) report, type, item, quantity, date);
+		InvoiceItem ii = new InvoiceItem((Invoice) report, item, quantity, date);
 		ii.setQuantity(quantity);
 		ii.setReport((Invoice) report);
 		return ii;

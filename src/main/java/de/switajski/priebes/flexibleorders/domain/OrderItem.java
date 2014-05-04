@@ -26,7 +26,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	@JsonIgnore
 	@NotNull
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
-	private Set<ReportItem> deliveryHistory = new HashSet<ReportItem>();
+	private Set<ReportItem> reportItems = new HashSet<ReportItem>();
 
 	@NotNull
 	private Integer orderedQuantity;
@@ -57,7 +57,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 * @param orderedQuantity
 	 */
 	public OrderItem(Order order, Product product, int orderedQuantity) {
-		this.deliveryHistory = new HashSet<ReportItem>();
+		this.reportItems = new HashSet<ReportItem>();
 		this.customerOrder = order;
 		this.orderedQuantity = orderedQuantity;
 		setProduct(product);
@@ -79,12 +79,12 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return 0;
 	}
 
-	public Set<ReportItem> getDeliveryHistory() {
-		return deliveryHistory;
+	public Set<ReportItem> getReportItems() {
+		return reportItems;
 	}
 
-	public void setDeliveryHistory(Set<ReportItem> deliveryHistory) {
-		this.deliveryHistory = deliveryHistory;
+	public void setReportItems(Set<ReportItem> reportItems) {
+		this.reportItems = reportItems;
 	}
 
 	public Amount getNegotiatedPriceNet() {
@@ -146,21 +146,21 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	 */
 	public void addHandlingEvent(ReportItem handlingEvent) {
 		// prevent endless loop
-		if (deliveryHistory.contains(handlingEvent))
+		if (reportItems.contains(handlingEvent))
 			return;
-		deliveryHistory.add(handlingEvent);
+		reportItems.add(handlingEvent);
 		handlingEvent.setOrderItem(this);
 	}
 
 	public void removeHandlingEvent(ReportItem handlingEvent) {
-		if (!deliveryHistory.contains(handlingEvent))
+		if (!reportItems.contains(handlingEvent))
 			return;
-		deliveryHistory.remove(handlingEvent);
+		reportItems.remove(handlingEvent);
 		handlingEvent.setOrderItem(null);
 	}
 
 	public Report getReport(String invoiceNo) {
-		for (ReportItem he : getDeliveryHistory())
+		for (ReportItem he : getReportItems())
 			if (he.getReport().getDocumentNumber().equals(invoiceNo))
 				return he.getReport();
 		return null;
@@ -183,7 +183,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<ReportItem> getAllHesOfType(ReportItemType type) {
 		Set<ReportItem> hesOfType = new HashSet<ReportItem>();
-		for (ReportItem he : getDeliveryHistory()) {
+		for (ReportItem he : getReportItems()) {
 			if (he.getType() == type)
 				hesOfType.add(he);
 		}
@@ -192,7 +192,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<ConfirmationItem> getConfirmationItems() {
 		Set<ConfirmationItem> riToReturn = new HashSet<ConfirmationItem>();
-		for (ReportItem ri : getDeliveryHistory()) {
+		for (ReportItem ri : getReportItems()) {
 			if (ri instanceof ConfirmationItem)
 				riToReturn.add((ConfirmationItem) ri);
 		}
@@ -201,7 +201,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<InvoiceItem> getInvoiceItems() {
 		Set<InvoiceItem> riToReturn = new HashSet<InvoiceItem>();
-		for (ReportItem ri : getDeliveryHistory()) {
+		for (ReportItem ri : getReportItems()) {
 			if (ri instanceof InvoiceItem)
 				riToReturn.add((InvoiceItem) ri);
 		}
@@ -210,7 +210,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<ReceiptItem> getReceiptItems() {
 		Set<ReceiptItem> riToReturn = new HashSet<ReceiptItem>();
-		for (ReportItem ri : getDeliveryHistory()) {
+		for (ReportItem ri : getReportItems()) {
 			if (ri instanceof ReceiptItem)
 				riToReturn.add((ReceiptItem) ri);
 		}
@@ -219,7 +219,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<ShippingItem> getShippingItems() {
 		Set<ShippingItem> riToReturn = new HashSet<ShippingItem>();
-		for (ReportItem ri : getDeliveryHistory()) {
+		for (ReportItem ri : getReportItems()) {
 			if (ri instanceof ShippingItem)
 				riToReturn.add((ShippingItem) ri);
 		}
@@ -228,7 +228,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public Set<CancellationItem> getCancellationItems() {
 		Set<CancellationItem> riToReturn = new HashSet<CancellationItem>();
-		for (ReportItem ri : getDeliveryHistory()) {
+		for (ReportItem ri : getReportItems()) {
 			if (ri instanceof CancellationItem)
 				riToReturn.add((CancellationItem) ri);
 		}

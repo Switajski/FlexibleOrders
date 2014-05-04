@@ -82,7 +82,7 @@ public class OrderServiceTest {
 		
 		OrderItem orderItem = orderToBeSaved.getItems().iterator().next();
 		assertEquals(ORDERED_QUANTITY, orderItem.getOrderedQuantity());
-		assert(orderItem.getDeliveryHistory().isEmpty());
+		assert(orderItem.getReportItems().isEmpty());
 		assertEquals(new Amount((PRICE_NET), Currency.EUR), orderItem.getNegotiatedPriceNet());
 		assert(new OrderedSpecification().isSatisfiedBy(orderItem));
 	}

@@ -14,8 +14,8 @@ public class ToBeShippedSpecification extends ItemSpecification {
 	
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
-		return (new ConfirmedSpecification(false, false).isSatisfiedBy(item) &&
-				!(new ShippedSpecification(false, false).isSatisfiedBy(item)));
+		return (new ConfirmedSpecification().isSatisfiedBy(item) &&
+				!(new ShippedSpecification().isSatisfiedBy(item)));
 	}
 
 	@Override

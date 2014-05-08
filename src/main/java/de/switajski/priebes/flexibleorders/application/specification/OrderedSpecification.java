@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import javax.persistence.Embeddable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -14,7 +13,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
  * @author Marek Switajski
  *
  */
-@Embeddable
 public class OrderedSpecification extends ItemSpecification{
 
 	public boolean isSatisfiedBy(OrderItem item){

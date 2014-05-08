@@ -12,7 +12,7 @@ public class ToBePaidSpecification extends ItemSpecification {
 	
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
-		return (new ShippedSpecification(false, false).isSatisfiedBy(item) && 
+		return (new ShippedSpecification().isSatisfiedBy(item) && 
 				!(new CompletedSpecification().isSatisfiedBy(item)));
 	}
 	

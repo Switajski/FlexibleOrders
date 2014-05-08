@@ -15,6 +15,9 @@ public class Receipt extends Report {
 	@DateTimeFormat(style = "M-")
 	private Date paymentReceived;
 
+	protected Receipt() {
+	}
+
 	public Receipt(String receiptNumber, Date paymentReceived) {
 		super(receiptNumber);
 		this.paymentReceived = paymentReceived;

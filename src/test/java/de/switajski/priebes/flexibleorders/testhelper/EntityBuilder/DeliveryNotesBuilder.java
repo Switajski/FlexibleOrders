@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
@@ -12,14 +11,13 @@ import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotesBuilder> implements Builder<DeliveryNotes>{
 
 	private Address shippedAddress;
-	private ShippedSpecification shippedSpecification;
 	private String trackNumber;
 	private String packageNumber;
 	private Amount shippingCosts;
 	
 	@Override
 	public DeliveryNotes build() {
-		DeliveryNotes dn = new DeliveryNotes(super.documentNumber, shippedSpecification, shippedAddress, shippingCosts);
+		DeliveryNotes dn = new DeliveryNotes(super.documentNumber, shippedAddress, shippingCosts);
 		super.build(dn);
 		dn.setTrackNumber(trackNumber);
 		dn.setPackageNumber(packageNumber);
@@ -28,11 +26,6 @@ public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotesBuilder> im
 	
 	public DeliveryNotesBuilder setShippedAddress(Address shippedAddress) {
 		this.shippedAddress = shippedAddress;
-		return this;
-	}
-	
-	public DeliveryNotesBuilder setShippedSpecification(ShippedSpecification shippedSpecification) {
-		this.shippedSpecification = shippedSpecification;
 		return this;
 	}
 	

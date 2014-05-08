@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import javax.persistence.Embeddable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -14,21 +13,8 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
-@Embeddable
 public class ShippedSpecification extends ItemSpecification {
 
-	private Boolean sendInvoiceLetter;
-	
-	private Boolean sendInvoiceEmail;
-	
-	
-	protected ShippedSpecification() {}
-	
-	public ShippedSpecification(boolean sendInvoiceLetter, boolean sendInvoiceEmail) {
-		this.sendInvoiceEmail = sendInvoiceEmail;
-		this.sendInvoiceLetter = sendInvoiceLetter;
-	}
-	
 	@Override
 	public boolean isSatisfiedBy(OrderItem item) {
 		DeliveryHistory deliveryHistory = item.getDeliveryHistory();
@@ -57,22 +43,6 @@ public class ShippedSpecification extends ItemSpecification {
 ////						,cb.equal(shippedQuantity, 1) FEHLER: Aggregatfunktionen sind nicht in der WHERE-Klausel erlaubt
 				);
 		return shippedPred;
-	}
-
-	public boolean isSendInvoiceLetter() {
-		return sendInvoiceLetter;
-	}
-
-	public void setSendInvoiceLetter(boolean sendInvoiceLetter) {
-		this.sendInvoiceLetter = sendInvoiceLetter;
-	}
-
-	public boolean isSendInvoiceEmail() {
-		return sendInvoiceEmail;
-	}
-
-	public void setSendInvoiceEmail(boolean sendInvoiceEmail) {
-		this.sendInvoiceEmail = sendInvoiceEmail;
 	}
 
 }

@@ -45,6 +45,7 @@ public abstract class Report extends GenericEntity {
 		return documentNumber;
 	}
 
+	@JsonIgnore
 	public Set<ReportItem> getItems() {
 		return items;
 	}

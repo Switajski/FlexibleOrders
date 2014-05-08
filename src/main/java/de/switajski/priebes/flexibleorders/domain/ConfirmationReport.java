@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -13,7 +12,6 @@ import javax.persistence.TemporalType;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 /**
@@ -49,9 +47,6 @@ public class ConfirmationReport extends Report {
 	@DateTimeFormat(style = "M-")
 	private Date expectedDelivery;
 
-	@Embedded
-	private ConfirmedSpecification confirmedSpecification;
-
 	protected ConfirmationReport() {
 	}
 
@@ -65,12 +60,10 @@ public class ConfirmationReport extends Report {
 	public ConfirmationReport(
 			String orderConfirmationNumber,
 			Address invoiceAddress,
-			Address shippingAddress,
-			ConfirmedSpecification confirmedSpec) {
+			Address shippingAddress) {
 		super(orderConfirmationNumber);
 		this.invoiceAddress = invoiceAddress;
 		this.shippingAddress = shippingAddress;
-		this.confirmedSpecification = confirmedSpec;
 	}
 
 	public Address getInvoiceAddress() {
@@ -87,15 +80,6 @@ public class ConfirmationReport extends Report {
 
 	public void setShippingAddress(Address shippingAddress) {
 		this.shippingAddress = shippingAddress;
-	}
-
-	public ConfirmedSpecification getConfirmedSpecification() {
-		return confirmedSpecification;
-	}
-
-	public void setConfirmedSpecification(
-			ConfirmedSpecification confirmedSpecification) {
-		this.confirmedSpecification = confirmedSpecification;
 	}
 
 	@JsonSerialize(using = JsonDateSerializer.class)

@@ -11,17 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.helper.ReportFilterHelper;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -51,13 +46,10 @@ public class ReportItemServiceImpl {
 	public Page<ItemDto> retrieveAllCompleted(PageRequest pageRequest) {
 		Page<Report> toBeCompleted = reportRepo.findAllCompleted(
 				pageRequest);
-		List<Report> invoicesToBePaid = ReportFilterHelper.filter(
-				toBeCompleted.getContent(),
-				Receipt.class);
 		return createPageImpl(
 				toBeCompleted.getTotalElements(),
 				pageRequest,
-				itemDtoConverterService.convert(invoicesToBePaid));
+				itemDtoConverterService.convert(toBeCompleted.getContent()));
 	}
 
 	/**
@@ -73,14 +65,11 @@ public class ReportItemServiceImpl {
 		Page<Report> toBeCompleted = reportRepo.findAllCompletedByCustomer(
 				customer.getCustomerNumber(),
 				pageRequest);
-		List<Report> invoicesToBePaid = ReportFilterHelper.filter(
-				toBeCompleted.getContent(),
-				Receipt.class);
 
 		return createPageImpl(
 				toBeCompleted.getTotalElements(),
 				pageRequest,
-				itemDtoConverterService.convert(invoicesToBePaid));
+				itemDtoConverterService.convert(toBeCompleted.getContent()));
 
 	}
 
@@ -133,13 +122,10 @@ public class ReportItemServiceImpl {
 		Page<Report> toBeShipped = reportRepo
 				.findAllToBeShippedByCustomerNumber(
 						customer.getCustomerNumber(), pageable);
-		List<Report> confirmationReportsToBeShipped = ReportFilterHelper.filter(
-				toBeShipped.getContent(),
-				ConfirmationReport.class);
 		return createPageImpl(
 				toBeShipped.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(confirmationReportsToBeShipped));
+				itemDtoConverterService.convert(toBeShipped.getContent()));
 	}
 
 	/**
@@ -151,13 +137,10 @@ public class ReportItemServiceImpl {
 	@Transactional(readOnly = true)
 	public Page<ItemDto> retrieveAllToBeShipped(PageRequest pageable) {
 		Page<Report> toBeShipped = reportRepo.findAllToBeShipped(pageable);
-		List<Report> confirmationReportsToBeShipped = ReportFilterHelper.filter(
-				toBeShipped.getContent(),
-				ConfirmationReport.class);
 		return createPageImpl(
 				toBeShipped.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(confirmationReportsToBeShipped));
+				itemDtoConverterService.convert(toBeShipped.getContent()));
 	}
 
 	/**
@@ -173,13 +156,10 @@ public class ReportItemServiceImpl {
 		Page<Report> toBePaid = reportRepo.findAllToBePaidByCustomer(
 				customer.getCustomerNumber(),
 				pageable);
-		List<Report> invoicesToBePaid = ReportFilterHelper.filter(
-				toBePaid.getContent(),
-				Invoice.class);
 		return createPageImpl(
 				toBePaid.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(invoicesToBePaid));
+				itemDtoConverterService.convert(toBePaid.getContent()));
 	}
 
 	/**
@@ -191,13 +171,10 @@ public class ReportItemServiceImpl {
 	@Transactional(readOnly = true)
 	public Page<ItemDto> retrieveAllToBePaid(PageRequest pageable) {
 		Page<Report> toBePaid = reportRepo.findAllToBePaid(pageable);
-		List<Report> invoicesToBePaid = ReportFilterHelper.filter(
-				toBePaid.getContent(),
-				Invoice.class);
 		return createPageImpl(
 				toBePaid.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(invoicesToBePaid));
+				itemDtoConverterService.convert(toBePaid.getContent()));
 	}
 
 	@Transactional(readOnly = true)
@@ -271,14 +248,11 @@ public class ReportItemServiceImpl {
 	public Page<ItemDto> retrieveAllToBeInvoiced(PageRequest pageable) {
 		Page<Report> toBeCompleted = reportRepo.findAllToBeInvoiced(
 				pageable);
-		List<Report> deliveryNotesToBeInvoiced = ReportFilterHelper.filter(
-				toBeCompleted.getContent(),
-				DeliveryNotes.class);
 
 		return createPageImpl(
 				toBeCompleted.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(deliveryNotesToBeInvoiced));
+				itemDtoConverterService.convert(toBeCompleted.getContent()));
 	}
 
 	@Transactional(readOnly = true)
@@ -287,14 +261,11 @@ public class ReportItemServiceImpl {
 		Page<Report> toBeCompleted = reportRepo.findAllToBeInvoicedByCustomer(
 				customer.getCustomerNumber(),
 				pageable);
-		List<Report> deliveryNotesToBeInvoiced = ReportFilterHelper.filter(
-				toBeCompleted.getContent(),
-				DeliveryNotes.class);
 
 		return createPageImpl(
 				toBeCompleted.getTotalElements(),
 				pageable,
-				itemDtoConverterService.convert(deliveryNotesToBeInvoiced));
+				itemDtoConverterService.convert(toBeCompleted.getContent()));
 	}
 
 }

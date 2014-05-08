@@ -171,9 +171,9 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		String s = "";
 		if (new CompletedSpecification().isSatisfiedBy(this))
 			s += "fertig";
-		else if (new ShippedSpecification(false, false).isSatisfiedBy(this))
+		else if (new ShippedSpecification().isSatisfiedBy(this))
 			s += "versendet";
-		else if (new ConfirmedSpecification(false, false).isSatisfiedBy(this))
+		else if (new ConfirmedSpecification().isSatisfiedBy(this))
 			s += "best&auml;tigt";
 		else if (new OrderedSpecification().isSatisfiedBy(this))
 			s += "bestellt";

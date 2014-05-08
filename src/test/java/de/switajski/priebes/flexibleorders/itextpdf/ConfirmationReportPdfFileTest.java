@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -51,9 +50,7 @@ public class ConfirmationReportPdfFileTest {
 		orderConfirmation = new ConfirmationReport(
 				OC_NR,
 				AddressBuilder.buildWithGeneratedAttributes(123),
-				AddressBuilder.buildWithGeneratedAttributes(123),
-				new ConfirmedSpecification(false, false)
-				);
+				AddressBuilder.buildWithGeneratedAttributes(123));
 
 		for (int i = 0; i < 28; i++) {
 			item1.addHandlingEvent(

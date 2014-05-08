@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -36,9 +35,7 @@ public class DeliveryNotesPdfFileTest {
 
 	@Before
 	public void initData() {
-		deliveryNotes = new DeliveryNotes(I_NR, new ShippedSpecification(
-				false,
-				false),
+		deliveryNotes = new DeliveryNotes(I_NR,
 				AddressBuilder.buildWithGeneratedAttributes(123), null);
 
 		OrderItem item1 = new OrderItemBuilder(

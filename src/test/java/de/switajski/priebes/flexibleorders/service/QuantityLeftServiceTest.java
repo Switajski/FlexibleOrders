@@ -9,8 +9,6 @@ import java.util.Date;
 import org.junit.Test;
 
 import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
@@ -103,7 +101,6 @@ public class QuantityLeftServiceTest {
 	private Report givenDeliveryNotes() {
 		return new DeliveryNotes(
 				"L-123",
-				new ShippedSpecification(false, false),
 				address,
 				new Amount(BigDecimal.TEN, Currency.EUR));
 	}
@@ -184,8 +181,7 @@ public class QuantityLeftServiceTest {
 		return new ConfirmationReport(
 				"AB-123",
 				address,
-				address,
-				new ConfirmedSpecification(false, false));
+				address);
 	}
 
 	private Product givenProduct() {

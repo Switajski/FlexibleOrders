@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import javax.persistence.Embeddable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -19,29 +18,8 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
  * @author Marek Switajski
  *
  */
-@Embeddable
 public class ConfirmedSpecification extends ItemSpecification{
 
-	private Boolean sendOrderConfirmationEmail;
-	
-	private Boolean sendOrderConfirmationLetter;
-	
-	protected ConfirmedSpecification() {}
-
-	/**
-	 * 
-	 * 
-	 * @param sendEmail
-	 * @param sendLetter
-	 */
-	public ConfirmedSpecification( 
-			boolean sendEmail,
-			boolean sendLetter
-			) {
-		this.sendOrderConfirmationEmail = sendEmail;
-		this.sendOrderConfirmationLetter = sendLetter;
-	}
-	
 	public boolean isSatisfiedBy(final OrderItem item){
 		//TODO: take account to executed tasks (includeTaskExecuted) 
 		if (item.getReportItems().isEmpty()) return false;
@@ -74,22 +52,6 @@ public class ConfirmedSpecification extends ItemSpecification{
 				cb.isNotNull(root.get("negotiatedPriceNet"))
 				);
 		return confirmedPred;
-	}
-
-	public boolean isSendEmail() {
-		return sendOrderConfirmationEmail;
-	}
-
-	public void setSendEmail(boolean sendEmail) {
-		this.sendOrderConfirmationEmail = sendEmail;
-	}
-
-	public boolean isSendLetter() {
-		return sendOrderConfirmationLetter;
-	}
-
-	public void setSendLetter(boolean sendLetter) {
-		this.sendOrderConfirmationLetter = sendLetter;
 	}
 
 }

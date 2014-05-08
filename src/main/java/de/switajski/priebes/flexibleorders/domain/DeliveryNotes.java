@@ -6,10 +6,9 @@ import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
 public class DeliveryNotes extends Report {
@@ -24,9 +23,6 @@ public class DeliveryNotes extends Report {
 	})
 	private Address shippedAddress;
 
-	@Embedded
-	private ShippedSpecification shippedSpecification;
-
 	private String trackNumber;
 
 	private String packageNumber;
@@ -37,21 +33,10 @@ public class DeliveryNotes extends Report {
 	};
 
 	public DeliveryNotes(String deliveryNotesNumber,
-			ShippedSpecification shippedSpec,
 			Address shippedAdress, Amount shippingCosts) {
 		super(deliveryNotesNumber);
-		this.shippedSpecification = shippedSpec;
 		this.shippedAddress = shippedAdress;
 		this.shippingCosts = shippingCosts;
-	}
-
-	public ShippedSpecification getShippedSpecification() {
-		return shippedSpecification;
-	}
-
-	public void setShippedSpecification(
-			ShippedSpecification shippedSpecification) {
-		this.shippedSpecification = shippedSpecification;
 	}
 
 	public Amount getNetAmount() {
@@ -101,6 +86,7 @@ public class DeliveryNotes extends Report {
 		return false;
 	}
 	
+	@JsonIgnore
 	public Set<ShippingItem> getShippingItems(){
 		Set<ShippingItem> shippingItems = new HashSet<ShippingItem>();
 		for (ReportItem reportItem: this.items){

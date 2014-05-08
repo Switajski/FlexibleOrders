@@ -135,7 +135,7 @@ public class OrderServiceImpl {
 		Address address = order.getCustomer().getAddress();
 
 		ConfirmationReport cr = new ConfirmationReport(confirmNumber,
-				address, address, new ConfirmedSpecification(false, false));
+				address, address);
 		cr.setExpectedDelivery(expectedDelivery);
 		// TODO: Refactor: DRY!
 		cr.setCustomerNumber(order.getCustomer().getCustomerNumber());
@@ -184,7 +184,6 @@ public class OrderServiceImpl {
 
 		DeliveryNotes deliveryNotes = new DeliveryNotes(
 				deliveryNotesNumber,
-				new ShippedSpecification(false, false),
 				shippingAddress,
 				shipment);
 
@@ -195,7 +194,7 @@ public class OrderServiceImpl {
 			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered
 					.getOrderItem();
 
-			validateQuantity(entry, 
+			validateQuantity(entry,
 					(ConfirmationItem) confirmEventToBeDelivered);
 
 			deliveryNotes.addItem(new ShippingItem(

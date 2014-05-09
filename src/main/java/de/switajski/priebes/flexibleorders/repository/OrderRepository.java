@@ -21,11 +21,15 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
 	List<Order> findByCustomer(Customer customer);
 	
-	@Query("SELECT distinct(o) from Order o join o.items oi where oi.reportItems is empty")
+	static String fromOrderWhereReportItemsIsEmpty = "from Order o join o.items oi where oi.reportItems is empty ";
+	
+	static String groupBy = " group by o";
+	
+	@Query("SELECT o " + fromOrderWhereReportItemsIsEmpty + groupBy)
 	Page<Order> findAllToBeConfirmed(Pageable pageable);
 	
-	@Query("SELECT distinct(o) from Order o join o.items oi where oi.reportItems is empty "
-			+ "and o.customer = ?1")
+	@Query("SELECT o " + fromOrderWhereReportItemsIsEmpty
+			+ "and o.customer = ?1" + groupBy)
 	Page<Order> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
 	
 }

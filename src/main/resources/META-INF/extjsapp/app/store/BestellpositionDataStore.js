@@ -16,7 +16,7 @@ Ext.define('MyApp.store.BestellpositionDataStore', {
             model: this.custommodel,
             storeId: this.customstoreid,
             autoLoad: false,
-            pageSize:5,
+            pageSize:20,
             remoteFilter: true,
             proxy: {
                 type: 'ajax',

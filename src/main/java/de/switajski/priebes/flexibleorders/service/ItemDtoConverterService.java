@@ -141,5 +141,13 @@ public class ItemDtoConverterService {
 		}
 		return items;
 	}
-	
+
+	public List<ItemDto> convertReportItems(List<ReportItem> content) {
+		List<ItemDto> ris = new ArrayList<ItemDto>();
+			for (ReportItem ri : content) {
+				ris.add(convert(ri));
+			}
+		return ris;
+	}
+
 }

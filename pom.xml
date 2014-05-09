@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <roo.version>1.2.4.RELEASE</roo.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <spring.version>3.2.3.RELEASE</spring.version>
+        <spring.version>3.2.5.RELEASE</spring.version>
     <spring-security.version>3.1.0.RELEASE</spring-security.version>
     </properties>
     <repositories>
@@ -259,7 +259,7 @@
     <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.2.0.RELEASE</version>
+            <version>1.5.2.RELEASE</version>
         </dependency>
     <dependency>
             <groupId>org.springframework</groupId>

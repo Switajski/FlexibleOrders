@@ -13,7 +13,7 @@ Ext.define('MyApp.store.BestellungDataStore', {
             autoLoad: true,
             model: 'MyApp.model.BestellungData',
             storeId: 'BestellungDataStore',
-            pageSize: 10,
+            pageSize: 20,
             proxy: {
                 type: 'ajax',
                 headers: {

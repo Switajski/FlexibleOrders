@@ -30,7 +30,7 @@ public class Product {
 		if (!(obj instanceof Product))
 			return false;
 		Product c = (Product) obj;
-		if (this.getProductNumber() == c.getProductNumber())
+		if (this.getProductNumber().equals(c.getProductNumber()))
 			return true;
 		return false;
 	}

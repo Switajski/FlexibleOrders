@@ -12,12 +12,12 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 @Repository
 public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, JpaSpecificationExecutor<ReportItem>{
 
-	static String toBeShippedQuery = " from ConfirmationItem ri where "
-			+ "ri IN "
+	static String toBeShippedQuery = " from ConfirmationItem ri where " //subQueryIn
+			+ "ri IN "//Subquery1
 			+ "(SELECT he from ReportItem he where he.orderItem = ri.orderItem and "
 				+ "(SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent "
 				+ "where confirmEvent.orderItem = ri.orderItem)"
-				+ " > "
+				+ " > "//Subquery2
 				+ "(SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent "
 				+ "where shipEvent.orderItem = ri.orderItem) "
 			+ ")";
@@ -42,7 +42,7 @@ public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, J
 				+ "where receiptItem.orderItem = ri.orderItem) "
 			+ ")";
 	
-	static String toBeCompletedQuery = " from ReportItem ri where TYPE(ri) = ReceiptItem";
+	static String toBeCompletedQuery = " from ReceiptItem";
 	
 	static String selectReportItem = "select ri ";
 

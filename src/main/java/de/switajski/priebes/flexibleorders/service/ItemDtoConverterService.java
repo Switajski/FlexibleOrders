@@ -80,9 +80,15 @@ public class ItemDtoConverterService {
 	public List<ItemDto> convert(Collection<Report> reports){
 		List<ItemDto> ris = new ArrayList<ItemDto>();
 		for (Report report : reports) {
-			for (ReportItem ri : report.getItems()) {
-				ris.add(convert(ri));
-			}
+			ris.addAll(convertReport(report));
+		}
+		return ris;
+	}
+	
+	public List<ItemDto> convertReport(Report report){
+		List<ItemDto> ris = new ArrayList<ItemDto>();
+		for (ReportItem ri : report.getItems()) {
+			ris.add(convert(ri));
 		}
 		return ris;
 	}

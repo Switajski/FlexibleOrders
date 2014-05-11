@@ -114,7 +114,7 @@ public class Order extends GenericEntity {
 	
 	public void addOrderItem(OrderItem item) {
 		if (item.getOrder() == null)
-			item.setOrder(item.getOrder());
+			item.setOrder(this);
 		else if (!item.getOrder().equals(this))
 			throw new IllegalArgumentException("Item has already other order set");
 		this.items.add(item);

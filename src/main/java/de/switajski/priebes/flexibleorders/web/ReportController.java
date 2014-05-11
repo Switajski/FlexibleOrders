@@ -85,6 +85,7 @@ public class ReportController extends ExceptionController{
 		} catch(Exception e) {
 			e.printStackTrace();
 			log.error(e.toString());
+			//TODO: refactor DRY and Exception Handling
 		}
 		
         return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),DeliveryNotes.class.getSimpleName(),null);

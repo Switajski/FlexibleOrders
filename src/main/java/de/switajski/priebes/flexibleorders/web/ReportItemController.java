@@ -29,7 +29,6 @@ public class ReportItemController extends ExceptionController {
 	 * retrieve reportItems by order or by orderItem 
 	 */
 	boolean BY_ORDER = true;
-//	private static Logger log = Logger.getLogger(ReportItemController.class);
 
 	private ReportItemServiceImpl reportItemService;
 	private CustomerRepository customerRepo;

@@ -66,7 +66,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	CatalogProductServiceImpl productService;
 	@Autowired
 	OrderServiceImpl orderService;
-	@Autowired 
+	@Autowired
 	ItemDtoConverterService itemDtoConverterService;
 
 	/**
@@ -109,7 +109,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB-4",
 				new Date(),
-				extractItemDtos(order));
+				itemDtoConverterService.convert(order));
 
 		// then
 		assertPersisted(confirmationReport, customer);
@@ -145,21 +145,21 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				extractItemDtos(order));
+				itemDtoConverterService.convert(order));
 		DeliveryNotes deliveryNotes = orderService.deliver(
 				"L4",
 				"trackNumber",
 				"packNo",
 				INVOICE_ADDRESS,
 				null,
-				extractItemDtos(confirmationReport));
+				itemDtoConverterService.convertReport(confirmationReport));
 
 		// when
 		Invoice invoice = orderService.invoice(
 				"R4",
 				"paymentCondition",
 				INVOICE_ADDRESS,
-				extractItemDtos(deliveryNotes));
+				itemDtoConverterService.convertReport(deliveryNotes));
 
 		// then
 		assertInvoiceAndItemsPersisted(invoice);
@@ -210,16 +210,16 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		// given
 		Customer customer = givenCustomer(9872347);
 		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products
-				.get(0)
-				.toProduct(), products.get(1).toProduct());
+		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL,
+				products.get(0).toProduct(),
+				products.get(1).toProduct());
 
 		Order order = orderService.order(customer.getId(), "4", items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				extractItemDtos(order));
+				itemDtoConverterService.convert(order));
 
 		assertShippable(customer);
 
@@ -230,7 +230,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"packNo",
 				INVOICE_ADDRESS,
 				null,
-				extractItemDtos(confirmationReport));
+				itemDtoConverterService.convertReport(confirmationReport));
 
 		// then
 		assertPersisted(deliveryNotes, customer);
@@ -257,16 +257,16 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 		Customer customer = givenCustomer(7125759);
 		List<CatalogProduct> products = givenCatalogProducts();
-		List<ItemDto> items = givenItemDtos(orderQty, products
-				.get(0)
-				.toProduct(), products.get(1).toProduct());
+		List<ItemDto> items = givenItemDtos(orderQty,
+				products.get(0).toProduct(),
+				products.get(1).toProduct());
 
 		Order order = orderService.order(customer.getId(), "4", items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				extractItemDtos(order));
+				itemDtoConverterService.convert(order));
 
 		// when
 		DeliveryNotes deliveryNotes = orderService.deliver(
@@ -275,7 +275,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"packNo",
 				INVOICE_ADDRESS,
 				null,
-				itemDtosWithQty(shipQty, extractItemDtos(confirmationReport)));
+				itemDtosWithQty(shipQty, itemDtoConverterService.convertReport(confirmationReport)));
 
 		// then
 		assertShippable(orderQty);
@@ -297,28 +297,28 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		Customer customer = givenCustomer(781264823);
 		List<CatalogProduct> products = givenCatalogProducts();
 		List<ItemDto> items = givenItemDtos(
-				QUANTITY_INITIAL, products.get(0).toProduct(), products
-						.get(1)
-						.toProduct());
+				QUANTITY_INITIAL,
+				products.get(0).toProduct(),
+				products.get(1).toProduct());
 
 		Order order = orderService.order(customer.getId(), "4", items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				extractItemDtos(order));
+				itemDtoConverterService.convert(order));
 		DeliveryNotes deliveryNotes = orderService.deliver(
 				"L4",
 				"trackNumber",
 				"packNo",
 				INVOICE_ADDRESS,
 				null,
-				extractItemDtos(confirmationReport));
+				itemDtoConverterService.convertReport(confirmationReport));
 		Invoice invoice = orderService.invoice(
 				"R4",
 				"paymentCondition",
 				INVOICE_ADDRESS,
-				extractItemDtos(deliveryNotes));
+				itemDtoConverterService.convertReport(deliveryNotes));
 
 		// when
 		// Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(),
@@ -404,23 +404,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 			ris.add(reportItem);
 		}
 		return ris;
-	}
-
-	private List<ItemDto> extractItemDtos(Order order) {
-		List<ItemDto> items = new ArrayList<ItemDto>();
-		for (OrderItem item : order.getItems())
-			items.add(itemDtoConverterService.convert(item));
-		return items;
-	}
-
-	private List<ItemDto> extractItemDtos(Report order) {
-		List<ItemDto> items = new ArrayList<ItemDto>();
-		for (ReportItem item : order.getItems()) {
-			ItemDto iDto = item.toItemDto();
-			iDto.setQuantityLeft(item.getQuantity());
-			items.add(iDto);
-		}
-		return items;
 	}
 
 	private void assertPersisted(ConfirmationReport confirmationReport,

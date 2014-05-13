@@ -39,14 +39,11 @@ public class OrderBuilder {
 		.setItems(new HashSet<OrderItem>(Arrays.asList(
 					OrderItemBuilder.build(CatalogProductBuilder.buildAmy(), 10),
 					OrderItemBuilder.build(CatalogProductBuilder.buildMiladka(), 15),
-					OrderItemBuilder.build(CatalogProductBuilder.buildPaul(), 30)
-				)
-				))
+					OrderItemBuilder.build(CatalogProductBuilder.buildPaul(), 30))))
 		.setCustomerEmail(yvonne.getEmail())
 		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
 		return this;
 	}
-	
 	
 	public static Order B12(){
 		return new OrderBuilder().withB12().build();
@@ -57,10 +54,8 @@ public class OrderBuilder {
 		this.setOrderNumber("B12")
 		.setCustomer(yvonne)
 		.setItems(new HashSet<OrderItem>(Arrays.asList(
-					OrderItemBuilder.build(CatalogProductBuilder.buildMiladka(), 12),
-					OrderItemBuilder.build(CatalogProductBuilder.buildPaul(), 5)
-				)
-				))
+					OrderItemBuilder.build(CatalogProductBuilder.buildSalome(), 12),
+					OrderItemBuilder.build(CatalogProductBuilder.buildJurek(), 5))))
 		.setCustomerEmail(yvonne.getEmail())
 		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
 		return this;

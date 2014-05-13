@@ -12,8 +12,9 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 @Repository
 public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, JpaSpecificationExecutor<ReportItem>{
 
-	static String toBeShippedQuery = " from ConfirmationItem ri where " //subQueryIn
-			+ "ri IN "//Subquery1
+	static String toBeShippedQuery = " from ConfirmationItem ri where "
+			+ "EXISTS "//inCondition
+			// subquery
 			+ "(SELECT he from ReportItem he where he.orderItem = ri.orderItem and "
 				+ "(SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent "
 				+ "where confirmEvent.orderItem = ri.orderItem)"
@@ -23,7 +24,7 @@ public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, J
 			+ ")";
 	
 	static String toBeInvoicedQuery = " from ShippingItem ri where "
-			+ "ri IN "
+			+ "EXISTS "
 			+ "(SELECT he from ReportItem he where he.orderItem = ri.orderItem and "
 				+ "(SELECT sum(shippingItem.quantity) from ShippingItem shippingItem "
 				+ "where shippingItem.orderItem = ri.orderItem) "
@@ -33,7 +34,7 @@ public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, J
 			+ ")";
 	
 	static String toBePaidQuery = " from InvoiceItem ri where "
-			+ "ri IN "
+			+ "EXISTS "
 			+ "(SELECT he from ReportItem he where he.orderItem = ri.orderItem and "
 				+ "(SELECT sum(invoiceItem.quantity) from InvoiceItem invoiceItem "
 				+ "where invoiceItem.orderItem = ri.orderItem) "
@@ -71,31 +72,5 @@ public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, J
 
 	@Query(selectReportItem  + " from ReportItem ri where TYPE(ri) = ReceiptItem " + andCustomer)
 	Page<ReportItem> findAllCompletedByCustomer(Long customerNumber, Pageable pageable);
-	
-//	@Query(selectCountDistictReport + toBeShippedQuery + andCustomer)
-//	Long countAllToBeShippedByCustomerNumber(Long customerNumber, Pageable pageable);
-//	
-//	@Query(selectCountDistictReport + toBeShippedQuery)
-//	Long countAllToBeShipped(Pageable pageable);
-//
-//	@Query(selectCountDistictReport + toBeInvoicedQuery)
-//	Long countAllToBeInvoiced(Pageable pageable);
-//	
-//	@Query(selectCountDistictReport + toBeInvoicedQuery + andCustomer)
-//	Long countAllToBeInvoicedByCustomer(Long customerNumber, Pageable pageable);
-//	
-//	@Query(selectCountDistictReport + toBePaidQuery)
-//	Long countAllToBePaid(Pageable pageable);
-//	
-//	@Query(selectCountDistictReport + toBePaidQuery + andCustomer)
-//	Long countAllToBePaidByCustomer(Long customerNumber, Pageable pageable);
-//	
-//	@Query(selectCountDistictReport + toBeCompletedQuery)
-//	Long countAllCompleted(Pageable pageable);
-//
-//	@Query(selectCountDistictReport + toBeCompletedQuery + andCustomer)
-//	Long countAllCompletedByCustomer(Long customerNumber, Pageable pageable);
-
-	
 	
 }

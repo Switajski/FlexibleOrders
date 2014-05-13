@@ -528,7 +528,7 @@ Ext.define('MyApp.controller.MyController', {
 		record.data.deliveryNotesNumber = record.data.documentNumber;
 		var createDeliveryNotesStore = MyApp.getApplication()
 				.getStore('CreateDeliveryNotesItemDataStore');
-		createDeliveryNotesStore.filter('customer', record.data.customer);
+		createDeliveryNotesStore.filter({'customer': record.data.customer, 'status': 'confirmed'});
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					id : "DeliverWindow",

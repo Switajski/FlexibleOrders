@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
 import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculator;
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
@@ -103,8 +101,8 @@ public class OrderServiceImpl {
 				OriginSystem.FLEXIBLE_ORDERS,
 				orderNumber);
 		for (ItemDto ri : reportItems) {
-			CatalogProduct cProduct = cProductRepo.findByProductNumber(ri
-					.getProduct());
+			CatalogProduct cProduct = cProductRepo.findByProductNumber(
+					ri.getProduct());
 			if (cProduct == null)
 				throw new IllegalArgumentException("Artikelnr nicht gefunden");
 
@@ -112,10 +110,9 @@ public class OrderServiceImpl {
 					order,
 					cProduct.toProduct(),
 					ri.getQuantity());
-			oi
-					.setNegotiatedPriceNet(new Amount(
-							ri.getPriceNet(),
-							Currency.EUR));
+			oi.setNegotiatedPriceNet(new Amount(
+					ri.getPriceNet(),
+					Currency.EUR));
 			oi.setCreated(new Date());
 			order.addOrderItem(oi);
 		}

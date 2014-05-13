@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.DeliveryNotesPdfFileTest;
 import de.switajski.priebes.flexibleorders.itextpdf.InvoicePdfFileTest;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderPdfFileTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceIntegrationTest;
+import de.switajski.priebes.flexibleorders.service.SpecificationTest;
 import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 
 @RunWith(Suite.class)
@@ -24,7 +25,8 @@ import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 		JacksonDeserializationTest.class,
 		OrderPdfFileTest.class,
 		OrderServiceIntegrationTest.class,
-		ProductIntegrationTest.class
+		ProductIntegrationTest.class,
+		SpecificationTest.class
 })
 public class IntegrationTestSuite {
 

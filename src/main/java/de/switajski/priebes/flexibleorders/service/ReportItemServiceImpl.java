@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -242,6 +243,12 @@ public class ReportItemServiceImpl {
 						customer.getCustomerNumber(),
 						pageable);
 		return pageConverterService.createWithWholeNonCompletedReports(pageable, toBeCompleted);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<ItemDto> retrieve(PageRequest pageRequest, Specification<ReportItem> spec){
+		Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
+		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
 	}
 
 }

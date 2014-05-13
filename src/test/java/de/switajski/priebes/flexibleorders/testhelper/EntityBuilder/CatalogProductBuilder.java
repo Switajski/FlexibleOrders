@@ -60,6 +60,20 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 				43092L,
 				ProductType.PRODUCT).build();
 	}
+	
+	public static CatalogProduct buildSalome() {
+		return new CatalogProductBuilder(
+				"Salome stars lime",
+				33025L,
+				ProductType.PRODUCT).build();
+	}
+	
+	public static CatalogProduct buildJurek() {
+		return new CatalogProductBuilder(
+				"Jurek destroyer",
+				56026L,
+				ProductType.PRODUCT).build();
+	}
 
 	public CatalogProductBuilder generateAttributes(Integer i) {
 		productType = ProductType.PRODUCT;

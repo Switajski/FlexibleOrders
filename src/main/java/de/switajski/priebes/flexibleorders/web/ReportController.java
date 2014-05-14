@@ -20,8 +20,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -136,38 +136,6 @@ public class ReportController extends ExceptionController{
 		log.debug("listOrderNumbers request:"+orderNumberObject);
 		//TODO unify docNumbers
 		throw new NotImplementedException();
-//		JsonObjectResponse response = new JsonObjectResponse();	
-//		if (orderNumberObject != null){
-//			List<Long> orderNumbers = reportRepo...findInvoiceNumbersLike(orderNumberObject);
-//			if (!orderNumbers.isEmpty()){
-//				response.setTotal(orderNumbers.size());
-//				response.setData(formatInvoiceNumbers(orderNumbers));			
-//			}
-//			else {
-//				response.setTotal(0l);
-//			}
-//		} 
-//		else { //orderNumber == null
-//			List<Customer> customers = customerService.findAll();
-//			ArrayList<Long> list = new ArrayList<Long>();
-//			for (Customer customer:customers)
-//				list.addAll(invoiceService.getInvoiceNumbersByCustomer(customer, new PageRequest(1,20)));
-//			response.setTotal(list.size());
-//			response.setData(formatInvoiceNumbers(list));
-//		}
-//			
-//		response.setMessage("All entities retrieved.");
-//		response.setSuccess(true);
-//
-//		return response;
-	}
-	
-	private invoiceNumber[] formatInvoiceNumbers(List<Long> invoiceNumberList){
-		List<invoiceNumber> entities = new ArrayList<invoiceNumber>();
-		for (Long on:invoiceNumberList)
-			entities.add(new invoiceNumber(on));
-		invoiceNumber[] invoiceNumberArray = entities.toArray(new invoiceNumber[0]);
-		return invoiceNumberArray;
 	}
 	
 	public class invoiceNumber {

@@ -31,15 +31,12 @@ public class ReportItemController extends ExceptionController {
 	 */
 	boolean BY_ORDER = true;
 
-	private ReportItemServiceImpl reportItemService;
-	private CustomerRepository customerRepo;
-
 	@Autowired
-	public ReportItemController(ReportItemServiceImpl reportitemService,
-			CustomerRepository customerRepo) {
-		this.reportItemService = reportitemService;
-		this.customerRepo = customerRepo;
-	}
+	private ReportItemServiceImpl reportItemService;
+	@Autowired
+	private CustomerRepository customerRepo;
+	@Autowired
+	private FilterDispatcher filterDispatcher;
 
 	@RequestMapping(value = "/ordered", method = RequestMethod.GET)
 	public @ResponseBody
@@ -83,7 +80,7 @@ public class ReportItemController extends ExceptionController {
 			@RequestParam(value = "filter", required = false) String filters)
 			throws Exception {
 
-		Specifications<ReportItem> spec = new FilterDispatcher()
+		Specifications<ReportItem> spec = filterDispatcher
 				.dispatchToSpecifications(filters);
 
 		Page<ItemDto> ordered = reportItemService.retrieve(

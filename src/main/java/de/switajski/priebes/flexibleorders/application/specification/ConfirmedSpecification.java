@@ -1,14 +1,7 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
-
 import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
@@ -36,22 +29,4 @@ public class ConfirmedSpecification extends ItemSpecification{
 		return false;
 	}
 	
-	@Override
-	public Predicate toPredicate(Root<OrderItem> root,
-			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		SetJoin<OrderItem, ReportItem> heJoin = root.joinSet("reportItems");
-		
-		Predicate confirmedPred = cb.and(
-				cb.isNotNull(root.<Order>get("flexibleOrder")),
-//				cb.equal(heJoin.<ReportItemType>get("type"), cb.literal(ReportItemType.CONFIRM)),
-				cb.isNotNull(heJoin.get("report")),
-				//TODO add deliveryNotes check
-//				cb.greaterThan(root.get("flexibleOrder").get("orderedQuantity").as(Integer.class), 0),
-				cb.isNotNull(root.get("product").get("name")),
-				cb.isNotNull(root.get("product").get("productNumber")),
-				cb.isNotNull(root.get("negotiatedPriceNet"))
-				);
-		return confirmedPred;
-	}
-
 }

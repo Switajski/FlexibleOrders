@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import org.springframework.data.jpa.domain.Specification;
-
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 /**
@@ -15,7 +13,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
  * @author Marek Switajski
  *
  */
-public abstract class ItemSpecification implements Specification<OrderItem>{
+public abstract class ItemSpecification{
 
 	public abstract boolean isSatisfiedBy(OrderItem item);
 	

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,11 @@ import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeShippedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -177,8 +183,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void assertNotShippable(Invoice invoice) {
-		List<ItemDto> toBeShipped = reportItemService.retrieveAllToBeShipped(
-				createPageRequest()).getContent();
+		List<ItemDto> toBeShipped = reportItemService.retrieve(
+				createPageRequest(), new ConfirmationItemToBeShippedSpec()).getContent();
 		Set<Long> ids = extractIds(invoice.getItems());
 
 		assertThat(toBeShipped.isEmpty(), is(true));
@@ -187,8 +193,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void assertPayable(Invoice invoice) {
-		List<ItemDto> toBePaid = reportItemService.retrieveAllToBePaid(
-				createPageRequest()).getContent();
+		List<ItemDto> toBePaid = reportItemService.retrieve(
+				createPageRequest(), new InvoiceItemToBePaidSpec()).getContent();
 		Set<Long> invoiceItems = extractIds(invoice.getItems());
 
 		assertThat(toBePaid.isEmpty(), is(false));
@@ -242,8 +248,9 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void assertNotShippable(Set<ReportItem> notShippables) {
-		List<ItemDto> shipables = reportItemService.retrieveAllToBeShipped(
-				createPageRequest()).getContent();
+		List<ItemDto> shipables = reportItemService.retrieve(
+				createPageRequest(),
+				new ConfirmationItemToBeShippedSpec()).getContent();
 		assertThat(shipables.isEmpty(), is(true));
 	}
 
@@ -342,8 +349,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void assertNotInvoiceable() {
-		List<ItemDto> items = reportItemService.retrieveAllToBeInvoiced(
-				createPageRequest()).getContent();
+		List<ItemDto> items = reportItemService.retrieve(
+				createPageRequest(), new ShippingItemToBeInvoicedSpec()).getContent();
 		assertThat(items.isEmpty(), is(true));
 	}
 
@@ -439,7 +446,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 	private void assertShippable(Customer customer) {
 		Page<ItemDto> risToBeShipped = reportItemService
-				.retrieveAllToBeShipped(customer, createPageRequest());
+				.retrieve(createPageRequest(), where(new ConfirmationItemToBeShippedSpec()).and(new HasCustomerSpec(customer)));
 		assertTrue(risToBeShipped != null);
 		assertThat(risToBeShipped.getTotalElements(), is(2L));
 		assertThat(risToBeShipped.getContent().size(), equalTo(2));
@@ -461,7 +468,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 	private void assertInvoicable(Customer customer) {
 		Page<ItemDto> risToBeInvoiced = reportItemService
-				.retrieveAllToBeInvoiced(customer, createPageRequest());
+				.retrieve(createPageRequest(), where(new ShippingItemToBeInvoicedSpec()).and(new HasCustomerSpec(customer)));
 		assertThat(risToBeInvoiced, is(notNullValue()));
 		assertThat(risToBeInvoiced.getTotalElements(), is(greaterThan(0l)));
 	}
@@ -475,7 +482,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 	private void assertShippable(Integer shippableQty) {
 		Page<ItemDto> risToBeShipped = reportItemService
-				.retrieveAllToBeShipped(createPageRequest());
+				.retrieve(createPageRequest(), new ConfirmationItemToBeShippedSpec());
 		assertTrue(
 				"should still find items to be shipped",
 				risToBeShipped.getTotalElements() != 0l);
@@ -488,7 +495,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 	private void assertInvoicableQtyOfItemsIs(int invoiceableQuantity) {
 		Page<ItemDto> risToBeInvoiced = reportItemService
-				.retrieveAllToBeInvoiced(createPageRequest());
+				.retrieve(createPageRequest(), new ShippingItemToBeInvoicedSpec());
 		assertThat(risToBeInvoiced.getTotalElements(), is(greaterThan(0L)));
 		for (ItemDto ri : risToBeInvoiced)
 			assertThat(ri.getQuantity(), is(equalTo(invoiceableQuantity)));
@@ -496,7 +503,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 
 	private void assertShippableQtyLeftOfItemsIs(int shippableQty) {
 		Page<ItemDto> risToBeShipped = reportItemService
-				.retrieveAllToBeShipped(createPageRequest());
+				.retrieve(createPageRequest(), new ConfirmationItemToBeShippedSpec());
 		assertThat(risToBeShipped.getTotalElements(), is(greaterThan(0L)));
 		for (ItemDto ri : risToBeShipped)
 			assertThat(ri.getQuantityLeft(), is(equalTo(shippableQty)));
@@ -507,8 +514,9 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void assertCompleted() {
-		List<ItemDto> risCompleted = reportItemService.retrieveAllCompleted(
-				createPageRequest()).getContent();
+		List<ItemDto> risCompleted = reportItemService.retrieve(
+				createPageRequest(),
+				new ReceiptItemCompletedSpec()).getContent();
 		assertThat(risCompleted.isEmpty(), is(false));
 	}
 

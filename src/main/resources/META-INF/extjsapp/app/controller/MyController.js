@@ -528,7 +528,13 @@ Ext.define('MyApp.controller.MyController', {
 		record.data.deliveryNotesNumber = record.data.documentNumber;
 		var createDeliveryNotesStore = MyApp.getApplication()
 				.getStore('CreateDeliveryNotesItemDataStore');
-		createDeliveryNotesStore.filter({'customer': record.data.customer, 'status': 'confirmed'});
+		createDeliveryNotesStore.filter([{
+					property : "customer",
+					value : record.data.customer
+				}, {
+					property : "status",
+					value : "confirmed"
+				}]);
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
 					id : "DeliverWindow",
@@ -748,7 +754,13 @@ Ext.define('MyApp.controller.MyController', {
 		record.data.deliveryNotesNumber = record.data.deliveryNotesNumber;
 		var createInvoiceStore = MyApp.getApplication()
 				.getStore('CreateInvoiceItemDataStore');
-		createInvoiceStore.filter('customer', record.data.customer);
+		createInvoiceStore.filter([{
+					property : "customer",
+					value : record.data.customer
+				}, {
+					property : "status",
+					value : "shipped"
+				}]);
 
 		var invoiceWindow = Ext.create('MyApp.view.InvoiceWindow', {
 					id : "InvoiceWindow",

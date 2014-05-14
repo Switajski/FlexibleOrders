@@ -9,7 +9,6 @@ import javax.persistence.criteria.Subquery;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
@@ -42,7 +41,7 @@ public abstract class AbstractOpenReportItemSpec implements
 				)));
 		subquery.select(fromSubquery);
 
-		Predicate inCondition = cb.and(cb.exists(subquery), cb.equal(root.type(), ConfirmationItem.class));
+		Predicate inCondition = cb.and(cb.exists(subquery), cb.equal(root.type(), getReportItemClassToRetrieve()));
 		return inCondition;
 	}
 

@@ -3,61 +3,37 @@ package de.switajski.priebes.flexibleorders.web;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
-import de.switajski.priebes.flexibleorders.service.CustomerServiceImpl;
-import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @RequestMapping("/orderitems")
 @Controller
 public class OrderItemsController extends ExceptionController{
 
-	private static Logger log = Logger.getLogger(OrderItemsController.class);
-	
-	private static final String FILTER_STATUS = "ordered";
-	private OrderItemRepository itemService;
-	private OrderRepository orderRepo;
-	private ReportItemServiceImpl reportService;
-
 	@Autowired
-	public OrderItemsController(OrderItemRepository itemRepo,
-			CustomerServiceImpl customerService,
-			OrderServiceImpl heService,
-			CatalogProductRepository productRepository,
-			OrderRepository orderRepo,
-			ReportItemServiceImpl reportService) {
-		this.itemService = itemRepo;
-		this.orderRepo = orderRepo;
-		this.reportService = reportService;
-	}
+	private OrderItemRepository itemService;
+	@Autowired
+	private OrderRepository orderRepo;
+	@Autowired
+	private ReportItemServiceImpl reportService;
 
 	@RequestMapping(value="/json", method=RequestMethod.DELETE)
 	public @ResponseBody JsonObjectResponse delete( @RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
@@ -141,28 +117,6 @@ public class OrderItemsController extends ExceptionController{
 		return response;
 	}
 
-	
-	protected Page<ItemDto> findByFilterable(PageRequest pageRequest,
-			HashMap<String, String> filter) {
-		if (filter.get("status") != null)
-			if (filter.get("status").equals(FILTER_STATUS) && filter.get("customer")!=null){
-				//TODO: implement me!
-				throw new NotImplementedException();
-//				Customer customer = customerService.find(Long.parseLong(filter.get("customer")));
-//				return customerService.findOpenOrderItems(customer, pageRequest);			
-			}
-//		TODO: implement retrieval of items by orderNumber and page
-//		if (filter.get(ID)!=null && filter.get("status")==null) 
-//			if (filter.get(ID)!="") 
-//				return this.orderRepo.findByOrderNumber(Long.parseLong(filter.get(ID)), pageRequest);
-		if (filter.get("status")!=null)
-			if (filter.get("status").toLowerCase().equals(FILTER_STATUS)){
-				Page<ItemDto> reportItems = reportService.retrieveAllToBeShipped(null, pageRequest);
-				return reportItems;
-			}
-		return null;
-	}
-	
 	/**
 	 * Site is created by Extjs and JSON
 	 * @param page

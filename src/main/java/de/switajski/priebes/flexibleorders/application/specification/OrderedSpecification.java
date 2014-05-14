@@ -1,10 +1,5 @@
 package de.switajski.priebes.flexibleorders.application.specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 
@@ -28,17 +23,4 @@ public class OrderedSpecification extends ItemSpecification{
 		return true;
 	}
 	
-	@Override
-	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
-			CriteriaBuilder cb) {
-		
-		Predicate orderedPred = cb.and(
-				cb.greaterThan(root.get("orderedQuantity").as(Integer.class), 0),
-				cb.isNotNull(root.get("product").get("name")),
-				cb.isNotNull(root.get("product").get("productNumber")),
-				cb.isNotNull(root.get("flexibleOrder"))
-				);
-		return orderedPred;
-	}
-
 }

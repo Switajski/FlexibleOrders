@@ -14,7 +14,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemsToBeCompletedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
@@ -74,7 +74,7 @@ public class FilterDispatcher {
 		if (stateFilter.equals("invoiced"))
 			spec = where(new InvoiceItemToBePaidSpec());
 		if (stateFilter.equals("completed"))
-			spec = where(new ReceiptItemsToBeCompletedSpec());
+			spec = where(new ReceiptItemCompletedSpec());
 		if (spec == null)
 			throw new IllegalArgumentException("Status nicht gefunden");
 		return where(spec);

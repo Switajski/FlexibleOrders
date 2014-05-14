@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
@@ -73,6 +74,7 @@ public class SpecificationTest extends AbstractTestSpringContextTest {
 	private static final Address ADDRESS = AddressBuilder
 			.buildWithGeneratedAttributes(12);
 	
+	@Transactional
 	@Test
 	public void SumSpecification_shouldSum() {
 		// GIVEN

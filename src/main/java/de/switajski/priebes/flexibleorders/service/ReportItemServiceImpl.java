@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -41,36 +42,6 @@ public class ReportItemServiceImpl {
 		this.reportRepo = reportRepo;
 		this.reportItemRepo = reportItemRepo;
 		this.pageConverterService = reportItemPageService;
-	}
-
-	/**
-	 * 
-	 * @param pageRequest
-	 * @param byOrder
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllCompleted(PageRequest pageRequest) {
-		Page<ReportItem> toBeCompleted = reportItemRepo.findAllCompleted(
-				pageRequest);
-		return pageConverterService.createWithWholeReports(pageRequest, toBeCompleted);
-	}
-
-	/**
-	 * 
-	 * @param customer
-	 * @param pageRequest
-	 * @param byOrder
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllCompleted(Customer customer,
-			PageRequest pageRequest) {
-		Page<ReportItem> toBeCompleted = reportItemRepo
-				.findAllCompletedByCustomer(
-						customer.getCustomerNumber(),
-						pageRequest);
-		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, toBeCompleted);
 	}
 
 	/**
@@ -107,63 +78,6 @@ public class ReportItemServiceImpl {
 				pageable,
 				itemDtoConverterService.convertOrders(toBeConfirmed
 						.getContent()));
-	}
-
-	/**
-	 * retrieves all report item to be shipped. Paging is fixed on reports.
-	 * 
-	 * @param customer
-	 * @param pageable
-	 * @return empty page if none found
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBeShipped(Customer customer,
-			PageRequest pageable) {
-		return pageConverterService.createWithWholeNonCompletedReports(
-				pageable,
-				reportItemRepo.findAllToBeShippedByCustomerNumber(
-						customer.getCustomerNumber(),
-						pageable));
-	}
-
-	/**
-	 * 
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBeShipped(PageRequest pageable) {
-		return pageConverterService.createWithWholeNonCompletedReports(pageable, reportItemRepo
-				.findAllToBeShipped(pageable));
-	}
-
-	/**
-	 * 
-	 * @param customer
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBePaid(Customer customer,
-			PageRequest pageable) {
-		Page<ReportItem> toBePaid = reportItemRepo.findAllToBePaidByCustomer(
-				customer.getCustomerNumber(),
-				pageable);
-		return pageConverterService.createWithWholeNonCompletedReports(pageable, toBePaid);
-	}
-
-	/**
-	 * 
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBePaid(PageRequest pageable) {
-		Page<ReportItem> toBePaid = reportItemRepo.findAllToBePaid(pageable);
-		return pageConverterService.createWithWholeNonCompletedReports(pageable, toBePaid);
 	}
 
 	@Transactional(readOnly = true)
@@ -229,25 +143,10 @@ public class ReportItemServiceImpl {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBeInvoiced(PageRequest pageable) {
-		Page<ReportItem> toBeCompleted = reportItemRepo.findAllToBeInvoiced(
-				pageable);
-		return pageConverterService.createWithWholeNonCompletedReports(pageable, toBeCompleted);
-	}
-
-	@Transactional(readOnly = true)
-	public Page<ItemDto> retrieveAllToBeInvoiced(Customer customer,
-			PageRequest pageable) {
-		Page<ReportItem> toBeCompleted = reportItemRepo
-				.findAllToBeInvoicedByCustomer(
-						customer.getCustomerNumber(),
-						pageable);
-		return pageConverterService.createWithWholeNonCompletedReports(pageable, toBeCompleted);
-	}
-	
-	@Transactional(readOnly = true)
 	public Page<ItemDto> retrieve(PageRequest pageRequest, Specification<ReportItem> spec){
 		Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
+		if (spec instanceof ReceiptItemCompletedSpec)
+			return pageConverterService.createWithWholeReports(pageRequest, openReportItems);
 		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
 	}
 

@@ -50,8 +50,8 @@ Ext.define('MyApp.controller.MyController', {
 			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
 			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore',
 			'CreateConfirmationReportItemDataStore'],
-	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
-			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
+	views : ['MainPanel', 'BestellungWindow', 'CreateCustomerWindow',
+			'BestellpositionGridPanel',
 			'ConfirmWindow', 'DeliverWindow',
 			'OrderNumberComboBox', 'InvoiceNumberComboBox',
 			'OrderWindow', 'InvoiceWindow', 'DeliveryNotesItemGridPanel'],
@@ -71,9 +71,6 @@ Ext.define('MyApp.controller.MyController', {
 					},
 					'#CreateCustomerButton' : {
 						click : this.onCreateCustomer
-					},
-					'#ErstelleBpButton' : {
-						click : this.loadBpForm
 					},
 					'#ErstelleBestellungButton' : {
 						click : this.onOrder
@@ -106,8 +103,6 @@ Ext.define('MyApp.controller.MyController', {
 						click : this.addShippingCosts
 					}
 				});
-		this.getBpFormView().create();
-		this.getBpWindowView().create();
 		this.getStore('ItemDataStore').filter('status', 'ordered');
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
@@ -198,25 +193,6 @@ Ext.define('MyApp.controller.MyController', {
 				break;
 		}
 
-	},
-
-	loadErstelleBestellungWindow : function(btn, e, eOpts) {
-		console.log('function loadErstelleBestellungWindow');
-		var bestellungWindow = Ext.getCmp('ErstelleBestellungWindow');
-		var customerid = Ext.getCmp('mainCustomerComboBox').getValue();
-		if (customerid == null)
-			Ext.MessageBox.show({
-						title : 'Keinen Kunden ausgew&auml;hlt',
-						msg : "bitte Kunden ausw&auml;hlen",
-						icon : Ext.MessageBox.INFO,
-						buttons : Ext.Msg.OK
-					});
-		else {
-			Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0]
-					.setValue("");
-			store = Ext.data.StoreMgr.lookup('ItemDataStore');
-			bestellungWindow.show();
-		}
 	},
 
 	syncBpGrid : function(view, owner, options) {

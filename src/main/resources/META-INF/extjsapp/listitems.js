@@ -23,8 +23,6 @@ Ext.application({
     ],
     views: [
         'MainPanel',
-        'BpForm',
-        'ErstelleBestellungWindow',
         'BestellungWindow',
 		'ConfirmWindow',
         'DeliverWindow',

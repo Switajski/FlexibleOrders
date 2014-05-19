@@ -25,12 +25,10 @@ Ext.application({
     views: [
         'ArchiveItemGridPanel',
         'BestellungWindow',
-        'BpForm',
         'CustomerComboBox',
 		'ConfirmWindow',
         'CreateCustomerWindow',
         'DeliverWindow',
-        'ErstelleBestellungWindow',
         'InvoiceItemGridPanel',
         'InvoiceWindow',
         'MainPanel',

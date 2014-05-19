@@ -145,9 +145,7 @@ public class ReportItemServiceImpl {
 	@Transactional(readOnly = true)
 	public Page<ItemDto> retrieve(PageRequest pageRequest, Specification<ReportItem> spec){
 		Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
-		if (spec instanceof ReceiptItemCompletedSpec)
-			return pageConverterService.createWithWholeReports(pageRequest, openReportItems);
 		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
 	}
-
+	
 }

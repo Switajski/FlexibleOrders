@@ -10,8 +10,6 @@ Ext.application({
         'BestellungData',
         'BestellpositionData',
         'ShippingItemData',
-//        'InvoiceItemData',
-//        'ArchiveItemData',
         'ArtikelData',
         'KundeData'
     ],
@@ -19,8 +17,6 @@ Ext.application({
         'BestellungDataStore',
         'BestellpositionDataStore',
         'ShippingItemDataStore',
-//        'InvoiceItemDataStore',
-//        'ArchiveItemDataStore',
         'ArtikelDataStore',
         'KundeDataStore',
         'OrderNumberDataStore'
@@ -31,14 +27,10 @@ Ext.application({
         'ErstelleBestellungWindow',
         'BestellungWindow',
 		'ConfirmWindow',
-        'CompleteWindow',
         'DeliverWindow',
-        'TransitionWindow',
         'PositionGridPanel',
         'OrderItemGridPanel',
         'ShippingItemGridPanel',
-//        'InvoiceItemGridPanel',
-//        'ArchiveItemGridPanel',
         'BestellungGridPanel',
         'CustomerComboBox',
         'OrderNumberComboBox'

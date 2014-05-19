@@ -17,10 +17,10 @@ Ext.define('MyApp.store.ArchiveItemDataStore', {
     extend: 'MyApp.store.BestellpositionDataStore',
     alias: 'widget.ArchiveItemDataStore',
 	customurl: '/FlexibleOrders/reportitems/listAllToBeProcessed',
-	custommodel: 'MyApp.model.ArchiveItemData',
+	custommodel: 'MyApp.model.BestellpositionData',
 	customstoreid: 'ArchiveItemDataStore',
 	groupField: 'documentNumber',
     requires: [
-        'MyApp.model.ArchiveItemData'
+        'MyApp.model.BestellpositionData'
     ]
 });

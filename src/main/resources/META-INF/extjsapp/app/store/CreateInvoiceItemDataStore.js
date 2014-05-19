@@ -17,10 +17,5 @@ Ext.define('MyApp.store.CreateInvoiceItemDataStore', {
     extend: 'MyApp.store.BestellpositionDataStore',
     alias: 'widget.CreateInvoiceItemDataStore',
 	customurl: '/FlexibleOrders/reportitems/listAllToBeProcessed',
-	custommodel: 'MyApp.model.InvoiceItemData',
-	//customstoreid: 'InvoiceItemDataStore',
-    requires: [
-        'MyApp.model.InvoiceItemData'
-    ],
     groupField: 'deliveryNotesNumber'
 });

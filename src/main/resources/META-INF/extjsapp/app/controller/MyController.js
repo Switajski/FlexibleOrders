@@ -42,9 +42,7 @@ Ext.define('MyApp.controller.MyController', {
 	extend : 'Ext.app.Controller',
 
 	id : 'MyController',
-	models : ['BestellungData', 'BestellpositionData', 'KundeData',
-			'ArchiveItemData', 'InvoiceItemData', 'ShippingItemData',
-			'DeliveryNotesItemData'],
+	models : ['BestellungData', 'BestellpositionData', 'KundeData'],
 	stores : ['BestellungDataStore', 'BestellpositionDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
 			'ArchiveItemDataStore', 'OrderNumberDataStore',
@@ -54,8 +52,8 @@ Ext.define('MyApp.controller.MyController', {
 			'CreateConfirmationReportItemDataStore'],
 	views : ['MainPanel', 'BpForm', 'BestellungWindow', 'CreateCustomerWindow',
 			'ErstelleBestellungWindow', 'BpWindow', 'BestellpositionGridPanel',
-			'ConfirmWindow', 'CompleteWindow', 'DeliverWindow', 'DeliverPanel',
-			'TransitionWindow', 'OrderNumberComboBox', 'InvoiceNumberComboBox',
+			'ConfirmWindow', 'DeliverWindow',
+			'OrderNumberComboBox', 'InvoiceNumberComboBox',
 			'OrderWindow', 'InvoiceWindow', 'DeliveryNotesItemGridPanel'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
 	// implementieren
@@ -134,55 +132,6 @@ Ext.define('MyApp.controller.MyController', {
 		if (selections.length == 0)
 			return;
 		console.log('changeBestellungSelection');
-		// Variablen laden
-		/*
-		 * var bestellung = selections[0]; this.activeBestellnr =
-		 * bestellung.getData().orderNumber; bpform =
-		 * Ext.getCmp('ErstelleBpForm').getForm();
-		 * 
-		 * //BpGrid und Controller aktualisieren
-		 * bpform.findField('bestellung').setValue(this.activeBestellnr);
-		 * this.getBpFormView.bestellnr = this.activeBestellnr;
-		 * Ext.StoreMgr.get('BestellpositionDataStore').reload(this.activeBestellnr); //
-		 * Buttons konfigurieren ORDERED, CONFIRMED, SHIPPED, COMPLETED; buttons =
-		 * this.getButtons(); switch (bestellung.getData().status){ case
-		 * "ORDERED": buttons.abBestellungButton.setDisabled(false);
-		 * buttons.bezahltBestellungButton.setDisabled(true);
-		 * buttons.deleteBestellung.setDisabled(false);
-		 * buttons.deleteBestellungButton.setDisabled(false);
-		 * buttons.rechnungBestellungButton.setDisabled(true);
-		 * buttons.stornoBestellungButton.setDisabled(false);
-		 * buttons.bestellungPdfButton.setDisabled(false);
-		 * buttons.abPdfButton.setDisabled(true);
-		 * buttons.rechnungPdfButton.setDisabled(true); break; case "CONFIRMED":
-		 * buttons.abBestellungButton.setDisabled(true);
-		 * buttons.bezahltBestellungButton.setDisabled(true);
-		 * buttons.deleteBestellung.setDisabled(true);
-		 * buttons.deleteBestellungButton.setDisabled(true);
-		 * buttons.rechnungBestellungButton.setDisabled(false);
-		 * buttons.stornoBestellungButton.setDisabled(false);
-		 * buttons.bestellungPdfButton.setDisabled(false);
-		 * buttons.abPdfButton.setDisabled(false);
-		 * buttons.rechnungPdfButton.setDisabled(true); break; case "SHIPPED":
-		 * buttons.abBestellungButton.setDisabled(true);
-		 * buttons.bezahltBestellungButton.setDisabled(false);
-		 * buttons.deleteBestellung.setDisabled(true);
-		 * buttons.deleteBestellungButton.setDisabled(true);
-		 * buttons.rechnungBestellungButton.setDisabled(true);
-		 * buttons.stornoBestellungButton.setDisabled(false);
-		 * buttons.bestellungPdfButton.setDisabled(false);
-		 * buttons.abPdfButton.setDisabled(false);
-		 * buttons.rechnungPdfButton.setDisabled(false); break; case
-		 * "COMPLETED": buttons.abBestellungButton.setDisabled(true);
-		 * buttons.bezahltBestellungButton.setDisabled(true);
-		 * buttons.deleteBestellung.setDisabled(true);
-		 * buttons.deleteBestellungButton.setDisabled(true);
-		 * buttons.rechnungBestellungButton.setDisabled(true);
-		 * buttons.stornoBestellungButton.setDisabled(false);
-		 * buttons.bestellungPdfButton.setDisabled(false);
-		 * buttons.abPdfButton.setDisabled(false);
-		 * buttons.rechnungPdfButton.setDisabled(false); break; }
-		 */
 	},
 	getButtons : function() {
 		var buttons = {
@@ -239,35 +188,7 @@ Ext.define('MyApp.controller.MyController', {
 		return bp;
 	},
 
-	/*
-	 * deleteBp: function(btn) { var bpGridPanel =
-	 * Ext.getCmp('BestellpositionGridPanel'); var selectionModel =
-	 * bpGridPanel.getSelectionModel(); var bp = selectionModel.getSelection();
-	 * 
-	 * bpStore = Ext.data.StoreManager.lookup('BestellpositionDataStore');
-	 * bpStore.remove(bp); bpStore.sync();
-	 * 
-	 * if (this.debug) console.log('Bp geloescht!'); },
-	 * 
-	 * deleteBestellung: function(btn) { var bestellungGridPanel =
-	 * Ext.getCmp('BestellungGridPanel'); var selectionModel =
-	 * bestellungGridPanel.getSelectionModel(); var bestellung =
-	 * selectionModel.getSelection();
-	 * 
-	 * bestellungStore = Ext.data.StoreManager.lookup('BestellungDataStore');
-	 * bestellungStore.remove(bestellung); bestellungStore.sync();
-	 * 
-	 * if (this.debug) console.log('Bestellung geloescht!'); },
-	 */
-
-	/*
-	 * liefereDialog : function(btn, e, eOpts) {
-	 * Ext.MessageBox.confirm('Best&auml;tigen', 'Auftrag sicher liefern?',
-	 * Ext.Function .bind(this.liefere, null, [this.activeBestellnr], 1)); },
-	 */
-
 	showTransition : function(grid, record) {
-		Ext.ComponentQuery.query('panel[extend=MyApp.view.TransitionWindow]');
 		switch (record.data.status) {
 			case "ORDERED" :
 				this.getConfirmWindowView().create();
@@ -279,22 +200,6 @@ Ext.define('MyApp.controller.MyController', {
 				Ext.ComponentQuery.query('panel[itemid=DeliverWindow]')[0]
 						.loadAndShow(record);
 				break;
-			case "SHIPPED" :
-				this.getCompleteWindowView().create();
-				Ext.ComponentQuery.query('panel[itemid=CompleteWindow]')[0]
-						.loadAndShow(record);
-				break;
-			case "COMPLETED" :
-				this.getTransitionWindowView().create();
-				Ext.ComponentQuery.query('panel[itemid=TransitionWindow]')[0]
-						.loadAndShow(record);
-				break;
-			case "CANCELED" :
-				this.getTransitionWindowView().create();
-				Ext.ComponentQuery.query('panel[itemid=TransitionWindow]')[0]
-						.loadAndShow(record);
-				break;
-
 		}
 
 	},

@@ -9,9 +9,6 @@ Ext.application({
     models: [
         'BestellungData',
         'BestellpositionData',
-        'ShippingItemData',
-        'InvoiceItemData',
-        'ArchiveItemData',
         'ArtikelData',
         'KundeData'
     ],
@@ -32,7 +29,6 @@ Ext.application({
         'BpForm',
         'CustomerComboBox',
 		'ConfirmWindow',
-        'CompleteWindow',
         'CreateCustomerWindow',
         'DeliverWindow',
         'ErstelleBestellungWindow',
@@ -41,7 +37,6 @@ Ext.application({
         'MainPanel',
         'PositionGridPanel',
         'ShippingItemGridPanel',
-        'TransitionWindow',
         'OrderItemGridPanel',
         'OrderNumberComboBox',
         'OrderWindow'

@@ -1,6 +1,5 @@
 Ext.define('MyApp.model.BestellungData', {
     extend: 'Ext.data.Model',
-
     fields: [
 		{
 		    name: 'orderNumber'

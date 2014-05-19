@@ -17,10 +17,5 @@ Ext.define('MyApp.store.CreateConfirmationReportItemDataStore', {
     extend: 'MyApp.store.BestellpositionDataStore',
     alias: 'widget.CreateConfirmationReportItemDataStore',
 	customurl: '/FlexibleOrders/reportitems/ordered',
-	custommodel: 'MyApp.model.BestellpositionData',
-	//customstoreid: 'InvoiceItemDataStore',
-    requires: [
-        'MyApp.model.BestellpositionData'
-    ],
     groupField: 'orderNumber'
 });

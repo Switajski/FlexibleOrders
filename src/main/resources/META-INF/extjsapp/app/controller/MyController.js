@@ -110,13 +110,6 @@ Ext.define('MyApp.controller.MyController', {
 		this.getStore('ArchiveItemDataStore').filter('status', 'completed');
 	},
 
-	createShippingCosts : function() {
-		console.error('implement me!')
-	},
-	addShippingCosts : function() {
-		console.error('implement me!')
-	},
-
 	onSelectionchange : function(view, selections, options) {
 		if (view.getStore().storeId != "BestellungDataStore")
 			return;

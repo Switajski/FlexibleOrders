@@ -138,7 +138,6 @@ Ext.define('MyApp.view.MainPanel', {
 
 				]
 			}]
-				// { xtype:'bestellunggridpanel' },
 
 		});
 		me.callParent(arguments);

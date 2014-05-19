@@ -33,7 +33,6 @@ Ext.application({
         'ShippingItemGridPanel',
         'InvoiceItemGridPanel',
         'ArchiveItemGridPanel',
-        'BestellungGridPanel',
         'CustomerComboBox'
     ],
     autoCreateViewport: false,

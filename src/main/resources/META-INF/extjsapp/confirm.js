@@ -31,7 +31,6 @@ Ext.application({
         'PositionGridPanel',
         'OrderItemGridPanel',
         'ShippingItemGridPanel',
-        'BestellungGridPanel',
         'CustomerComboBox',
         'OrderNumberComboBox'
     ],

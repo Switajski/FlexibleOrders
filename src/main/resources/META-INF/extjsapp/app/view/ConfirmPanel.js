@@ -116,7 +116,6 @@ Ext.define('MyApp.view.ConfirmPanel', {
 
 				]
 			}]
-				// { xtype:'bestellunggridpanel' },
 
 		});
 		me.callParent(arguments);

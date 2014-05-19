@@ -69,10 +69,6 @@ Ext.define('MyApp.controller.MyController', {
 					'#mainCustomerComboBox' : {
 						change : this.onCustomerChange
 					},
-					'#BestellungGridPanel' : {
-						selectionchange : this.onSelectionchange,
-						itemdblclick : this.showTransition
-					},
 					'#CreateCustomerButton' : {
 						click : this.onCreateCustomer
 					},
@@ -222,13 +218,6 @@ Ext.define('MyApp.controller.MyController', {
 			bestellungWindow.show();
 		}
 	},
-
-	/*
-	 * getBestellungSelection: function(){ var bestellungGridPanel =
-	 * Ext.getCmp('BestellungGridPanel'); var selectionModel =
-	 * bestellungGridPanel.getSelectionModel(); var bestellung =
-	 * selectionModel.getSelection()[0]; return bestellung; },
-	 */
 
 	syncBpGrid : function(view, owner, options) {
 		if (this.debug)

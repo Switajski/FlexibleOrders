@@ -171,8 +171,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		// implementiert werden ');
 	},
 	onitemdblclick : function(grid, record) {
-		MyApp.getApplication().getController('MyController').showTransition(
-				grid, record);
+		console.error('not implemented 658276');
 	},
 	onRemoveClick : function(grid, rowIndex, a, b, c, d, e, f, g) {
 		this.getStore().removeAt(rowIndex);

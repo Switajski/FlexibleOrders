@@ -172,22 +172,6 @@ Ext.define('MyApp.controller.MyController', {
 		return bp;
 	},
 
-	showTransition : function(grid, record) {
-		switch (record.data.status) {
-			case "ORDERED" :
-				this.getConfirmWindowView().create();
-				Ext.ComponentQuery.query('panel[itemid=ConfirmWindow]')[0]
-						.loadAndShow(record);
-				break;
-			case "CONFIRMED" :
-				this.getDeliverWindowView().create();
-				Ext.ComponentQuery.query('panel[itemid=DeliverWindow]')[0]
-						.loadAndShow(record);
-				break;
-		}
-
-	},
-
 	syncBpGrid : function(view, owner, options) {
 		if (this.debug)
 			console.log('syncBpGrid');

@@ -2,10 +2,10 @@
 Ext.define('MyApp.store.CreateOrderDataStore', {
     extend: 'Ext.data.Store',
 	customurl: '/FlexibleOrders/transitions/order',
-	custommodel: 'MyApp.model.BestellpositionData',
+	custommodel: 'MyApp.model.ItemData',
 	customstoreid: 'CreateOrderDataStore',
     requires: [
-        'MyApp.model.BestellpositionData'
+        'MyApp.model.ItemData'
     ],
     alias: 'widget.CreateOrderDataStore',
 	groupField: 'orderNumber',

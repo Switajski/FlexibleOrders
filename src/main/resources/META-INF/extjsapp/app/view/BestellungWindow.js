@@ -63,7 +63,7 @@ Ext.define('MyApp.view.BestellungWindow', {
                 	xtype:'BestellpositionGrid',
                 	flex:1,
                 	id: 'BestellpositionGridPanel2',
-                	store: 'BestellpositionDataStore'
+                	store: 'ItemDataStore'
                 }
             ]
         });

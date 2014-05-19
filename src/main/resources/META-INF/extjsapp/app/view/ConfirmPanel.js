@@ -24,7 +24,7 @@ Ext.define('MyApp.view.ConfirmPanel', {
 		type : 'vbox'
 	},
 	title : 'Bestellpositionen bestaetigen',
-	requires : ['MyApp.store.BestellpositionDataStore'],
+	requires : ['MyApp.store.ItemDataStore'],
 	dockedItems : [{
 		xtype : 'toolbar',
 		dock : 'top',
@@ -102,7 +102,7 @@ Ext.define('MyApp.view.ConfirmPanel', {
 							fieldLabel: 'Kunde'
 						}, {
 							xtype : 'OrderItemGrid',
-							store : 'BestellpositionDataStore',
+							store : 'ItemDataStore',
 							customurl : '/FlexibleOrders/customers/json/getItems'
 							/*extraParams : {
 								customer : 1,

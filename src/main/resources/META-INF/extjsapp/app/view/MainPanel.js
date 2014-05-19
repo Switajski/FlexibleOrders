@@ -25,7 +25,7 @@ Ext.define('MyApp.view.MainPanel', {
 	},
 	bodyPadding: 7,
 	title : 'Stand der Bestellungen',
-	requires : ['MyApp.store.BestellpositionDataStore'],
+	requires : ['MyApp.store.ItemDataStore'],
 	dockedItems : [{
 		xtype : 'toolbar',
 		dock : 'top',
@@ -120,7 +120,7 @@ Ext.define('MyApp.view.MainPanel', {
 							fieldLabel: 'Kunde'
 						}, {
 							xtype : 'OrderItemGrid',
-							store : 'BestellpositionDataStore',
+							store : 'ItemDataStore',
 							customurl : '/FlexibleOrders/customers/json/getItems'
 						}, {
 							xtype : 'ShippingItemGrid',

@@ -8,13 +8,13 @@ Ext.application({
 	appFolder: '/FlexibleOrders/resources/app',
     models: [
         'BestellungData',
-        'BestellpositionData',
+        'ItemData',
         'ArtikelData',
         'KundeData'
     ],
     stores: [
         'BestellungDataStore',
-        'BestellpositionDataStore',
+        'itemDataStore',
         'ShippingItemDataStore',
         'InvoiceItemDataStore',
         'ArchiveItemDataStore',

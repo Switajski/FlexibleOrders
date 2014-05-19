@@ -42,8 +42,8 @@ Ext.define('MyApp.controller.MyController', {
 	extend : 'Ext.app.Controller',
 
 	id : 'MyController',
-	models : ['BestellungData', 'BestellpositionData', 'KundeData'],
-	stores : ['BestellungDataStore', 'BestellpositionDataStore',
+	models : ['BestellungData', 'ItemData', 'KundeData'],
+	stores : ['BestellungDataStore', 'ItemDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
 			'ArchiveItemDataStore', 'OrderNumberDataStore',
 			'DeliveryNotesItemDataStore', 'InvoiceNumberDataStore',
@@ -112,7 +112,7 @@ Ext.define('MyApp.controller.MyController', {
 				});
 		this.getBpFormView().create();
 		this.getBpWindowView().create();
-		this.getStore('BestellpositionDataStore').filter('status', 'ordered');
+		this.getStore('ItemDataStore').filter('status', 'ordered');
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');
@@ -218,7 +218,7 @@ Ext.define('MyApp.controller.MyController', {
 		else {
 			Ext.ComponentQuery.query('combobox[xtype=ordernumbercombobox]')[0]
 					.setValue("");
-			store = Ext.data.StoreMgr.lookup('BestellpositionDataStore');
+			store = Ext.data.StoreMgr.lookup('ItemDataStore');
 			bestellungWindow.show();
 		}
 	},
@@ -234,7 +234,7 @@ Ext.define('MyApp.controller.MyController', {
 		if (this.debug)
 			console.log('syncBpGrid');
 		var bpDataStore = Ext.data.StoreManager
-				.lookup('BestellpositionDataStore');
+				.lookup('ItemDataStore');
 	},
 
 	showBestellundPdf : function(button, event, options) {
@@ -390,7 +390,7 @@ Ext.define('MyApp.controller.MyController', {
 	onCustomerChange : function(field, newValue, oldValue, eOpts) {
 		console.log('onCustomerChange');
 		var stores = new Array();
-		stores[0] = Ext.data.StoreManager.lookup('BestellpositionDataStore');
+		stores[0] = Ext.data.StoreManager.lookup('ItemDataStore');
 		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
 		stores[2] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
 		stores[3] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');

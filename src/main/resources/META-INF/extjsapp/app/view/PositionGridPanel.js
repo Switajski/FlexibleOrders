@@ -46,7 +46,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 			},
 			features : [grouping],
 
-			// based on MyApp.model.BestellpositionData'
 			columns : [{
 						xtype : 'gridcolumn',
 						dataIndex : 'product',

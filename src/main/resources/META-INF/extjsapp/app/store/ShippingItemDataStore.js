@@ -1,5 +1,5 @@
 Ext.define('MyApp.store.ShippingItemDataStore', {
-			extend : 'MyApp.store.BestellpositionDataStore',
+			extend : 'MyApp.store.ItemDataStore',
 			alias : 'widget.ShippingItemDataStore',
 			customurl : '/FlexibleOrders/reportitems/listAllToBeProcessed',
 			customstoreid : 'ShippingItemDataStore',

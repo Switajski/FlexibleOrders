@@ -1,13 +1,13 @@
 
-Ext.define('MyApp.store.BestellpositionDataStore', {
+Ext.define('MyApp.store.ItemDataStore', {
     extend: 'Ext.data.Store',
 	customurl: '/FlexibleOrders/reportitems/ordered',
-	custommodel: 'MyApp.model.BestellpositionData',
-	customstoreid: 'BestellpositionDataStore',
+	custommodel: 'MyApp.model.ItemData',
+	customstoreid: 'ItemDataStore',
     requires: [
-        'MyApp.model.BestellpositionData'
+        'MyApp.model.ItemData'
     ],
-    alias: 'widget.BestellpositionDataStore',
+    alias: 'widget.ItemDataStore',
 	groupField: 'orderNumber',
     constructor: function(cfg) {
         var me = this;

@@ -19,13 +19,11 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	alias : 'widget.BestellpositionGrid',
 	// width: 250,
 	// height: 300,
-	//title : "Bestellpositionen",
 	requires : ['MyApp.model.ArtikelData',
 			'MyApp.store.CreateOrderDataStore',
 			'Ext.grid.plugin.CellEditing', 
 			'Ext.ux.grid.FiltersFeature',
 			'Ext.form.field.Text', 'Ext.toolbar.TextItem'],
-	// store: 'BestellpositionDataStore',
 	initComponent : function() {
 		var me = this;
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
@@ -170,7 +168,7 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 						buttons : Ext.Msg.OK
 					});
 		} else {
-			var rec = new MyApp.model.BestellpositionData({
+			var rec = new MyApp.model.ItemData({
 						status : 'ORDERED'
 					}), edit = this.editing;
 			rec.data.orderNumber = bestellnr;

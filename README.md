@@ -7,9 +7,9 @@ Used technologies are Spring, Hibernate and ExtJs as GUI. Core Elements are Spri
 The domain model is depicted with POJOs.
 
 
-The purchasing process
-----------------------
-An order consists of order items. Flexible Order assigns `ReportItem`s with a user defined quantity to those `OrderItems`. 
+Domain model - the purchasing process
+-------------------------------------
+An `Order` consists of `OrderItems`. Flexible Order assigns `ReportItem`s to those `OrderItems`. 
 Report Items can be:
 
 - `ConfirmationItem` as part of a `Confirmation Report`

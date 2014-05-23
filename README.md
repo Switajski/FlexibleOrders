@@ -9,19 +9,19 @@ The domain model is depicted with POJOs.
 
 The purchasing process
 ----------------------
-An order consists of order items. These items are passing though States (Status) as shown below:
+An order consists of order items. Flexible Order assigns `ReportItem`s with a user defined quantity to those `OrderItems`. 
+Report Items can be:
 
-1. new OrderItem -> `Status.ORDERED`
-2. OrderConfirmationItem.confirm -> `Status.CONFIRMED`
-3. ShippingItem.deliver -> `Status.SHIPPED`
-4. ArchiveItem.account -> `Status.COMPLETED`
+- `ConfirmationItem` as part of a `Confirmation Report`
+- `ShippingItem` as part of `DeliveryNotes`
+- `InvoiceItem` as part of a `Invoice`
+- `ReceiptItem` as part of a `Receipt`
 
     *One feature of this application is to provide the process easy modifiable to any (IT)-users so they can be free to modify this application for their own needs.*
 
 Process depicted
 ----------------
-Each state has equivalent tables with items as rows/objects (e.g. OrderItem, ShippingItem, ...). 
-The reports (invoices, orders, ...) are generated dynamically by finding items by orderNumber/invoiceNumber etc. 
+Each report item represents a state of a purchasing process.  
 This report generation enables piecemeal delivering and flexibility in changing reports.
 
 License

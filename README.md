@@ -28,8 +28,9 @@ Getting started
 ---------------
 FlexibleOrders is developed with Eclipse with Spring Tool Suite (STS). In order to program it run from command line: 
 
-git clone git@github.com:Switajski/FlexibleOrders.git
-mvn eclipse:eclipse
+`git clone git@github.com:Switajski/FlexibleOrders.git`
+
+`mvn eclipse:eclipse`
 
 and import the just created git repository as "existing project" to eclipse. The database can be created by modifying persistence.xml and changing the line:
 `<property name="hibernate.hbm2ddl.auto" value="update"/>`

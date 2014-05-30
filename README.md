@@ -35,7 +35,7 @@ and import the just created git repository as "existing project" to eclipse. The
 
     <property name="hibernate.hbm2ddl.auto" value="update"/>
 to 
-    <property name="hibernate.hbm2ddl.auto" value="create"/>
+    (`code`)<property name="hibernate.hbm2ddl.auto" value="create"/>
 
 Contribute
 ----------

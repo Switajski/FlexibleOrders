@@ -33,9 +33,9 @@ mvn eclipse:eclipse
 
 and import the just created git repository as "existing project" to eclipse. The database can be created by modifying persistence.xml and changing:
 
-<property name="hibernate.hbm2ddl.auto" value="update"/>
+    <property name="hibernate.hbm2ddl.auto" value="update"/>
 to 
-<property name="hibernate.hbm2ddl.auto" value="create"/>
+    <property name="hibernate.hbm2ddl.auto" value="create"/>
 
 Contribute
 ----------

@@ -24,6 +24,23 @@ Process depicted
 Each report item represents a state of a purchasing process.  
 This report generation enables piecemeal delivering and flexibility in changing reports.
 
+Getting started
+---------------
+FlexibleOrders is developed with Eclipse with Spring Tool Suite (STS). In order to program it run from command line: 
+
+git clone git@github.com:Switajski/FlexibleOrders.git
+mvn eclipse:eclipse
+
+and import the just created git repository as "existing project" to eclipse. The database can be created by modifying persistence.xml and changing:
+
+<property name="hibernate.hbm2ddl.auto" value="update"/>
+to 
+<property name="hibernate.hbm2ddl.auto" value="create"/>
+
+Contribute
+----------
+Just send me an email to marek@switajski.de
+
 License
 -------
 This application is using ExtJs. The licensing model of this application is bound to ExtJs open source license (GPL license v3 - http://www.sencha.com/products/extjs/license/)

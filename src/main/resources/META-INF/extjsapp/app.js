@@ -24,7 +24,6 @@ Ext.application({
     ],
     views: [
         'ArchiveItemGridPanel',
-        'BestellungWindow',
         'CustomerComboBox',
 		'ConfirmWindow',
         'CreateCustomerWindow',

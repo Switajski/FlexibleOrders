@@ -23,7 +23,6 @@ Ext.application({
     ],
     views: [
         'MainPanel',
-        'BestellungWindow',
 		'ConfirmWindow',
         'DeliverWindow',
         'PositionGridPanel',

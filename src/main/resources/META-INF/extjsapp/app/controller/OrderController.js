@@ -5,7 +5,7 @@ Ext.define('MyApp.controller.OrderController', {
 	id : 'OrderController',
 	models : ['ItemData'],
 	stores : ['CreateOrderDataStore'],
-	views : ['BestellungWindow'],
+	views : ['OrderWindow'],
 
 	init : function(application) {
 		this.control({

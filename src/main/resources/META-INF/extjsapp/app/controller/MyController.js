@@ -34,7 +34,7 @@ Ext.define('MyApp.controller.MyController', {
 			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
 			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore',
 			'CreateConfirmationReportItemDataStore'],
-	views : ['MainPanel', 'BestellungWindow', 'CreateCustomerWindow',
+	views : ['MainPanel', 'CreateCustomerWindow',
 			'BestellpositionGridPanel',
 			'ConfirmWindow', 'DeliverWindow',
 			'OrderNumberComboBox', 'InvoiceNumberComboBox',

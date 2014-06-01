@@ -2,17 +2,13 @@ package de.switajski.priebes.flexibleorders.web.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
-import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.reference.Country;
-
 /**
  * TODO this object is disposable by good serialization
  * @author Marek Switajski
  *
  */
 @JsonAutoDetect
-public class JsonCustomer {
+public class CustomerDto {
 
 	private Long id;
 	
@@ -130,19 +126,6 @@ public class JsonCustomer {
 
 	public void setCountry(String country) {
 		this.country = country;
-	}
-
-	public Customer toCustomer() {
-		if (name1 == null) name1 = firstName;
-		if (name2 == null) name2 = lastName;
-		Address a = new Address(getName1(), getName2(), getStreet(), getPostalCode(), 
-				getCity(), Country.DEUTSCHLAND);
-		Customer customer = new Customer(getCustomerNumber(), getEmail(), a);
-		customer.setFirstName(getFirstName());
-		customer.setLastName(getLastName());
-		customer.setEmail(getEmail());
-		customer.setPhone(getPhone());
-		return customer;
 	}
 
 	public Long getId() {

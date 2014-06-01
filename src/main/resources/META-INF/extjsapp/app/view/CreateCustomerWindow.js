@@ -141,7 +141,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 				console.log(ii);
 				ii.on({
 					change : function() {
-						var window = Ext.ComponentQuery.query('CreateCustomerWindow')[0];
+						var window = Ext.getCmp("CreateCustomerWindow");
 						window.down('form').getForm()
 								.updateRecord(window.record);
 					}
@@ -150,27 +150,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 		});
 	},
 
-	/**
-	 * this method listens to the save button and is usually overridden by a
-	 * panel. see {@Link MyController.deliver}
-	 */
 	onSave : function() {
-		console.log("onSave"); 
-		form = Ext.getCmp('CustomerForm');
-		var active = form.getForm().getRecord(), form;
-
-		if (!active) {
-			return;
-		}
-		if (form.isValid()) {
-			form.updateRecord(active);
-			var customerStore = Ext.data.StoreMgr.lookup('KundeDataStore');
-			customerStore.add(form.getForm().getRecord());
-			var success = customerStore.sync();
-			//TODO: reset and hide only on success!
-			form.getForm().reset();
-			Ext.ComponentQuery.query('CreateCustomerWindow')[0].hide();
-		}
+		console.error("function not overriden"); 
 	}
 
 });

@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
-import de.switajski.priebes.flexibleorders.web.dto.JsonDeliverRequest;
+import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @Controller
@@ -41,7 +41,7 @@ public class TransitionsController extends ExceptionController{
 	
 
 	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse confirm(@RequestBody JsonDeliverRequest confirmRequest) 
+	public @ResponseBody JsonObjectResponse confirm(@RequestBody JsonCreateReportRequest confirmRequest) 
 					throws Exception {
 		
 		ConfirmationReport confirmationReport = orderService.confirm(extractOrderNumber(confirmRequest),
@@ -51,14 +51,14 @@ public class TransitionsController extends ExceptionController{
 	}
 
 
-	private String extractOrderNumber(JsonDeliverRequest confirmRequest) {
+	private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
 		if (confirmRequest.getItems().isEmpty())
 			throw new IllegalArgumentException("Liste der Auftragspositionen ist leer");
 		return confirmRequest.getItems().iterator().next().getOrderNumber();
 	}
 	
 	@RequestMapping(value="/order", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse order(@RequestBody JsonDeliverRequest deliverRequest) 
+	public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest) 
 					throws Exception {
 		deliverRequest.validate();
 		
@@ -70,7 +70,7 @@ public class TransitionsController extends ExceptionController{
 	
 	@RequestMapping(value="/invoice/json", method=RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse invoice(
-			@RequestBody JsonDeliverRequest deliverRequest) 
+			@RequestBody JsonCreateReportRequest deliverRequest) 
 					throws Exception {
 		deliverRequest.validate();
 		
@@ -82,7 +82,7 @@ public class TransitionsController extends ExceptionController{
 
 
 	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse deliver(@RequestBody JsonDeliverRequest deliverRequest) 
+	public @ResponseBody JsonObjectResponse deliver(@RequestBody JsonCreateReportRequest deliverRequest) 
 			throws Exception {
 		deliverRequest.validate();
 		

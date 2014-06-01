@@ -43,30 +43,7 @@ Ext.define('MyApp.store.ItemDataStore', {
                 },
                 writer: {
                 	allowSingle: false
-                },
-//                autoSync: true,
-                afterRequest:function(request,success){
-                    console.log(request);	                    
-                }/*,
-                listeners: {
-                    exception: function(proxy, response, operation){
-                    	console.error(response);
-                        Ext.MessageBox.show({
-                            title: 'Server Fehler',
-                            msg: operation.getError(),
-                            icon: Ext.MessageBox.ERROR,
-                            buttons: Ext.Msg.OK
-                        });
-                    }
-                }*/
-                /*,
-                filters: {
-                    property: 'status',
-                    value: {
-                        Bestellung: 'NICHTBESTAETIGT'
-                    }
-                }  */
-                
+                }
             }
         }, cfg)]);
     }

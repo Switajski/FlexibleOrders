@@ -9,7 +9,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 	record : null,
 	closeAction : 'destroy',
 	bottomGrid : {
-		xtype : 'DeliveryNotesItemGrid',
+		xtype : 'PositionGrid',
 		dock : 'bottom',
 		id : 'CreateDeliveryNotesItemGrid',
 		flex : 1,

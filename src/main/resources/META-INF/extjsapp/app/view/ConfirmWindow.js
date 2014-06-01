@@ -4,9 +4,9 @@ Ext.define('MyApp.view.ConfirmWindow', {
 	width : 350,
 	id : 'ConfirmWindow',
 	bottomGrid : {
-		xtype : 'ShippingItemGrid',
+		xtype : 'PositionGrid',
 		dock : 'bottom',
-		id : 'CreateConfirmationReportItemGrid',
+		id : Ext.getCmp('CreateConfirmationReportItemGrid'),
 		flex : 1,
 		store : 'CreateConfirmationReportItemDataStore',
 		title : "Auftragsbest&auml;tigungspositionen",
@@ -92,7 +92,7 @@ Ext.define('MyApp.view.ConfirmWindow', {
 	},
 	addressForm : null,
 	onSave : function(button, event, option) {
-		MyApp.getApplication().getController('MyController').confirm(button,
+		MyApp.getApplication().getController('ConfirmController').confirm(button,
 				event, option);
 	}
 });

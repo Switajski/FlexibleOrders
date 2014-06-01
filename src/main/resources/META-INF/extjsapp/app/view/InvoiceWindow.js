@@ -80,7 +80,7 @@
 				}]
 	},
 	bottomGrid : {
-		xtype : 'InvoiceItemGrid',
+		xtype : 'PositionGrid',
 		dock : 'bottom',
 		id : 'CreateInvoiceItemGrid',
 		flex : 1,

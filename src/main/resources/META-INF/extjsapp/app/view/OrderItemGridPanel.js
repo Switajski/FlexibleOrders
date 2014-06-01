@@ -6,7 +6,7 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('orderItemGrid - customtransitionfunction');
 				var ocnr = record.data.orderNumber;
-				MyApp.getApplication().getController('MyController').onConfirm(record);
+				MyApp.getApplication().getController('ConfirmController').onConfirm(record);
 
 			},
 			onPdfClick : function(view, a, b, column, event, record, f) {

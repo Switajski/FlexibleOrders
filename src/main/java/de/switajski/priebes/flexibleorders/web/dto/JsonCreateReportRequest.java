@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.reference.Country;
  *
  */
 @JsonAutoDetect
-public class JsonDeliverRequest {
+public class JsonCreateReportRequest {
 	
 	private Long customerId;
 	

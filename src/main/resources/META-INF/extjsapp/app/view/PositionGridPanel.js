@@ -167,8 +167,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	},
 
 	onActionClick : function() {
-		// alert('Diese Methode ist "abstract" - sollte in den Unterklassen
-		// implementiert werden ');
+		console.error('not overidden');
 	},
 	onitemdblclick : function(grid, record) {
 		console.error('not implemented 658276');

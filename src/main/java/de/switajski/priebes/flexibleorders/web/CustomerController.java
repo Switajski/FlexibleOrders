@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.web.dto.JsonCustomer;
+import de.switajski.priebes.flexibleorders.service.CustomerDtoConverterServiceImpl;
+import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
@@ -55,18 +56,17 @@ public class CustomerController extends ExceptionController{
 	
 	//TODO let a serializer read and map these attribute
 	@RequestMapping(value = "/create", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody String json
+	public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto
 			) throws JsonParseException, JsonMappingException, IOException{
-		JsonCustomer jsonCustomer = serializeJsonCustomer(json);
-		Customer c = jsonCustomer.toCustomer();
+		Customer c = CustomerDtoConverterServiceImpl.toCustomer(cDto, new Customer());
 		customerRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}
 
-	public JsonCustomer serializeJsonCustomer(String json) throws JsonParseException, JsonMappingException, IOException {
+	public CustomerDto serializeJsonCustomer(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.getSerializationConfig();
-		JsonCustomer jsonCustomer = (JsonCustomer) mapper.readValue(json, JsonCustomer.class);
+		CustomerDto jsonCustomer = (CustomerDto) mapper.readValue(json, CustomerDto.class);
 		return jsonCustomer;
 	}
 }

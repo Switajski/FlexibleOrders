@@ -29,13 +29,25 @@ public class CustomerServiceImpl {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
+	
+//	@Transactional
+//	public Customer update(JsonCustomer customerDto){
+//		Customer customer = retrieveCustomerSavely(customerDto.getCustomerNumber());
+//		
+//		
+//	}
 
 	@Transactional
 	public void delete(Long customerNumber) {
+		Customer customer = retrieveCustomerSavely(customerNumber);
+		customerRepo.delete(customer);
+	}
+
+	private Customer retrieveCustomerSavely(Long customerNumber) {
 		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
 		if (customer == null) 
-			throw new IllegalArgumentException("Kundennr. nicht gefunden");
-		customerRepo.delete(customer);
+			throw new IllegalArgumentException("Kunde mit gegebener Kundennummer nicht gefunden");
+		return customer;
 	}
 
 }

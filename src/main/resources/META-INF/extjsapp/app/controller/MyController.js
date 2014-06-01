@@ -53,9 +53,6 @@ Ext.define('MyApp.controller.MyController', {
 					'#mainCustomerComboBox' : {
 						change : this.onCustomerChange
 					},
-					'#CreateCustomerButton' : {
-						click : this.onCreateCustomer
-					},
 					'#ErstelleBestellungButton' : {
 						click : this.onOrder
 					},
@@ -99,7 +96,6 @@ Ext.define('MyApp.controller.MyController', {
 			return;
 		if (selections.length == 0)
 			return;
-		console.log('changeBestellungSelection');
 	},
 	getButtons : function() {
 		var buttons = {
@@ -122,8 +118,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	deleteBpDialog : function(button, event, options) {
-		if (this.debug)
-			console.log('deleteBpDialog');
 		var bestellung = this.getBpSelection();
 
 		if (bestellung.getData().status == 'ORDERED')
@@ -136,8 +130,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	deleteBestellungDialog : function(button, event, options) {
-		if (this.debug)
-			console.log('deleteBpDialog');
 		var bestellung = this.getBestellungSelection();
 
 		if (bestellung.getData().status == 'ORDERED')
@@ -157,8 +149,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	syncBpGrid : function(view, owner, options) {
-		if (this.debug)
-			console.log('syncBpGrid');
 		var bpDataStore = Ext.data.StoreManager
 				.lookup('ItemDataStore');
 	},
@@ -187,35 +177,6 @@ Ext.define('MyApp.controller.MyController', {
 		}
 	},
 
-	confirm : function(event, record, createConfirmationReportStore) {
-		var form = Ext.getCmp('ConfirmWindow').down('form').getForm();
-		if (event == "ok") {
-
-			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/confirm/json',
-				jsonData : {
-					orderNumber : form.getValues().orderNumber,
-					orderConfirmationNumber : form.getValues().orderConfirmationNumber,
-					customerId : form.getValues().id,
-					expectedDelivery : form.getValues().expectedDelivery,
-					items : Ext.pluck(createConfirmationReportStore.data.items,
-							'data')
-				},
-				success : function(response) {
-					var text = response.responseText;
-					// Sync
-					MyApp.getApplication().getController('MyController')
-							.sleep(500);
-					var allGrids = Ext.ComponentQuery.query('PositionGrid');
-					allGrids.forEach(function(grid) {
-								grid.getStore().load();
-							});
-					Ext.getCmp("ConfirmWindow").close();
-				}
-			});
-		}
-	},
-
 	deconfirm : function(event, ocnr, record) {
 		store = Ext.getStore('ShippingItemDataStore');
 		var request = Ext.Ajax.request({
@@ -231,9 +192,6 @@ Ext.define('MyApp.controller.MyController', {
 
 	withdraw : function(event, record) {
 		if (event == "ok") {
-			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.invoiceNumber);
-
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/cancelDeliveryNotes',
 						params : {
@@ -248,8 +206,6 @@ Ext.define('MyApp.controller.MyController', {
 
 	decomplete : function(event, record) {
 		if (event == "ok") {
-			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.accountNumber);
 
 			var request = Ext.Ajax.request({
 				url : '/FlexibleOrders/transitions/decomplete/json',
@@ -266,8 +222,6 @@ Ext.define('MyApp.controller.MyController', {
 					var text = response.responseText;
 				}
 			});
-			if (this.debug)
-				console.log('decomplete archive item');
 			// TODO: DRY in Sync
 			// Sync
 			MyApp.getApplication().getController('MyController').sleep(500);
@@ -282,8 +236,6 @@ Ext.define('MyApp.controller.MyController', {
 		record.data.accountNumber = record.data.invoiceNumber
 				.replace(/R/g, "Q");
 		if (event == "ok") {
-			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.accountNumber);
 
 			var request = Ext.Ajax.request({
 						url : '/FlexibleOrders/transitions/complete/json',
@@ -301,8 +253,6 @@ Ext.define('MyApp.controller.MyController', {
 							var text = response.responseText;
 						}
 					});
-			if (this.debug)
-				console.log('complete invoice');
 
 			// Sync
 			MyApp.getApplication().getController('MyController').sleep(500);
@@ -314,7 +264,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	onCustomerChange : function(field, newValue, oldValue, eOpts) {
-		console.log('onCustomerChange');
 		var stores = new Array();
 		stores[0] = Ext.data.StoreManager.lookup('ItemDataStore');
 		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
@@ -336,12 +285,6 @@ Ext.define('MyApp.controller.MyController', {
 						// store.load();
 					}
 				});
-	},
-
-	onCreateCustomer : function(button, event, options) {
-		console.log('onCreateCustomer');
-		var createCustomerWindow = this.getCreateCustomerWindowView().create();
-		createCustomerWindow.show();
 	},
 
 	// TODO: rename to onDeliver
@@ -402,8 +345,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	onOrder : function(button, event, option) {
-		console.log('onOrder');
-
 		// check customer is chosen
 		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
 		if (customerId == 0 || customerId == "" || customerId == null) {
@@ -434,52 +375,7 @@ Ext.define('MyApp.controller.MyController', {
 		orderWindow.show();
 		orderWindow.focus();
 	},
-
-	onConfirm : function(record) {
-		confirmationReportNumber = 'AB' + record.data.orderNumber;
-
-		record.data.confirmationReportNumber = record.data.documentNumber;
-		var createConfirmationReportStore = MyApp.getApplication()
-				.getStore('CreateConfirmationReportItemDataStore');
-		createConfirmationReportStore.filter('customer', record.data.customer);
-
-		var confirmWindow = Ext.create('MyApp.view.ConfirmWindow', {
-					id : "ConfirmWindow",
-					onSave : function() {
-						MyApp.getApplication().getController('MyController')
-								.confirm("ok", kunde,
-										createConfirmationReportStore);
-					}
-				});
-		kunde = Ext.getStore('KundeDataStore').findRecord("id",
-				record.data.customer);
-		kundeId = kunde.data.id;
-		email = kunde.data.email;
-
-		confirmWindow.show();
-		confirmWindow.down('form').getForm().setValues({
-					name1 : kunde.data.name1,
-					name2 : kunde.data.name2,
-					city : kunde.data.city,
-					country : kunde.data.country,
-					email : kunde.data.email,
-					firstName : kunde.data.firstName,
-					id : kunde.data.id,
-					lastName : kunde.data.lastName,
-					phone : kunde.data.phone,
-					postalCode : kunde.data.postalCode,
-					customerNumber : kunde.data.customerNumber,
-					street : kunde.data.street
-				});
-		// somehow the id is deleted onShow
-		// Ext.getCmp('confirmationReportNumber')
-		// .setValue(confirmationReportNumber);
-		// Ext.getStore('KundeDataStore').findRecord("email", email).data.id =
-		// kundeId;
-		Ext.getCmp('newOrderConfirmationNumber')
-				.setValue(confirmationReportNumber);
-	},
-
+	
 	/**
 	 * 
 	 * @param {}
@@ -490,11 +386,8 @@ Ext.define('MyApp.controller.MyController', {
 	 *            createInvoiceStore
 	 */
 	deliver2 : function(event, record, createDeliveryNotesStore) {
-		console.log('deliver2');
 		var form = Ext.getCmp('DeliverWindow').down('form').getForm();
 		if (event == "ok") {
-			console.log(record.data.product + " " + record.data.quantity + " "
-					+ record.data.orderConfirmationNumber);
 
 			var request = Ext.Ajax.request({
 				url : '/FlexibleOrders/transitions/deliver/json',
@@ -527,8 +420,6 @@ Ext.define('MyApp.controller.MyController', {
 					Ext.getCmp("DeliverWindow").close();
 				}
 			});
-			if (this.debug)
-				console.log('deliver order confirmation');
 		}
 	},
 
@@ -627,7 +518,6 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	invoice2 : function(event, record, createInvoiceStore) {
-		console.log('invoice2');
 		var form = Ext.getCmp('InvoiceWindow').down('form').getForm();
 		if (event == "ok") {
 			var request = Ext.Ajax.request({
@@ -660,9 +550,8 @@ Ext.define('MyApp.controller.MyController', {
 					});
 		}
 	},
-
+	
 	deleteReport : function(varDocumentNumber) {
-		console.error('Not Implemented!');
 		var request = Ext.Ajax.request({
 			url : '/FlexibleOrders/transitions/deleteReport',
 			params : {

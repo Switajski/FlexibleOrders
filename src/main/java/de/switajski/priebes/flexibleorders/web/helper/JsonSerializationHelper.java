@@ -15,7 +15,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
-import de.switajski.priebes.flexibleorders.web.dto.JsonCustomer;
+import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 /**
  * NOT USED - Backup for filters implementation. Method from former controller-filter-method:
@@ -92,11 +92,11 @@ public class JsonSerializationHelper {
 		return jsonFilters;
 	}
 	
-	public static List<JsonCustomer> convertToJsonCustomers(
+	public static List<CustomerDto> convertToJsonCustomers(
 			Collection<Customer> customers) {
-		List<JsonCustomer> jsonCustomers = new ArrayList<JsonCustomer>();
+		List<CustomerDto> jsonCustomers = new ArrayList<CustomerDto>();
 		for (Customer c : customers){
-			JsonCustomer jc = new JsonCustomer();
+			CustomerDto jc = new CustomerDto();
 			jc.setId(c.getId());
 			jc.setCustomerNumber(c.getCustomerNumber());
 			jc.setLastName(c.getLastName());

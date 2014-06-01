@@ -35,7 +35,10 @@ Ext.application({
     ],
     autoCreateViewport: false,
     controllers: [
-        'MyController'
+        'MyController',
+        'CustomerController',
+        'ConfirmController',
+        'DeliverController'
     ],
     name: 'MyApp',
     //autoCreateViewport:true,

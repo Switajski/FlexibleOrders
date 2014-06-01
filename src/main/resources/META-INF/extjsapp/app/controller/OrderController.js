@@ -13,9 +13,8 @@ Ext.define('MyApp.controller.OrderController', {
 						click : this.onOrder
 					}
 				});
-		console.log("OrderController loaded");
 	},
-	
+
 	order : function(button, event, option) {
 		var form = Ext.getCmp('OrderWindow').down('form').getForm();
 		var record = form.getRecord();
@@ -51,35 +50,21 @@ Ext.define('MyApp.controller.OrderController', {
 			}
 		});
 	},
-	
+
 	onOrder : function(button, event, option) {
 		// check customer is chosen
-		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
-		if (customerId == 0 || customerId == "" || customerId == null) {
-			Ext.MessageBox.show({
-						title : 'Kundenfeld leer',
-						msg : 'Bitte Kunden ausw&auml;hlen',
-						icon : Ext.MessageBox.ERROR,
-						buttons : Ext.Msg.OK
-					});
+		var customer = MyApp.getApplication().getController('MyController')
+				.retrieveChosenCustomerSavely();
+		if (customer == null)
 			return;
-		}
-
-		var customer = MyApp.getApplication().getStore('KundeDataStore')
-				.getById(customerId);
 
 		var orderWindow = Ext.create('MyApp.view.OrderWindow', {
-			id : "OrderWindow",
-			record : customer,
-			onShow : function() {
-				this.down('form').getForm().loadRecord(customer);
-			}
-				/*
-				 * onSave : function() {
-				 * MyApp.getApplication().getController('MyController')
-				 * .deliver2("ok", kunde, createInvoiceStore); },
-				 */
-			});
+					id : "OrderWindow",
+					record : customer,
+					onShow : function() {
+						this.down('form').getForm().loadRecord(customer);
+					}
+				});
 		orderWindow.show();
 		orderWindow.focus();
 	}

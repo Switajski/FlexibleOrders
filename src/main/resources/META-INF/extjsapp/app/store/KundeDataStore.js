@@ -40,7 +40,7 @@ Ext.define('MyApp.store.KundeDataStore', {
                 },
                 api:{
                     read: this.customurl,
-                    update: this.customurl,
+                    update: "/FlexibleOrders/customers/udpate",
                     destroy: this.customurl,
                     create: "/FlexibleOrders/customers/create"
                 },

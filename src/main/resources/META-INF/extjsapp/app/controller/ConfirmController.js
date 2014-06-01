@@ -13,7 +13,6 @@ Ext.define('MyApp.controller.ConfirmController', {
 					//	click : this.onCreateCustomer
 					//}
 				});
-		console.log("ConfirmController loaded");
 	},
 	
 	onConfirm : function(record) {

@@ -10,7 +10,6 @@ Ext.define('MyApp.controller.InvoiceController', {
 	init : function(application) {
 		this.control({
 				});
-		console.log("DeliverController loaded");
 	},
 	
 	invoice : function(event, record) {

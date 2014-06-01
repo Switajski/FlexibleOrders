@@ -62,6 +62,14 @@ public class CustomerController extends ExceptionController{
 		customerRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}
+	
+	@RequestMapping(value = "/update", method=RequestMethod.POST)
+	public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto
+			) throws JsonParseException, JsonMappingException, IOException{
+		Customer c = CustomerDtoConverterServiceImpl.toCustomer(cDto, customerRepo.findByCustomerNumber(cDto.getCustomerNumber()));
+		customerRepo.save(c);
+		return ExtJsResponseCreator.createResponse(c);
+	}
 
 	public CustomerDto serializeJsonCustomer(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();

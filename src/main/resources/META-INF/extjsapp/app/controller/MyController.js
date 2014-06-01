@@ -125,6 +125,24 @@ Ext.define('MyApp.controller.MyController', {
 					.alert('Hinweis',
 							'Bestellposition schon best&auml;tigt. Nur noch Storno ist m&ouml;glich.');
 	},
+	
+	retrieveChosenCustomerSavely : function(){
+		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
+		if (customerId == 0 || customerId == "" || customerId == null) {
+			Ext.MessageBox.show({
+						title : 'Kundenfeld leer',
+						msg : 'Bitte Kunden ausw&auml;hlen',
+						icon : Ext.MessageBox.ERROR,
+						buttons : Ext.Msg.OK
+					});
+			return;
+		}
+		
+		var customer = MyApp.getApplication().getStore('KundeDataStore')
+				.getById(customerId);
+				
+		return customer;
+	},
 
 	deleteBestellungDialog : function(button, event, options) {
 		var bestellung = this.getBestellungSelection();

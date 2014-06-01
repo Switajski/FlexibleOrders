@@ -21,6 +21,11 @@ Ext.define('MyApp.view.MainPanel', {
 			icon : '/FlexibleOrders/images/add.png',
 			text : 'erstelle Kunden',
 			scope : this
+		}, {
+			id : 'UpdateCustomerButton',
+			icon : '/FlexibleOrders/images/update.png',
+			text : 'Kunden bearbeiten',
+			scope : this
 		}/*,{
 			xtype : 'button',
 			text : 'Berichte',

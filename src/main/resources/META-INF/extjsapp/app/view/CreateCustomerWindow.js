@@ -3,6 +3,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 	title : 'Kunden erstellen',
 	itemid : 'CreateCustomerWindow',
 	alias : 'widget.CreateCustomerWindow',
+	customerNumberEditable : true,
 	layout : 'fit',
 	defaultInvoiceNumber : 0,
 	record : Ext.create('MyApp.model.KundeData', {
@@ -131,14 +132,13 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					postalCode : this.record.data.postalCode,
 					city : this.record.data.city,
 					country : this.record.data.country
-				})
+				});
 
 		this.down('form').getForm().loadRecord(kunde);
 		
 		// set the listeners to update record onChange
 		this.down('form').items.each(function(item) {
 			item.items.each(function(ii) {
-				console.log(ii);
 				ii.on({
 					change : function() {
 						var window = Ext.getCmp("CreateCustomerWindow");

@@ -346,11 +346,10 @@ public class OrderServiceImpl {
 	@Transactional
 	public Receipt markAsPayed(String invoiceNumber, String receiptNumber,
 			Date date) {
-		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
-		if (r == null || !(r instanceof Invoice))
-			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
+		if (reportRepo.findByDocumentNumber(receiptNumber) != null)
+			receiptNumber.concat("-2");
 
-		Invoice invoice = (Invoice) r;
+		Invoice invoice = retrieveInvoiceSavely(invoiceNumber);
 		Receipt receipt = new Receipt(receiptNumber, date);
 		ReportItem reportItem = null;
 		for (ReportItem ri : invoice.getItems()) {
@@ -366,6 +365,13 @@ public class OrderServiceImpl {
 				.getCustomer()
 				.getCustomerNumber());
 		return reportRepo.save(receipt);
+	}
+
+	private Invoice retrieveInvoiceSavely(String invoiceNumber) {
+		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
+		if (r == null || !(r instanceof Invoice))
+			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
+		return (Invoice) r;
 	}
 
 	/**

@@ -134,7 +134,7 @@ Ext.define('MyApp.view.OrderWindow', {
 		}]
 	},
 	onSave : function(button, event, option) {
-		MyApp.getApplication().getController('MyController').order(button,
+		MyApp.getApplication().getController('OrderController').order(button,
 				event, option);
 	}
 });

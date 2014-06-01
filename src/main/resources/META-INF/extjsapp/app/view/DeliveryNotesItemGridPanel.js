@@ -5,7 +5,7 @@ Ext.define('MyApp.view.DeliveryNotesItemGridPanel', {
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
 		console.log(record);
-		MyApp.getApplication().getController('MyController').invoice("ok",
+		MyApp.getApplication().getController('InvoiceController').invoice("ok",
 				record);
 	},
 	onPdfClick : function(view, a, b, column, event, record, f) {

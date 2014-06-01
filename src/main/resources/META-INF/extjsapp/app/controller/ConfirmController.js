@@ -22,6 +22,7 @@ Ext.define('MyApp.controller.ConfirmController', {
 		record.data.confirmationReportNumber = record.data.documentNumber;
 		var createConfirmationReportStore = MyApp.getApplication()
 				.getStore('CreateConfirmationReportItemDataStore');
+		//FIXME: Got problems with creating a store dynamically. This Snippet only works the second time the window is opened
 		//var createConfirmationReportStore = Ext.create('MyApp.store.CreateConfirmationReportItemDataStore', {
 		//	id: "CreateConfirmationReportItemDataStore",
 		//	listeners : {

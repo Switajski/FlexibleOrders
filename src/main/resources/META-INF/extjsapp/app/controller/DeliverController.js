@@ -4,7 +4,7 @@ Ext.define('MyApp.controller.DeliverController', {
 
 	id : 'ConfirmController',
 	models : ['ItemData'],
-	stores : ['CreateConfirmationReportItemDataStore'],
+	stores : ['CreateDeliveryNotesItemDataStore'],
 	views : ['ConfirmWindow'],
 
 	init : function(application) {
@@ -32,7 +32,7 @@ Ext.define('MyApp.controller.DeliverController', {
 					onSave : function() {
 						MyApp
 								.getApplication()
-								.getController('ConfirmController')
+								.getController('DeliverController')
 								.deliver2("ok", kunde, createDeliveryNotesStore);
 					}
 				});

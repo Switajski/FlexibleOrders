@@ -120,19 +120,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 		if (this.record == null)
 			console.error('no record set!');
 		
-		var kunde = Ext.create('MyApp.model.KundeData', {
-					customerNumber : this.record.data.customerNumber,
-					firstName : this.record.data.firstName,
-					lastName : this.record.data.lastName,
-					email : this.record.data.email,
-					phone : this.record.data.phone,
-					name1 : this.record.data.name1,
-					name2 : this.record.data.name2,
-					street : this.record.data.street,
-					postalCode : this.record.data.postalCode,
-					city : this.record.data.city,
-					country : this.record.data.country
-				});
+		var kunde = this.createCustomerRecord();
 
 		this.down('form').getForm().loadRecord(kunde);
 		
@@ -152,6 +140,23 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 
 	onSave : function() {
 		console.error("function not overriden"); 
+	},
+	
+	createCustomerRecord : function(){
+		var record = Ext.create('MyApp.model.KundeData', {
+					customerNumber : this.record.data.customerNumber,
+					firstName : this.record.data.firstName,
+					lastName : this.record.data.lastName,
+					email : this.record.data.email,
+					phone : this.record.data.phone,
+					name1 : this.record.data.name1,
+					name2 : this.record.data.name2,
+					street : this.record.data.street,
+					postalCode : this.record.data.postalCode,
+					city : this.record.data.city,
+					country : this.record.data.country
+				});
+		return record;
 	}
 
 });

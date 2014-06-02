@@ -62,21 +62,21 @@ public class FilterDispatcher {
 				&& filterMap.get(CUSTOMER_NO) != null;
 	}
 
-	private Specifications<ReportItem> dispatchStatus(String stateFilter) {
+	public static Specifications<ReportItem> dispatchStatus(String state) {
 		Specifications<ReportItem> spec = null;
-		if (stateFilter.equals("ordered"))
+		if (state.equals("ordered"))
 			throw new IllegalArgumentException(
 					"Filter 'ordered' cannot be applied to Reports, but Orders");
-		if (stateFilter.equals("ship") || stateFilter.equals("confirmed"))
+		if (state.equals("ship") || state.equals("confirmed"))
 			spec = where(new ConfirmationItemToBeShippedSpec());
-		if (stateFilter.equals("shipped"))
+		if (state.equals("shipped"))
 			spec = where(new ShippingItemToBeInvoicedSpec());
-		if (stateFilter.equals("invoiced"))
+		if (state.equals("invoiced"))
 			spec = where(new InvoiceItemToBePaidSpec());
-		if (stateFilter.equals("completed"))
+		if (state.equals("completed"))
 			spec = where(new ReceiptItemCompletedSpec());
 		if (spec == null)
-			throw new IllegalArgumentException("Status nicht gefunden");
+			throw new IllegalArgumentException("Status nicht angegeben");
 		return where(spec);
 	}
 

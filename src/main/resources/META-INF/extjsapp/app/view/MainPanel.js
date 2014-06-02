@@ -26,6 +26,11 @@ Ext.define('MyApp.view.MainPanel', {
 			icon : '/FlexibleOrders/images/update.png',
 			text : 'Kunden bearbeiten',
 			scope : this
+		}, {
+			id : 'ShowSums',
+			icon : '/FlexibleOrders/images/update.png',
+			text : 'Offene Betr&auml;ge anzeigen',
+			scope : this
 		}/*,{
 			xtype : 'button',
 			text : 'Berichte',

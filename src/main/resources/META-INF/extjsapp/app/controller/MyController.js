@@ -79,6 +79,9 @@ Ext.define('MyApp.controller.MyController', {
 					},
 					'#AddShippingCostsButton' : {
 						click : this.addShippingCosts
+					},
+					'#ShowSums' : {
+						click : this.onShowSums
 					}
 				});
 		this.getStore('ItemDataStore').filter('status', 'ordered');
@@ -313,6 +316,30 @@ Ext.define('MyApp.controller.MyController', {
 				// Sync
 				MyApp.getApplication().getController('MyController').sleep(500);
 			}
+		});
+	},
+	
+	onShowSums : function(){
+		statesToGrids = [
+			{state : 'ship', grid : 'ShippingItemGrid', text : 'Auftragsbest&auml;tigungen'},
+			{state : 'shipped', grid : 'DeliveryNotesItemGrid', text : 'Lieferscheine'},
+			{state : 'invoiced', grid : 'InvoiceItemGrid', text : 'Rechnungen'}],
+		
+		statesToGrids.forEach(function(stateToGrid) {
+			Ext.Ajax.request({
+				url : '/FlexibleOrders/statistics/openAmount',
+				method : 'GET',
+				params : {
+					state : stateToGrid.state
+				},
+				success : function(response) {
+					var text = response.responseText;
+					shippedAmount = Ext.JSON.decode(text).data;
+					Ext.getCmp(stateToGrid.grid).setTitle(
+						stateToGrid.text + ' - Offener Betrag: ' 
+						+ shippedAmount.value + ' ' + shippedAmount.currency);
+				}
+			});
 		});
 	}
 

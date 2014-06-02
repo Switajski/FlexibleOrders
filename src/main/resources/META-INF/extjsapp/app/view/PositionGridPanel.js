@@ -105,37 +105,36 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						dataIndex : 'customerName',
 						width : 120,
 						text : 'Name'
-						// }, {
-					// xtype : 'gridcolumn',
-					// dataIndex : 'expectedDelivery',
-					// text : 'Geplante Auslieferung',
-					// width : 20,
-					// format : 'd/m/Y'
-				}	, {
+					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
-						// menuDisabled: true,
 						items : [{
 							icon : this.customicon,
 							tooltip : 'Position in den naechten Schritt bringen',
 							scope : this,
 							handler : this.onActionClick
 						}]
-						// disabled : this.customIsFirstGrid
 					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
-						// menuDisabled: true,
 						items : [{
-							icon : '/FlexibleOrders/images/pdf_button.png',
-							tooltip : 'Position in den naechten Schritt bringen',
+							icon : '/FlexibleOrders/images/list.png',
+							tooltip : 'Lieferhistorie anschauen',
 							scope : this,
 							handler : this.onPdfClick
 						}]
-
-						// disabled : this.customIsFirstGrid
+					},{
+						xtype : 'actioncolumn',
+						width : 30,
+						sortable : false,
+						items : [{
+							icon : '/FlexibleOrders/images/pdf_button.png',
+							tooltip : 'Pdf anzeigen',
+							scope : this,
+							handler : this.onPdfClick
+						}]
 					}, {
 						xtype : 'actioncolumn',
 						width : 30,
@@ -143,7 +142,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						menuDisabled : true,
 						items : [{
 							icon : '/FlexibleOrders/images/delete.png',
-							tooltip : 'In den vorherigen Abschnitt verschieben',
+							tooltip : 'Dokument l&ouml;schen',
 							scope : this,
 							handler : this.onRemoveClick
 						}]

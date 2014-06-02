@@ -58,7 +58,7 @@ public class CustomerController extends ExceptionController {
 		return "customers/listitems";
 	}
 
-	// TODO let a serializer read and map these attribute
+	// TODO: illegal use of customerRepository
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -69,6 +69,7 @@ public class CustomerController extends ExceptionController {
 		return ExtJsResponseCreator.createResponse(c);
 	}
 
+	// TODO: illegal use of customerRepository 
 	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {

@@ -19,38 +19,22 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class ReportItemServiceImpl {
 
+	@Autowired
 	private OrderRepository orderRepo;
+	@Autowired
 	private ReportRepository reportRepo;
+	@Autowired
 	private ReportItemRepository reportItemRepo;
+	@Autowired
 	private ReportItemToItemDtoPageConverterService pageConverterService;
 	@Autowired
 	private ItemDtoConverterService itemDtoConverterService;
 
-	@Autowired
-	public ReportItemServiceImpl(
-			OrderRepository orderRepo,
-			ReportRepository reportRepo,
-			ReportItemRepository reportItemRepo,
-			ReportItemToItemDtoPageConverterService reportItemPageService) {
-		this.orderRepo = orderRepo;
-		this.reportRepo = reportRepo;
-		this.reportItemRepo = reportItemRepo;
-		this.pageConverterService = reportItemPageService;
-	}
-
-	/**
-	 * 
-	 * @param customer
-	 * @param pageable
-	 * @param byOrder
-	 * @return
-	 */
 	@Transactional(readOnly = true)
 	public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
 			Pageable pageable) {
@@ -131,15 +115,6 @@ public class ReportItemServiceImpl {
 		for (ReportItem he : report.getItems())
 			reportItems.add(itemDtoConverterService.convert(he));
 		return reportItems;
-	}
-
-	// TODO: move to OrderServiceImpl
-	@Transactional(readOnly = true)
-	public Order retrieveOrder(String orderNumber) {
-		Order order = orderRepo.findByOrderNumber(orderNumber);
-		order.getCustomer();
-		order.getItems();
-		return orderRepo.findByOrderNumber(orderNumber);
 	}
 
 	@Transactional(readOnly = true)

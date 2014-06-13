@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @Controller
+//TODO: distribute methods on business controllers
 @RequestMapping("/transitions")
 public class TransitionsController extends ExceptionController{
 	

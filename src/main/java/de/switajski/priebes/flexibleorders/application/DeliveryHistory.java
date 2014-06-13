@@ -53,6 +53,10 @@ public class DeliveryHistory {
 		}
 		return riToReturn;
 	}
+	
+	public Set<ReportItem> getItems(){
+		return reportItems;
+	}
 
 	public boolean isEmpty() {
 		return reportItems.isEmpty();

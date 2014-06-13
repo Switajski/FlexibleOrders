@@ -420,5 +420,15 @@ public class OrderServiceImpl {
 
 		return reportRepo.save(invoice);
 	}
+	
+	// TODO: move to OrderServiceImpl
+	@Transactional(readOnly = true)
+	public Order retrieveOrder(String orderNumber) {
+		Order order = orderRepo.findByOrderNumber(orderNumber);
+		order.getCustomer();
+		order.getItems();
+		return orderRepo.findByOrderNumber(orderNumber);
+	}
+
 
 }

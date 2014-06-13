@@ -9,6 +9,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -61,6 +63,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		report.addItem(this);
 	}
 
+	@JsonIgnore
 	public OrderItem getOrderItem() {
 		return orderItem;
 	}

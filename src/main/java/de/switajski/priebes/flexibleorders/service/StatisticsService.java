@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.web.FilterDispatcher;
+import de.switajski.priebes.flexibleorders.service.helper.ReportItemFilterDispatcher;
 
 @Service
 public class StatisticsService {
@@ -17,7 +17,7 @@ public class StatisticsService {
 	private ReportItemRepository reportItemRepo;
 	
 	public Amount calculateOpenAmount(String state){
-		List<ReportItem> ris = reportItemRepo.findAll(FilterDispatcher.dispatchStatus(state));
+		List<ReportItem> ris = reportItemRepo.findAll(ReportItemFilterDispatcher.dispatchStatus(state));
 		Amount summed = Amount.ZERO_EURO;
 		for (ReportItem ri:ris){
 			summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()

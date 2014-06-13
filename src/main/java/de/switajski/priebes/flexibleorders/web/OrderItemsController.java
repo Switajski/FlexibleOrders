@@ -30,6 +30,7 @@ public class OrderItemsController extends ExceptionController{
 
 	@Autowired
 	private OrderItemRepository itemService;
+	//TODO: on Controller layer only Services are allowed
 	@Autowired
 	private OrderRepository orderRepo;
 	@Autowired

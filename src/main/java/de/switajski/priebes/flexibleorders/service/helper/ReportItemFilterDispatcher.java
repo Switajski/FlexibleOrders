@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.web;
+package de.switajski.priebes.flexibleorders.service.helper;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.repository.specification.ShippingItem
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @Controller
-public class FilterDispatcher {
+public class ReportItemFilterDispatcher {
 
 	private static final String CUSTOMER_NO = "customer";
 
@@ -62,18 +62,18 @@ public class FilterDispatcher {
 				&& filterMap.get(CUSTOMER_NO) != null;
 	}
 
-	public static Specifications<ReportItem> dispatchStatus(String state) {
+	public static Specifications<ReportItem> dispatchStatus(String status) {
 		Specifications<ReportItem> spec = null;
-		if (state.equals("ordered"))
+		if (status.equals("ordered"))
 			throw new IllegalArgumentException(
 					"Filter 'ordered' cannot be applied to Reports, but Orders");
-		if (state.equals("ship") || state.equals("confirmed"))
+		if (status.equals("ship") || status.equals("confirmed"))
 			spec = where(new ConfirmationItemToBeShippedSpec());
-		if (state.equals("shipped"))
+		if (status.equals("shipped"))
 			spec = where(new ShippingItemToBeInvoicedSpec());
-		if (state.equals("invoiced"))
+		if (status.equals("invoiced"))
 			spec = where(new InvoiceItemToBePaidSpec());
-		if (state.equals("completed"))
+		if (status.equals("completed"))
 			spec = where(new ReceiptItemCompletedSpec());
 		if (spec == null)
 			throw new IllegalArgumentException("Status nicht angegeben");

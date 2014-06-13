@@ -27,6 +27,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
@@ -44,10 +45,13 @@ public class ReportController extends ExceptionController{
 	
 	private static Logger log = Logger.getLogger(ReportController.class);
 	@Autowired OrderItemRepository invoiceItemService;
+	//TODO: on Controller layer only Services are allowed
 	@Autowired ReportRepository reportRepo;
+	//TODO: on Controller layer only Services are allowed
 	@Autowired OrderRepository orderRepo;
 	@Autowired ReportItemServiceImpl itemService;
 	@Autowired CustomerRepository customerService;
+	@Autowired OrderServiceImpl orderService;
 	
 	/*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
      *  @ResponseBody is for direct responses without a view
@@ -117,7 +121,7 @@ public class ReportController extends ExceptionController{
     	try {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        Order record = itemService.retrieveOrder(orderNumber);
+	        Order record = orderService.retrieveOrder(orderNumber);
             return new ModelAndView(OrderPdfView.class.getSimpleName(),
             		Order.class.getSimpleName(),record);
 			

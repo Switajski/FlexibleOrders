@@ -18,6 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.helper.ReportItemFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
@@ -33,10 +34,11 @@ public class ReportItemController extends ExceptionController {
 
 	@Autowired
 	private ReportItemServiceImpl reportItemService;
+	//TODO: on Controller layer only Services are allowed
 	@Autowired
 	private CustomerRepository customerRepo;
 	@Autowired
-	private FilterDispatcher filterDispatcher;
+	private ReportItemFilterDispatcher filterDispatcher;
 
 	@RequestMapping(value = "/ordered", method = RequestMethod.GET)
 	public @ResponseBody

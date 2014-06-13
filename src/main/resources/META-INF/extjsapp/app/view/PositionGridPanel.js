@@ -123,7 +123,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 							icon : '/FlexibleOrders/images/list.png',
 							tooltip : 'Lieferhistorie anschauen',
 							scope : this,
-							handler : this.onPdfClick
+							handler : this.onDeliveryHistoryClick
 						}]
 					},{
 						xtype : 'actioncolumn',
@@ -174,6 +174,13 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	onRemoveClick : function(grid, rowIndex, a, b, c, d, e, f, g) {
 		this.getStore().removeAt(rowIndex);
 		this.getStore().sync();
+	},
+	onDeliveryHistoryClick : function(){
+		var store = Ext.getStore('DeliveryHistoryDataStore').reload();
+		var invoiceWindow = Ext.create('MyApp.view.DeliveryHistoryPanel', {
+			id : "InvoiceWindow"
+		});
+		invoiceWindow.show();
 	}
 
 });

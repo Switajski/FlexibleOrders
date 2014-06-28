@@ -1,19 +1,25 @@
 package de.switajski.priebes.flexibleorders.application;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 
+//TODO use on read only objects
 public class DeliveryHistory {
 
 	private Set<ReportItem> reportItems;
-
+	
 	public DeliveryHistory(Set<ReportItem> reportItems) {
 		this.reportItems = reportItems;
 	}
@@ -57,6 +63,17 @@ public class DeliveryHistory {
 	public Set<ReportItem> getItems(){
 		return reportItems;
 	}
+	
+	public List<ReportItem> getItemsSorted(){
+		List<ReportItem> ris = new ArrayList<ReportItem>(getItems());
+		Collections.sort(ris, new Comparator<ReportItem>(){
+			@Override
+			public int compare(ReportItem o1, ReportItem o2) {
+				return o1.getCreated().compareTo(o2.getCreated());
+			}
+		});
+		return ris;
+	}
 
 	public boolean isEmpty() {
 		return reportItems.isEmpty();
@@ -69,6 +86,15 @@ public class DeliveryHistory {
 				riToReturn.add((CancellationItem) ri);
 		}
 		return riToReturn;
+	}
+
+	public String toString() {
+		String s = "";
+		OrderItem orderItem = this.reportItems.iterator().next().getOrderItem();
+		s += "Bnr: " + orderItem.getOrder().getOrderNumber();
+		s += ", Bpos: " + orderItem.getOrderedQuantity() + " x "; 
+		s += + orderItem.getProduct().getProductNumber() + " " + orderItem.getProduct().getName();
+		return s;
 	}
 
 }

@@ -12,14 +12,28 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 @JsonAutoDetect
 public class DeliveryHistoryDto extends ArrayList<Map<String,Object>>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public DeliveryHistoryDto(DeliveryHistory deliveryHistory) {
-		for (ReportItem ri :deliveryHistory.getItems()){
-			Map<String, Object> child = new HashMap<String, Object>();
-			child.put("id", ri.getId());
-			child.put("text", ri.getReport().getDocumentNumber() + ": " + ri.getQuantity());
-			child.put("leaf", true);
+		this.add(createChild(null, deliveryHistory.toString(), true));
+		for (ReportItem ri :deliveryHistory.getItemsSorted()){
+			Map<String, Object> child = createChild(
+					ri.getId(), 
+					ri.getReport().getDocumentNumber() + ": " + ri.getQuantity(), 
+					true);
 			this.add(child);
 		}
+	}
+
+	private Map<String, Object> createChild(Long id, String text, boolean leaf) {
+		Map<String, Object> child = new HashMap<String, Object>();
+		child.put("id", id);
+		child.put("text", text);
+		child.put("leaf", true);
+		return child;
 	}
 	
 }

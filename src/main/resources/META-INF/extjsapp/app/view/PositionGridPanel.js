@@ -175,12 +175,13 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.getStore().removeAt(rowIndex);
 		this.getStore().sync();
 	},
-	onDeliveryHistoryClick : function(){
-		var store = Ext.getStore('DeliveryHistoryDataStore').reload();
-		var invoiceWindow = Ext.create('MyApp.view.DeliveryHistoryPanel', {
-			id : "InvoiceWindow"
+	onDeliveryHistoryClick : function(view, a, b, column, event, record, f){
+		var dhPanel = Ext.create('MyApp.view.DeliveryHistoryPanel', {
 		});
-		invoiceWindow.show();
+		store = dhPanel.items.items[0].getStore();
+		store.getProxy().url = '/FlexibleOrders/deliveryHistory/byReportItemId/'+record.data.id;
+		store.reload();
+		dhPanel.show();
 	}
 
 });

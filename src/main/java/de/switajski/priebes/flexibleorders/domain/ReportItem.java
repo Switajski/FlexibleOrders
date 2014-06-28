@@ -126,7 +126,7 @@ public abstract class ReportItem extends GenericEntity implements Comparable<Rep
 		item.setStatus(provideStatus());
 		return item;
 	}
-
+	
 	public abstract String provideStatus();
 
 }

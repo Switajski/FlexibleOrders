@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.DeliveryHistoryPanel', {
 	extend : 'Ext.window.Window',
 
-	title : 'Auftrag liefern',
+	title : 'Lieferhistorie',
 	itemid : 'DeliveryHistoryPanel',
 	alias : 'widget.DeliveryHistoryPanel',
 	layout : 'fit',

@@ -88,7 +88,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				.toProduct());
 
 		// when
-		Order order = orderService.order(customer.getId(), "3", items);
+		Order order = orderService.order(customer.getId(), "3", new Date(), items);
 
 		// then
 		orderShouldBePersisted(order);
@@ -108,7 +108,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		List<ItemDto> items = givenItemDtos(QUANTITY_INITIAL, products
 				.get(0)
 				.toProduct(), products.get(1).toProduct());
-		Order order = orderService.order(customer.getId(), "3", items);
+		Order order = orderService.order(customer.getId(), "3", new Date(), items);
 
 		// when
 		ConfirmationReport confirmationReport = orderService.confirm(
@@ -146,7 +146,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 						.get(1)
 						.toProduct());
 
-		Order order = orderService.order(customer.getId(), "3246", items);
+		Order order = orderService.order(customer.getId(), "3246", new Date(), items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
@@ -165,6 +165,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"R4",
 				"paymentCondition",
 				INVOICE_ADDRESS,
+				new Date(),
 				itemDtoConverterService.convertReport(deliveryNotes));
 
 		// then
@@ -220,7 +221,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				products.get(0).toProduct(),
 				products.get(1).toProduct());
 
-		Order order = orderService.order(customer.getId(), "4", items);
+		Order order = orderService.order(customer.getId(), "4", new Date(), items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
@@ -268,7 +269,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				products.get(0).toProduct(),
 				products.get(1).toProduct());
 
-		Order order = orderService.order(customer.getId(), "4", items);
+		Order order = orderService.order(customer.getId(), "4", new Date(), items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
@@ -308,7 +309,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				products.get(0).toProduct(),
 				products.get(1).toProduct());
 
-		Order order = orderService.order(customer.getId(), "4", items);
+		Order order = orderService.order(customer.getId(), "4", new Date(), items);
 		ConfirmationReport confirmationReport = orderService.confirm(
 				order.getOrderNumber(),
 				"AB4",
@@ -325,6 +326,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"R4",
 				"paymentCondition",
 				INVOICE_ADDRESS,
+				new Date(),
 				itemDtoConverterService.convertReport(deliveryNotes));
 
 		// when

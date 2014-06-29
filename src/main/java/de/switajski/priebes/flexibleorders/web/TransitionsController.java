@@ -28,10 +28,10 @@ import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @Controller
-//TODO: distribute methods on business controllers
+// TODO: distribute methods on business controllers
 @RequestMapping("/transitions")
-public class TransitionsController extends ExceptionController{
-	
+public class TransitionsController extends ExceptionController {
+
 	private OrderServiceImpl orderService;
 
 	@Autowired
@@ -39,116 +39,138 @@ public class TransitionsController extends ExceptionController{
 			OrderServiceImpl orderService) {
 		this.orderService = orderService;
 	}
-	
 
-	@RequestMapping(value="/confirm/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse confirm(@RequestBody JsonCreateReportRequest confirmRequest) 
-					throws Exception {
-		
-		ConfirmationReport confirmationReport = orderService.confirm(extractOrderNumber(confirmRequest),
-				confirmRequest.getOrderConfirmationNumber(), confirmRequest.getExpectedDelivery(), 
+	@RequestMapping(value = "/confirm/json", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse confirm(
+			@RequestBody JsonCreateReportRequest confirmRequest)
+			throws Exception {
+
+		ConfirmationReport confirmationReport = orderService.confirm(
+				extractOrderNumber(confirmRequest),
+				confirmRequest.getOrderConfirmationNumber(),
+				confirmRequest.getExpectedDelivery(),
 				confirmRequest.getItems());
 		return ExtJsResponseCreator.createResponse(confirmationReport);
 	}
 
-
 	private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
 		if (confirmRequest.getItems().isEmpty())
-			throw new IllegalArgumentException("Liste der Auftragspositionen ist leer");
+			throw new IllegalArgumentException(
+					"Liste der Auftragspositionen ist leer");
 		return confirmRequest.getItems().iterator().next().getOrderNumber();
 	}
-	
-	@RequestMapping(value="/order", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest) 
-					throws Exception {
+
+	@RequestMapping(value = "/order", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest)
+			throws Exception {
 		deliverRequest.validate();
-		
-		Order order = orderService.order(deliverRequest.getCustomerId(), 
-				deliverRequest.getOrderNumber(), deliverRequest.getItems());
-		
+
+		Order order = orderService.order(
+				deliverRequest.getCustomerId(),
+				deliverRequest.getOrderNumber(),
+				deliverRequest.getCreated(),
+				deliverRequest.getItems());
+
 		return ExtJsResponseCreator.createResponse(order);
 	}
-	
-	@RequestMapping(value="/invoice/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse invoice(
-			@RequestBody JsonCreateReportRequest deliverRequest) 
-					throws Exception {
+
+	@RequestMapping(value = "/invoice/json", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse invoice(
+			@RequestBody JsonCreateReportRequest deliverRequest)
+			throws Exception {
 		deliverRequest.validate();
-		
-		Invoice invoice = orderService.invoice(deliverRequest.getInvoiceNumber(), 
-				deliverRequest.getPaymentConditions(), deliverRequest.createAddress(),
+
+		Invoice invoice = orderService.invoice(
+				deliverRequest.getInvoiceNumber(),
+				deliverRequest.getPaymentConditions(),
+				deliverRequest.createAddress(),
+				deliverRequest.getCreated(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(invoice);
 	}
 
-
-	@RequestMapping(value="/deliver/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse deliver(@RequestBody JsonCreateReportRequest deliverRequest) 
+	@RequestMapping(value = "/deliver/json", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse deliver(
+			@RequestBody JsonCreateReportRequest deliverRequest)
 			throws Exception {
 		deliverRequest.validate();
-		
-		DeliveryNotes dn = orderService.deliver(deliverRequest.getDeliveryNotesNumber(), 
-				deliverRequest.getTrackNumber(), deliverRequest.getPackageNumber(),
-				deliverRequest.createAddress(), 
+
+		DeliveryNotes dn = orderService.deliver(
+				deliverRequest.getDeliveryNotesNumber(),
+				deliverRequest.getTrackNumber(),
+				deliverRequest.getPackageNumber(),
+				deliverRequest.createAddress(),
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(dn);
 	}
-	
-	@RequestMapping(value="/deleteOrder", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse deleteOrder(
-			@RequestBody ItemDto reportItem){
+
+	@RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse deleteOrder(
+			@RequestBody ItemDto reportItem) {
 		orderService.deleteOrder(reportItem.getOrderNumber());
 		return ExtJsResponseCreator.createResponse(reportItem.getOrderNumber());
 	}
-	
-	@RequestMapping(value="/cancelDeliveryNotes", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse cancelDeliveryNotes(
-			@RequestParam(value = "deliveryNotesNumber", required = true) String deliveryNotesNumber) 
+
+	@RequestMapping(value = "/cancelDeliveryNotes", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse cancelDeliveryNotes(
+			@RequestParam(value = "deliveryNotesNumber", required = true) String deliveryNotesNumber)
 			throws Exception {
 		CancelReport cr = orderService.cancelDeliveryNotes(deliveryNotesNumber);
 		return ExtJsResponseCreator.createResponse(cr);
 	}
-	
-	@RequestMapping(value="/deleteReport", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse deleteReport(
-			@RequestParam(value = "documentNumber", required = true) String documentNumber) 
+
+	@RequestMapping(value = "/deleteReport", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse deleteReport(
+			@RequestParam(value = "documentNumber", required = true) String documentNumber)
 			throws Exception {
 		orderService.deleteReport(documentNumber);
 		return ExtJsResponseCreator.createResponse(documentNumber);
 	}
-	
-	@RequestMapping(value="/cancelConfirmationReport", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse cancelConfirmationReport(
-			@RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber) 
+
+	@RequestMapping(value = "/cancelConfirmationReport", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse cancelConfirmationReport(
+			@RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
 			throws Exception {
-		CancelReport cr = orderService.cancelConfirmationReport(orderConfirmationNumber);
+		CancelReport cr = orderService
+				.cancelConfirmationReport(orderConfirmationNumber);
 		return ExtJsResponseCreator.createResponse(cr);
 	}
-	
-	
-	@RequestMapping(value="/complete/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse complete(
-			@RequestParam(value="invoiceNumber", required = true) String invoiceNumber) 
-					throws Exception {
-		Receipt receipt = orderService.markAsPayed(invoiceNumber, "B" + invoiceNumber, new Date());
+
+	@RequestMapping(value = "/complete/json", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse complete(
+			@RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
+			throws Exception {
+		Receipt receipt = orderService.markAsPayed(invoiceNumber, "B"
+				+ invoiceNumber, new Date());
 		return ExtJsResponseCreator.createResponse(receipt);
 	}
 
-	@RequestMapping(value="/decomplete/json", method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse decomplete(
-			@RequestParam(value = "documentNumber", required = true) String documentNumber) 
-					throws Exception {
-		//TODO Implement
+	@RequestMapping(value = "/decomplete/json", method = RequestMethod.POST)
+	public @ResponseBody
+	JsonObjectResponse decomplete(
+			@RequestParam(value = "documentNumber", required = true) String documentNumber)
+			throws Exception {
+		// TODO Implement
 		throw new NotImplementedException();
 	}
-	
-	@RequestMapping(value="/delete/json", method=RequestMethod.DELETE)
-	public @ResponseBody JsonObjectResponse delete(
-			@RequestParam(value = "id", required = true) long id) 
-					throws NotFoundException {
-		//TODO Implement
+
+	@RequestMapping(value = "/delete/json", method = RequestMethod.DELETE)
+	public @ResponseBody
+	JsonObjectResponse delete(
+			@RequestParam(value = "id", required = true) long id)
+			throws NotFoundException {
+		// TODO Implement
 		throw new NotImplementedException();
 	}
-	
+
 }

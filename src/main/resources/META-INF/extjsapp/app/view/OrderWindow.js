@@ -18,6 +18,12 @@ Ext.define('MyApp.view.OrderWindow', {
 					name : 'lastName',
 					fieldLabel : 'Nachname'
 				}, {
+					xtype : 'datefield',
+					format : 'd/m/Y',
+					allowBlank : true,
+					fieldLabel : 'Bestelldatum',
+					name : 'created'
+				}, {
 					itemid : 'newOrderNumber',
 					xtype : 'ordernumbercombobox',
 					fieldLabel : 'Bestellnr',
@@ -55,8 +61,9 @@ Ext.define('MyApp.view.OrderWindow', {
 			dataIndex : 'product',
 			text : 'Artikel',
 			width : 250,
-			renderer: function(value, metaData, record, row, col, store, gridView){
-			    console.log(value);
+			renderer : function(value, metaData, record, row, col, store,
+					gridView) {
+				console.log(value);
 				return (value + ' - ' + record.data.productName);
 			},
 			editor : {
@@ -69,34 +76,25 @@ Ext.define('MyApp.view.OrderWindow', {
 				forceSelection : true,
 				queryMode : 'local',
 				store : 'ArtikelDataStore',
-				tpl : Ext.create('Ext.XTemplate','<tpl for="."><div class="x-boundlist-item" >{productNumber} - {name}</div></tpl>'),
+				tpl : Ext
+						.create(
+								'Ext.XTemplate',
+								'<tpl for="."><div class="x-boundlist-item" >{productNumber} - {name}</div></tpl>'),
 				displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
 						'{productNumber} - {name}', '</tpl>'),
 				listeners : {
 					'blur' : function(xObject, state, eOpts) {
-						rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
-						data = Ext.getStore('ArtikelDataStore').query('productNumber', xObject.value).getAt(0).data;
-						
-						createOrderStore = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
+						rowPos = Ext.getCmp('CreateOrderGrid')
+								.getSelectionModel().getCurrentPosition().row;
+						data = Ext.getStore('ArtikelDataStore').query(
+								'productNumber', xObject.value).getAt(0).data;
+
+						createOrderStore = Ext.data.StoreMgr
+								.lookup('CreateOrderDataStore');
 						record = createOrderStore.getAt(rowPos);
 						record.set('priceNet', data.recommendedPriceNet.value);
 						record.set('productName', data.name);
-						
-//						var request = Ext.Ajax.request({
-//									url : '/FlexibleOrders/products/retrieveRecommededPriceNet',
-//									params : {
-//										productNumber : xObject.value
-//									},
-//									method:'GET',
-//									success : function(response) {
-//										rowPos = Ext.getCmp('CreateOrderGrid').getSelectionModel().getCurrentPosition().row;
-//										
-//										var json = Ext.decode(response.responseText);
-//										store = Ext.data.StoreMgr.lookup('CreateOrderDataStore');
-//										record = store.getAt(rowPos);
-//										record.set('priceNet', json.data.value);
-//									}
-//								});
+
 					}
 				}
 			}

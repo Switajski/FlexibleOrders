@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class OrderServiceTest {
 	
 	@Test
 	public void shouldOrder(){
-		orderService.order(CUSTOMER_ID, "123", givenReportItems());
+		orderService.order(CUSTOMER_ID, "123", new Date(), givenReportItems());
 		
 		ArgumentCaptor<Order> orderVarToBeSaved = ArgumentCaptor.forClass(Order.class);
 		Mockito.verify(orderRepoMock).save(orderVarToBeSaved.capture());

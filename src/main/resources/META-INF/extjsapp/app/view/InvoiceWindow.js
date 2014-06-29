@@ -21,15 +21,19 @@
 					name : 'lastName',
 					fieldLabel : 'Name'
 				}, {
-					// itemid : 'invoiceNumber',
-					// xtype : 'invoicenumbercombobox',
 					xtype : 'textfield',
 					fieldLabel : 'Rechnungsnr',
 					name : 'invoiceNumber',
 					id : 'invoiceNumber',
 					allowBlank : false,
 					anchor : '100%'
-				}, {
+				},{
+					xtype : 'datefield',
+					format : 'd/m/Y',
+					allowBlank : true,
+					fieldLabel : 'Rechnungsdatum',
+					name : 'created'
+				},{
 					xtype : 'textareafield',
 					grow : true,
 					fieldLabel : 'Zahlungsbd.',

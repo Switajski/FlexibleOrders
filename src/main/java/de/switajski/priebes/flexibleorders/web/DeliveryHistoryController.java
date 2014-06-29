@@ -35,17 +35,6 @@ public class DeliveryHistoryController extends ExceptionController {
 				deliveryHistoryService.retrieveByReportItemId(id));
 	}
 
-	@RequestMapping(value = "/byOrderItemId/{id}")
-	public @ResponseBody
-	JsonObjectResponse byOrderItemId(@PathVariable("id") Long id,
-			@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "start", required = false) Integer start,
-			@RequestParam(value = "limit", required = false) Integer limit,
-			@RequestParam(value = "sort", required = false) String sorts) {
-		return ExtJsResponseCreator.createResponse(deliveryHistoryService
-				.retrieveByOrderItemId(id));
-	}
-	
 	@RequestMapping(value = "/test")
 	public @ResponseBody
 	JsonObjectResponse test(

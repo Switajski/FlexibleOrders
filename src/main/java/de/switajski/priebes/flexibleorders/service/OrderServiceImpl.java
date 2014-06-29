@@ -85,7 +85,7 @@ public class OrderServiceImpl {
 	 * @return created order, when successfully persisted
 	 */
 	@Transactional
-	public Order order(Long customerId, String orderNumber,
+	public Order order(Long customerId, String orderNumber, Date created,
 			List<ItemDto> reportItems) {
 		if (customerId == null || orderNumber == null || reportItems.isEmpty())
 			throw new IllegalArgumentException();
@@ -100,6 +100,7 @@ public class OrderServiceImpl {
 				customer,
 				OriginSystem.FLEXIBLE_ORDERS,
 				orderNumber);
+		order.setCreated((created == null) ? new Date() : created);
 		for (ItemDto ri : reportItems) {
 			CatalogProduct cProduct = cProductRepo.findByProductNumber(
 					ri.getProduct());
@@ -113,7 +114,6 @@ public class OrderServiceImpl {
 			oi.setNegotiatedPriceNet(new Amount(
 					ri.getPriceNet(),
 					Currency.EUR));
-			oi.setCreated(new Date());
 			order.addOrderItem(oi);
 		}
 
@@ -379,13 +379,14 @@ public class OrderServiceImpl {
 	 * @param invoiceNumber
 	 * @param paymentConditions
 	 * @param invoiceAddress
+	 * @param created 
 	 * @param shippingItemDtos
 	 * @return
 	 */
 	@Transactional
 	public Invoice invoice(String invoiceNumber, String paymentConditions,
 			Address invoiceAddress,
-			List<ItemDto> shippingItemDtos) {
+			Date created, List<ItemDto> shippingItemDtos) {
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
@@ -415,6 +416,7 @@ public class OrderServiceImpl {
 		invoice.setShippingCosts(new ShippingCostsCalculator()
 				.calculate(itemDtoConverterService
 						.convertToShippingItems(shippingItemDtos)));
+		invoice.setCreated((created == null) ? new Date() : created); 
 		// TODO: refactor DRY!
 		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
 

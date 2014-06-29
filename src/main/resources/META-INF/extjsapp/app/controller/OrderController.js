@@ -23,6 +23,10 @@ Ext.define('MyApp.controller.OrderController', {
 			url : '/FlexibleOrders/transitions/order',
 			jsonData : {
 				orderNumber : form.getValues().order,
+				created : form.getValues().created,
+				invoiceNumber : form.getValues().invoiceNumber,
+				packageNumber : form.getValues().packageNumber,
+				trackNumber : form.getValues().trackNumber,
 				customerId : record.data.id,
 				name1 : record.data.name1,
 				name2 : record.data.name2,
@@ -30,9 +34,6 @@ Ext.define('MyApp.controller.OrderController', {
 				postalCode : record.data.postalCode,
 				city : record.data.city,
 				country : record.data.country,
-				invoiceNumber : form.getValues().invoiceNumber,
-				packageNumber : form.getValues().packageNumber,
-				trackNumber : form.getValues().trackNumber,
 				items : Ext.pluck(
 						Ext.getCmp('CreateOrderGrid').getStore().data.items,
 						'data')
@@ -40,11 +41,9 @@ Ext.define('MyApp.controller.OrderController', {
 			success : function(response) {
 				var text = response.responseText;
 				// Sync
-				MyApp.getApplication().getController('MyController').sleep(500);
-				var allGrids = Ext.ComponentQuery.query('PositionGrid');
-				allGrids.forEach(function(grid) {
-							grid.getStore().load();
-						});
+				controller = MyApp.getApplication().getController('MyController');
+				controller.sleep(500);
+				controller.syncAll();
 				Ext.getCmp('CreateOrderGrid').getStore().removeAll();
 				Ext.getCmp("OrderWindow").close();
 			}

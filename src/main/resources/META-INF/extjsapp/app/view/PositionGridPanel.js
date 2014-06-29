@@ -176,6 +176,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.getStore().sync();
 	},
 	onDeliveryHistoryClick : function(view, a, b, column, event, record, f){
+		//TODO: this is hacking
 		var dhPanel = Ext.create('MyApp.view.DeliveryHistoryPanel', {
 		});
 		store = dhPanel.items.items[0].getStore();

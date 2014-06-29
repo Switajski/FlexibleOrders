@@ -30,6 +30,8 @@ public class JsonCreateReportRequest {
 	
 	private String name2;
 	
+	private Date created;
+	
 	private String street;
 	
 	private Integer postalCode;
@@ -206,5 +208,15 @@ public class JsonCreateReportRequest {
 		for (ItemDto item:getItems())
 			if (item.getQuantity() < 1)
 				throw new IllegalArgumentException("Menge von "+item.getProductName()+" ist kleiner als 1");
+	}
+
+	@JsonSerialize(using = JsonDateSerializer.class)
+	public Date getCreated() {
+		return created;
+	}
+
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 }

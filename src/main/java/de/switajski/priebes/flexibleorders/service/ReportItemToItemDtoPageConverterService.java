@@ -21,15 +21,20 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class ReportItemToItemDtoPageConverterService {
-	
+
 	@Autowired
 	private ItemDtoConverterService itemDtoConverterService;
 
 	@Transactional(readOnly = true)
-	public PageImpl<ItemDto> createWithWholeNonCompletedReports(PageRequest pageable,
+	public PageImpl<ItemDto> createWithWholeNonCompletedReports(
+			PageRequest pageable,
 			Page<ReportItem> reportItems) {
-		List<ItemDto> convertedReportItems = complementAndConvert(reportItems);
-		List<ItemDto> filtered = ItemDtoFilterHelper.filterQtyLeftZero(convertedReportItems); 
+		List<ItemDto> convertedReportItems = itemDtoConverterService
+				.convertReportItems(complementMissing(reportItems.getContent()));
+		
+		List<ItemDto> filtered = ItemDtoFilterHelper
+				.filterQtyLeftZero(convertedReportItems);
+		
 		PageImpl<ItemDto> reportItemPage = createPage(
 				reportItems.getTotalElements(),
 				pageable,
@@ -37,35 +42,29 @@ public class ReportItemToItemDtoPageConverterService {
 		return reportItemPage;
 	}
 
-	private List<ItemDto> complementAndConvert(Page<ReportItem> reportItems) {
-		List<ReportItem> complementedReportItems = complementMissing(
-				reportItems.getContent());
-		List<ItemDto> convertedReportItems = itemDtoConverterService
-				.convertReportItems(complementedReportItems);
-		return convertedReportItems;
-	}
-	
 	@Transactional(readOnly = true)
 	public PageImpl<ItemDto> createWithWholeReports(PageRequest pageable,
 			Page<ReportItem> reportItems) {
-		List<ItemDto> convertedReportItems = complementAndConvert(reportItems);
+		List<ItemDto> convertedReportItems = itemDtoConverterService
+				.convertReportItems(complementMissing(reportItems.getContent()));
+		
 		PageImpl<ItemDto> reportItemPage = createPage(
 				reportItems.getTotalElements(),
 				pageable,
 				convertedReportItems);
 		return reportItemPage;
 	}
-	
+
 	private List<ReportItem> complementMissing(
-			List<ReportItem> risToBeComplemented) {
+			List<ReportItem> reportItems) {
 
 		List<ReportItem> allReportItems = new ArrayList<ReportItem>();
-		for (Report report : getReportsByReportItems(risToBeComplemented))
+		for (Report report : getReportsByReportItems(reportItems))
 			allReportItems.addAll(report.getItems());
 
 		return allReportItems;
 	}
-	
+
 	private Set<Report> getReportsByReportItems(List<ReportItem> reportItems) {
 		if (reportItems.isEmpty())
 			return Collections.<Report> emptySet();
@@ -81,10 +80,10 @@ public class ReportItemToItemDtoPageConverterService {
 		}
 		return reportsToBeComplemented;
 	}
-	
+
 	public PageImpl<ItemDto> createPage(Long totalElements,
 			Pageable pageable, List<ItemDto> ris) {
 		return new PageImpl<ItemDto>(ris, pageable, totalElements);
 	}
-	
+
 }

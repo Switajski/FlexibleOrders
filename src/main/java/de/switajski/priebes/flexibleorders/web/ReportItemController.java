@@ -85,9 +85,9 @@ public class ReportItemController extends ExceptionController {
 		Specifications<ReportItem> spec = filterDispatcher
 				.dispatchToSpecifications(filters);
 
-		Page<ItemDto> ordered = reportItemService.retrieve(
+		Page<ItemDto> openItems = reportItemService.retrieve(
 				new PageRequest((page - 1), limit), spec);
-		return ExtJsResponseCreator.createResponse(ordered);
+		return ExtJsResponseCreator.createResponse(openItems);
 
 	}
 

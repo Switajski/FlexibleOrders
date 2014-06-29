@@ -123,9 +123,6 @@ Ext.define('MyApp.view.MainPanel', {
 						}, {
 							xtype : 'InvoiceItemGrid',
 							store : 'InvoiceItemDataStore'
-						}, {
-							xtype : 'ArchiveItemGrid',
-							store : 'ArchiveItemDataStore'
 						}
 
 				]

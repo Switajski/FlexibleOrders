@@ -53,9 +53,6 @@ Ext.define('MyApp.controller.MyController', {
 					'#mainCustomerComboBox' : {
 						change : this.onCustomerChange
 					},
-					'#DeleteBpButton' : {
-						click : this.deleteBpDialog
-					},
 					'#DeleteBestellungButton' : {
 						click : this.deleteBestellungDialog
 					},
@@ -88,7 +85,6 @@ Ext.define('MyApp.controller.MyController', {
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');
-		this.getStore('ArchiveItemDataStore').filter('status', 'completed');
 	},
 
 	onSelectionchange : function(view, selections, options) {
@@ -117,18 +113,6 @@ Ext.define('MyApp.controller.MyController', {
 		return buttons;
 	},
 
-	deleteBpDialog : function(button, event, options) {
-		var bestellung = this.getBpSelection();
-
-		if (bestellung.getData().status == 'ORDERED')
-			Ext.MessageBox.confirm('Best&aumltigen',
-					'Bestellpostion sicher l&ouml;schen?', this.deleteBp);
-		else
-			Ext.MessageBox
-					.alert('Hinweis',
-							'Bestellposition schon best&auml;tigt. Nur noch Storno ist m&ouml;glich.');
-	},
-	
 	retrieveChosenCustomerSavely : function(){
 		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
 		if (customerId == 0 || customerId == "" || customerId == null) {
@@ -166,26 +150,24 @@ Ext.define('MyApp.controller.MyController', {
 		return bp;
 	},
 
-	syncBpGrid : function(view, owner, options) {
-		var bpDataStore = Ext.data.StoreManager
-				.lookup('ItemDataStore');
-	},
-
 	showBestellundPdf : function(button, event, options) {
 		var win = window.open('/leanorders/orders/' + this.activeBestellnr
 						+ '.pdf', '_blank');
 		win.focus();
 	},
+	
 	showAbPdf : function(button, event, options) {
 		var win = window.open('/leanorders/orderConfirmations/'
 						+ this.activeBestellnr + '.pdf', '_blank');
 		win.focus();
 	},
+	
 	showRechnungPdf : function(button, event, options) {
 		var win = window.open('/leanorders/invoices/' + this.activeBestellnr
 						+ '.pdf', '_blank');
 		win.focus();
 	},
+
 	sleep : function(milliseconds) {
 		var start = new Date().getTime();
 		for (var i = 0; i < 1e7; i++) {
@@ -194,62 +176,14 @@ Ext.define('MyApp.controller.MyController', {
 			}
 		}
 	},
-
-	deconfirm : function(event, ocnr, record) {
-		store = Ext.getStore('ShippingItemDataStore');
-		var request = Ext.Ajax.request({
-					url : '/FlexibleOrders/transitions/cancelConfirmationReport',
-					params : {
-						confirmationNumber : ocnr
-					},
-					success : function(response) {
-						store.remove(store.getGroups(ocnr).children);
-					}
-				});
+	
+	syncAll : function(){
+		var allGrids = Ext.ComponentQuery.query('PositionGrid');
+				allGrids.forEach(function(grid) {
+							grid.getStore().load();
+						});
 	},
-
-	withdraw : function(event, record) {
-		if (event == "ok") {
-			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/cancelDeliveryNotes',
-						params : {
-							invoiceNumber : record.data.invoiceNumber
-						},
-						success : function(response) {
-							store.remove(store.getGroups(ocnr).children);
-						}
-					});
-		}
-	},
-
-	decomplete : function(event, record) {
-		if (event == "ok") {
-
-			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/decomplete/json',
-				params : {
-					id : record.data.id,
-					productNumber : record.data.product,
-					orderConfirmationNumber : record.data.orderConfirmationNumber,
-					invoiceNumber : record.data.invoiceNumber,
-					accountNumber : record.data.accountNumber,
-					quantity : record.data.quantity
-				},
-				success : function(response) {
-					// TODO: make a responsive design
-					var text = response.responseText;
-				}
-			});
-			// TODO: DRY in Sync
-			// Sync
-			MyApp.getApplication().getController('MyController').sleep(500);
-			var allGrids = Ext.ComponentQuery.query('PositionGrid');
-			allGrids.forEach(function(grid) {
-						grid.getStore().load();
-					});
-		}
-	},
-
+	
 	complete : function(event, anr, record) {
 		record.data.accountNumber = record.data.invoiceNumber
 				.replace(/R/g, "Q");
@@ -287,7 +221,6 @@ Ext.define('MyApp.controller.MyController', {
 		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
 		stores[2] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
 		stores[3] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
-		stores[4] = Ext.data.StoreManager.lookup('ArchiveItemDataStore');
 
 		stores.forEach(function(store) {
 					found = false;
@@ -300,7 +233,6 @@ Ext.define('MyApp.controller.MyController', {
 							});
 					if (!found) {
 						store.filter("customer", newValue);
-						// store.load();
 					}
 				});
 	},
@@ -312,9 +244,9 @@ Ext.define('MyApp.controller.MyController', {
 				documentNumber : varDocumentNumber
 			},
 			success : function(response) {
-				var text = response.responseText;
-				// Sync
-				MyApp.getApplication().getController('MyController').sleep(500);
+				controller = MyApp.getApplication().getController('MyController');
+				controller.sleep(500);
+				controller.syncAll();
 			}
 		});
 	},

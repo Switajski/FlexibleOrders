@@ -21,6 +21,7 @@ import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
@@ -121,12 +122,14 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithFiveCols());
-		for (OrderItem oi : order.getItems()) {
+		for (OrderItem oi : order.getItemsOrdered()) {
 			if (!oi.isShippingCosts()) {
 				List<String> row = new ArrayList<String>();
-				row.add(oi.getProduct().getProductNumber().toString());
+				Product product = oi.getProduct();
+				String pNoStr = (product.hasProductNo()) ? product.getProductNumber().toString() : "n.a.";
+				row.add(pNoStr);
 				// Artikel
-				row.add(oi.getProduct().getName());
+				row.add(product.getName());
 				// Anzahl
 				row.add(String.valueOf(oi.getOrderedQuantity()));
 				// EK per Stueck

@@ -54,6 +54,12 @@ public class Product {
 	public String getName() {
 		return this.name;
 	}
+	
+	public boolean hasProductNo(){
+		if (getProductNumber() == null || getProductNumber().equals(0L))
+			return false;
+		return true;
+	}
 
 	public void setName(String name) {
 		this.name = name;

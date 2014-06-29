@@ -1,6 +1,10 @@
 package de.switajski.priebes.flexibleorders.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -48,6 +52,34 @@ public abstract class Report extends GenericEntity {
 	@JsonIgnore
 	public Set<ReportItem> getItems() {
 		return items;
+	}
+	
+	@JsonIgnore
+	public List<ReportItem> getItemsOrdered() {
+		List<ReportItem> ris = new ArrayList<ReportItem>(getItems());
+		Collections.sort(ris, new Comparator<ReportItem>(){
+
+			@Override
+			public int compare(ReportItem r1, ReportItem r2) {
+				Product p1 = r1.getOrderItem().getProduct();
+				Product p2 = r2.getOrderItem().getProduct();
+				if (p1.hasProductNo() && p2.hasProductNo())
+					return p1.getProductNumber().compareTo(p2.getProductNumber());
+				else if (!p1.hasProductNo() && !p2.hasProductNo()){
+					return p1.getName().compareTo(p2.getName());
+				} else if (p1.hasProductNo()){
+					return 1;
+				}
+				else if (p2.hasProductNo()){
+					return -1;
+				}
+				
+				else return 0;
+				
+			}
+			
+		});
+		return ris;
 	}
 
 	public void setDocumentNumber(String documentNumber) {

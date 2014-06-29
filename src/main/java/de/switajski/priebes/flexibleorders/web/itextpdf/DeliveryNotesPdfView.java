@@ -94,17 +94,14 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 	private PdfPTable createTable(Report cReport) throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithFourCols());
-		for (ReportItem he : cReport.getItems()) {
+		for (ReportItem he : cReport.getItemsOrdered()) {
 			if (!he.getOrderItem().isShippingCosts()) {
 				List<String> row = new ArrayList<String>();
 				// Anzahl
 				row.add(String.valueOf(he.getQuantity()) + " x ");
 				// Art.Nr.:
-				row.add(he
-						.getOrderItem()
-						.getProduct()
-						.getProductNumber()
-						.toString());
+				Long pNo = he.getOrderItem().getProduct().getProductNumber();
+				row.add(pNo.equals(0L) ? "n.a." : pNo.toString());
 				// Artikel
 				row.add(he.getOrderItem().getProduct().getName());
 				// Bestellnr

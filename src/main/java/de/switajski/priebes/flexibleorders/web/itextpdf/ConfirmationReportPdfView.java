@@ -123,14 +123,11 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 			throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSixCols());
-		for (ReportItem he : cReport.getItems()) {
+		for (ReportItem he : cReport.getItemsOrdered()) {
 			List<String> list = new ArrayList<String>();
 			// Art.Nr.:
-			list.add(he
-					.getOrderItem()
-					.getProduct()
-					.getProductNumber()
-					.toString());
+			Long pNo = he.getOrderItem().getProduct().getProductNumber();
+			list.add(pNo.equals(0L) ? "n.a." : pNo.toString());
 			// Artikel
 			list.add(he.getOrderItem().getProduct().getName());
 			// Anzahl

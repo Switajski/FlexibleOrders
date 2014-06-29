@@ -122,18 +122,12 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	private PdfPTable createTable(Report cReport) throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSixCols());
-		for (ReportItem he : cReport.getItems()) {
+		for (ReportItem he : cReport.getItemsOrdered()) {
 			if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
 				List<String> list = new ArrayList<String>();
 				// Art.Nr.:
-				if (he.getOrderItem().getProduct().getProductNumber() != null)
-					list.add(he
-							.getOrderItem()
-							.getProduct()
-							.getProductNumber()
-							.toString());
-				else
-					list.add("n.a.");
+				Long pNo = he.getOrderItem().getProduct().getProductNumber();
+				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
 				// Artikel
 				list.add(he.getOrderItem().getProduct().getName());
 				// Anzahl

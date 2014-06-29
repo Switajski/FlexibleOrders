@@ -1,7 +1,7 @@
 Ext.define('MyApp.view.OrderWindow', {
 	extend : 'MyApp.view.DeliverWindow',
 	title : 'Bestellung aufgeben',
-	width : 550,
+	width : 700,
 	id : 'OrderWindow',
 	headerForm : {
 		xtype : 'fieldset',
@@ -100,6 +100,19 @@ Ext.define('MyApp.view.OrderWindow', {
 			}
 		}, {
 			xtype : 'gridcolumn',
+			dataIndex : 'productName',
+			width : 150,
+			text : 'Artikelname',
+			filter : {
+				type : 'string'
+				// , disabled: true
+			},
+			editor : {
+				xtype : 'textfield',
+				allowBlank : false
+			}
+		}, {
+			xtype : 'gridcolumn',
 			dataIndex : 'orderNumber',
 			width : 100,
 			text : 'Bestellung',
@@ -127,7 +140,7 @@ Ext.define('MyApp.view.OrderWindow', {
 			renderer : Ext.util.Format.euMoney,
 			editor : {
 				xtype : 'numberfield',
-				allowBlank : true
+				allowBlank : false
 			}
 		}]
 	},

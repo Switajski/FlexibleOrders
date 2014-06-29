@@ -102,14 +102,12 @@ public class OrderServiceImpl {
 				orderNumber);
 		order.setCreated((created == null) ? new Date() : created);
 		for (ItemDto ri : reportItems) {
-			CatalogProduct cProduct = cProductRepo.findByProductNumber(
-					ri.getProduct());
-			if (cProduct == null)
-				throw new IllegalArgumentException("Artikelnr nicht gefunden");
+
+			Product product = (ri.getProduct().equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
 
 			OrderItem oi = new OrderItem(
 					order,
-					cProduct.toProduct(),
+					product,
 					ri.getQuantity());
 			oi.setNegotiatedPriceNet(new Amount(
 					ri.getPriceNet(),
@@ -118,6 +116,24 @@ public class OrderServiceImpl {
 		}
 
 		return orderRepo.save(order);
+	}
+
+	private Product createProductFromCatalog(ItemDto ri) {
+		Product product;
+		CatalogProduct cProduct = cProductRepo.findByProductNumber(
+				ri.getProduct());
+		if (cProduct == null)
+			throw new IllegalArgumentException("Artikelnr nicht gefunden");
+		product = cProduct.toProduct();
+		return product;
+	}
+
+	private Product createCustomProduct(ItemDto ri) {
+		Product p = new Product();
+		p.setName(ri.getProductName());
+		p.setProductType(ProductType.CUSTOM);
+		p.setProductNumber(0L);
+		return p;
 	}
 
 	@Transactional

@@ -1,6 +1,10 @@
 package de.switajski.priebes.flexibleorders.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -123,6 +127,35 @@ public class Order extends GenericEntity {
 	public Double getVatRate() {
 		return this.vatRate;
 	}
+	
+	@JsonIgnore
+	public List<OrderItem> getItemsOrdered() {
+		List<OrderItem> ris = new ArrayList<OrderItem>(getItems());
+		Collections.sort(ris, new Comparator<OrderItem>(){
+
+			@Override
+			public int compare(OrderItem r1, OrderItem r2) {
+				Product p1 = r1.getProduct();
+				Product p2 = r2.getProduct();
+				if (p1.hasProductNo() && p2.hasProductNo())
+					return p1.getProductNumber().compareTo(p2.getProductNumber());
+				else if (!p1.hasProductNo() && !p2.hasProductNo()){
+					return p1.getName().compareTo(p2.getName());
+				} else if (p1.hasProductNo()){
+					return 1;
+				}
+				else if (p2.hasProductNo()){
+					return -1;
+				}
+				
+				else return 0;
+				
+			}
+			
+		});
+		return ris;
+	}
+
 	
 	@Override
 	public String toString() {

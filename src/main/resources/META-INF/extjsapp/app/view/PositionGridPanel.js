@@ -32,15 +32,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 
 		Ext.applyIf(me, {
-			/*
-			 * plugins : [this.editing], /* tbar : [{ itemid: 'add', dock :
-			 * 'top', icon : 'images/add.png', text : 'hinzuf&uuml;gen', scope :
-			 * this, handler : this.onAddClick }, { itemid : 'delete', icon :
-			 * 'images/delete.png', text : 'l&ouml;schen', scope : this, handler :
-			 * this.onDeleteClick }], dockedItems : [{ xtype : 'toolbar', dock :
-			 * 'bottom', text : 'sync', scope : this }],
-			 */
-
 			listeners : {
 				itemdblclick : this.onitemdblclick
 			},
@@ -160,6 +151,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		me.callParent(arguments);
 
 	},
+	
+	onPdfClick : function(view, a, b, column, event, record, f) {
+				var win = window.open('/FlexibleOrders/reports/'
+								+ record.data.documentNumber + '.pdf', '_blank');
+				win.focus();
+	},
 
 	onSync : function() {
 		this.store.sync();
@@ -171,9 +168,10 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	onitemdblclick : function(grid, record) {
 		console.error('not implemented 658276');
 	},
-	onRemoveClick : function(grid, rowIndex, a, b, c, d, e, f, g) {
-		this.getStore().removeAt(rowIndex);
-		this.getStore().sync();
+	onRemoveClick : function(view, a, b, column, event, record, f) {
+		console.log('deliveryNotesItemGrid - customtransitionfunction');
+		MyApp.getApplication().getController('MyController').deleteReport(
+				record.data.deliveryNotesNumber);
 	},
 	onDeliveryHistoryClick : function(view, a, b, column, event, record, f){
 		//TODO: this is hacking

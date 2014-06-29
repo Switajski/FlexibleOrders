@@ -12,11 +12,6 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 						"ok", anr, record);
 
 			},
-	onPdfClick : function(view, a, b, column, event, record, f){
-				var win = window.open('/FlexibleOrders/reports/invoices/' + record.data.documentNumber
-						+ '.pdf', '_blank');
-				win.focus();
-			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
 				console.log('invoiceItemGrid - customtransitionfunction');
 				MyApp.getApplication().getController('MyController').deleteReport(

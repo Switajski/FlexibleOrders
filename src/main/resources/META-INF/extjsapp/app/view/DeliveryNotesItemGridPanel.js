@@ -8,17 +8,5 @@ Ext.define('MyApp.view.DeliveryNotesItemGridPanel', {
 		console.log(record);
 		MyApp.getApplication().getController('InvoiceController').invoice("ok",
 				record);
-	},
-	onPdfClick : function(view, a, b, column, event, record, f) {
-		var win = window.open('/FlexibleOrders/reports/deliveryNotes/'
-				+ record.data.documentNumber + '.pdf', '_blank');
-		win.focus();
-	},
-	onRemoveClick : function(view, a, b, column, event, record, f) {
-		console.log('deliveryNotesItemGrid - customtransitionfunction');
-		MyApp.getApplication().getController('MyController').deleteReport(
-				record.data.deliveryNotesNumber);
-
 	}
-
 });

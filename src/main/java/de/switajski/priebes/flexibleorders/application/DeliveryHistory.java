@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 public class DeliveryHistory {
 
 	private Set<ReportItem> reportItems;
-	
+
 	public DeliveryHistory(Set<ReportItem> reportItems) {
 		this.reportItems = reportItems;
 	}
@@ -59,14 +59,14 @@ public class DeliveryHistory {
 		}
 		return riToReturn;
 	}
-	
-	public Set<ReportItem> getItems(){
+
+	public Set<ReportItem> getItems() {
 		return reportItems;
 	}
-	
-	public List<ReportItem> getItemsSorted(){
+
+	public List<ReportItem> getItemsSorted() {
 		List<ReportItem> ris = new ArrayList<ReportItem>(getItems());
-		Collections.sort(ris, new Comparator<ReportItem>(){
+		Collections.sort(ris, new Comparator<ReportItem>() {
 			@Override
 			public int compare(ReportItem o1, ReportItem o2) {
 				return o1.getCreated().compareTo(o2.getCreated());
@@ -88,12 +88,22 @@ public class DeliveryHistory {
 		return riToReturn;
 	}
 
+	public String getOrderNumber() {
+		return this.reportItems
+				.iterator()
+				.next()
+				.getOrderItem()
+				.getOrder()
+				.getOrderNumber();
+	}
+
 	public String toString() {
 		String s = "";
 		OrderItem orderItem = this.reportItems.iterator().next().getOrderItem();
 		s += "Bnr: " + orderItem.getOrder().getOrderNumber();
-		s += ", Bpos: " + orderItem.getOrderedQuantity() + " x "; 
-		s += + orderItem.getProduct().getProductNumber() + " " + orderItem.getProduct().getName();
+		s += ", " + orderItem.getOrderedQuantity() + " x ";
+		s += +orderItem.getProduct().getProductNumber() + " "
+				+ orderItem.getProduct().getName();
 		return s;
 	}
 

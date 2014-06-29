@@ -1,7 +1,9 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -53,67 +56,50 @@ public class ReportController extends ExceptionController{
 	@Autowired CustomerRepository customerService;
 	@Autowired OrderServiceImpl orderService;
 	
-	/*	http://static.springsource.org/spring/docs/3.0.x/reference/mvc.html says, that
-     *  @ResponseBody is for direct responses without a view
-     */
-	@RequestMapping(value = "/orderConfirmations/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showConfirmationReportPdf(@PathVariable("id") String id) {
-        
-    	try {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        ConfirmationReport record = (ConfirmationReport) reportRepo.findByDocumentNumber(id); 
-            return new ModelAndView(ConfirmationReportPdfView.class.getSimpleName(),
-            		ConfirmationReport.class.getSimpleName(),
-            		record);
-			
-		} catch(Exception e) {
-			log.error(e.toString());
-			e.printStackTrace();
-		}
-		
-        return new ModelAndView(ConfirmationReportPdfView.class.getName(),ConfirmationReport.class.getSimpleName(),null);
+	
+	@RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
+    public ModelAndView showReportPdf(@PathVariable("id") String id) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/pdf; charset=utf-8");
+		Report report = reportRepo.findByDocumentNumber(id);
+		if (report == null)
+			throw new IllegalArgumentException("Report with given id not found");
+		return createReportSpecificModelAndView(report);
     }
 	
-	@RequestMapping(value = "/deliveryNotes/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showDeliveryNotesPdf(@PathVariable("id") String id) {
-        
-    	try {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        DeliveryNotes record = (DeliveryNotes) reportRepo.findByDocumentNumber(id);
-            return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),
-            		DeliveryNotes.class.getSimpleName(),
-            		record);
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			log.error(e.toString());
-			//TODO: refactor DRY and Exception Handling
+	private ModelAndView createReportSpecificModelAndView(Report report) {
+		//TODO Error Handling
+		if (report instanceof ConfirmationReport){
+			String model = ConfirmationReport.class.getSimpleName();
+			return new ModelAndView(modelToView().get(model),
+	        		model, (ConfirmationReport) report);
 		}
-		
-        return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),DeliveryNotes.class.getSimpleName(),null);
-    }
-	
-	@RequestMapping(value = "/invoices/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showInvoicePdf(@PathVariable("id") String id) {
-        //TODO: duplicate code - factory? cc s. 69
-    	try {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/pdf; charset=utf-8");
-	        Invoice record = (Invoice) reportRepo.findByDocumentNumber(id);
-            return new ModelAndView(InvoicePdfView.class.getSimpleName(),
-            		Invoice.class.getSimpleName(),
-            		record);
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			log.error(e.toString());
+		if (report instanceof DeliveryNotes){
+			String model = DeliveryNotes.class.getSimpleName();
+			return new ModelAndView(modelToView().get(model),
+	        		model, (DeliveryNotes) report);
 		}
-		
-        return new ModelAndView(InvoicePdfView.class.getSimpleName(),Invoice.class.getSimpleName(),null);
-    }
-	
+		if (report instanceof Invoice){
+			String model = Invoice.class.getSimpleName();
+			return new ModelAndView(modelToView().get(model),
+	        		model, (Invoice) report);
+		}
+		throw new IllegalStateException("Could not find view handler for given Document");
+	}
+
+	private Map<String, String> modelToView() {
+		Map<String, String> modelToView = new HashMap<String, String>();
+		modelToView.put(
+				ConfirmationReport.class.getSimpleName(),
+				ConfirmationReportPdfView.class.getSimpleName());
+		modelToView.put(
+				DeliveryNotes.class.getSimpleName(),
+				DeliveryNotesPdfView.class.getSimpleName());
+		modelToView.put(
+				Invoice.class.getSimpleName(),
+				InvoicePdfView.class.getSimpleName());
+		return modelToView;
+	}
 	
 	@RequestMapping(value = "/orders/{orderNumber}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showOrderPdf(@PathVariable("orderNumber") String orderNumber) {

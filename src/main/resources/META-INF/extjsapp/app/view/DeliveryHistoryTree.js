@@ -5,15 +5,25 @@ Ext.define('MyApp.view.DeliveryHistoryTree', {
 			rootVisible : false,
 			id : 'dhTree',
 			initComponent : function() {
-				console.error('initCoponent');
 				var me = this;
 				Ext.applyIf(me, {
 							store : 'DeliveryHistoryDataStore',
-							layout : 'anchor'
+							layout : 'anchor',
+							listeners : {
+								itemdblclick : this.onitemdblclick
+							}
 
 						});
 
 				this.callSuper(arguments);
 
+			},
+			onitemdblclick : function(grid, record, a, index) {
+				if (index == 0)
+					url = '/FlexibleOrders/reports/orders/' + record.data.id + '.pdf', '_blank';
+				else
+					url = '/FlexibleOrders/reports/' + record.data.id + '.pdf', '_blank';
+				var win = window.open(url);
+				win.focus();
 			}
 		});

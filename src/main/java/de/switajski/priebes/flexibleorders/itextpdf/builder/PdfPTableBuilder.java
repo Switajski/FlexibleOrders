@@ -60,7 +60,7 @@ public class PdfPTableBuilder {
 		rowProperties
 				.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
 		rowProperties.add(new TableProperties(
-				"EK per Stück",
+				"EK per St"+Unicode.uUml+"ck",
 				Element.ALIGN_LEFT,
 				15));
 		rowProperties.add(new TableProperties(
@@ -69,6 +69,33 @@ public class PdfPTableBuilder {
 				10));
 		rowProperties
 				.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
+		return rowProperties;
+	}
+	
+	public static ArrayList<TableProperties> createPropertiesWithSevenCols() {
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties(
+				"Art. Nr.",
+				Element.ALIGN_LEFT,
+				10));
+		rowProperties
+				.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 25));
+		rowProperties
+				.add(new TableProperties("Anzahl", Element.ALIGN_RIGHT, 7));
+		rowProperties.add(new TableProperties(
+				"EK per St"+Unicode.uUml+"ck",
+				Element.ALIGN_RIGHT,
+				12));
+		rowProperties.add(new TableProperties(
+				"Lieferscheinnr.",
+				Element.ALIGN_RIGHT,
+				15));
+		rowProperties.add(new TableProperties(
+				"Lieferdatum",
+				Element.ALIGN_RIGHT,
+				15));
+		rowProperties
+				.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 16));
 		return rowProperties;
 	}
 

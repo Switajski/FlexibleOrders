@@ -25,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Component
 public class ConfirmationReportPdfView extends PriebesIText5PdfView {
@@ -40,7 +41,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		ConfirmationReport report = (ConfirmationReport) model
 				.get(ConfirmationReport.class.getSimpleName());
 
-		String heading = "Auftragsbest\u00e4tigung";
+		String heading = "Auftragsbest"+Unicode.aUml+"tigung";
 		Address adresse = report.getInvoiceAddress();
 		Date expectedDelivery = report.getExpectedDelivery();
 

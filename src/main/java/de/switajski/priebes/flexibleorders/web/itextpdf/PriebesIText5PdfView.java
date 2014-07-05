@@ -194,20 +194,10 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 					.getRealPath("/images").concat("/LogoGross.jpg"));
 	}
 
-	/**
-	 * Einfügen eines Betreffs / Titels des Dokuments
-	 * 
-	 * @param doc
-	 * @param title
-	 *            Der Dokumententitel wie z.B. "Rechnung"
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws DocumentException
-	 */
-	public void insertSubject(Document doc, String title)
+	public void insertSubject(Document doc, String subject)
 			throws MalformedURLException, IOException, DocumentException {
 
-		doc.add(new ParagraphBuilder(title)
+		doc.add(new ParagraphBuilder(subject)
 				.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
 				.build());
 	}

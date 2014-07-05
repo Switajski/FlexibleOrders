@@ -106,5 +106,12 @@ public class DeliveryHistory {
 				+ orderItem.getProduct().getName();
 		return s;
 	}
+	
+	public ShippingItem getShippingItemOf(InvoiceItem ii){
+		Set<ShippingItem> sis = this.getShippingItems();
+		if (sis.size() > 1)
+			throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
+		else return sis.iterator().next();
+	}
 
 }

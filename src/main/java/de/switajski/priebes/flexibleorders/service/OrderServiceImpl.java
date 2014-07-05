@@ -312,7 +312,7 @@ public class OrderServiceImpl {
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
 			throw new IllegalArgumentException(
-					"Bestellnr. zum löschen nicht gefunden");
+					"Bestellnr. zum löschen nicht gefunden"); 
 		orderRepo.delete(order);
 		return true;
 	}

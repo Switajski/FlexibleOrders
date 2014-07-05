@@ -1,12 +1,16 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
@@ -17,11 +21,13 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
@@ -37,7 +43,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 
-		String rightTop = "";
+		String rightTop = hasItemsWithDifferentCreationDates(report) ? "" : "Lieferdatum: " + dateFormat.format(getDeliveryNotesDate(report));
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		String leftTop = "Rechnungsnummer: "
 				+ report.getDocumentNumber().toString();
@@ -98,7 +104,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
-		document.add(createTable(report));
+		if (hasItemsWithDifferentCreationDates(report))
+			document.add(createTableWithDeliveryNotes(report));
+		else
+			document.add(createTable(report));
 
 		// insert footer table
 		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
@@ -117,6 +126,12 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
 						+ FOOTER_MARGIN_BOTTOM,
 				writer.getDirectContent());
+	}
+
+	private Date getDeliveryNotesDate(Invoice report) {
+		DeliveryHistory deliveryHistory = report.getItems().iterator().next().getOrderItem().getDeliveryHistory();
+		Date deliveryNotesDate = deliveryHistory.getShippingItems().iterator().next().getCreated();
+		return deliveryNotesDate;
 	}
 
 	private PdfPTable createTable(Report cReport) throws DocumentException {
@@ -148,6 +163,79 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		}
 
 		return builder.withFooter(false).build();
+	}
+	
+	private PdfPTable createTableWithDeliveryNotes(Report cReport) throws DocumentException {
+		PdfPTableBuilder builder = new PdfPTableBuilder(
+				PdfPTableBuilder.createPropertiesWithSevenCols());
+		for (ReportItem ii : cReport.getItemsOrdered()) {
+			Set<ShippingItem> sis = ii.getOrderItem().getDeliveryHistory().getShippingItems();
+			
+			if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
+				List<String> list = new ArrayList<String>();
+				// Art.Nr.:
+				Long pNo = ii.getOrderItem().getProduct().getProductNumber();
+				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
+				// Artikel
+				list.add(ii.getOrderItem().getProduct().getName());
+				// Anzahl
+				list.add(String.valueOf(ii.getQuantity()));
+				// EK per Stueck
+				list.add(ii.getOrderItem().getNegotiatedPriceNet().toString());
+				// Lieferscheinnr.
+				list.add(documentNumbersOf(sis));
+				// Lieferdatum
+				list.add(createdDatesOf(sis));
+				// gesamt
+				list.add(ii
+						.getOrderItem()
+						.getNegotiatedPriceNet()
+						.multiply(ii.getQuantity())
+						.toString());
+
+				builder.addBodyRow(list);
+			}
+		}
+
+		return builder.withFooter(false).build();
+	}
+
+	//TODO: Move to Util
+	private String createdDatesOf(Set<ShippingItem> sis) {
+		String createdDates = "";
+		Iterator<ShippingItem> itr = sis.iterator();
+		while (itr.hasNext()){
+			ShippingItem si = itr.next();
+			createdDates+= dateFormat.format(si.getReport().getCreated());
+			if (itr.hasNext())
+				createdDates += " ";
+			
+		}
+		return createdDates;
+	}
+
+	//TODO: Move to Util
+	private String documentNumbersOf(Set<ShippingItem> sis) {
+		String documentNumbers = "";
+		Iterator<ShippingItem> itr = sis.iterator();
+		while (itr.hasNext()){
+			ShippingItem si = itr.next();
+			documentNumbers+= si.getReport().getDocumentNumber();
+			if (itr.hasNext())
+				documentNumbers += ", ";
+			
+		}
+		return documentNumbers;
+	}
+
+	public boolean hasItemsWithDifferentCreationDates(Invoice invoice){
+		Set<ShippingItem> shippingItems = invoice.getItems().iterator().next().getOrderItem().getShippingItems();
+		Date firstDate = shippingItems.iterator().next().getCreated();
+		for (ShippingItem si: shippingItems){
+			if (!DateUtils.isSameDay(si.getDeliveryNotes().getCreated(), firstDate))
+				return true;
+		}
+		return false;
 	}
 
 }

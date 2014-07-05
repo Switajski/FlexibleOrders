@@ -105,6 +105,7 @@ public class TransitionsController extends ExceptionController {
 				deliverRequest.getPackageNumber(),
 				deliverRequest.createAddress(),
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
+				deliverRequest.getCreated(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(dn);
 	}

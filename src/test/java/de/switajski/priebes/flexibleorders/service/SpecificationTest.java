@@ -105,22 +105,22 @@ public class SpecificationTest extends AbstractTestSpringContextTest {
 	}
 
 	private void givenDeliveryReports(ConfirmationReport confirmationReport) {
-		orderService.deliver("L11", "trackNumber", "packNo", ADDRESS, null,
+		orderService.deliver("L11", "trackNumber", "packNo", ADDRESS, null, new Date(), 
 				Arrays.asList(
 						createItemDto(2, AMY, confirmationReport),
 						createItemDto(2, MILADKA, confirmationReport)));
 		
-		orderService.deliver("L12", "trackNumber", "packNo", ADDRESS, null,
+		orderService.deliver("L12", "trackNumber", "packNo", ADDRESS, null, new Date(),
 				Arrays.asList(
 						createItemDto(3, AMY, confirmationReport),
 						createItemDto(3, MILADKA, confirmationReport)));
 		
-		orderService.deliver("L13", "trackNumber", "packNo", ADDRESS, null,
+		orderService.deliver("L13", "trackNumber", "packNo", ADDRESS, null, new Date(),
 				Arrays.asList(
 						createItemDto(1, SALOME, confirmationReport),
 						createItemDto(JUREK_QTY, JUREK, confirmationReport)));
 		
-		orderService.deliver("L14", "trackNumber", "packNo", ADDRESS, null,
+		orderService.deliver("L14", "trackNumber", "packNo", ADDRESS, null, new Date(),
 				Arrays.asList(
 						createItemDto(5, PAUL, confirmationReport)));
 	}

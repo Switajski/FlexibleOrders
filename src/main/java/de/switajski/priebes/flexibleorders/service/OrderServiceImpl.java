@@ -191,7 +191,7 @@ public class OrderServiceImpl {
 	public DeliveryNotes deliver(String deliveryNotesNumber,
 			String trackNumber, String packageNumber,
 			Address shippingAddress, Amount shipment,
-			List<ItemDto> confirmEvents) {
+			Date created, List<ItemDto> confirmEvents) {
 		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
@@ -199,7 +199,8 @@ public class OrderServiceImpl {
 				deliveryNotesNumber,
 				shippingAddress,
 				shipment);
-
+		deliveryNotes.setCreated(created== null ? new Date() : created);
+		
 		Order firstOrder = null;
 		for (ItemDto entry : confirmEvents) {
 			ReportItem confirmEventToBeDelivered = heRepo

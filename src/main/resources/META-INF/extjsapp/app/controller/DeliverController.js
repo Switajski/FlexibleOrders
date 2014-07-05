@@ -80,6 +80,7 @@ Ext.define('MyApp.controller.DeliverController', {
 					shipment : form.getValues().shipment,
 					packageNumber : form.getValues().packageNumber,
 					trackNumber : form.getValues().trackNumber,
+					created : form.getValues().created,
 					items : Ext.pluck(createDeliveryNotesStore.data.items,
 							'data')
 				},

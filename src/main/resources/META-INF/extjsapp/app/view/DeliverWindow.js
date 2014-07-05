@@ -106,12 +106,13 @@ Ext.define('MyApp.view.DeliverWindow', {
 					fieldLabel : 'Sendungsnr',
 					name : 'trackNumber',
 					allowBlank : true
-				}/*
-					 * , { xtype : 'numberfield', fieldLabel : 'Menge', name :
-					 * 'quantity', allowBlank : false, allowDecimals : false,
-					 * allowExponential : false, minValue : 1, maxValue :
-					 * this.record.data.quantity }
-					 */]
+				},{
+					xtype : 'datefield',
+					format : 'd/m/Y',
+					allowBlank : true,
+					fieldLabel : 'Lieferdatum',
+					name : 'created'
+				}]
 	},
 	addressForm : {
 		xtype : 'fieldset',

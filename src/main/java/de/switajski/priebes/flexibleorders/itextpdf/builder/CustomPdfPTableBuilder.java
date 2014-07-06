@@ -11,7 +11,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 
-//TODO make this default the default builder and let PdfPTableBuilder extend this 
+//TODO make this default builder and let PdfPTableBuilder extend this 
 public class CustomPdfPTableBuilder {
 
 	public ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
@@ -74,17 +74,12 @@ public class CustomPdfPTableBuilder {
 
 		if (shipping != null)
 			footerBuilder
-					.addCell(
-							leftAlign.withPhrase(
-									bold.withText("Versand").build()).build())
-					.addCell(
-							rightAlign
-									.withPhrase(
-											bold
-													.withText(
-															shipping.toString())
-													.build())
-									.build());
+					.addCell(leftAlign.withPhrase(
+							bold.withText("Versand").build()).build())
+					.addCell(rightAlign.withPhrase(
+							bold.withText(shipping.toString())
+									.build())
+							.build());
 
 		footerBuilder.addCell(
 				leftAlign
@@ -95,34 +90,25 @@ public class CustomPdfPTableBuilder {
 								bold.withText(vat.toString()).build()).build());
 
 		footerBuilder
-				.addCell(
-						leftAlign
-								.withPhrase(
-										bold
-												.withText("Gesamtbetrag brutto")
-												.build())
-								.withBorder(Rectangle.TOP)
-								.build())
-				.addCell(
-						rightAlign
-								.withPhrase(
-										bold.withText(gross.toString()).build())
-								.withBorder(Rectangle.TOP)
-								.build());
+				.addCell(leftAlign.withPhrase(
+						bold.withText("Gesamtbetrag brutto").build())
+						.withBorder(Rectangle.TOP)
+						.build())
+				.addCell(rightAlign.withPhrase(
+						bold.withText(gross.toString()).build())
+						.withBorder(Rectangle.TOP)
+						.build());
 
 		if (paymentConditions != null)
 			footerBuilder.addCell(
-					leftAlign
-							.withPhrase(
-									new PhraseBuilder(paymentConditions)
-											.build())
+					leftAlign.withPhrase(
+							new PhraseBuilder(paymentConditions).build())
 							.withBorder(Rectangle.NO_BORDER)
 							.build())
-					.addCell(
-							rightAlign
-									.withPhrase(bold.withText("").build())
-									.withBorder(Rectangle.NO_BORDER)
-									.build());
+					.addCell(rightAlign
+							.withPhrase(bold.withText("").build())
+							.withBorder(Rectangle.NO_BORDER)
+							.build());
 
 		return footerBuilder;
 	}
@@ -144,6 +130,7 @@ public class CustomPdfPTableBuilder {
 		return infoTableBuilder;
 	}
 
+	//TODO use composite pattern
 	public static CustomPdfPTableBuilder createInfoTable(
 			String leftTop, String rightTop,
 			String leftMiddle, String rightMiddle,

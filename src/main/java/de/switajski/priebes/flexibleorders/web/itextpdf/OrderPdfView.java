@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -56,47 +55,18 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		Amount vat = netGoods.multiply(Order.VAT_RATE);
 		Amount gross = netGoods.add(vat);
 
-		// insert address
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		if (adresse == null) {
-			document.add(ParagraphBuilder.createEmptyLine());
-			document.add(ParagraphBuilder.createEmptyLine());
-			document.add(ParagraphBuilder.createEmptyLine());
-		} else {
-			document.add(new ParagraphBuilder(adresse.getName1())
-					.withIndentationLeft(36f)
-					.withLineSpacing(12f)
-					.addTextLine(adresse.getName2())
-					.addTextLine(adresse.getStreet())
-					.addTextLine(
-							adresse.getPostalCode() + " " + adresse.getCity())
-					.addTextLine(adresse.getCountry().toString())
-					.build());
+		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
+			document.add(p);
+		};
+
+		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
+			document.add(p);
 		}
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
 
-		// insert heading
-		document.add(new ParagraphBuilder(heading)
-				.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
-				.build());
+		document.add(ReportViewHelper.insertInfoTable(
+				rightTop, rightBottom, leftTop, leftBottom));
 		document.add(ParagraphBuilder.createEmptyLine());
-
-		// info table
-		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
-				.createInfoTable(
-						leftTop, leftBottom, rightTop, rightBottom);
-		PdfPTable infoTable = infoTableBuilder.build();
-		infoTable.setWidthPercentage(100);
-		document.add(infoTable);
-		// TODO: if (auftragsbestaetigung.getAusliefDatum==null)
-		// insertInfo(document,"Voraussichtliches Auslieferungsdatum:" +
-		// auftragsbestaetigung.getGeplAusliefDatum());
-		document.add(ParagraphBuilder.createEmptyLine());
-
+		
 		// insert main table
 		document.add(createTable(report));
 

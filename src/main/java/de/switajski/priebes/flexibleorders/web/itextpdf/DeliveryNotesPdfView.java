@@ -11,16 +11,14 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 
@@ -40,52 +38,21 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 		String leftBottom = "Lieferdatum: "
 				+ dateFormat.format(report.getCreated());
 		String rightTop = "";
-		// TODO
 		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
 		Address adresse = report.getShippedAddress();
 		String heading = "Lieferschein";
 
-		// insert address
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
-		if (adresse == null) {
-			document.add(ParagraphBuilder.createEmptyLine());
-			document.add(ParagraphBuilder.createEmptyLine());
-			document.add(ParagraphBuilder.createEmptyLine());
-		} else {
-			document.add(new ParagraphBuilder(adresse.getName1())
-					.withIndentationLeft(36f)
-					.withLineSpacing(12f)
-					.addTextLine(adresse.getName2())
-					.addTextLine(adresse.getStreet())
-					.addTextLine(
-							adresse.getPostalCode() + " " + adresse.getCity())
-					.addTextLine(adresse.getCountry().toString())
-					.build());
+		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
+			document.add(p);
+		};
+
+		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
+			document.add(p);
 		}
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
 
-		// insert heading
-		document.add(new ParagraphBuilder(heading)
-				.withFont(FontFactory.getFont(FONT, 12, Font.BOLD))
-				.build());
+		document.add(ReportViewHelper.insertInfoTable(
+				rightTop, rightBottom, leftTop, leftBottom));
 		document.add(ParagraphBuilder.createEmptyLine());
-
-		// info table
-		CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
-				.createInfoTable(
-						leftTop, leftBottom, rightTop, rightBottom);
-		PdfPTable infoTable = infoTableBuilder.build();
-		infoTable.setWidthPercentage(100);
-		document.add(infoTable);
-		// TODO: if (auftragsbestaetigung.getAusliefDatum==null)
-		// insertInfo(document,"Voraussichtliches Auslieferungsdatum:" +
-		// auftragsbestaetigung.getGeplAusliefDatum());
-		document.add(ParagraphBuilder.createEmptyLine());
-
 		// insert main table
 		document.add(createTable(report));
 

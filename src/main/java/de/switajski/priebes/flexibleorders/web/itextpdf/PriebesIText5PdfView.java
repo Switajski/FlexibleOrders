@@ -245,7 +245,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 		Paragraph fPara = new ParagraphBuilder(
 				"priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg")
 				.addTextLine(
-						"www.priebes.eu / info@priebes.eu / 0162 7014338 / 07141 - 9475640 (auch Fax)")
+						"www.priebes.eu / info@priebes.eu / 0176 41557068 / 07141 9475640 / Fax: 07141 6421002 ")
 				.addTextLine(
 						"KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
 				.addTextLine(

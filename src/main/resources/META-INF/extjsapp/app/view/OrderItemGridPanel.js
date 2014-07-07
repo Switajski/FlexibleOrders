@@ -17,6 +17,11 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 	},
 	onDeliveryHistoryClick : function(view, a, b, column, event, record, f) {
 		Ext.MessageBox.alert('Lieferhisorie leer', 'Die Lieferhistorie dieser Bestellung ist leer');
+	},
+	onRemoveClick : function(view, a, b, column, event, record, f) {
+		console.log('deliveryNotesItemGrid - customtransitionfunction');
+		MyApp.getApplication().getController('OrderController').deleteOrder(
+				record.data.orderNumber);
 	}
 
 });

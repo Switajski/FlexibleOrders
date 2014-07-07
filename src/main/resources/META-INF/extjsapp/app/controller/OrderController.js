@@ -66,6 +66,21 @@ Ext.define('MyApp.controller.OrderController', {
 				});
 		orderWindow.show();
 		orderWindow.focus();
+	},
+	
+	deleteOrder : function(orderNumber){
+		var request = Ext.Ajax.request({
+			url : '/FlexibleOrders/transitions/deleteOrder',
+			params : {
+				orderNumber : orderNumber
+			},
+			success : function(response) {
+				controller = MyApp.getApplication().getController('MyController');
+				controller.sleep(500);
+				controller.syncAll();
+			}
+		});
+		
 	}
 
 });

@@ -54,7 +54,7 @@ Ext.define('MyApp.view.ConfirmWindow', {
 						tooltip : 'Position l&ouml;schen',
 						scope : this,
 						handler : function(grid, rowIndex) {
-							Ext.getStore('CreateDeliveryNotesItemDataStore')
+							Ext.getStore('CreateConfirmationReportItemDataStore')
 									.removeAt(rowIndex);
 						}
 					}]

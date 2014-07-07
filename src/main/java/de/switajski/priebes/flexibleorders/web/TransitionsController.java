@@ -113,9 +113,9 @@ public class TransitionsController extends ExceptionController {
 	@RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
 	public @ResponseBody
 	JsonObjectResponse deleteOrder(
-			@RequestBody ItemDto reportItem) {
-		orderService.deleteOrder(reportItem.getOrderNumber());
-		return ExtJsResponseCreator.createResponse(reportItem.getOrderNumber());
+			@RequestParam(value = "orderNumber", required = true) String orderNumber) {
+		orderService.deleteOrder(orderNumber);
+		return ExtJsResponseCreator.createResponse(orderNumber);
 	}
 
 	@RequestMapping(value = "/cancelDeliveryNotes", method = RequestMethod.POST)

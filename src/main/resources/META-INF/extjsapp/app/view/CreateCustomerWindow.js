@@ -77,27 +77,35 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												name : 'city',
 												fieldLabel : 'Stadt',
 												allowBlank : false
-											}/*, {
+											}, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'country',
 												fieldLabel : 'Land',
 												allowBlank : false
-											}*/]
-								}/*, {
+											}]
+								}, {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
 									flex : 1,
 									items : [{
-												itemid : 'invoiceNumber',
-												xtype : 'invoicenumbercombobox',
-												name : 'invoiceNumber',
-												fieldLabel : 'Zahlungskondn.',
-												allowBlank : false,
-												allowDecimals : false,
-												allowExponential : false
+												xtype : 'textfield',
+												name : 'paymentConditions',
+												fieldLabel : 'Zahlungskondn.'
+											},{
+												xtype : 'textfield',
+												name : 'vatId',
+												fieldLabel : 'Umsatzst. Id'
+											},{
+												xtype : 'textfield',
+												name : 'vatId',
+												fieldLabel : 'Umsatzst. Id'
+											},{
+												xtype : 'textfield',
+												name : 'vendorNumber',
+												fieldLabel : 'Lieferantennr.'
 											}]
-								}*/],
+								}],
 
 						dockedItems : [{
 									xtype : 'toolbar',

@@ -24,6 +24,9 @@ public class Customer extends GenericEntity{
     @NotNull
     @Column(unique=true)
     private String email;
+    
+    @Embedded
+    private CustomerDetails details;
 
     @JsonIgnore
     private String password;
@@ -117,5 +120,13 @@ public class Customer extends GenericEntity{
 
 	public void setCustomerNumber(Long customerNumber) {
 		this.customerNumber = customerNumber;
+	}
+
+	public CustomerDetails getDetails() {
+		return details;
+	}
+
+	public void setDetails(CustomerDetails details) {
+		this.details = details;
 	}
 }

@@ -130,7 +130,11 @@ public class CustomPdfPTableBuilder {
 		return infoTableBuilder;
 	}
 
-	//TODO use composite pattern
+	/*
+	 * TODO use composite pattern:
+	 * CustomPdfPTableBuilder -> PdfPTableBuilder -> PdfPCellBuilder -> PhraseBuilder
+	 * PriebesTable -> Table -> Cell -> Phrase
+	 */
 	public static CustomPdfPTableBuilder createInfoTable(
 			String leftTop, String rightTop,
 			String leftMiddle, String rightMiddle,

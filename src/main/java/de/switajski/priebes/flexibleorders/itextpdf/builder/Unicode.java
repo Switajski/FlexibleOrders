@@ -8,5 +8,6 @@ public class Unicode {
 
 	public static String uUml = "\u00fc";
 	public static String aUml = "\u00e4";
+	public static String oUml = "\u00f6";
 
 }

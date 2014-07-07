@@ -30,6 +30,7 @@ import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -313,7 +314,7 @@ public class OrderServiceImpl {
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
 			throw new IllegalArgumentException(
-					"Bestellnr. zum löschen nicht gefunden"); 
+					"Bestellnr. zum l"+Unicode.oUml+"schen nicht gefunden"); 
 		orderRepo.delete(order);
 		return true;
 	}
@@ -351,11 +352,11 @@ public class OrderServiceImpl {
 	}
 
 	@Transactional
-	public boolean deleteReport(String invoiceNumber) {
-		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
+	public boolean deleteReport(String reportNumber) {
+		Report r = reportRepo.findByDocumentNumber(reportNumber);
 		if (r == null)
 			throw new IllegalArgumentException(
-					"Bericht zum löschen nicht gefunden");
+					"Bericht zum l"+Unicode.oUml+"schen nicht gefunden");
 		reportRepo.delete(r);
 		return true;
 	}

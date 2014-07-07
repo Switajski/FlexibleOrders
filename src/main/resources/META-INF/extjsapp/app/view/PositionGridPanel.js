@@ -171,7 +171,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	onRemoveClick : function(view, a, b, column, event, record, f) {
 		console.log('deliveryNotesItemGrid - customtransitionfunction');
 		MyApp.getApplication().getController('MyController').deleteReport(
-				record.data.deliveryNotesNumber);
+				record.data.documentNumber);
 	},
 	onDeliveryHistoryClick : function(view, a, b, column, event, record, f){
 		//TODO: this is hacking

@@ -119,7 +119,7 @@ public class CustomerBuilder implements Builder<Customer> {
 		c.setEmail(email);
 		c.setPassword(password);
 		c.setPhone(phone);
-		c.setAddress(address);
+		c.setInvoiceAddress(address);
 
 		return c;
 	}

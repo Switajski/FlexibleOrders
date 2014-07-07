@@ -60,6 +60,7 @@ Ext.define('MyApp.controller.CustomerController', {
 			
 		var createCustomerWindow = Ext.create('MyApp.view.CreateCustomerWindow', {
 			id : "CreateCustomerWindow",
+			title : 'Kunden bearbeiten',
 			customerNumberEditable : false,
 			createCustomerRecord : function() {return customer},
 			onSave : function(){
@@ -85,6 +86,18 @@ Ext.define('MyApp.controller.CustomerController', {
 		record.set('street', updatedRecord.data.street);
 		record.set('postalCode', updatedRecord.data.postalCode)
 		record.set('city', updatedRecord.data.city);
+		
+		record.set('dname1', updatedRecord.data.dname1);
+		record.set('dname2', updatedRecord.data.dname2);
+		record.set('dstreet', updatedRecord.data.dstreet);
+		record.set('dpostalCode', updatedRecord.data.dpostalCode)
+		record.set('dcity', updatedRecord.data.dcity);
+		
+		record.set('country', updatedRecord.data.country);
+		record.set('vendorNumber', updatedRecord.data.vendorNumber);
+		record.set('vatIdNo', updatedRecord.data.vatIdNo);
+		record.set('paymentConditions', updatedRecord.data.paymentConditions);
+		
 		store.sync({
 				success : function (){
 					Ext.getCmp('CustomerForm').getForm().reset();

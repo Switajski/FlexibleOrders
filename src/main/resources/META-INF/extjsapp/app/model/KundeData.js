@@ -51,6 +51,34 @@ Ext.define('MyApp.model.KundeData', {
         },
         {
             name: 'country'
+        },
+        {
+            name: 'paymentConditions'
+        },
+        {
+            name: 'vatIdNo'
+        },
+        {
+            name: 'vendorNumber'
+        },
+        //TODO: make address a child data structure
+        {
+            name: 'dname1'
+        },
+        {
+            name: 'dname2'
+        },
+        {
+            name: 'dstreet'
+        },
+        {
+            name: 'dpostalCode'
+        },
+        {
+            name: 'dcity'
+        },
+        {
+            name: 'dcountry'
         }
      ]
 });

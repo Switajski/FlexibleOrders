@@ -146,7 +146,7 @@ public class OrderServiceImpl {
 		if (order == null)
 			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 
-		Address address = order.getCustomer().getAddress();
+		Address address = order.getCustomer().getInvoiceAddress();
 
 		ConfirmationReport cr = new ConfirmationReport(confirmNumber,
 				address, address);

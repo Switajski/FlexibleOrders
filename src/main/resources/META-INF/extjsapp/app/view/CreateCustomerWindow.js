@@ -45,7 +45,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 											}]
 								}, {
 									xtype : 'fieldset',
-									title : 'Lieferadresse',
+									title : 'Rechnungsadresse',
 									flex : 1,
 									items : [{
 												xtype : 'textfield',
@@ -77,13 +77,54 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												name : 'city',
 												fieldLabel : 'Stadt',
 												allowBlank : false
-											}, {
+											}/*, {
 												xtype : 'textfield',
 												anchor : '100%',
 												name : 'country',
 												fieldLabel : 'Land',
 												allowBlank : false
-											}]
+											}*/]
+								},{
+									xtype : 'fieldset',
+									title : 'Lieferadresse',
+									flex : 1,
+									items : [{
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'dname1',
+												fieldLabel : 'Firma',
+												allowBlank : true
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'dname2',
+												fieldLabel : 'Name',
+												allowBlank : false
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'dstreet',
+												fieldLabel : 'Strasse',
+												allowBlank : false
+											}, {
+												xtype : 'numberfield',
+												anchor : '100%',
+												name : 'dpostalCode',
+												fieldLabel : 'PLZ',
+												allowBlank : false
+											}, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'dcity',
+												fieldLabel : 'Stadt',
+												allowBlank : false
+											}/*, {
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'country',
+												fieldLabel : 'Land',
+												allowBlank : false
+											}*/]
 								}, {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
@@ -94,11 +135,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												fieldLabel : 'Zahlungskondn.'
 											},{
 												xtype : 'textfield',
-												name : 'vatId',
-												fieldLabel : 'Umsatzst. Id'
-											},{
-												xtype : 'textfield',
-												name : 'vatId',
+												name : 'vatIdNo',
 												fieldLabel : 'Umsatzst. Id'
 											},{
 												xtype : 'textfield',
@@ -152,6 +189,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 	
 	createCustomerRecord : function(){
 		var record = Ext.create('MyApp.model.KundeData', {
+			// this code is made to load a record into the window fields
+			// don't know why this doesn't work without this 
 					customerNumber : this.record.data.customerNumber,
 					firstName : this.record.data.firstName,
 					lastName : this.record.data.lastName,
@@ -162,7 +201,17 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					street : this.record.data.street,
 					postalCode : this.record.data.postalCode,
 					city : this.record.data.city,
-					country : this.record.data.country
+					country : this.record.data.country,
+					vendorNumber : this.record.data.vendorNumber,
+					vatIdNo : this.record.data.vatIdNo,
+					paymentConditions : this.record.data.paymentConditions,
+					
+					dname1 : this.record.data.dname1,
+					dname2 : this.record.data.dname2,
+					dstreet : this.record.data.dstreet,
+					dpostalCode : this.record.data.dpostalCode,
+					dcity : this.record.data.dcity,
+					dcountry : this.record.data.dcountry
 				});
 		return record;
 	}

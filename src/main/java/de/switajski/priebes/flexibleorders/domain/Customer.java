@@ -1,4 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -19,7 +21,19 @@ public class Customer extends GenericEntity{
 	
     @JsonIgnore
     @Embedded
-    private Address address;
+    private Address invoiceAddress;
+    
+    @JsonIgnore
+    @AttributeOverrides({
+        @AttributeOverride(name="name1",column=@Column(name="deliveryName1")),
+        @AttributeOverride(name="name2",column=@Column(name="deliveryName2")),
+        @AttributeOverride(name="street",column=@Column(name="deliveryStreet")),
+        @AttributeOverride(name="postalCode",column=@Column(name="deliveryPostalCode")),
+        @AttributeOverride(name="city",column=@Column(name="deliveryCity")),
+        @AttributeOverride(name="country",column=@Column(name="deliveryCountry"))
+      })
+    @Embedded
+    private Address deliveryAddress;
 
     @NotNull
     @Column(unique=true)
@@ -27,7 +41,7 @@ public class Customer extends GenericEntity{
     
     @Embedded
     private CustomerDetails details;
-
+    
     @JsonIgnore
     private String password;
 
@@ -48,20 +62,16 @@ public class Customer extends GenericEntity{
     public Customer(
     		Long customerNumber,
     		String email,
-    		Address address){
-    	setAddress(address);
+    		Address invoiceAddress){
+    	setInvoiceAddress(invoiceAddress);
     	setEmail(email);
     	setCustomerNumber(customerNumber);
     }
     
-    public void setAddress(Address address) {
-    	this.address = address;
+    public void setInvoiceAddress(Address address) {
+    	this.invoiceAddress = address;
 	}
 
-	public Address getAddress(){
-    	return address;
-    }
-    
 	public String getEmail() {
         return this.email;
     }
@@ -129,4 +139,17 @@ public class Customer extends GenericEntity{
 	public void setDetails(CustomerDetails details) {
 		this.details = details;
 	}
+
+	public Address getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(Address deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public Address getInvoiceAddress() {
+		return invoiceAddress;
+	}
+
 }

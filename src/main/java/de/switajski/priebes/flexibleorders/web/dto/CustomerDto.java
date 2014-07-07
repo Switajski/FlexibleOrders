@@ -10,35 +10,30 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 @JsonAutoDetect
 public class CustomerDto {
 
-	private Long id;
+	private Long id, customerNumber;
 	
-	private Long customerNumber;
-	
-    private String email;
+    private String email, password, phone, firstName, lastName;
 
-    private String password;
-
-    private String phone;
-    
-    private String firstName;
-    
-    private String lastName;
-    
-    
     //*********************
-    // Address attributes
+    // invoice address attributes
     //*********************
-    private String name1;
-
-    private String name2;
-
-    private String street;
-
+    private String name1, name2, street, city, country;
+    
     private int postalCode;
+    
+    //*********************
+    // delivery address attributes
+    //*********************
+    private String dname1, dname2, dstreet, dcity, dcountry;
 
-    private String city;
+    private int dpostalCode;
 
-    private String country;
+    //*********************
+    // Customer details attributes
+    //*********************
+    private String vendorNumber, vatIdNo;
+
+	private String paymentConditions; 
 
 	public String getEmail() {
 		return email;
@@ -142,6 +137,78 @@ public class CustomerDto {
 
 	public void setCustomerNumber(Long customerNumber) {
 		this.customerNumber = customerNumber;
+	}
+
+	public String getVendorNumber() {
+		return vendorNumber;
+	}
+
+	public void setVendorNumber(String vendorNumber) {
+		this.vendorNumber = vendorNumber;
+	}
+
+	public String getVatIdNo() {
+		return vatIdNo;
+	}
+
+	public void setVatIdNo(String vatIdNo) {
+		this.vatIdNo = vatIdNo;
+	}
+
+	public String getPaymentConditions() {
+		return this.paymentConditions;
+	}
+	
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
+	}
+
+	public String getDname1() {
+		return dname1;
+	}
+
+	public void setDname1(String dname1) {
+		this.dname1 = dname1;
+	}
+
+	public String getDname2() {
+		return dname2;
+	}
+
+	public void setDname2(String dname2) {
+		this.dname2 = dname2;
+	}
+
+	public String getDstreet() {
+		return dstreet;
+	}
+
+	public void setDstreet(String dstreet) {
+		this.dstreet = dstreet;
+	}
+
+	public String getDcity() {
+		return dcity;
+	}
+
+	public void setDcity(String dcity) {
+		this.dcity = dcity;
+	}
+
+	public String getDcountry() {
+		return dcountry;
+	}
+
+	public void setDcountry(String dcountry) {
+		this.dcountry = dcountry;
+	}
+
+	public int getDpostalCode() {
+		return dpostalCode;
+	}
+
+	public void setDpostalCode(int dpostalCode) {
+		this.dpostalCode = dpostalCode;
 	} 
 
 }

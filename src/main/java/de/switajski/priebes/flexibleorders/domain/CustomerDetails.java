@@ -5,10 +5,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class CustomerDetails {
 
-	private String vendorNumber;
+	private String vendorNumber, vatIdNo, paymentConditions;
 	
-	private String vatIdNo;
-
 	public String getVendorNumber() {
 		return vendorNumber;
 	}
@@ -23,5 +21,13 @@ public class CustomerDetails {
 
 	public void setVatIdNo(String valueAddedTaxIdNo) {
 		this.vatIdNo = valueAddedTaxIdNo;
+	}
+
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
+	}
+
+	public String getPaymentConditions() {
+		return paymentConditions;
 	}
 }

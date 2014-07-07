@@ -1,20 +1,16 @@
 package de.switajski.priebes.flexibleorders.web.helper;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 /**
@@ -103,12 +99,28 @@ public class JsonSerializationHelper {
 			jc.setFirstName(c.getFirstName());
 			jc.setEmail(c.getEmail());
 			jc.setPhone(c.getPhone());
-			jc.setName1(c.getAddress().getName1());
-			jc.setName2(c.getAddress().getName2());
-			jc.setStreet(c.getAddress().getStreet());
-			jc.setPostalCode(c.getAddress().getPostalCode());
-			jc.setCity(c.getAddress().getCity());
-			jc.setCountry(c.getAddress().getCountry().toString());
+			
+			jc.setName1(c.getInvoiceAddress().getName1());
+			jc.setName2(c.getInvoiceAddress().getName2());
+			jc.setStreet(c.getInvoiceAddress().getStreet());
+			jc.setPostalCode(c.getInvoiceAddress().getPostalCode());
+			jc.setCity(c.getInvoiceAddress().getCity());
+			jc.setCountry(c.getInvoiceAddress().getCountry().toString());
+			
+			if (c.getDeliveryAddress() != null) {
+				jc.setDname1(c.getDeliveryAddress().getName1());
+				jc.setDname2(c.getDeliveryAddress().getName2());
+				jc.setDstreet(c.getDeliveryAddress().getStreet());
+				jc.setDpostalCode(c.getDeliveryAddress().getPostalCode());
+				jc.setDcity(c.getDeliveryAddress().getCity());
+				jc.setDcountry(c.getDeliveryAddress().getCountry().toString());
+			}
+			
+			if (c.getDetails() != null) {
+				jc.setVendorNumber(c.getDetails().getVendorNumber());
+				jc.setVatIdNo(c.getDetails().getVatIdNo());
+				jc.setPaymentConditions(c.getDetails().getPaymentConditions());
+			}
 			jsonCustomers.add(jc);
 		}
 		return jsonCustomers;

@@ -115,7 +115,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB-4",
 				new Date(),
-				itemDtoConverterService.convert(order));
+				null, null, itemDtoConverterService.convert(order));
 
 		// then
 		assertPersisted(confirmationReport, customer);
@@ -151,7 +151,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				itemDtoConverterService.convert(order));
+				null, null, itemDtoConverterService.convert(order));
 		DeliveryNotes deliveryNotes = orderService.deliver(
 				"L4",
 				"trackNumber",
@@ -227,7 +227,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				itemDtoConverterService.convert(order));
+				null, null, itemDtoConverterService.convert(order));
 
 		assertShippable(customer);
 
@@ -276,7 +276,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				itemDtoConverterService.convert(order));
+				null, null, itemDtoConverterService.convert(order));
 
 		// when
 		DeliveryNotes deliveryNotes = orderService.deliver(
@@ -317,7 +317,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				order.getOrderNumber(),
 				"AB4",
 				new Date(),
-				itemDtoConverterService.convert(order));
+				null, null, itemDtoConverterService.convert(order));
 		DeliveryNotes deliveryNotes = orderService.deliver(
 				"L4",
 				"trackNumber",

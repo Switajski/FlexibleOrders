@@ -107,13 +107,13 @@ public class JsonSerializationHelper {
 			jc.setCity(c.getInvoiceAddress().getCity());
 			jc.setCountry(c.getInvoiceAddress().getCountry().toString());
 			
-			if (c.getDeliveryAddress() != null) {
-				jc.setDname1(c.getDeliveryAddress().getName1());
-				jc.setDname2(c.getDeliveryAddress().getName2());
-				jc.setDstreet(c.getDeliveryAddress().getStreet());
-				jc.setDpostalCode(c.getDeliveryAddress().getPostalCode());
-				jc.setDcity(c.getDeliveryAddress().getCity());
-				jc.setDcountry(c.getDeliveryAddress().getCountry().toString());
+			if (c.getShippingAddress() != null) {
+				jc.setDname1(c.getShippingAddress().getName1());
+				jc.setDname2(c.getShippingAddress().getName2());
+				jc.setDstreet(c.getShippingAddress().getStreet());
+				jc.setDpostalCode(c.getShippingAddress().getPostalCode());
+				jc.setDcity(c.getShippingAddress().getCity());
+				jc.setDcountry(c.getShippingAddress().getCountry().toString());
 			}
 			
 			if (c.getDetails() != null) {

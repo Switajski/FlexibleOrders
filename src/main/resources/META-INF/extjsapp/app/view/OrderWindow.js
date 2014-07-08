@@ -1,5 +1,5 @@
 Ext.define('MyApp.view.OrderWindow', {
-	extend : 'MyApp.view.DeliverWindow',
+	extend : 'MyApp.view.TransitionWindow',
 	title : 'Bestellung aufgeben',
 	width : 700,
 	id : 'OrderWindow',

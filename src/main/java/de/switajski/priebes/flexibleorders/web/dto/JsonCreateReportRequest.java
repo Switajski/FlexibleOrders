@@ -26,19 +26,15 @@ public class JsonCreateReportRequest {
 	
 	private String paymentConditions;
 	
-	private String name1;
-	
-	private String name2;
-	
 	private Date created;
-	
-	private String street;
+
+	private String name1, name2, street, city, country;
 	
 	private Integer postalCode;
 	
-	private String city;
+	private String dname1, dname2, dstreet, dcity, dcountry;
 	
-	private String country;
+	private Integer dpostalCode;
 	
 	private List<ItemDto> items;
 
@@ -155,8 +151,13 @@ public class JsonCreateReportRequest {
 		this.orderNumber = orderNumber;
 	}
 	
-	public Address createAddress(){
+	public Address createInvoiceAddress(){
 		return new Address(getName1(), getName2(), getStreet(), getPostalCode(), getCity(),
+				Country.DEUTSCHLAND);
+	}
+	
+	public Address createDeliveryAddress(){
+		return new Address(getDname1(), getDname2(), getDstreet(), getDpostalCode(), getDcity(),
 				Country.DEUTSCHLAND);
 	}
 
@@ -221,5 +222,53 @@ public class JsonCreateReportRequest {
 	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	public String getDname1() {
+		return dname1;
+	}
+
+	public void setDname1(String dname1) {
+		this.dname1 = dname1;
+	}
+
+	public String getDname2() {
+		return dname2;
+	}
+
+	public void setDname2(String dname2) {
+		this.dname2 = dname2;
+	}
+
+	public String getDstreet() {
+		return dstreet;
+	}
+
+	public void setDstreet(String dstreet) {
+		this.dstreet = dstreet;
+	}
+
+	public String getDcity() {
+		return dcity;
+	}
+
+	public void setDcity(String dcity) {
+		this.dcity = dcity;
+	}
+
+	public String getDcountry() {
+		return dcountry;
+	}
+
+	public void setDcountry(String dcountry) {
+		this.dcountry = dcountry;
+	}
+
+	public Integer getDpostalCode() {
+		return dpostalCode;
+	}
+
+	public void setDpostalCode(Integer dpostalCode) {
+		this.dpostalCode = dpostalCode;
 	}
 }

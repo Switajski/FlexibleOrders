@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -139,20 +138,24 @@ public class OrderServiceImpl {
 
 	@Transactional
 	public ConfirmationReport confirm(String orderNumber, String confirmNumber,
-			Date expectedDelivery, List<ItemDto> orderItems) {
+			Date expectedDelivery, Address shippingAddress, Address invoiceAddress, 
+			List<ItemDto> orderItems) {
 		validateConfirm(orderNumber, confirmNumber, orderItems);
 
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
 			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 
-		Address address = order.getCustomer().getInvoiceAddress();
+		Customer cust = order.getCustomer();
+		Address address = (cust.getInvoiceAddress() == null) ? cust.getShippingAddress() : cust.getInvoiceAddress();
+		shippingAddress = (shippingAddress.isComplete()) ? shippingAddress : address;
+		invoiceAddress = (invoiceAddress.isComplete()) ? invoiceAddress : address;
 
 		ConfirmationReport cr = new ConfirmationReport(confirmNumber,
-				address, address);
+				invoiceAddress, shippingAddress);
 		cr.setExpectedDelivery(expectedDelivery);
 		// TODO: Refactor: DRY!
-		cr.setCustomerNumber(order.getCustomer().getCustomerNumber());
+		cr.setCustomerNumber(cust.getCustomerNumber());
 
 		for (ItemDto entry : orderItems) {
 			OrderItem oi = itemRepo.findOne(entry.getId());
@@ -295,19 +298,11 @@ public class OrderServiceImpl {
 		return (orderRepo.findByOrderNumber(orderNumber) != null);
 	}
 
-	public ConfirmationReport confirm(String orderNumber) {
-		List<OrderItem> ois = itemRepo.findByOrderNumber(orderNumber);
-		List<ItemDto> ris = convertToReportItems(ois);
-		return confirm(orderNumber, "AB" + orderNumber, new Date(), ris);
-	}
-
-	private List<ItemDto> convertToReportItems(List<OrderItem> ois) {
-		List<ItemDto> ris = new ArrayList<ItemDto>();
-		for (OrderItem oi : ois) {
-			ris.add(itemDtoConverterService.convert(oi));
-		}
-		return ris;
-	}
+//	public ConfirmationReport confirm(String orderNumber) {
+//		List<OrderItem> ois = itemRepo.findByOrderNumber(orderNumber);
+//		List<ItemDto> ris = convertToReportItems(ois);
+//		return confirm(orderNumber, "AB" + orderNumber,  new Date(), ris);
+//	}
 
 	@Transactional
 	public boolean deleteOrder(String orderNumber) {

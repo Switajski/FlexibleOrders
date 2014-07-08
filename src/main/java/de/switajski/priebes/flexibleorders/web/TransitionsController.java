@@ -17,13 +17,12 @@ import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
@@ -50,6 +49,8 @@ public class TransitionsController extends ExceptionController {
 				extractOrderNumber(confirmRequest),
 				confirmRequest.getOrderConfirmationNumber(),
 				confirmRequest.getExpectedDelivery(),
+				confirmRequest.createDeliveryAddress(),
+				confirmRequest.createInvoiceAddress(),
 				confirmRequest.getItems());
 		return ExtJsResponseCreator.createResponse(confirmationReport);
 	}
@@ -86,7 +87,7 @@ public class TransitionsController extends ExceptionController {
 		Invoice invoice = orderService.invoice(
 				deliverRequest.getInvoiceNumber(),
 				deliverRequest.getPaymentConditions(),
-				deliverRequest.createAddress(),
+				deliverRequest.createInvoiceAddress(),
 				deliverRequest.getCreated(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(invoice);
@@ -103,7 +104,7 @@ public class TransitionsController extends ExceptionController {
 				deliverRequest.getDeliveryNotesNumber(),
 				deliverRequest.getTrackNumber(),
 				deliverRequest.getPackageNumber(),
-				deliverRequest.createAddress(),
+				deliverRequest.createInvoiceAddress(),
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
 				deliverRequest.getCreated(),
 				deliverRequest.getItems());

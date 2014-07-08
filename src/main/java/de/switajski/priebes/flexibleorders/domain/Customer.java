@@ -25,15 +25,15 @@ public class Customer extends GenericEntity{
     
     @JsonIgnore
     @AttributeOverrides({
-        @AttributeOverride(name="name1",column=@Column(name="deliveryName1")),
-        @AttributeOverride(name="name2",column=@Column(name="deliveryName2")),
-        @AttributeOverride(name="street",column=@Column(name="deliveryStreet")),
-        @AttributeOverride(name="postalCode",column=@Column(name="deliveryPostalCode")),
-        @AttributeOverride(name="city",column=@Column(name="deliveryCity")),
-        @AttributeOverride(name="country",column=@Column(name="deliveryCountry"))
+        @AttributeOverride(name="name1",column=@Column(name="shippingName1")),
+        @AttributeOverride(name="name2",column=@Column(name="shippingName2")),
+        @AttributeOverride(name="street",column=@Column(name="shippingStreet")),
+        @AttributeOverride(name="postalCode",column=@Column(name="shippingPostalCode")),
+        @AttributeOverride(name="city",column=@Column(name="shippingCity")),
+        @AttributeOverride(name="country",column=@Column(name="shippingCountry"))
       })
     @Embedded
-    private Address deliveryAddress;
+    private Address shippingAddress;
 
     @NotNull
     @Column(unique=true)
@@ -140,12 +140,12 @@ public class Customer extends GenericEntity{
 		this.details = details;
 	}
 
-	public Address getDeliveryAddress() {
-		return deliveryAddress;
+	public Address getShippingAddress() {
+		return shippingAddress;
 	}
 
 	public void setDeliveryAddress(Address deliveryAddress) {
-		this.deliveryAddress = deliveryAddress;
+		this.shippingAddress = deliveryAddress;
 	}
 
 	public Address getInvoiceAddress() {

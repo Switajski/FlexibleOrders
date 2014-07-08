@@ -1,8 +1,8 @@
-Ext.define('MyApp.view.DeliverWindow', {
-	extend : 'MyApp.view.TransitionWindow',
+Ext.define('MyApp.view.TransitionWindow', {
+	extend : 'Ext.window.Window',
 	title : 'Auftrag liefern',
-	itemid : 'DeliverWindow',
-	alias : 'widget.DeliverWindow',
+	itemid : 'TransitionWindow',
+	alias : 'widget.TransitionWindow',
 	layout : 'fit',
 	defaultInvoiceNumber : 0,
 	width : 378,
@@ -207,7 +207,7 @@ Ext.define('MyApp.view.DeliverWindow', {
 								xtype : 'form',
 								id : 'DeliverForm',
 								bodyPadding : 10,
-								items : [this.headerForm],
+								items : [this.headerForm, this.addressForm, this.deliveryAddressForm],
 
 								dockedItems : [{
 											xtype : 'toolbar',

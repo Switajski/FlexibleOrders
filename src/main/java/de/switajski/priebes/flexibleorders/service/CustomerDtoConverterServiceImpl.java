@@ -11,14 +11,17 @@ public class CustomerDtoConverterServiceImpl {
 	public static Customer toCustomer(CustomerDto dto, Customer customer) {
 		if (dto.getName1() == null) dto.setName1(dto.getFirstName());
 		if (dto.getName2() == null) dto.setName2(dto.getLastName());
-		Address a = new Address(dto.getName1(), dto.getName2(), dto.getStreet(), dto.getPostalCode(), 
+		Address invoiceAddress = new Address(dto.getName1(), dto.getName2(), dto.getStreet(), dto.getPostalCode(), 
 				dto.getCity(), Country.DEUTSCHLAND);
+		Address deliveryAddress = new Address(dto.getDname1(), dto.getDname2(), dto.getDstreet(), dto.getDpostalCode(), 
+				dto.getDcity(), Country.DEUTSCHLAND);
 		CustomerDetails cd = new CustomerDetails();
 		cd.setVatIdNo(dto.getVatIdNo());
 		cd.setVendorNumber(dto.getVendorNumber());
 		cd.setPaymentConditions(dto.getPaymentConditions());
 		
-		customer.setInvoiceAddress(a);
+		customer.setInvoiceAddress(invoiceAddress);
+		customer.setDeliveryAddress(deliveryAddress);
 		customer.setDetails(cd);
 		customer.setCustomerNumber(dto.getCustomerNumber());
 		customer.setEmail(dto.getEmail());

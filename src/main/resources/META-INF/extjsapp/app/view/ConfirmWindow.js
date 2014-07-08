@@ -1,5 +1,5 @@
 Ext.define('MyApp.view.ConfirmWindow', {
-	extend : 'MyApp.view.DeliverWindow',
+	extend : 'MyApp.view.TransitionWindow',
 	title : 'Auftrag best&auml;tigen',
 	width : 350,
 	id : 'ConfirmWindow',
@@ -90,7 +90,6 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					name : 'expectedDelivery'
 				}]
 	},
-	addressForm : null,
 	onSave : function(button, event, option) {
 		MyApp.getApplication().getController('ConfirmController').confirm(button,
 				event, option);

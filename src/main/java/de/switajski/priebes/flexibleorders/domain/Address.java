@@ -101,5 +101,13 @@ public class Address {
 		this.country = country;
 	}
 
+	public boolean isComplete() {
+		if (name1 == null && name2 == null) 
+			return false;
+		if (street == null || city == null || postalCode < 1 || country == null)
+			return false;
+		return true;
+	}
+
 	
 }

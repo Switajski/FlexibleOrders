@@ -41,48 +41,8 @@
 					anchor : '100%'
 				}]
 	},
-	addressForm : {
-		xtype : 'fieldset',
-		title : 'Rechnungsadresse',
-		flex : 1,
-		items : [{
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'name1',
-					fieldLabel : 'Firma',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'name2',
-					fieldLabel : 'Name',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'street',
-					fieldLabel : 'Strasse',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'postalCode',
-					fieldLabel : 'PLZ',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'city',
-					fieldLabel : 'Stadt',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'country',
-					fieldLabel : 'Land',
-					allowBlank : false
-				}]
-	},
+	addressForm : null,
+	deliveryAddressForm : null,
 	bottomGrid : {
 		xtype : 'PositionGrid',
 		dock : 'bottom',

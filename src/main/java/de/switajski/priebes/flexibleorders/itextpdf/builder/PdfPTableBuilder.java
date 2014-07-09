@@ -124,6 +124,13 @@ public class PdfPTableBuilder {
 		rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 40));
 		return rowProperties;
 	}
+	
+	public static ArrayList<TableProperties> createPropertiesWithThreeCols() {
+		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+		rowProperties.add(new TableProperties("2", Element.ALIGN_LEFT, 80));
+		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 20));
+		return rowProperties;
+	}
 
 	private float[] getWidths() {
 		ArrayList<Float> iList = new ArrayList<Float>();

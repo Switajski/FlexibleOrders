@@ -50,7 +50,7 @@ public class ConfirmationReportPdfFileTest {
 		orderConfirmation = new ConfirmationReport(
 				OC_NR,
 				AddressBuilder.buildWithGeneratedAttributes(123),
-				AddressBuilder.buildWithGeneratedAttributes(123));
+				AddressBuilder.buildWithGeneratedAttributes(6623));
 
 		for (int i = 0; i < 28; i++) {
 			item1.addHandlingEvent(

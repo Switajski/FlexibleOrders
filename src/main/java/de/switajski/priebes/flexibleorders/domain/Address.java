@@ -18,7 +18,7 @@ public class Address {
     private String street;
 
     @NotNull
-    private int postalCode;
+    private Integer postalCode;
 
     @NotNull
     private String city;
@@ -42,7 +42,7 @@ public class Address {
 			String name1, 
 			String name2, 
 			String street, 
-			int postalCode, 
+			Integer postalCode, 
 			String city,
 			Country country) {
 		setName1(name1);
@@ -85,11 +85,11 @@ public class Address {
 		this.city = city;
 	}
 
-	public int getPostalCode() {
+	public Integer getPostalCode() {
 		return postalCode;
 	}
 
-	public void setPostalCode(int postalCode) {
+	public void setPostalCode(Integer postalCode) {
 		this.postalCode = postalCode;
 	}
 

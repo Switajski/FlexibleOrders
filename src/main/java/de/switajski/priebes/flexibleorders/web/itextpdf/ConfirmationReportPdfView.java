@@ -59,9 +59,11 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		Amount vat = netGoods.multiply(report.getVatRate());
 		Amount gross = netGoods.add(vat);
 
-		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
-			document.add(p);
-		};
+//		for (Paragraph p: ReportViewHelper.insertAddress(report.getInvoiceAddress())){
+//			document.add(p);
+//		}
+		
+		changes(document, report);
 		
 		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
 			document.add(p);
@@ -69,6 +71,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		
 		document.add(ReportViewHelper.insertInfoTable(
 				rightTop, rightBottom, leftTop, leftBottom));
+		
 		document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
@@ -87,6 +90,18 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
 						+ FOOTER_MARGIN_BOTTOM,
 				writer.getDirectContent());
+	}
+
+	private void changes(Document document, ConfirmationReport report)
+			throws DocumentException {
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
+		
+		document.add(ReportViewHelper.insertExtendedInfoTable(
+				report.getShippingAddress(), report.getInvoiceAddress()));
+		
+		document.add(ParagraphBuilder.createEmptyLine());
+		document.add(ParagraphBuilder.createEmptyLine());
 	}
 
 	private PdfPTable createTable(ConfirmationReport cReport)

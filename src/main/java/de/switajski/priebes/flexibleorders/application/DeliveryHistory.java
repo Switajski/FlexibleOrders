@@ -7,8 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
@@ -112,6 +114,34 @@ public class DeliveryHistory {
 		if (sis.size() > 1)
 			throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
 		else return sis.iterator().next();
+	}
+
+	//TODO: DRY!
+	public Address getShippingAddressOf(ReportItem confirmationItem) {
+		Set<ConfirmationItem> sis = this.getConfirmationItems();
+		Address address = null;
+		for (ConfirmationItem si:sis){
+			Address a = ((ConfirmationReport) si.getReport()).getShippingAddress();
+			if (address == null)
+				address = a;
+			else if (!a.equals(address))
+				throw new IllegalStateException("Mehr als eine Lieferaddresse gefunden");
+		}
+		return address;
+	}
+
+	//TODO: DRY!
+	public Address getInvoiceAddressOf(ReportItem confirmationItem) {
+		Set<ConfirmationItem> sis = this.getConfirmationItems();
+		Address address = null;
+		for (ConfirmationItem si:sis){
+			Address a = ((ConfirmationReport) si.getReport()).getInvoiceAddress();
+			if (address == null)
+				address = a;
+			else if (!a.equals(address))
+				throw new IllegalStateException("Mehr als eine Rechnungsaddresse gefunden");
+		}
+		return address;
 	}
 
 }

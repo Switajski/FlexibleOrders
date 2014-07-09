@@ -87,7 +87,6 @@ public class TransitionsController extends ExceptionController {
 		Invoice invoice = orderService.invoice(
 				deliverRequest.getInvoiceNumber(),
 				deliverRequest.getPaymentConditions(),
-				deliverRequest.createInvoiceAddress(),
 				deliverRequest.getCreated(),
 				deliverRequest.getItems());
 		return ExtJsResponseCreator.createResponse(invoice);
@@ -104,7 +103,6 @@ public class TransitionsController extends ExceptionController {
 				deliverRequest.getDeliveryNotesNumber(),
 				deliverRequest.getTrackNumber(),
 				deliverRequest.getPackageNumber(),
-				deliverRequest.createInvoiceAddress(),
 				new Amount(deliverRequest.getShipment(), Currency.EUR),
 				deliverRequest.getCreated(),
 				deliverRequest.getItems());

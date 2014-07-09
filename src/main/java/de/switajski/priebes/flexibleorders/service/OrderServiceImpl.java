@@ -194,18 +194,19 @@ public class OrderServiceImpl {
 	@Transactional
 	public DeliveryNotes deliver(String deliveryNotesNumber,
 			String trackNumber, String packageNumber,
-			Address shippingAddress, Amount shipment,
-			Date created, List<ItemDto> confirmEvents) {
+			Amount shipment, Date created, List<ItemDto> confirmEvents) {
 		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
 		DeliveryNotes deliveryNotes = new DeliveryNotes(
 				deliveryNotesNumber,
-				shippingAddress,
+				null,
 				shipment);
 		deliveryNotes.setCreated(created== null ? new Date() : created);
 		
 		Order firstOrder = null;
+		
+		Address shippedAddress = null;
 		for (ItemDto entry : confirmEvents) {
 			ReportItem confirmEventToBeDelivered = heRepo
 					.findOne(entry.getId());
@@ -222,6 +223,15 @@ public class OrderServiceImpl {
 												// quanitityToDeliver at this
 												// nonsense parameter
 					new Date()));
+			
+			//validate addresses DRY!
+			Address temp = orderItemToBeDelivered.getDeliveryHistory().getShippingAddressOf(confirmEventToBeDelivered);
+			if (shippedAddress == null)
+				shippedAddress = temp;
+			else if (!shippedAddress.equals(temp))
+				throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+			
+			deliveryNotes.setShippedAddress(shippedAddress);
 
 			if (firstOrder == null)
 				firstOrder = orderItemToBeDelivered.getOrder();
@@ -391,22 +401,20 @@ public class OrderServiceImpl {
 	 * 
 	 * @param invoiceNumber
 	 * @param paymentConditions
-	 * @param invoiceAddress
 	 * @param created 
 	 * @param shippingItemDtos
 	 * @return
 	 */
 	@Transactional
 	public Invoice invoice(String invoiceNumber, String paymentConditions,
-			Address invoiceAddress,
 			Date created, List<ItemDto> shippingItemDtos) {
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
-		Invoice invoice = new Invoice(invoiceNumber, paymentConditions,
-				invoiceAddress);
+		Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
 
 		Order order = null;
+		Address invoiceAddress = null;
 		for (ItemDto entry : shippingItemDtos) {
 			ReportItem shipEventToBeInvoiced = heRepo.findOne(entry.getId());
 
@@ -415,6 +423,15 @@ public class OrderServiceImpl {
 
 			validateQuantity(entry, (ShippingItem) shipEventToBeInvoiced);
 
+			// validate addresses - DRY at deliver method
+			Address temp = orderItemToBeInvoiced.getDeliveryHistory().getShippingAddressOf(shipEventToBeInvoiced);
+			if (invoiceAddress == null)
+				invoiceAddress = temp;
+			else if (!invoiceAddress.equals(temp))
+				throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+
+			invoice.setInvoiceAddress(invoiceAddress);
+			
 			invoice.addItem(new InvoiceItem(
 					invoice,
 					shipEventToBeInvoiced.getOrderItem(),

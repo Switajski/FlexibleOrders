@@ -156,7 +156,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"L4",
 				"trackNumber",
 				"packNo",
-				INVOICE_ADDRESS,
 				null,
 				new Date(),
 				itemDtoConverterService.convertReport(confirmationReport));
@@ -165,7 +164,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 		Invoice invoice = orderService.invoice(
 				"R4",
 				"paymentCondition",
-				INVOICE_ADDRESS,
 				new Date(),
 				itemDtoConverterService.convertReport(deliveryNotes));
 
@@ -236,7 +234,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"R4",
 				"trackNumber",
 				"packNo",
-				INVOICE_ADDRESS,
 				null,
 				new Date(),
 				itemDtoConverterService.convertReport(confirmationReport));
@@ -283,7 +280,6 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"L4",
 				"trackNumber",
 				"packNo",
-				INVOICE_ADDRESS,
 				null,
 				new Date(),
 				itemDtosWithQty(shipQty, itemDtoConverterService.convertReport(confirmationReport)));
@@ -322,14 +318,12 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"L4",
 				"trackNumber",
 				"packNo",
-				INVOICE_ADDRESS,
 				null,
 				new Date(),
 				itemDtoConverterService.convertReport(confirmationReport));
 		Invoice invoice = orderService.invoice(
 				"R4",
 				"paymentCondition",
-				INVOICE_ADDRESS,
 				new Date(),
 				itemDtoConverterService.convertReport(deliveryNotes));
 

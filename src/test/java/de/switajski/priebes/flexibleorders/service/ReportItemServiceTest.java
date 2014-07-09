@@ -92,7 +92,7 @@ public class ReportItemServiceTest {
 		reportItems = givenItemDtos();
 		
 		//WHEN
-		orderService.confirm(orderNumber, confirmNumber, expectedDelivery, reportItems);
+		orderService.confirm(orderNumber, confirmNumber, expectedDelivery, null, null, reportItems);
 		
 		//THEN
 		ConfirmationReport confirmationReport = captureConfirmationReportToBeSaved();

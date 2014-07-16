@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -23,7 +24,9 @@ import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Component
@@ -40,38 +43,54 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		ConfirmationReport report = (ConfirmationReport) model
 				.get(ConfirmationReport.class.getSimpleName());
 
-		String heading = "Auftragsbest"+Unicode.aUml+"tigung";
+		String heading = "Auftragsbest" + Unicode.aUml + "tigung";
 		Address adresse = report.getInvoiceAddress();
+		String documentNo = "Auftragsnummer: "
+				+ report.getDocumentNumber().toString();
 		Date expectedDelivery = report.getExpectedDelivery();
 
-		String leftTop = "Auftragsnummer: "
-				+ report.getDocumentNumber().toString();
-		String rightTop = "";
+		String expectedDeliveryString = "";
 		if (expectedDelivery != null)
-			rightTop = "voraussichtliche Lieferwoche: KW "
+			expectedDeliveryString = "voraus. Lieferung: KW "
 					+ weekDateFormat.format(expectedDelivery);
-		String leftBottom = "Auftragsdatum: "
+		
+		String date = "Auftragsdatum: "
 				+ dateFormat.format(report.getCreated());
-		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
+		String customerNo = "Kundennummer: " + report.getCustomerNumber();
 
 		Amount netGoods = AmountCalculator.sum(AmountCalculator
 				.getAmountsTimesQuantity(report));
 		Amount vat = netGoods.multiply(report.getVatRate());
 		Amount gross = netGoods.add(vat);
 
-//		for (Paragraph p: ReportViewHelper.insertAddress(report.getInvoiceAddress())){
-//			document.add(p);
-//		}
-		
-		changes(document, report);
-		
-		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
+		for (Paragraph p : ReportViewHelper.insertAddress(report
+				.getInvoiceAddress())) {
 			document.add(p);
 		}
+
+		for (Paragraph p : ReportViewHelper.insertHeading(heading)) {
+			document.add(p);
+		}
+
+		if (report.getCustomerDetails() == null){
+			document.add(ReportViewHelper.insertInfoTable(
+					customerNo,//rightTop, 
+					expectedDeliveryString,//rightBottom, 
+					documentNo,//leftTop, 
+					date//leftBottom
+					));
+		} else {
+
+			insertExtInfoTable(
+					document,
+					report,
+					documentNo,
+					expectedDeliveryString,
+					date,
+					customerNo);
+		}
 		
-		document.add(ReportViewHelper.insertInfoTable(
-				rightTop, rightBottom, leftTop, leftBottom));
-		
+
 		document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
@@ -92,16 +111,64 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 				writer.getDirectContent());
 	}
 
-	private void changes(Document document, ConfirmationReport report)
+	private void insertExtInfoTable(Document document,
+			ConfirmationReport report, String documentNo,
+			String expectedDeliveryString, String date, String customerNo)
 			throws DocumentException {
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
+		PhraseBuilder pb = new PhraseBuilder("");
+		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 		
-		document.add(ReportViewHelper.insertExtendedInfoTable(
-				report.getShippingAddress(), report.getInvoiceAddress()));
+		Address shipAddr = report.getShippingAddress();
+		String saleRepresentative = report.getCustomerDetails().getSaleRepresentative() == null ? "" : "Vertreter: " + report.getCustomerDetails().getSaleRepresentative();
+		String contact1 = report.getCustomerDetails().getContact1() == null ? "" : report.getCustomerDetails().getContact1();
+		String contact2 = report.getCustomerDetails().getContact2() == null ? "" : report.getCustomerDetails().getContact2();
+		String contact3 = report.getCustomerDetails().getContact3() == null ? "" : report.getCustomerDetails().getContact3();
+		String mark = report.getCustomerDetails().getMark() == null ? "" : "Ihr Zeichen: " + report.getCustomerDetails().getMark();
+		String vendorno = report.getCustomerDetails().getVendorNumber() == null ? "" : "Lieferantennr.: " + report.getCustomerDetails().getVendorNumber();
+		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
+				PdfPTableBuilder.createPropertiesWithThreeCols())
+
+				.addCell(cellb.withPhrase(
+						pb.withText(date)
+								.build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(customerNo).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(vendorno).build()).build())
+
+				.addCell(cellb.withPhrase(
+						pb.withText(documentNo).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText("Lieferadresse:").build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(saleRepresentative).build()).build())
+
+				.addCell(cellb.withPhrase(
+						pb.withText(expectedDeliveryString).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(" " + shipAddr.getName1() + " " + shipAddr.getName2()).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(contact1).build()).build())
 		
-		document.add(ParagraphBuilder.createEmptyLine());
-		document.add(ParagraphBuilder.createEmptyLine());
+				.addCell(cellb.withPhrase(
+						pb.withText(" ").build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(" " + shipAddr.getStreet()).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(contact2).build()).build())
+				
+				.addCell(cellb.withPhrase(
+						pb.withText(mark).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(" " + shipAddr.getPostalCode() + " " +  shipAddr.getCity()).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(contact3).build()).build());
+
+		PdfPTable infoTable = infoTableBuilder.build();
+
+		infoTable.setWidthPercentage(100);
+		
+		document.add(infoTable);
 	}
 
 	private PdfPTable createTable(ConfirmationReport cReport)

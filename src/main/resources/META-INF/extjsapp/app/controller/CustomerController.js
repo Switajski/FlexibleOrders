@@ -98,6 +98,12 @@ Ext.define('MyApp.controller.CustomerController', {
 		record.set('vatIdNo', updatedRecord.data.vatIdNo);
 		record.set('paymentConditions', updatedRecord.data.paymentConditions);
 		
+		record.set('saleRepresentative', updatedRecord.data.saleRepresentative);
+		record.set('mark', updatedRecord.data.mark);
+		record.set('contact1', updatedRecord.data.contact1);
+		record.set('contact2', updatedRecord.data.contact2);
+		record.set('contact3', updatedRecord.data.contact3);
+		
 		store.sync({
 				success : function (){
 					Ext.getCmp('CustomerForm').getForm().reset();

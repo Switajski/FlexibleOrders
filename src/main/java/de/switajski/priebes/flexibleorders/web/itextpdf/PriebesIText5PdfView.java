@@ -70,6 +70,10 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 			FONT,
 			12,
 			Font.BOLD);
+	public static Font eightSizeFont = FontFactory.getFont(
+			PriebesIText5PdfView.FONT, 
+			8, 
+			Font.NORMAL);
 
 	/**
 	 * format settings

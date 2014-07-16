@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
@@ -51,6 +53,8 @@ public class ConfirmationReportPdfFileTest {
 				OC_NR,
 				AddressBuilder.buildWithGeneratedAttributes(123),
 				AddressBuilder.buildWithGeneratedAttributes(6623));
+		orderConfirmation.setCustomerDetails(createCustomerDetails());
+		orderConfirmation.setExpectedDelivery(new Date());
 
 		for (int i = 0; i < 28; i++) {
 			item1.addHandlingEvent(
@@ -61,6 +65,19 @@ public class ConfirmationReportPdfFileTest {
 							.build());
 		}
 
+	}
+
+	private CustomerDetails createCustomerDetails() {
+		CustomerDetails cd = new CustomerDetails();
+		cd.setPaymentConditions("So schnell wie möglich, ohne Prozente sonst Inkasso Moskau");
+		cd.setVatIdNo("ATU-No.111234515");
+		cd.setVendorNumber("PRIEBES-1");
+		cd.setSaleRepresentative("Herr Vertreter1");
+		cd.setContact1("Ihr Ansprechpartner: Hr. Priebe");
+		cd.setContact2("mobil: 0175 / 1243");
+		cd.setContact3("email: info@priebe.eu");
+		cd.setMark("Filiale in LB");
+		return cd;
 	}
 
 	@Transactional

@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,6 +47,9 @@ public class ConfirmationReport extends Report {
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date expectedDelivery;
+
+	@Embedded
+	private CustomerDetails customerDetails;
 
 	protected ConfirmationReport() {
 	}
@@ -89,6 +93,14 @@ public class ConfirmationReport extends Report {
 
 	public void setExpectedDelivery(Date expectedDelivery) {
 		this.expectedDelivery = expectedDelivery;
+	}
+	
+	public void setCustomerDetails(CustomerDetails customerDetails){
+		this.customerDetails = customerDetails;
+	}
+
+	public CustomerDetails getCustomerDetails() {
+		return this.customerDetails;
 	}
 
 }

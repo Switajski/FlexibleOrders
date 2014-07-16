@@ -9,6 +9,7 @@ import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
@@ -116,10 +117,16 @@ public class JsonSerializationHelper {
 				jc.setDcountry(c.getShippingAddress().getCountry().toString());
 			}
 			
-			if (c.getDetails() != null) {
-				jc.setVendorNumber(c.getDetails().getVendorNumber());
-				jc.setVatIdNo(c.getDetails().getVatIdNo());
-				jc.setPaymentConditions(c.getDetails().getPaymentConditions());
+			CustomerDetails details = c.getDetails();
+			if (details != null) {
+				jc.setVendorNumber(details.getVendorNumber());
+				jc.setVatIdNo(details.getVatIdNo());
+				jc.setPaymentConditions(details.getPaymentConditions());
+				jc.setContact1(details.getContact1());
+				jc.setContact2(details.getContact2());
+				jc.setContact3(details.getContact3());
+				jc.setMark(details.getMark());
+				jc.setSaleRepresentative(details.getSaleRepresentative());
 			}
 			jsonCustomers.add(jc);
 		}

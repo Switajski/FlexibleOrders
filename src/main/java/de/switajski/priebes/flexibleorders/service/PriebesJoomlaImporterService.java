@@ -136,7 +136,6 @@ public class PriebesJoomlaImporterService implements ImporterService {
 				c.setCustomerNumber(new Long(id));
 				c.setEmail(email);		
 				c.setPhone(phone_1);
-				c.setPassword(password);
 				c.setCreated(new Date());
 				c.setInvoiceAddress(new Address(first_name, last_name, address_1, Integer.parseInt(zip.trim()), city, Country.DEUTSCHLAND));
 

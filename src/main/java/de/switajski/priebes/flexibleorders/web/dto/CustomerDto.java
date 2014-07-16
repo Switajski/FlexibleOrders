@@ -31,9 +31,9 @@ public class CustomerDto {
     //*********************
     // Customer details attributes
     //*********************
-    private String vendorNumber, vatIdNo;
-
-	private String paymentConditions; 
+    private String vendorNumber, vatIdNo, paymentConditions;
+    
+    private String saleRepresentative, mark, contact1, contact2, contact3;
 
 	public String getEmail() {
 		return email;
@@ -209,6 +209,46 @@ public class CustomerDto {
 
 	public void setDpostalCode(int dpostalCode) {
 		this.dpostalCode = dpostalCode;
+	}
+
+	public String getSaleRepresentative() {
+		return saleRepresentative;
+	}
+
+	public void setSaleRepresentative(String saleRepresentative) {
+		this.saleRepresentative = saleRepresentative;
+	}
+
+	public String getMark() {
+		return mark;
+	}
+
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+
+	public String getContact1() {
+		return contact1;
+	}
+
+	public void setContact1(String contact1) {
+		this.contact1 = contact1;
+	}
+
+	public String getContact2() {
+		return contact2;
+	}
+
+	public void setContact2(String contact2) {
+		this.contact2 = contact2;
+	}
+
+	public String getContact3() {
+		return contact3;
+	}
+
+	public void setContact3(String contact3) {
+		this.contact3 = contact3;
 	} 
 
 }

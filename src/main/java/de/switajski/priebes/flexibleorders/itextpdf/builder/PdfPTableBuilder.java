@@ -127,8 +127,9 @@ public class PdfPTableBuilder {
 	
 	public static ArrayList<TableProperties> createPropertiesWithThreeCols() {
 		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties("2", Element.ALIGN_LEFT, 80));
-		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 20));
+		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 33));
+		rowProperties.add(new TableProperties("2", Element.ALIGN_LEFT, 33));
+		rowProperties.add(new TableProperties("3", Element.ALIGN_LEFT, 34));
 		return rowProperties;
 	}
 
@@ -223,12 +224,7 @@ public class PdfPTableBuilder {
 		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
 		for (TableProperties prop : tableProperties) {
 			PdfPCell bposHeader = new PdfPCell(
-					new PhraseBuilder(prop.heading)
-							.withFont(
-									FontFactory.getFont(
-											PriebesIText5PdfView.FONT,
-											8,
-											Font.NORMAL))
+					PhraseBuilder.size8(prop.heading)
 							.build());
 			bposHeader.setFixedHeight(12f);
 			bposHeader.setHorizontalAlignment(prop.alignment);

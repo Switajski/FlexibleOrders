@@ -156,6 +156,7 @@ public class OrderServiceImpl {
 		cr.setExpectedDelivery(expectedDelivery);
 		// TODO: Refactor: DRY!
 		cr.setCustomerNumber(cust.getCustomerNumber());
+		cr.setCustomerDetails(cust.getDetails());
 
 		for (ItemDto entry : orderItems) {
 			OrderItem oi = itemRepo.findOne(entry.getId());

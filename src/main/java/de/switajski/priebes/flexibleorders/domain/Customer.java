@@ -42,9 +42,6 @@ public class Customer extends GenericEntity{
     @Embedded
     private CustomerDetails details;
     
-    @JsonIgnore
-    private String password;
-
     private String phone;
     
     private String firstName;
@@ -78,14 +75,6 @@ public class Customer extends GenericEntity{
 
 	public void setEmail(String email) {
         this.email = email;
-    }
-
-	public String getPassword() {
-        return this.password;
-    }
-
-	public void setPassword(String password) {
-        this.password = password;
     }
 
 	public String getPhone() {

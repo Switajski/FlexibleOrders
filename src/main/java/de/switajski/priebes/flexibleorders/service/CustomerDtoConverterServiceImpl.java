@@ -19,6 +19,11 @@ public class CustomerDtoConverterServiceImpl {
 		cd.setVatIdNo(dto.getVatIdNo());
 		cd.setVendorNumber(dto.getVendorNumber());
 		cd.setPaymentConditions(dto.getPaymentConditions());
+		cd.setContact1(dto.getContact1());
+		cd.setContact2(dto.getContact2());
+		cd.setContact3(dto.getContact3());
+		cd.setMark(dto.getMark());
+		cd.setSaleRepresentative(dto.getSaleRepresentative());
 		
 		customer.setInvoiceAddress(invoiceAddress);
 		customer.setDeliveryAddress(deliveryAddress);

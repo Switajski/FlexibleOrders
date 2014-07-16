@@ -132,15 +132,43 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									items : [{
 												xtype : 'textfield',
 												name : 'paymentConditions',
+												anchor : '100%',
 												fieldLabel : 'Zahlungskondn.'
 											},{
 												xtype : 'textfield',
 												name : 'vatIdNo',
+												anchor : '100%',
 												fieldLabel : 'Umsatzst. Id'
 											},{
 												xtype : 'textfield',
 												name : 'vendorNumber',
+												anchor : '100%',
 												fieldLabel : 'Lieferantennr.'
+											},{
+												xtype : 'textfield',
+												name : 'saleRepresentative',
+												anchor : '100%',
+												fieldLabel : 'Vertreter'
+											},{
+												xtype : 'textfield',
+												name : 'mark',
+												anchor : '100%',
+												fieldLabel : 'Ihr Zeichen'
+											},{
+												xtype : 'textfield',
+												name : 'contact1',
+												anchor : '100%',
+												fieldLabel : 'Kontakt 1'
+											},{
+												xtype : 'textfield',
+												name : 'contact2',
+												anchor : '100%',
+												fieldLabel : 'Kontakt 2'
+											},{
+												xtype : 'textfield',
+												anchor : '100%',
+												name : 'contact3',
+												fieldLabel : 'Kontakt 3'
 											}]
 								}],
 
@@ -211,7 +239,13 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					dstreet : this.record.data.dstreet,
 					dpostalCode : this.record.data.dpostalCode,
 					dcity : this.record.data.dcity,
-					dcountry : this.record.data.dcountry
+					dcountry : this.record.data.dcountry,
+					
+					saleRepresentative : this.record.data.saleRepresentative, 
+					mark : this.record.data.mark, 
+					contact1 : this.record.data.contact1, 
+					contact2 : this.record.data.contact2, 
+					contact3 : this.record.data.contact3
 				});
 		return record;
 	}

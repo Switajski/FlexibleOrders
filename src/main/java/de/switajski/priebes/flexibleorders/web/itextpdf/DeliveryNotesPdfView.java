@@ -67,7 +67,8 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 			PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
 			String packageNumber = StringUtils.isEmpty(report.getPackageNumber()) ? "" : "Paket(e): " + report.getPackageNumber();
-			
+			String orderConfirmationNumbers = DeliveryHistoryFactory.createFromReport(report).getConfirmationReportNumbers();
+
 			CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
 					PdfPTableBuilder.createPropertiesWithThreeCols())
 
@@ -83,7 +84,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 							pb.withText(documentNo)
 									.build()).build())
 					.addCell(cellb.withPhrase(
-							pb.withText(DeliveryHistoryFactory.createFromFirst(report.getItems()).getOrderConfirmationNumbers()).build()).build())
+							pb.withText(orderConfirmationNumbers).build()).build())
 					.addCell(cellb.withPhrase(
 							pb.withText("").build()).build())
 

@@ -152,10 +152,22 @@ public class DeliveryHistory {
 		return attr.getInvoiceAddress();
 	}
 
-	public String getOrderConfirmationNumbers() {
+	public String getConfirmationReportNumbers() {
 		String s = "";
 		Set<String> nos = new HashSet<String>();
 		for (ConfirmationItem ci:getConfirmationItems()){
+			nos.add(ci.getReport().getDocumentNumber());
+		}
+		for (String no:nos){
+			s += no + " ";
+		}
+		return s;
+	}
+	
+	public String getDeliveryNotesNumbers() {
+		String s = "";
+		Set<String> nos = new HashSet<String>();
+		for (ShippingItem ci:getShippingItems()){
 			nos.add(ci.getReport().getDocumentNumber());
 		}
 		for (String no:nos){

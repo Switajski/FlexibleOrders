@@ -226,7 +226,7 @@ public class OrderServiceImpl {
 					new Date()));
 			
 			//validate addresses DRY!
-			Address temp = orderItemToBeDelivered.getDeliveryHistory().getShippingAddressOf(confirmEventToBeDelivered);
+			Address temp = orderItemToBeDelivered.getDeliveryHistory().getShippingAddress();
 			if (shippedAddress == null)
 				shippedAddress = temp;
 			else if (!shippedAddress.equals(temp))
@@ -425,7 +425,7 @@ public class OrderServiceImpl {
 			validateQuantity(entry, (ShippingItem) shipEventToBeInvoiced);
 
 			// validate addresses - DRY at deliver method
-			Address temp = orderItemToBeInvoiced.getDeliveryHistory().getShippingAddressOf(shipEventToBeInvoiced);
+			Address temp = orderItemToBeInvoiced.getDeliveryHistory().getShippingAddress();
 			if (invoiceAddress == null)
 				invoiceAddress = temp;
 			else if (!invoiceAddress.equals(temp))

@@ -1,4 +1,3 @@
-
 Ext.define('MyApp.store.ItemDataStore', {
     extend: 'Ext.data.Store',
 	customurl: '/FlexibleOrders/reportitems/ordered',

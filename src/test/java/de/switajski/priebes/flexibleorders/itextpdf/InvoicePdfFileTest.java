@@ -73,14 +73,14 @@ public class InvoicePdfFileTest {
 				.generateAttributes(12)
 				.build();
 		for (int i = 0; i < 24; i++) {
-			item1.addHandlingEvent(
+			item1.addReportItem(
 					new InvoiceItemBuilder()
 							.setItem(item1)
 							.setQuantity(i+1)
 							.setReport(invoice)
 							.build());
 		}
-		shipping.addHandlingEvent(
+		shipping.addReportItem(
 				new InvoiceItemBuilder()
 						.setItem(shipping)
 						.setQuantity(4)

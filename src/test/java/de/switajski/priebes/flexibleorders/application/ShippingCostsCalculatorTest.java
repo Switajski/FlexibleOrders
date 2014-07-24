@@ -53,7 +53,7 @@ public class ShippingCostsCalculatorTest {
 		.setDocumentNumber("L13")
 		.build();
 		for (OrderItem oi : order.getItems()) {
-			oi.addHandlingEvent(new ShippingItem(
+			oi.addReportItem(new ShippingItem(
 					l13,
 					oi,
 					5,
@@ -68,7 +68,7 @@ public class ShippingCostsCalculatorTest {
 			.setDocumentNumber("L12")
 			.build();
 		for (OrderItem oi : order.getItems()) {
-			oi.addHandlingEvent(new ShippingItem(
+			oi.addReportItem(new ShippingItem(
 					l12,
 					oi,
 					5,

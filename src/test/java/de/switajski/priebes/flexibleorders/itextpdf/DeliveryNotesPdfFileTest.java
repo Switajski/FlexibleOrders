@@ -51,7 +51,7 @@ public class DeliveryNotesPdfFileTest {
 				.build();
 
 		for (int i = 0; i < 35; i++) {
-			item1.addHandlingEvent(
+			item1.addReportItem(
 					new ShippingItemBuilder()
 							.setItem(item1)
 							.setQuantity(i+1)

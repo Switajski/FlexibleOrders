@@ -11,6 +11,7 @@ import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
@@ -21,7 +22,7 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 public class DeliveryHistory {
 
 	private Set<ReportItem> reportItems;
-
+	
 	public DeliveryHistory(Set<ReportItem> reportItems) {
 		this.reportItems = reportItems;
 	}
@@ -34,7 +35,7 @@ public class DeliveryHistory {
 		}
 		return riToReturn;
 	}
-
+	
 	public Set<InvoiceItem> getInvoiceItems() {
 		Set<InvoiceItem> riToReturn = new HashSet<InvoiceItem>();
 		for (ReportItem ri : reportItems) {
@@ -116,32 +117,51 @@ public class DeliveryHistory {
 		else return sis.iterator().next();
 	}
 
-	//TODO: DRY!
-	public Address getShippingAddressOf(ReportItem confirmationItem) {
-		Set<ConfirmationItem> sis = this.getConfirmationItems();
-		Address address = null;
-		for (ConfirmationItem si:sis){
-			Address a = ((ConfirmationReport) si.getReport()).getShippingAddress();
-			if (address == null)
-				address = a;
-			else if (!a.equals(address))
-				throw new IllegalStateException("Mehr als eine Lieferaddresse gefunden");
-		}
-		return address;
+	public Address getShippingAddress() {
+		ConfirmationReportAttributeRetriever<Address> retr = new ConfirmationReportAttributeRetriever<Address>(this) {
+
+			@Override
+			public Address retrieveAttribute(ConfirmationItem si) {
+				return ((ConfirmationReport) si.getReport()).getShippingAddress();
+			}
+		};
+		
+		return retr.getInvoiceAddress();
 	}
 
-	//TODO: DRY!
-	public Address getInvoiceAddressOf(ReportItem confirmationItem) {
-		Set<ConfirmationItem> sis = this.getConfirmationItems();
-		Address address = null;
-		for (ConfirmationItem si:sis){
-			Address a = ((ConfirmationReport) si.getReport()).getInvoiceAddress();
-			if (address == null)
-				address = a;
-			else if (!a.equals(address))
-				throw new IllegalStateException("Mehr als eine Rechnungsaddresse gefunden");
+	public Address getInvoiceAddress(){
+		ConfirmationReportAttributeRetriever<Address> retr = new ConfirmationReportAttributeRetriever<Address>(this) {
+
+			@Override
+			public Address retrieveAttribute(ConfirmationItem si) {
+				return ((ConfirmationReport) si.getReport()).getInvoiceAddress();
+			}
+		};
+		
+		return retr.getInvoiceAddress();
+	}
+	
+	public CustomerDetails getCustomerDetails(){
+		ConfirmationReportAttributeRetriever<CustomerDetails> attr = new ConfirmationReportAttributeRetriever<CustomerDetails>(this) {
+
+			@Override
+			public CustomerDetails retrieveAttribute(ConfirmationItem si) {
+				return ((ConfirmationReport) si.getReport()).getCustomerDetails();
+			}
+		};
+		return attr.getInvoiceAddress();
+	}
+
+	public String getOrderConfirmationNumbers() {
+		String s = "";
+		Set<String> nos = new HashSet<String>();
+		for (ConfirmationItem ci:getConfirmationItems()){
+			nos.add(ci.getReport().getDocumentNumber());
 		}
-		return address;
+		for (String no:nos){
+			s += no + " ";
+		}
+		return s;
 	}
 
 }

@@ -8,7 +8,6 @@ public class CustomerBuilder implements Builder<Customer> {
 
 	private Address address;
 	private String email;
-	private String password;
 	private String phone;
 	private Long customerNumber;
 
@@ -25,7 +24,6 @@ public class CustomerBuilder implements Builder<Customer> {
 		customerNumber = new Long(i.toString());
 		address = AddressBuilder.buildWithGeneratedAttributes(i);
 		email = "name@somewhere.com".concat(i.toString());
-		password = "password".concat(i.toString());
 		phone = "0049".concat(i.toString());
 		return this;
 	}
@@ -117,7 +115,6 @@ public class CustomerBuilder implements Builder<Customer> {
 		Customer c = new Customer();
 		c.setCustomerNumber(customerNumber);
 		c.setEmail(email);
-		c.setPassword(password);
 		c.setPhone(phone);
 		c.setInvoiceAddress(address);
 
@@ -131,11 +128,6 @@ public class CustomerBuilder implements Builder<Customer> {
 
 	public CustomerBuilder setEmail(String email) {
 		this.email = email;
-		return this;
-	}
-
-	public CustomerBuilder setPassword(String password) {
-		this.password = password;
 		return this;
 	}
 

@@ -1,4 +1,3 @@
-
 Ext.define('MyApp.store.CreateOrderDataStore', {
     extend: 'Ext.data.Store',
 	customurl: '/FlexibleOrders/transitions/order',

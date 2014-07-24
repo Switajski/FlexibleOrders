@@ -1,4 +1,3 @@
-
 Ext.define('MyApp.store.BestellungDataStore', {
     extend: 'Ext.data.Store',
 

@@ -57,7 +57,7 @@ public class ConfirmationReportPdfFileTest {
 		orderConfirmation.setExpectedDelivery(new Date());
 
 		for (int i = 0; i < 28; i++) {
-			item1.addHandlingEvent(
+			item1.addReportItem(
 					new ConfirmationItemBuilder()
 							.setQuantity(i)
 							.setItem(item1)

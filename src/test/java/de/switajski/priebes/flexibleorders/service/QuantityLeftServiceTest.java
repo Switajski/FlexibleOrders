@@ -48,7 +48,7 @@ public class QuantityLeftServiceTest {
 		// GIVEN
 		orderItem = givenOrderItem(QTY);
 		orderItem
-				.addHandlingEvent(
+				.addReportItem(
 				givenConfirmationItem(QTY_PROCESSED));
 
 		// WHEN
@@ -74,9 +74,9 @@ public class QuantityLeftServiceTest {
 	public void calculateQuantityLeftConfirm_qtyLeftShouldBeQtyMinusQtyProcessed() {
 		// GIVEN
 		orderItem = givenOrderItem(QTY);
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenConfirmationItem(QTY));
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenShippingItem(QTY_PROCESSED));
 
 		// WHEN
@@ -109,9 +109,9 @@ public class QuantityLeftServiceTest {
 	public void calculateQuantityLeftShip_qtyLeftShouldBeQtyMinusQtyProcessed() {
 		// GIVEN
 		orderItem = givenOrderItem(QTY);
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenShippingItem(QTY));
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenInvoiceItem(QTY_PROCESSED));
 
 		// WHEN
@@ -128,9 +128,9 @@ public class QuantityLeftServiceTest {
 	public void calculateQuantityLeftInvoice_qtyLeftShouldBeQtyMinusQtyProcessed() {
 		// GIVEN
 		orderItem = givenOrderItem(QTY);
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenInvoiceItem(QTY));
-		orderItem.addHandlingEvent(
+		orderItem.addReportItem(
 				givenReceiptItem(QTY_PROCESSED));
 
 		// WHEN

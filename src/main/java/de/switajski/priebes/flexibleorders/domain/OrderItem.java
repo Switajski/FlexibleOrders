@@ -14,6 +14,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistoryFactory;
 import de.switajski.priebes.flexibleorders.application.specification.CompletedSpecification;
 import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
 import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
@@ -141,16 +142,16 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	/**
 	 * handles bidirectional relationship
 	 * 
-	 * @param handlingEvent
+	 * @param reportItem
 	 *            has no other Report than this. If null, this orderItem will be
 	 *            set.
 	 */
-	public void addHandlingEvent(ReportItem handlingEvent) {
+	public void addReportItem(ReportItem reportItem) {
 		// prevent endless loop
-		if (reportItems.contains(handlingEvent))
+		if (reportItems.contains(reportItem))
 			return;
-		reportItems.add(handlingEvent);
-		handlingEvent.setOrderItem(this);
+		reportItems.add(reportItem);
+		reportItem.setOrderItem(this);
 	}
 
 	public void removeHandlingEvent(ReportItem handlingEvent) {
@@ -231,6 +232,10 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return this.getProduct().getProductType().equals(ProductType.SHIPPING);
 	}
 
+	/**
+	 * @deprecated use {@link DeliveryHistoryFactory#createFromOrder(OrderItem)}
+	 * @return
+	 */
 	public DeliveryHistory getDeliveryHistory() {
 		return new DeliveryHistory(getReportItems());
 	}

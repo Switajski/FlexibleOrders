@@ -1,7 +1,4 @@
-/**
- * 
- */
- Ext.define('MyApp.view.InvoiceWindow', {
+Ext.define('MyApp.view.InvoiceWindow', {
 	extend : 'MyApp.view.TransitionWindow',
 	title : 'Rechnung erstellen',
 	itemid : 'InvoiceWindow',

@@ -30,6 +30,8 @@ public class Invoice extends Report {
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date evaluationDate;
+
+	private String billing;
 	
 	protected Invoice() {}
 	
@@ -77,6 +79,14 @@ public class Invoice extends Report {
 
 	public void setEvaluationDate(Date evaluationDate) {
 		this.evaluationDate = evaluationDate;
+	}
+
+	public String getBilling() {
+		return billing;
+	}
+	
+	public void setBilling(String billing){
+		this.billing = billing;
 	}
 
 }

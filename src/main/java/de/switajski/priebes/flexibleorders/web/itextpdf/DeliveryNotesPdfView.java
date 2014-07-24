@@ -63,49 +63,61 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 				packageNo, customerNo, documentNo, date));
 		}
 		else {
-			PhraseBuilder pb = new PhraseBuilder("");
-			PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
-
-			String packageNumber = StringUtils.isEmpty(report.getPackageNumber()) ? "" : "Paket(e): " + report.getPackageNumber();
-			String orderConfirmationNumbers = DeliveryHistoryFactory.createFromReport(report).getConfirmationReportNumbers();
-
-			CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
-					PdfPTableBuilder.createPropertiesWithThreeCols())
-
-					.addCell(cellb.withPhrase(
-							pb.withText(date)
-									.build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText(customerNo).build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText(customerDetails.getVendorNumber()).build()).build())
-							
-					.addCell(cellb.withPhrase(
-							pb.withText(documentNo)
-									.build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText(orderConfirmationNumbers).build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText("").build()).build())
-
-					.addCell(cellb.withPhrase(
-							pb.withText(packageNumber).build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText("").build()).build())
-					.addCell(cellb.withPhrase(
-							pb.withText("").build()).build());
-
-			PdfPTable infoTable = infoTableBuilder.build();
-
-			infoTable.setWidthPercentage(100);
-			
-			document.add(infoTable);
+			insertExtInfoTable(
+					document,
+					report,
+					documentNo,
+					date,
+					customerNo,
+					customerDetails);
 		}
 		
 		document.add(ParagraphBuilder.createEmptyLine());
 		// insert main table
 		document.add(createTable(report));
 
+	}
+
+	private void insertExtInfoTable(Document document, DeliveryNotes report,
+			String documentNo, String date, String customerNo,
+			CustomerDetails customerDetails) throws DocumentException {
+		PhraseBuilder pb = new PhraseBuilder("");
+		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
+
+		String packageNumber = StringUtils.isEmpty(report.getPackageNumber()) ? "" : "Paket(e): " + report.getPackageNumber();
+		String orderConfirmationNumbers = DeliveryHistoryFactory.createFromReport(report).getConfirmationReportNumbers();
+
+		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
+				PdfPTableBuilder.createPropertiesWithThreeCols())
+
+				.addCell(cellb.withPhrase(
+						pb.withText(date)
+								.build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(customerNo).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(customerDetails.getVendorNumber()).build()).build())
+						
+				.addCell(cellb.withPhrase(
+						pb.withText(documentNo)
+								.build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText(orderConfirmationNumbers).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText("").build()).build())
+
+				.addCell(cellb.withPhrase(
+						pb.withText(packageNumber).build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText("").build()).build())
+				.addCell(cellb.withPhrase(
+						pb.withText("").build()).build());
+
+		PdfPTable infoTable = infoTableBuilder.build();
+
+		infoTable.setWidthPercentage(100);
+		
+		document.add(infoTable);
 	}
 
 	private PdfPTable createTable(Report cReport) throws DocumentException {

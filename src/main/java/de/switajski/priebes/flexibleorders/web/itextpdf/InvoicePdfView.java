@@ -10,26 +10,32 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistoryFactory;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
+import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 @Component
@@ -42,12 +48,12 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 
-		String rightTop = hasItemsWithDifferentCreationDates(report) ? 
+		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 
 				"" : "Lieferdatum: " + dateFormat.format(getDeliveryNotesDate(report));
-		String rightBottom = "Kundennummer: " + report.getCustomerNumber();
-		String leftTop = "Rechnungsnummer: "
+		String customerNo = "Kundennummer: " + report.getCustomerNumber();
+		String documentNo = "Rechnungsnummer: "
 				+ report.getDocumentNumber().toString();
-		String leftBottom = "Rechnungsdatum: "
+		String date = "Rechnungsdatum: "
 				+ dateFormat.format(report.getCreated());
 		Address adresse = report.getInvoiceAddress();
 		String heading = "Rechnung";
@@ -70,8 +76,52 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			document.add(p);
 		}
 
-		document.add(ReportViewHelper.insertInfoTable(
-				rightTop, rightBottom, leftTop, leftBottom));
+
+		PhraseBuilder pb = new PhraseBuilder("");
+		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
+
+		DeliveryHistory deliveryHistory = DeliveryHistoryFactory.createFromReport(report);
+		String orderConfirmationNumbers = "Auftragsnr.: " + deliveryHistory.getConfirmationReportNumbers();
+		String vendorNo = "";
+		String atu = "";
+		CustomerDetails customerDetails = deliveryHistory.getCustomerDetails();
+		if (customerDetails != null){
+			vendorNo = customerDetails == null ? "" : "Lieferantennr.: " + customerDetails.getVendorNumber();
+			atu = customerDetails.getVatIdNo() == null ? "" : "ATU: " + customerDetails.getVatIdNo();
+		}
+		String billing = StringUtils.isEmpty(report.getBilling()) ? "" : "Abrechnung: " + report.getBilling();
+
+		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
+				PdfPTableBuilder.createPropertiesWithThreeCols())
+
+		.addCell(cellb.withPhrase(
+			pb.withText(date).build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText(customerNo).build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText(vendorNo).build()).build())
+
+		.addCell(cellb.withPhrase(
+			pb.withText(documentNo).build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText(atu).build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText("").build()).build())
+		
+		.addCell(cellb.withPhrase(
+			pb.withText("").build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText(orderConfirmationNumbers).build()).build())
+		.addCell(cellb.withPhrase(
+			pb.withText(billing).build()).build());
+
+		PdfPTable infoTable = infoTableBuilder.build();
+
+		infoTable.setWidthPercentage(100);
+
+		document.add(infoTable);
+
+		
 		document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table

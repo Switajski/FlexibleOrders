@@ -67,6 +67,7 @@ Ext.define('MyApp.controller.InvoiceController', {
 						url : '/FlexibleOrders/transitions/invoice/json',
 						jsonData : {
 							customerId : form.getValues().id,
+							billing : form.getValues().billing,
 							created : form.getValues().created,
 							name1 : form.getValues().name1,
 							name2 : form.getValues().name2,

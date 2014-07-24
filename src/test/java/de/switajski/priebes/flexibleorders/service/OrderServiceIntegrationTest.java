@@ -165,7 +165,8 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"R4",
 				"paymentCondition",
 				new Date(),
-				itemDtoConverterService.convertReport(deliveryNotes));
+				itemDtoConverterService.convertReport(deliveryNotes),
+				"billing");
 
 		// then
 		assertInvoiceAndItemsPersisted(invoice);
@@ -325,7 +326,7 @@ public class OrderServiceIntegrationTest extends AbstractTestSpringContextTest {
 				"R4",
 				"paymentCondition",
 				new Date(),
-				itemDtoConverterService.convertReport(deliveryNotes));
+				itemDtoConverterService.convertReport(deliveryNotes), null);
 
 		// when
 		// Receipt receipt = orderService.markAsPayed("R4", "Q4", new Date(),

@@ -31,6 +31,13 @@ Ext.define('MyApp.view.InvoiceWindow', {
 					fieldLabel : 'Rechnungsdatum',
 					name : 'created'
 				},{
+					xtype : 'textfield',
+					fieldLabel : 'Abrechnung',
+					name : 'billing',
+					id : 'billing',
+					allowBlank : false,
+					anchor : '100%'
+				},{
 					xtype : 'textareafield',
 					grow : true,
 					fieldLabel : 'Zahlungsbd.',

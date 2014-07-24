@@ -38,15 +38,11 @@ public class JsonCreateReportRequest {
 	
 	private List<ItemDto> items;
 
-	private String invoiceNumber;
+	private String invoiceNumber, deliveryNotesNumber, orderNumber;
 	
-	private String deliveryNotesNumber;
-	
-	private String trackNumber;
-	
-	private String packageNumber;
+	private String trackNumber, packageNumber;
 
-	private String orderNumber;
+	private String billing;
 	
 	@JsonDeserialize(using = BigDecimalDeserializer.class)
 	private BigDecimal shipment;
@@ -270,5 +266,13 @@ public class JsonCreateReportRequest {
 
 	public void setDpostalCode(Integer dpostalCode) {
 		this.dpostalCode = dpostalCode;
+	}
+
+	public String getBilling() {
+		return billing;
+	}
+
+	public void setBilling(String billing) {
+		this.billing = billing;
 	}
 }

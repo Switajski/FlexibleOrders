@@ -404,15 +404,17 @@ public class OrderServiceImpl {
 	 * @param paymentConditions
 	 * @param created 
 	 * @param shippingItemDtos
+	 * @param billing 
 	 * @return
 	 */
 	@Transactional
 	public Invoice invoice(String invoiceNumber, String paymentConditions,
-			Date created, List<ItemDto> shippingItemDtos) {
+			Date created, List<ItemDto> shippingItemDtos, String billing) {
 		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
 		Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
+		invoice.setBilling(billing);
 
 		Order order = null;
 		Address invoiceAddress = null;

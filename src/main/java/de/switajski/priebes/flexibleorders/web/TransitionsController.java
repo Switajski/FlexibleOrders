@@ -88,7 +88,8 @@ public class TransitionsController extends ExceptionController {
 				deliverRequest.getInvoiceNumber(),
 				deliverRequest.getPaymentConditions(),
 				deliverRequest.getCreated(),
-				deliverRequest.getItems());
+				deliverRequest.getItems(),
+				deliverRequest.getBilling());
 		return ExtJsResponseCreator.createResponse(invoice);
 	}
 

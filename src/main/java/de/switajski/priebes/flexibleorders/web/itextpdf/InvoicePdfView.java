@@ -152,8 +152,8 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	private Date getDeliveryNotesDate(Invoice report) {
 		Date deliveryNotesDate;
 		try {
-			DeliveryHistory deliveryHistory = report.getItems().iterator().next().getOrderItem().getDeliveryHistory();
-			deliveryNotesDate = deliveryHistory.getShippingItems().iterator().next().getCreated();
+			DeliveryHistory deliveryHistory = DeliveryHistory.createFrom(report.getItems().iterator().next().getOrderItem());
+			deliveryNotesDate = deliveryHistory.getItems(ShippingItem.class).iterator().next().getCreated();
 			return deliveryNotesDate;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -197,7 +197,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSevenCols());
 		for (ReportItem ii : cReport.getItemsOrdered()) {
-			Set<ShippingItem> sis = ii.getOrderItem().getDeliveryHistory().getShippingItems();
+			Set<ShippingItem> sis = DeliveryHistory.createFrom(ii.getOrderItem()).getItems(ShippingItem.class);
 			
 			if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
 				List<String> list = new ArrayList<String>();

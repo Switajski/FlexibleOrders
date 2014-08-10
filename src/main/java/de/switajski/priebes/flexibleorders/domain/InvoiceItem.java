@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 @Entity
 public class InvoiceItem extends ReportItem {
 
-	protected InvoiceItem() {
+	public InvoiceItem() {
 	}
 
 	public InvoiceItem(Invoice invoice, 

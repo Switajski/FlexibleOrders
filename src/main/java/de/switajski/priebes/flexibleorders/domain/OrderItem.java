@@ -14,11 +14,6 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistoryFactory;
-import de.switajski.priebes.flexibleorders.application.specification.CompletedSpecification;
-import de.switajski.priebes.flexibleorders.application.specification.ConfirmedSpecification;
-import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
-import de.switajski.priebes.flexibleorders.application.specification.ShippedSpecification;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 @Entity
@@ -71,7 +66,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public String toString() {
 		String s = "#" + getId().toString() + ": " + getOrderedQuantity() +
-				" x " + getProduct().getName() + " " + provideStatus();
+				" x " + getProduct().getName() + " " + DeliveryHistory.createFrom(this).provideStatus();
 		return s;
 	}
 
@@ -168,21 +163,6 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return null;
 	}
 
-	public String provideStatus() {
-		String s = "";
-		if (new CompletedSpecification().isSatisfiedBy(this))
-			s += "fertig";
-		else if (new ShippedSpecification().isSatisfiedBy(this))
-			s += "versendet";
-		else if (new ConfirmedSpecification().isSatisfiedBy(this))
-			s += "best&auml;tigt";
-		else if (new OrderedSpecification().isSatisfiedBy(this))
-			s += "bestellt";
-		else
-			s += "abgebrochen";
-		return s;
-	}
-
 	public Set<ConfirmationItem> getConfirmationItems() {
 		Set<ConfirmationItem> riToReturn = new HashSet<ConfirmationItem>();
 		for (ReportItem ri : getReportItems()) {
@@ -230,14 +210,6 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public boolean isShippingCosts() {
 		return this.getProduct().getProductType().equals(ProductType.SHIPPING);
-	}
-
-	/**
-	 * @deprecated use {@link DeliveryHistoryFactory#createFromOrder(OrderItem)}
-	 * @return
-	 */
-	public DeliveryHistory getDeliveryHistory() {
-		return new DeliveryHistory(getReportItems());
 	}
 
 }

@@ -14,7 +14,7 @@ public abstract class ConfirmationReportAttributeRetriever<T> {
 	}
 	
 	public T getInvoiceAddress() {
-		Set<ConfirmationItem> sis = history.getConfirmationItems();
+		Set<ConfirmationItem> sis = history.getItems(ConfirmationItem.class);
 		T attribute = null;
 		for (ConfirmationItem si:sis){
 			T a = retrieveAttribute(si);

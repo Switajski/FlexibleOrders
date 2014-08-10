@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 @Entity
 public class ShippingItem extends ReportItem {
 
-	protected ShippingItem() {
+	public ShippingItem() {
 	}
 
 	public ShippingItem(DeliveryNotes deliveryNotes,

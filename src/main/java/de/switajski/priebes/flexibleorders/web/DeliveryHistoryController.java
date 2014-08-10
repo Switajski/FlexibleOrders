@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
-import de.switajski.priebes.flexibleorders.service.DeliveryHistoryServiceImpl;
+import de.switajski.priebes.flexibleorders.service.DeliveryHistoryService;
 import de.switajski.priebes.flexibleorders.web.dto.DeliveryHistoryDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
@@ -18,8 +19,8 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 public class DeliveryHistoryController extends ExceptionController {
 
 	@Autowired
-	DeliveryHistoryServiceImpl deliveryHistoryService;
-	
+	DeliveryHistoryService deliveryHistoryService;
+
 	@Autowired
 	OrderRepository orderRepo;
 
@@ -43,7 +44,13 @@ public class DeliveryHistoryController extends ExceptionController {
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts) {
 		return ExtJsResponseCreator.createResponse(new DeliveryHistoryDto(
-				orderRepo.findAll().iterator().next().getItems().iterator().next().getDeliveryHistory()));
+				DeliveryHistory.createFrom(orderRepo
+						.findAll()
+						.iterator()
+						.next()
+						.getItems()
+						.iterator()
+						.next())));
 	}
-	
+
 }

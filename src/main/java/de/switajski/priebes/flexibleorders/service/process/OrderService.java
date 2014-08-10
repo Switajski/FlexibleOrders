@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service;
+package de.switajski.priebes.flexibleorders.service.process;
 
 import java.util.Date;
 import java.util.List;
@@ -7,28 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
-import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculator;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Address;
+import de.switajski.priebes.flexibleorders.domain.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
@@ -39,6 +37,8 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -51,30 +51,24 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * 
  */
 @Service
-public class OrderServiceImpl {
-
-	private ReportRepository reportRepo;
-	private OrderItemRepository itemRepo;
-	private CatalogProductRepository cProductRepo;
-	private ReportItemRepository heRepo;
-	private CustomerRepository customerRepo;
-	private OrderRepository orderRepo;
-	private ItemDtoConverterService itemDtoConverterService;
+public class OrderService {
 
 	@Autowired
-	public OrderServiceImpl(ReportRepository reportRepo,
-			CustomerRepository customerRepo,
-			OrderItemRepository orderItemRepo, OrderRepository orderRepo,
-			CatalogProductRepository cProductRepo, ReportItemRepository heRepo,
-			ItemDtoConverterService itemDtoConverterService) {
-		this.reportRepo = reportRepo;
-		this.itemRepo = orderItemRepo;
-		this.cProductRepo = cProductRepo;
-		this.orderRepo = orderRepo;
-		this.heRepo = heRepo;
-		this.customerRepo = customerRepo;
-		this.itemDtoConverterService = itemDtoConverterService;
-	}
+	private ReportRepository reportRepo;
+	@Autowired
+	private OrderItemRepository orderItemRepo;
+	@Autowired
+	private CatalogProductRepository cProductRepo;
+	@Autowired
+	private ReportItemRepository reportItemRepo;
+	@Autowired
+	private CustomerRepository customerRepo;
+	@Autowired
+	private OrderRepository orderRepo;
+	@Autowired
+	private ItemDtoConverterService itemDtoConverterService;
+	@Autowired
+	private ReportingService reportingService;
 
 	/**
 	 * Creates initially an order with its order items
@@ -117,6 +111,85 @@ public class OrderServiceImpl {
 
 		return orderRepo.save(order);
 	}
+	
+	@Transactional
+	public OrderConfirmation confirm(String orderNumber, String confirmNumber,
+			Date expectedDelivery, Address shippingAddress, Address invoiceAddress, 
+			List<ItemDto> orderItems) {
+		validateConfirm(orderNumber, confirmNumber, orderItems, shippingAddress);
+
+		Order order = orderRepo.findByOrderNumber(orderNumber);
+		if (order == null)
+			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
+
+		Customer cust = order.getCustomer();
+		Address address = (cust.getInvoiceAddress() == null) ? cust.getShippingAddress() : cust.getInvoiceAddress();
+		shippingAddress = (shippingAddress.isComplete()) ? shippingAddress : address;
+		invoiceAddress = (invoiceAddress.isComplete()) ? invoiceAddress : address;
+
+		OrderConfirmation cr = new OrderConfirmation(confirmNumber,
+				invoiceAddress, shippingAddress);
+		cr.setExpectedDelivery(expectedDelivery);
+		// TODO: Refactor: DRY!
+		cr.setCustomerNumber(cust.getCustomerNumber());
+		cr.setCustomerDetails(cust.getDetails());
+
+		for (ItemDto entry : orderItems) {
+			OrderItem oi = orderItemRepo.findOne(entry.getId());
+			if (oi == null)
+				throw new IllegalArgumentException(
+						"Bestellposition nicht gefunden");
+			cr.addItem(new ConfirmationItem(cr, oi,
+					entry.getQuantityLeft(), new Date()));
+		}
+		return reportRepo.save(cr);
+	}
+	
+	@Transactional
+	public OrderAgreement agree(String orderConfirmationNo, String orderAgreementNo){
+		OrderConfirmation oc = reportingService.retrieveOrderConfirmation(orderConfirmationNo);
+		if (oc == null)
+			throw new IllegalArgumentException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
+		
+		OrderAgreement oa = new OrderAgreement();
+		oa = takeOverConfirmationItems(oc, oa);
+		oa.setDocumentNumber(orderAgreementNo);
+		
+		return reportRepo.save(oa);
+	}
+
+	private OrderAgreement takeOverConfirmationItems(OrderConfirmation oc,
+			OrderAgreement oa) {
+		for (ReportItem ri:oc.getItems()){
+			AgreementItem ai = new AgreementItem();
+			ai.setQuantity(QuantityCalculator.toBeAgreed(DeliveryHistory.createFrom(ri)));
+			ai.setOrderItem(ri.getOrderItem());
+			//TODO: bidirectional management of relationship
+			ai.setReport(oa);
+			oa.addItem(ai);
+		}
+		return oa;
+	}
+
+	private void validateConfirm(String orderNumber, String confirmNumber,
+			List<ItemDto> orderItems, Address shippingAddress) {
+		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
+			throw new IllegalArgumentException("Auftragsnr. " + confirmNumber
+					+ " besteht bereits");
+		if (orderItems.isEmpty())
+			throw new IllegalArgumentException("Keine Positionen angegeben");
+		if (orderNumber == null)
+			throw new IllegalArgumentException("Keine Bestellnr angegeben");
+		if (confirmNumber == null)
+			throw new IllegalArgumentException("Keine AB-nr angegeben");
+		if (shippingAddress == null)
+			throw new IllegalArgumentException("Keine Lieferadresse angegeben");
+		for (ItemDto item : orderItems) {
+			if (item.getId() == null)
+				throw new IllegalArgumentException("Position hat keine Id");
+		}
+	}
+
 
 	private Product createProductFromCatalog(ItemDto ri) {
 		Product product;
@@ -137,128 +210,6 @@ public class OrderServiceImpl {
 	}
 
 	@Transactional
-	public ConfirmationReport confirm(String orderNumber, String confirmNumber,
-			Date expectedDelivery, Address shippingAddress, Address invoiceAddress, 
-			List<ItemDto> orderItems) {
-		validateConfirm(orderNumber, confirmNumber, orderItems);
-
-		Order order = orderRepo.findByOrderNumber(orderNumber);
-		if (order == null)
-			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
-
-		Customer cust = order.getCustomer();
-		Address address = (cust.getInvoiceAddress() == null) ? cust.getShippingAddress() : cust.getInvoiceAddress();
-		shippingAddress = (shippingAddress.isComplete()) ? shippingAddress : address;
-		invoiceAddress = (invoiceAddress.isComplete()) ? invoiceAddress : address;
-
-		ConfirmationReport cr = new ConfirmationReport(confirmNumber,
-				invoiceAddress, shippingAddress);
-		cr.setExpectedDelivery(expectedDelivery);
-		// TODO: Refactor: DRY!
-		cr.setCustomerNumber(cust.getCustomerNumber());
-		cr.setCustomerDetails(cust.getDetails());
-
-		for (ItemDto entry : orderItems) {
-			OrderItem oi = itemRepo.findOne(entry.getId());
-			if (oi == null)
-				throw new IllegalArgumentException(
-						"Bestellposition nicht gefunden");
-			cr.addItem(new ConfirmationItem(cr, oi,
-					entry.getQuantityLeft(), new Date()));
-		}
-		return reportRepo.save(cr);
-	}
-
-	private void validateConfirm(String orderNumber, String confirmNumber,
-			List<ItemDto> orderItems) {
-		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
-			throw new IllegalArgumentException("Auftragsnr. " + confirmNumber
-					+ " besteht bereits");
-		if (orderItems.isEmpty())
-			throw new IllegalArgumentException("Keine Positionen angegeben");
-		if (orderNumber == null)
-			throw new IllegalArgumentException("Keine Bestellnr angegeben");
-		if (confirmNumber == null)
-			throw new IllegalArgumentException("Keine AB-nr angegeben");
-		for (ItemDto item : orderItems) {
-			if (item.getId() == null)
-				throw new IllegalArgumentException("Position hat keine Id");
-		}
-	}
-
-	@Transactional
-	public OrderItem deconfirm(OrderItem shippingItem) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-	}
-
-	@Transactional
-	public DeliveryNotes deliver(String deliveryNotesNumber,
-			String trackNumber, String packageNumber,
-			Amount shipment, Date created, List<ItemDto> confirmEvents) {
-		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
-			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
-
-		DeliveryNotes deliveryNotes = new DeliveryNotes(
-				deliveryNotesNumber,
-				null,
-				shipment);
-		deliveryNotes.setCreated(created== null ? new Date() : created);
-		
-		Order firstOrder = null;
-		
-		Address shippedAddress = null;
-		for (ItemDto entry : confirmEvents) {
-			ReportItem confirmEventToBeDelivered = heRepo
-					.findOne(entry.getId());
-			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered
-					.getOrderItem();
-
-			validateQuantity(entry,
-					(ConfirmationItem) confirmEventToBeDelivered);
-
-			deliveryNotes.addItem(new ShippingItem(
-					deliveryNotes,
-					orderItemToBeDelivered,
-					entry.getQuantityLeft(), // TODO: GUI sets
-												// quanitityToDeliver at this
-												// nonsense parameter
-					new Date()));
-			
-			//validate addresses DRY!
-			Address temp = orderItemToBeDelivered.getDeliveryHistory().getShippingAddress();
-			if (shippedAddress == null)
-				shippedAddress = temp;
-			else if (!shippedAddress.equals(temp))
-				throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
-			
-			deliveryNotes.setShippedAddress(shippedAddress);
-
-			if (firstOrder == null)
-				firstOrder = orderItemToBeDelivered.getOrder();
-		}
-
-		// TODO:Refactor: DRY!
-		deliveryNotes.setCustomerNumber(firstOrder
-				.getCustomer()
-				.getCustomerNumber());
-		return reportRepo.save(deliveryNotes);
-	}
-
-	private void validateQuantity(ItemDto entry,
-			ReportItem reportItem) {
-		Integer quantityToDeliver = entry.getQuantityLeft();
-		if (quantityToDeliver == null)
-			throw new IllegalArgumentException("Menge nicht angegeben");
-		if (quantityToDeliver < 1)
-			throw new IllegalArgumentException("Menge kleiner eins");
-		if (quantityToDeliver > new QuantityLeftCalculator().calculate(
-				reportItem))
-			throw new IllegalArgumentException(
-					"angeforderte Menge ist zu gross");
-	}
-
-	@Transactional
 	private OrderItem createShippingCosts(Amount shipment, Order order) {
 		Product product = new Product();
 		product.setProductType(ProductType.SHIPPING);
@@ -267,7 +218,7 @@ public class OrderServiceImpl {
 		OrderItem shipOi = new OrderItem(order, product, 1);
 		shipOi.setNegotiatedPriceNet(shipment);
 
-		return itemRepo.save(shipOi);
+		return orderItemRepo.save(shipOi);
 	}
 
 	@Transactional
@@ -284,7 +235,7 @@ public class OrderServiceImpl {
 		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
 
 		for (ItemDto ri : ris) {
-			ReportItem reportItem = heRepo.findOne(ri.getId());
+			ReportItem reportItem = reportItemRepo.findOne(ri.getId());
 			receipt.addItem(
 					new ReceiptItem(receipt, reportItem
 							.getOrderItem(),
@@ -293,27 +244,6 @@ public class OrderServiceImpl {
 		receipt.setCustomerNumber(report.getCustomerNumber());
 		return reportRepo.save(receipt);
 	}
-
-	@Transactional
-	public OrderItem cancelReceivedPayment(String invoiceNo) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-	}
-
-	public ReportItem withdrawPayment(Report item) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-	}
-
-	public boolean existsOrderNumber(String orderNumber) {
-		return (orderRepo.findByOrderNumber(orderNumber) != null);
-	}
-
-//	public ConfirmationReport confirm(String orderNumber) {
-//		List<OrderItem> ois = itemRepo.findByOrderNumber(orderNumber);
-//		List<ItemDto> ris = convertToReportItems(ois);
-//		return confirm(orderNumber, "AB" + orderNumber,  new Date(), ris);
-//	}
 
 	@Transactional
 	public boolean deleteOrder(String orderNumber) {
@@ -326,24 +256,14 @@ public class OrderServiceImpl {
 	}
 
 	@Transactional
-	public CancelReport cancelConfirmationReport(String orderConfirmationNumber) {
-		Report cr = reportRepo.findByDocumentNumber(orderConfirmationNumber);
-		if (cr == null || !(cr instanceof ConfirmationReport))
-			throw new IllegalArgumentException("Auftragsnr. nicht gefunden");
+	public CancelReport cancelReport(String reportNo) {
+		Report cr = reportRepo.findByDocumentNumber(reportNo);
+		if (cr == null)
+			throw new IllegalArgumentException("Angegebene Dokumentennummer nicht gefunden");
 		CancelReport cancelReport = createCancelReport(cr);
 		return reportRepo.save(cancelReport);
 	}
-
-	@Transactional
-	public CancelReport cancelDeliveryNotes(String invoiceNumber) {
-		Report cr = reportRepo.findByDocumentNumber(invoiceNumber);
-		if (cr == null || !(cr instanceof DeliveryNotes))
-			throw new IllegalArgumentException(
-					"Rechnungs/Lieferscheinnr. nicht gefunden");
-		CancelReport cancelReport = createCancelReport(cr);
-		return reportRepo.save(cancelReport);
-	}
-
+	
 	private CancelReport createCancelReport(Report cr) {
 		CancelReport cancelReport = new CancelReport("ABGEBROCHEN-"
 				+ cr.getDocumentNumber());
@@ -398,64 +318,6 @@ public class OrderServiceImpl {
 		return (Invoice) r;
 	}
 
-	/**
-	 * 
-	 * @param invoiceNumber
-	 * @param paymentConditions
-	 * @param created 
-	 * @param shippingItemDtos
-	 * @param billing 
-	 * @return
-	 */
-	@Transactional
-	public Invoice invoice(String invoiceNumber, String paymentConditions,
-			Date created, List<ItemDto> shippingItemDtos, String billing) {
-		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
-			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
-
-		Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
-		invoice.setBilling(billing);
-
-		Order order = null;
-		Address invoiceAddress = null;
-		for (ItemDto entry : shippingItemDtos) {
-			ReportItem shipEventToBeInvoiced = heRepo.findOne(entry.getId());
-
-			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
-					.getOrderItem();
-
-			validateQuantity(entry, (ShippingItem) shipEventToBeInvoiced);
-
-			// validate addresses - DRY at deliver method
-			Address temp = orderItemToBeInvoiced.getDeliveryHistory().getShippingAddress();
-			if (invoiceAddress == null)
-				invoiceAddress = temp;
-			else if (!invoiceAddress.equals(temp))
-				throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
-
-			invoice.setInvoiceAddress(invoiceAddress);
-			
-			invoice.addItem(new InvoiceItem(
-					invoice,
-					shipEventToBeInvoiced.getOrderItem(),
-					entry.getQuantityLeft(), // TODO: GUI sets the quantity to
-												// this nonsense place
-					new Date()));
-
-			if (order == null)
-				order = orderItemToBeInvoiced.getOrder();
-		}
-
-		invoice.setShippingCosts(new ShippingCostsCalculator()
-				.calculate(itemDtoConverterService
-						.convertToShippingItems(shippingItemDtos)));
-		invoice.setCreated((created == null) ? new Date() : created); 
-		// TODO: refactor DRY!
-		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
-
-		return reportRepo.save(invoice);
-	}
-	
 	// TODO: move to OrderServiceImpl
 	@Transactional(readOnly = true)
 	public Order retrieveOrder(String orderNumber) {

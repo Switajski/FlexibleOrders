@@ -7,10 +7,10 @@ import javax.persistence.Entity;
 @Entity
 public class ConfirmationItem extends ReportItem {
 
-	protected ConfirmationItem() {
+	public ConfirmationItem() {
 	}
 
-	public ConfirmationItem(ConfirmationReport cr, 
+	public ConfirmationItem(OrderConfirmation cr, 
 			OrderItem oi, Integer quantityLeft, Date date) {
 		super(cr, oi, quantityLeft, date);
 	}

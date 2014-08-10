@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
@@ -30,8 +30,8 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
@@ -54,7 +54,7 @@ public class ReportController extends ExceptionController{
 	@Autowired OrderRepository orderRepo;
 	@Autowired ReportItemServiceImpl itemService;
 	@Autowired CustomerRepository customerService;
-	@Autowired OrderServiceImpl orderService;
+	@Autowired OrderService orderService;
 	
 	
 	@RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
@@ -69,10 +69,10 @@ public class ReportController extends ExceptionController{
 	
 	private ModelAndView createReportSpecificModelAndView(Report report) {
 		//TODO Error Handling
-		if (report instanceof ConfirmationReport){
-			String model = ConfirmationReport.class.getSimpleName();
+		if (report instanceof OrderConfirmation){
+			String model = OrderConfirmation.class.getSimpleName();
 			return new ModelAndView(modelToView().get(model),
-	        		model, (ConfirmationReport) report);
+	        		model, (OrderConfirmation) report);
 		}
 		if (report instanceof DeliveryNotes){
 			String model = DeliveryNotes.class.getSimpleName();
@@ -90,7 +90,7 @@ public class ReportController extends ExceptionController{
 	private Map<String, String> modelToView() {
 		Map<String, String> modelToView = new HashMap<String, String>();
 		modelToView.put(
-				ConfirmationReport.class.getSimpleName(),
+				OrderConfirmation.class.getSimpleName(),
 				ConfirmationReportPdfView.class.getSimpleName());
 		modelToView.put(
 				DeliveryNotes.class.getSimpleName(),

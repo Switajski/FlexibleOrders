@@ -29,7 +29,7 @@ public class DeliveryNotes extends Report {
 
 	private Amount shippingCosts;
 
-	protected DeliveryNotes() {
+	public DeliveryNotes() {
 	};
 
 	public DeliveryNotes(String deliveryNotesNumber,

@@ -17,8 +17,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.process.OrderService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration(value = "src/main/webapp/WEB-INF/spring")
@@ -36,7 +36,7 @@ public class LinksAvailableTest {
 	private ReportItemServiceImpl ris;
 	
 	@Autowired
-	private OrderServiceImpl asdf;
+	private OrderService asdf;
 	
 	
 	private MockMvc mockMvc;

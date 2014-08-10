@@ -4,34 +4,42 @@ import java.util.Date;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public abstract class ReportItemBuilder<T extends ReportItemBuilder> {
+public abstract class ReportItemBuilder <BEAN extends ReportItem, BUILDER extends Builder<BEAN>> implements Builder<BEAN> {
 
 	protected Integer quantity;
 	protected Report report = null;
 	protected OrderItem item;
-	protected Date date;
+	protected Date created;
 
 	
-	public T setQuantity(Integer quantity) {
+	public BEAN build(BEAN bean){
+		bean.setQuantity(quantity);
+		bean.setReport(report);
+		bean.setOrderItem(item);
+		bean.setCreated(created);
+		return bean;
+	}
+	
+	public ReportItemBuilder<BEAN, BUILDER> setQuantity(Integer quantity) {
 		this.quantity = quantity;
-		return (T) this;
+		return this;
 	}
 
-	public T setReport(Report report) {
+	public ReportItemBuilder<BEAN, BUILDER> setReport(Report report) {
 		this.report = report;
-		return (T) this;
+		return this;
 	}
 
-	public T setItem(OrderItem item) {
+	public ReportItemBuilder<BEAN, BUILDER> setItem(OrderItem item) {
 		this.item = item;
-		return (T) this;
+		return this;
 	}
 
-	public T setDate(Date date) {
-		this.date = date;
-		return (T) this;
+	public ReportItemBuilder<BEAN, BUILDER> setDate(Date created) {
+		this.created = created;
+		return this;
 	}
 
 }

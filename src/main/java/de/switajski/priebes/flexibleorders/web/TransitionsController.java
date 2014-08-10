@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CancelReport;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
-import de.switajski.priebes.flexibleorders.service.OrderServiceImpl;
+import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
+import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
@@ -31,13 +33,12 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 @RequestMapping("/transitions")
 public class TransitionsController extends ExceptionController {
 
-	private OrderServiceImpl orderService;
-
 	@Autowired
-	public TransitionsController(
-			OrderServiceImpl orderService) {
-		this.orderService = orderService;
-	}
+	private OrderService orderService;
+	@Autowired
+	private InvoicingService invoicingService;
+	@Autowired
+	private DeliveryService deliveryService;
 
 	@RequestMapping(value = "/confirm/json", method = RequestMethod.POST)
 	public @ResponseBody
@@ -45,7 +46,7 @@ public class TransitionsController extends ExceptionController {
 			@RequestBody JsonCreateReportRequest confirmRequest)
 			throws Exception {
 
-		ConfirmationReport confirmationReport = orderService.confirm(
+		OrderConfirmation confirmationReport = orderService.confirm(
 				extractOrderNumber(confirmRequest),
 				confirmRequest.getOrderConfirmationNumber(),
 				confirmRequest.getExpectedDelivery(),
@@ -84,7 +85,7 @@ public class TransitionsController extends ExceptionController {
 			throws Exception {
 		deliverRequest.validate();
 
-		Invoice invoice = orderService.invoice(
+		Invoice invoice = invoicingService.invoice(
 				deliverRequest.getInvoiceNumber(),
 				deliverRequest.getPaymentConditions(),
 				deliverRequest.getCreated(),
@@ -100,7 +101,7 @@ public class TransitionsController extends ExceptionController {
 			throws Exception {
 		deliverRequest.validate();
 
-		DeliveryNotes dn = orderService.deliver(
+		DeliveryNotes dn = deliveryService.deliver(
 				deliverRequest.getDeliveryNotesNumber(),
 				deliverRequest.getTrackNumber(),
 				deliverRequest.getPackageNumber(),
@@ -118,15 +119,6 @@ public class TransitionsController extends ExceptionController {
 		return ExtJsResponseCreator.createResponse(orderNumber);
 	}
 
-	@RequestMapping(value = "/cancelDeliveryNotes", method = RequestMethod.POST)
-	public @ResponseBody
-	JsonObjectResponse cancelDeliveryNotes(
-			@RequestParam(value = "deliveryNotesNumber", required = true) String deliveryNotesNumber)
-			throws Exception {
-		CancelReport cr = orderService.cancelDeliveryNotes(deliveryNotesNumber);
-		return ExtJsResponseCreator.createResponse(cr);
-	}
-
 	@RequestMapping(value = "/deleteReport", method = RequestMethod.POST)
 	public @ResponseBody
 	JsonObjectResponse deleteReport(
@@ -136,13 +128,13 @@ public class TransitionsController extends ExceptionController {
 		return ExtJsResponseCreator.createResponse(documentNumber);
 	}
 
-	@RequestMapping(value = "/cancelConfirmationReport", method = RequestMethod.POST)
+	@RequestMapping(value = "/cancelReport", method = RequestMethod.POST)
 	public @ResponseBody
 	JsonObjectResponse cancelConfirmationReport(
 			@RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
 			throws Exception {
 		CancelReport cr = orderService
-				.cancelConfirmationReport(orderConfirmationNumber);
+				.cancelReport(orderConfirmationNumber);
 		return ExtJsResponseCreator.createResponse(cr);
 	}
 

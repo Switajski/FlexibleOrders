@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
  * 
  */
 @Entity
-public class ConfirmationReport extends Report {
+public class OrderConfirmation extends Report {
 
 	@AttributeOverrides({
 			@AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
@@ -51,7 +51,7 @@ public class ConfirmationReport extends Report {
 	@Embedded
 	private CustomerDetails customerDetails;
 
-	protected ConfirmationReport() {
+	public OrderConfirmation() {
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class ConfirmationReport extends Report {
 	 * @param shippingAddress
 	 * @param confirmedSpec
 	 */
-	public ConfirmationReport(
+	public OrderConfirmation(
 			String orderConfirmationNumber,
 			Address invoiceAddress,
 			Address shippingAddress) {

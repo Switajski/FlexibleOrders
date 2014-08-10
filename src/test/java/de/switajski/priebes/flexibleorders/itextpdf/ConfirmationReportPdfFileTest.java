@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -28,7 +28,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfFil
 @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
 public class ConfirmationReportPdfFileTest {
 
-	ConfirmationReport orderConfirmation;
+	OrderConfirmation orderConfirmation;
 
 	private static final String OC_NR = "98732645";
 	private static final String O_NR = "3465897";
@@ -49,7 +49,7 @@ public class ConfirmationReportPdfFileTest {
 				.generateAttributes(12)
 				.build();
 
-		orderConfirmation = new ConfirmationReport(
+		orderConfirmation = new OrderConfirmation(
 				OC_NR,
 				AddressBuilder.buildWithGeneratedAttributes(123),
 				AddressBuilder.buildWithGeneratedAttributes(6623));

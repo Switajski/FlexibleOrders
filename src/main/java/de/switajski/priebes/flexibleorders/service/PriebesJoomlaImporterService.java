@@ -27,6 +27,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.service.process.OrderService;
 
 /**
  * consider PriebesJoomlaService like http://stackoverflow.com/questions/4423125/spring-is-it-possible-to-use-multiple-transaction-managers-in-the-same-applica
@@ -50,7 +51,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 	private	CustomerRepository customerRepository;
 	private	CategoryRepository categoryRepo;
 	private	CatalogProductRepository productRepository;
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 	private Connection connection;
 
 	private static Logger log = Logger.getLogger(PriebesJoomlaImporterService.class);
@@ -67,7 +68,7 @@ public class PriebesJoomlaImporterService implements ImporterService {
 			CustomerRepository customerRepository,
 			CategoryRepository categoryRepo,
 			CatalogProductRepository productRepository,
-			OrderServiceImpl handlingEventService) {
+			OrderService handlingEventService) {
 		this.customerRepository = customerRepository;
 		this.categoryRepo = categoryRepo;
 		this.productRepository = productRepository;

@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
 import de.switajski.priebes.flexibleorders.domain.Report;
@@ -48,9 +49,9 @@ public class ItemDtoConverterService {
 		item.setOrderNumber(orderItem.getOrder().getOrderNumber());
 		item.setProduct(orderItem.getProduct().getProductNumber());
 		item.setProductName(orderItem.getProduct().getName());
-		item.setStatus(orderItem.provideStatus());
+		item.setStatus(DeliveryHistory.createFrom(orderItem).provideStatus());
 		item.setQuantity(orderItem.getOrderedQuantity());
-		item.setQuantityLeft(new QuantityLeftCalculator().toBeConfirmed(orderItem));
+		item.setQuantityLeft(QuantityCalculator.toBeConfirmed(orderItem));
 		return item;
 	}
 	
@@ -97,7 +98,7 @@ public class ItemDtoConverterService {
 			ItemDto item = new ItemDto();
 			item.setDocumentNumber(ri.getReport().getDocumentNumber());
 			
-			if (ri.getReport() instanceof ConfirmationReport){
+			if (ri.getReport() instanceof OrderConfirmation){
 				item.setOrderConfirmationNumber(ri.getReport().getDocumentNumber());
 			}
 			if (ri.getReport() instanceof Invoice){
@@ -128,7 +129,7 @@ public class ItemDtoConverterService {
 			item.setProductName(ri.getOrderItem().getProduct().getName());
 			item.setQuantity(ri.getQuantity());
 			item.setStatus(ri.provideStatus());
-			item.setQuantityLeft(new QuantityLeftCalculator().calculate(ri));
+			item.setQuantityLeft(QuantityCalculator.calculate(ri));
 		return item;
 	}
 

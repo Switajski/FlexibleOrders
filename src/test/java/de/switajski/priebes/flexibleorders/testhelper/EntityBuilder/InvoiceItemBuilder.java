@@ -1,15 +1,13 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 
-public class InvoiceItemBuilder extends ReportItemBuilder<InvoiceItemBuilder> implements Builder<InvoiceItem>{
+public class InvoiceItemBuilder extends ReportItemBuilder<InvoiceItem, Builder<InvoiceItem>> {
 
 	@Override
 	public InvoiceItem build() {
-		InvoiceItem ii = new InvoiceItem((Invoice) report, item, quantity, date);
-		ii.setQuantity(quantity);
-		ii.setReport((Invoice) report);
+		InvoiceItem ii = new InvoiceItem();
+		super.build(ii);
 		return ii;
 	}
 }

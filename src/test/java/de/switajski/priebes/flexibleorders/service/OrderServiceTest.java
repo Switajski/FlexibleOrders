@@ -11,11 +11,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import de.switajski.priebes.flexibleorders.application.specification.OrderedSpecification;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -26,6 +26,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ItemDtoBuilder;
@@ -52,8 +53,8 @@ public class OrderServiceTest {
 	private OrderRepository orderRepoMock;
 	@Mock
 	private ItemDtoConverterService itemDtoConverterService;
-	
-	private OrderServiceImpl orderService;
+	@InjectMocks
+	private OrderService orderService = new OrderService();
 	
 	@Before
 	public void setupMocks(){
@@ -64,8 +65,6 @@ public class OrderServiceTest {
 		Mockito.when(cProductRepoMock.findByProductNumber(PRODUCT_NO))
 			.thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(PRODUCT_NO.intValue()));
 		
-		orderService = new OrderServiceImpl(reportRepoMock, customerRepoMock, orderItemRepoMock, 
-				orderRepoMock, cProductRepoMock, heRepoMock, itemDtoConverterService);
 	}
 	
 	@Test
@@ -85,7 +84,6 @@ public class OrderServiceTest {
 		assertEquals(ORDERED_QUANTITY, orderItem.getOrderedQuantity());
 		assert(orderItem.getReportItems().isEmpty());
 		assertEquals(new Amount((PRICE_NET), Currency.EUR), orderItem.getNegotiatedPriceNet());
-		assert(new OrderedSpecification().isSatisfiedBy(orderItem));
 	}
 
 	private List<ItemDto> givenReportItems() {

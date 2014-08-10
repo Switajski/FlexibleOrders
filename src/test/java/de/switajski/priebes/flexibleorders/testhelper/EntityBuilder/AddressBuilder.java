@@ -67,4 +67,15 @@ public class AddressBuilder implements Builder<Address> {
 		return this;
 	}
 
+	public static Address createDefault() {
+		return new AddressBuilder()
+				.setCity("Hamburg")
+				.setCountry(Country.DEUTSCHLAND)
+				.setName1("Marek")
+				.setName2("Switajski")
+				.setPostalCode(20255)
+				.setStreet("Stellinger Weg 14a")
+				.build();
+	}
+
 }

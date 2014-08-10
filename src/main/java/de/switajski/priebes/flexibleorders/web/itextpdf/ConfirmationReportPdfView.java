@@ -19,7 +19,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
@@ -37,8 +37,8 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 			Document document, PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		ConfirmationReport report = (ConfirmationReport) model
-				.get(ConfirmationReport.class.getSimpleName());
+		OrderConfirmation report = (OrderConfirmation) model
+				.get(OrderConfirmation.class.getSimpleName());
 
 		String heading = "Auftragsbest" + Unicode.aUml + "tigung";
 		Address adresse = report.getInvoiceAddress();
@@ -109,7 +109,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 				writer.getDirectContent());
 	}
 
-	private PdfPTable createTable(ConfirmationReport cReport)
+	private PdfPTable createTable(OrderConfirmation cReport)
 			throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSixCols());

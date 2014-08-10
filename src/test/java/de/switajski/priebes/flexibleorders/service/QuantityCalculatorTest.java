@@ -8,15 +8,17 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.Receipt;
@@ -26,38 +28,108 @@ import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ReceiptItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 
-public class QuantityLeftServiceTest {
+public class QuantityCalculatorTest {
 
 	private static final int QTY_PROCESSED = 5;
 	private static final int QTY = 7;
-	private static Address address = AddressBuilder
-			.buildWithGeneratedAttributes(1);
 	private OrderItem orderItem;
+	private Address address = AddressBuilder.createDefault();
 
 	@Test
-	public void orderItemToItemDto_qtyLeftShouldBeQtyMinusQtyProcessed() {
+	public void toBeConfirmed_qtyLeftShouldBeQtyMinusQtyProcessed() {
 		// GIVEN
 		orderItem = givenOrderItem(QTY);
-		orderItem
-				.addReportItem(
+		orderItem.addReportItem(
 				givenConfirmationItem(QTY_PROCESSED));
 
 		// WHEN
-		// TODO: Integer calulatedQuantity =
-		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator()
+		Integer calculatedQuantity = QuantityCalculator
 				.toBeConfirmed(orderItem);
 
 		// THEN
+		assertThatQtyIsQtyMinusQtyProcessed(calculatedQuantity);
+	}
+
+	@Test
+	public void toBeAgreed_qtyLeftShouldBeQtyMinusQtyProcessed() {
+		// GIVEN
+		orderItem = givenOrderItem(QTY);
+		orderItem.addReportItem(
+				givenConfirmationItem(QTY));
+		orderItem.addReportItem(
+				givenAgreementItem(QTY_PROCESSED));
+
+		// WHEN
+		Integer calculatedQuantity = QuantityCalculator
+				.toBeAgreed(DeliveryHistory.createFrom(orderItem));
+
+		// THEN
+		assertThatQtyIsQtyMinusQtyProcessed(calculatedQuantity);
+	}
+
+	@Test
+	public void toBeShipped_qtyLeftShouldBeQtyMinusQtyProcessed() {
+		// GIVEN
+		orderItem = givenOrderItem(QTY);
+		orderItem.addReportItem(
+				givenAgreementItem(QTY));
+		orderItem.addReportItem(
+				givenShippingItem(QTY_PROCESSED));
+		
+		// WHEN
+		Integer calculatedQuantity = QuantityCalculator
+				.toBeShipped(DeliveryHistory.createFrom(orderItem));
+		
+		// THEN
+		assertThatQtyIsQtyMinusQtyProcessed(calculatedQuantity);
+	}
+
+	@Test
+	public void toBeInvoiced_qtyLeftShouldBeQtyMinusQtyProcessed() {
+		// GIVEN
+		orderItem = givenOrderItem(QTY);
+		orderItem.addReportItem(
+				givenShippingItem(QTY));
+		orderItem.addReportItem(
+				givenInvoiceItem(QTY_PROCESSED));
+
+		// WHEN
+		Integer calculatedQuantity = QuantityCalculator.toBeInvoiced(
+				DeliveryHistory.createFrom(orderItem));
+
+		// THEN
+		assertThatQtyIsQtyMinusQtyProcessed(calculatedQuantity);
+	}
+
+	@Test
+	public void toBePaid_qtyLeftShouldBeQtyMinusQtyProcessed() {
+		// GIVEN
+		orderItem = givenOrderItem(QTY);
+		orderItem.addReportItem(
+				givenInvoiceItem(QTY));
+		orderItem.addReportItem(
+				givenReceiptItem(QTY_PROCESSED));
+
+		// WHEN
+		Integer calculatedQuantity = QuantityCalculator.toBePaid(
+				DeliveryHistory.createFrom(orderItem));
+
+		// THEN
+		assertThatQtyIsQtyMinusQtyProcessed(calculatedQuantity);
+	}
+	
+	private void assertThatQtyIsQtyMinusQtyProcessed(Integer calculatedQuantity) {
 		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
 	}
 
@@ -70,23 +142,16 @@ public class QuantityLeftServiceTest {
 				.build();
 	}
 
-	@Test
-	public void calculateQuantityLeftConfirm_qtyLeftShouldBeQtyMinusQtyProcessed() {
-		// GIVEN
-		orderItem = givenOrderItem(QTY);
-		orderItem.addReportItem(
-				givenConfirmationItem(QTY));
-		orderItem.addReportItem(
-				givenShippingItem(QTY_PROCESSED));
+	private ReportItem givenAgreementItem(int qtyProcessed) {
+		return new AgreementItemBuilder()
+				.setReport(givenOrderAgreement())
+				.setQuantity(qtyProcessed)
+				.setItem(orderItem)
+				.build();
+	}
 
-		// WHEN
-		// TODO: Integer calulatedQuantity =
-		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator()
-				.toBeShipped(orderItem.getDeliveryHistory());
-
-		// THEN
-		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
+	private OrderAgreement givenOrderAgreement() {
+		return new OrderAgreementBuilder().setDocumentNumber("AU-123").build();
 	}
 
 	private ShippingItem givenShippingItem(int qtyProcessed) {
@@ -103,44 +168,6 @@ public class QuantityLeftServiceTest {
 				"L-123",
 				address,
 				new Amount(BigDecimal.TEN, Currency.EUR));
-	}
-
-	@Test
-	public void calculateQuantityLeftShip_qtyLeftShouldBeQtyMinusQtyProcessed() {
-		// GIVEN
-		orderItem = givenOrderItem(QTY);
-		orderItem.addReportItem(
-				givenShippingItem(QTY));
-		orderItem.addReportItem(
-				givenInvoiceItem(QTY_PROCESSED));
-
-		// WHEN
-		// TODO: Integer calulatedQuantity =
-		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator().toBeInvoiced(
-				orderItem.getDeliveryHistory());
-
-		// THEN
-		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
-	}
-
-	@Test
-	public void calculateQuantityLeftInvoice_qtyLeftShouldBeQtyMinusQtyProcessed() {
-		// GIVEN
-		orderItem = givenOrderItem(QTY);
-		orderItem.addReportItem(
-				givenInvoiceItem(QTY));
-		orderItem.addReportItem(
-				givenReceiptItem(QTY_PROCESSED));
-
-		// WHEN
-		// TODO: Integer calulatedQuantity =
-		// quantityLeftService.retrieveQuantityLeft();
-		Integer calculatedQuantity = new QuantityLeftCalculator().toBePaid(
-				orderItem.getDeliveryHistory());
-
-		// THEN
-		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
 	}
 
 	private ReportItem givenReceiptItem(int qtyProcessed) {
@@ -177,8 +204,8 @@ public class QuantityLeftServiceTest {
 				.build();
 	}
 
-	private ConfirmationReport givenConfirmationReport() {
-		return new ConfirmationReport(
+	private OrderConfirmation givenConfirmationReport() {
+		return new OrderConfirmation(
 				"AB-123",
 				address,
 				address);

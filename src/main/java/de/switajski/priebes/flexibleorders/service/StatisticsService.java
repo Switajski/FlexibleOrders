@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.switajski.priebes.flexibleorders.application.QuantityLeftCalculator;
+import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
@@ -21,7 +21,7 @@ public class StatisticsService {
 	private ReportItemRepository reportItemRepo;
 
 	public Amount calculateOpenAmount(String state) {
-		QuantityLeftCalculator calculator = new QuantityLeftCalculator();
+		QuantityCalculator calculator = new QuantityCalculator();
 		Set<OrderItem> calculated = new HashSet<OrderItem>();
 		Amount summed = Amount.ZERO_EURO;
 

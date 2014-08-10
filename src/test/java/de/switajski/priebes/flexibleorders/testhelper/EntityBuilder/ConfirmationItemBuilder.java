@@ -1,21 +1,13 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationReport;
 
-public class ConfirmationItemBuilder extends
-		ReportItemBuilder<ConfirmationItemBuilder> implements
-		Builder<ConfirmationItem> {
+public class ConfirmationItemBuilder extends ReportItemBuilder<ConfirmationItem, Builder<ConfirmationItem>>{
 
 	@Override
 	public ConfirmationItem build() {
-		ConfirmationItem ii = new ConfirmationItem(
-				(ConfirmationReport) report,
-				item,
-				quantity,
-				date);
-		ii.setQuantity(quantity);
-		ii.setReport((ConfirmationReport) report);
+		ConfirmationItem ii = new ConfirmationItem();
+		super.build(ii);
 		return ii;
 	}
 }

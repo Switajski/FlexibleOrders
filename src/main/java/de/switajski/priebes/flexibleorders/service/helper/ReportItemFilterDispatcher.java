@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeShippedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
@@ -68,7 +68,7 @@ public class ReportItemFilterDispatcher {
 			throw new IllegalArgumentException(
 					"Filter 'ordered' cannot be applied to Reports, but Orders");
 		if (status.equals("ship") || status.equals("confirmed"))
-			spec = where(new ConfirmationItemToBeShippedSpec());
+			spec = where(new OpenShippingItemSpec());
 		if (status.equals("shipped"))
 			spec = where(new ShippingItemToBeInvoicedSpec());
 		if (status.equals("invoiced"))

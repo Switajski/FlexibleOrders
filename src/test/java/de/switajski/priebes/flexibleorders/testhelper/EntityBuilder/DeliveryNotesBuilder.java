@@ -8,7 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
  * @author Marek Switajski
  *
  */
-public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotesBuilder> implements Builder<DeliveryNotes>{
+public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotes, Builder<DeliveryNotes>>{
 
 	private Address shippedAddress;
 	private String trackNumber;
@@ -17,10 +17,12 @@ public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotesBuilder> im
 	
 	@Override
 	public DeliveryNotes build() {
-		DeliveryNotes dn = new DeliveryNotes(super.documentNumber, shippedAddress, shippingCosts);
+		DeliveryNotes dn = new DeliveryNotes();
 		super.build(dn);
+		dn.setShippedAddress(shippedAddress);
 		dn.setTrackNumber(trackNumber);
 		dn.setPackageNumber(packageNumber);
+		dn.setShippingCosts(shippingCosts);
 		return dn;
 	}
 	

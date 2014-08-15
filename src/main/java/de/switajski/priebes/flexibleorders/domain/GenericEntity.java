@@ -25,7 +25,7 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 public abstract class GenericEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	@Column(name = "id")
 	private Long id;
 

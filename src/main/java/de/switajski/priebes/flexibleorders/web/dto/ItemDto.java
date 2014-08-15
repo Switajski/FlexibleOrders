@@ -180,6 +180,7 @@ public class ItemDto {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -195,5 +196,10 @@ public class ItemDto {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString(){
+		return this.getClass().getSimpleName() + ": " + getQuantityLeft()+ " x " + getProductName();
 	}
 }

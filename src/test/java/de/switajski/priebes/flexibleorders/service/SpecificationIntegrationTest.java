@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
@@ -88,15 +88,14 @@ public class SpecificationIntegrationTest extends AbstractTestSpringContextTest 
 				.findAll(new OpenShippingItemSpec());
 
 		// THEN
-		assertThat(retrievedRis.isEmpty(), is(false));
-		assertAllItemsAreConfirmationItems(retrievedRis);
+		assertAllItemsAreAgreementItems(retrievedRis);
 		assertConfirmationItemHaveNoJurek(retrievedRis);
 	}
 
-	private void assertAllItemsAreConfirmationItems(
+	private void assertAllItemsAreAgreementItems(
 			List<ReportItem> retrievedRis) {
 		for (ReportItem ri : retrievedRis) {
-			assertThat(ri instanceof ConfirmationItem, is(true));
+			assertThat(ri instanceof AgreementItem, is(true));
 		}
 	}
 

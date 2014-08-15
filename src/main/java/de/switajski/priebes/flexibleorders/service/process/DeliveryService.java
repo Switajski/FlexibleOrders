@@ -30,7 +30,7 @@ public class DeliveryService {
 	@Transactional
 	public DeliveryNotes deliver(String deliveryNotesNumber,
 			String trackNumber, String packageNumber,
-			Amount shipment, Date created, List<ItemDto> confirmEvents) {
+			Amount shipment, Date created, List<ItemDto> agreementItemDtos) {
 		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
@@ -43,18 +43,18 @@ public class DeliveryService {
 		Order firstOrder = null;
 		
 		Address shippedAddress = null;
-		for (ItemDto entry : confirmEvents) {
-			ReportItem confirmEventToBeDelivered = reportItemRepo
-					.findOne(entry.getId());
-			OrderItem orderItemToBeDelivered = confirmEventToBeDelivered
+		for (ItemDto agreementItemDto : agreementItemDtos) {
+			ReportItem agreementItem = reportItemRepo
+					.findOne(agreementItemDto.getId());
+			OrderItem orderItemToBeDelivered = agreementItem
 					.getOrderItem();
 
-			ServiceHelper.validateQuantity(entry, confirmEventToBeDelivered);
+			ServiceHelper.validateQuantity(agreementItemDto.getQuantityLeft(), agreementItem);
 
 			deliveryNotes.addItem(new ShippingItem(
 					deliveryNotes,
 					orderItemToBeDelivered,
-					entry.getQuantityLeft(), // TODO: GUI sets
+					agreementItemDto.getQuantityLeft(), // TODO: GUI sets
 												// quanitityToDeliver at this
 												// nonsense parameter
 					new Date()));

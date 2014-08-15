@@ -15,4 +15,9 @@ public class OrderConfirmationBuilder extends ReportBuilder<OrderConfirmation, B
 		return dn;
 	}
 	
+	public OrderConfirmationBuilder withAB11(){
+		setDocumentNumber("AB11");
+		return this;
+	}
+	
 }

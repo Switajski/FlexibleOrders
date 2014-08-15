@@ -7,6 +7,7 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
 @JsonAutoDetect
@@ -20,7 +21,7 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
 	public DeliveryHistoryDto(DeliveryHistory deliveryHistory) {
 		this.add(createChild(
 				deliveryHistory.getOrderNumber(),
-				deliveryHistory.toString(),
+				createOrderString(deliveryHistory),
 				true));
 		for (ReportItem ri : deliveryHistory.getItemsSorted()) {
 			Map<String, Object> child = createChild(
@@ -38,6 +39,11 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
 		child.put("text", text);
 		child.put("leaf", true);
 		return child;
+	}
+	
+	public String createOrderString(DeliveryHistory dh){
+		OrderItem oi = dh.getItems().iterator().next().getOrderItem();
+		return dh.getOrderNumber() + ": " + oi.getOrderedQuantity() + " x " + oi.getProduct().getName();
 	}
 
 }

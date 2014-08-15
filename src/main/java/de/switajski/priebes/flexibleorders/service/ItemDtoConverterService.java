@@ -27,31 +27,36 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 @Service
 public class ItemDtoConverterService {
 
+	@Autowired
 	private ReportItemRepository reportItemRepo;
 
-	@Autowired
-	public ItemDtoConverterService(ReportItemRepository reportItemRepo) {
-		this.reportItemRepo = reportItemRepo;
+	public List<ItemDto> convertOrderItems(Collection<OrderItem> orderItems){
+		List<ItemDto> items = new ArrayList<ItemDto>();
+		for (OrderItem oi:orderItems)
+			items.add(convert(oi));
+		return items;
 	}
 	
 	public ItemDto convert(OrderItem orderItem) {
 		ItemDto item = new ItemDto();
+		Order order = orderItem.getOrder();
+		if (order != null){
+			item.setCustomer(order.getCustomer().getId());
+			item.setCustomerNumber(order
+					.getCustomer()
+					.getCustomerNumber());
+			item.setCustomerName(order.getCustomer().getLastName());
+			item.setOrderNumber(order.getOrderNumber());
+		}
 		item.setCreated(orderItem.getCreated());
-		item.setCustomer(orderItem.getOrder().getCustomer().getId());
-		item.setCustomerNumber(orderItem
-				.getOrder()
-				.getCustomer()
-				.getCustomerNumber());
-		item.setCustomerName(orderItem.getOrder().getCustomer().getLastName());
 		item.setId(orderItem.getId());
 		if (orderItem.getNegotiatedPriceNet() != null)
 			item.setPriceNet(orderItem.getNegotiatedPriceNet().getValue());
-		item.setOrderNumber(orderItem.getOrder().getOrderNumber());
 		item.setProduct(orderItem.getProduct().getProductNumber());
 		item.setProductName(orderItem.getProduct().getName());
 		item.setStatus(DeliveryHistory.createFrom(orderItem).provideStatus());
 		item.setQuantity(orderItem.getOrderedQuantity());
-		item.setQuantityLeft(QuantityCalculator.toBeConfirmed(orderItem));
+		item.setQuantityLeft(QuantityCalculator.calculateLeft(orderItem));
 		return item;
 	}
 	
@@ -129,7 +134,7 @@ public class ItemDtoConverterService {
 			item.setProductName(ri.getOrderItem().getProduct().getName());
 			item.setQuantity(ri.getQuantity());
 			item.setStatus(ri.provideStatus());
-			item.setQuantityLeft(QuantityCalculator.calculate(ri));
+			item.setQuantityLeft(QuantityCalculator.calculateLeft(ri));
 		return item;
 	}
 

@@ -133,7 +133,7 @@ public class Customer extends GenericEntity{
 		return shippingAddress;
 	}
 
-	public void setDeliveryAddress(Address deliveryAddress) {
+	public void setShippingAddress(Address deliveryAddress) {
 		this.shippingAddress = deliveryAddress;
 	}
 

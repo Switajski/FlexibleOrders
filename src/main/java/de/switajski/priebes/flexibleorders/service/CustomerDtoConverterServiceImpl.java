@@ -26,7 +26,7 @@ public class CustomerDtoConverterServiceImpl {
 		cd.setSaleRepresentative(dto.getSaleRepresentative());
 		
 		customer.setInvoiceAddress(invoiceAddress);
-		customer.setDeliveryAddress(deliveryAddress);
+		customer.setShippingAddress(deliveryAddress);
 		customer.setDetails(cd);
 		customer.setCustomerNumber(dto.getCustomerNumber());
 		customer.setEmail(dto.getEmail());

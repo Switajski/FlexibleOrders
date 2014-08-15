@@ -15,7 +15,6 @@ import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
@@ -50,7 +49,7 @@ public class InvoicingService {
 			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
 					.getOrderItem();
 
-			ServiceHelper.validateQuantity(entry, (ShippingItem) shipEventToBeInvoiced);
+			ServiceHelper.validateQuantity(entry.getQuantityLeft(), shipEventToBeInvoiced);
 
 			// validate addresses - DRY at deliver method
 			Address temp = DeliveryHistory.createFrom(orderItemToBeInvoiced).getShippingAddress();

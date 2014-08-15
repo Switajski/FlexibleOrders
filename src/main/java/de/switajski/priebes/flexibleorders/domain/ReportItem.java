@@ -143,7 +143,7 @@ public abstract class ReportItem extends GenericEntity implements
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + ": " + getQuantity() + " x "
+		return this.getClass().getSimpleName() + ": " + this.getReport().getDocumentNumber() + " " + getQuantity() + " x "
 				+ getOrderItem().getProduct().getName();
 	}
 

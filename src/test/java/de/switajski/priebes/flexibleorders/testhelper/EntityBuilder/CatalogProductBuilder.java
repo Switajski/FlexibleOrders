@@ -30,6 +30,9 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 		this.name = name;
 	};
 
+	public CatalogProductBuilder() {
+	}
+
 	public static CatalogProduct buildWithGeneratedAttributes(Integer i) {
 		return new CatalogProductBuilder(
 				"name".concat(i.toString()),
@@ -39,40 +42,48 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 	}
 
 	public static CatalogProduct buildMiladka() {
-		return new CatalogProductBuilder(
-				"Miladka athra stars lime",
-				28189L,
-				ProductType.PRODUCT)
+		return new CatalogProductBuilder()
+				.setName("Miladka athra stars lime")
+				.setProductNumber(28189L)
+				.setProductType(ProductType.PRODUCT)
+				.setRecommendedPriceNet(new Amount(new BigDecimal("28.99")))
 				.build();
 	}
 
 	public static CatalogProduct buildAmy() {
-		return new CatalogProductBuilder(
-				"Amy Fleece",
-				75195L,
-				ProductType.PRODUCT)
+		return new CatalogProductBuilder()
+				.setName("Amy Fleece")
+				.setProductNumber(75195L)
+				.setProductType(ProductType.PRODUCT)
+				.setRecommendedPriceNet(new Amount(new BigDecimal("12.99")))
 				.build();
 	}
 
 	public static CatalogProduct buildPaul() {
-		return new CatalogProductBuilder(
-				"Paul anthra dots",
-				43092L,
-				ProductType.PRODUCT).build();
+		return new CatalogProductBuilder()
+				.setName("Paul anthra dots")
+				.setProductNumber(43092L)
+				.setProductType(ProductType.PRODUCT)
+				.setRecommendedPriceNet(new Amount(new BigDecimal("43.99")))
+				.build();
 	}
-	
+
 	public static CatalogProduct buildSalome() {
-		return new CatalogProductBuilder(
-				"Salome stars lime",
-				33025L,
-				ProductType.PRODUCT).build();
+		return new CatalogProductBuilder()
+				.setName("Salome stars lime")
+				.setProductNumber(33025L)
+				.setProductType(ProductType.PRODUCT)
+				.setRecommendedPriceNet(new Amount(new BigDecimal("33.99")))
+				.build();
 	}
-	
+
 	public static CatalogProduct buildJurek() {
-		return new CatalogProductBuilder(
-				"Jurek destroyer",
-				56026L,
-				ProductType.PRODUCT).build();
+		return new CatalogProductBuilder()
+				.setName("Jurek destroyer")
+				.setProductNumber(56026L)
+				.setProductType(ProductType.PRODUCT)
+				.setRecommendedPriceNet(new Amount(new BigDecimal("56.99")))
+				.build();
 	}
 
 	public CatalogProductBuilder generateAttributes(Integer i) {

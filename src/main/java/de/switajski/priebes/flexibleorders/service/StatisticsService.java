@@ -31,7 +31,7 @@ public class StatisticsService {
 		for (ReportItem ri : ris) {
 			if (calculated.add(ri.getOrderItem())){
 				summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
-						.multiply(calculator.calculate(ri)));
+						.multiply(calculator.calculateLeft(ri)));
 			}
 		}
 		return summed;

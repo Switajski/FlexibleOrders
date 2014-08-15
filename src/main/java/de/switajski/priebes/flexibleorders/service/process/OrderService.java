@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.AgreementItem;
@@ -73,19 +72,19 @@ public class OrderService {
 	/**
 	 * Creates initially an order with its order items
 	 * 
-	 * @param customerId
+	 * @param customerNumber
 	 * @param orderNumber
 	 * @param reportItems
 	 * @return created order, when successfully persisted
 	 */
 	@Transactional
-	public Order order(Long customerId, String orderNumber, Date created,
+	public Order order(Long customerNumber, String orderNumber, Date created,
 			List<ItemDto> reportItems) {
-		if (customerId == null || orderNumber == null || reportItems.isEmpty())
+		if (customerNumber == null || orderNumber == null || reportItems.isEmpty())
 			throw new IllegalArgumentException();
 		if (orderRepo.findByOrderNumber(orderNumber) != null)
 			throw new IllegalArgumentException("Bestellnr existiert bereits");
-		Customer customer = customerRepo.findOne(customerId);
+		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
 		if (customer == null)
 			throw new IllegalArgumentException(
 					"Keinen Kunden mit gegebener Kundennr. gefunden");
@@ -162,7 +161,7 @@ public class OrderService {
 			OrderAgreement oa) {
 		for (ReportItem ri:oc.getItems()){
 			AgreementItem ai = new AgreementItem();
-			ai.setQuantity(QuantityCalculator.toBeAgreed(DeliveryHistory.createFrom(ri)));
+			ai.setQuantity(QuantityCalculator.calculateLeft(ri));
 			ai.setOrderItem(ri.getOrderItem());
 			//TODO: bidirectional management of relationship
 			ai.setReport(oa);

@@ -32,7 +32,7 @@ public class OrderBuilder {
 		return new OrderBuilder().withB11().build();
 	}
 
-	private OrderBuilder withB11() {
+	public OrderBuilder withB11() {
 		Customer yvonne = CustomerBuilder.buildYvonne();
 		this.setOrderNumber("B11")
 		.setCustomer(yvonne)
@@ -49,7 +49,7 @@ public class OrderBuilder {
 		return new OrderBuilder().withB12().build();
 	}
 	
-	private OrderBuilder withB12() {
+	public OrderBuilder withB12() {
 		Customer yvonne = CustomerBuilder.buildYvonne();
 		this.setOrderNumber("B12")
 		.setCustomer(yvonne)

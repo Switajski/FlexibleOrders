@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
@@ -137,19 +138,26 @@ public class DeliveryHistory {
 		return s;
 	}
 	
-	public String toString() {
-		String s = "";
-		OrderItem orderItem = reportItems.iterator().next().getOrderItem();
-		s += "Bnr: " + orderItem.getOrder().getOrderNumber();
-		s += ", " + orderItem.getOrderedQuantity() + " x ";
-		s += +orderItem.getProduct().getProductNumber() + " "
-				+ orderItem.getProduct().getName();
-		return s;
-	}
-	
 	public String provideStatus() {
 		String s = "TODO";
 		return s;
 	}
-
+	
+	public String toString() {
+		String s = "";
+		OrderItem orderItem = reportItems.iterator().next().getOrderItem();
+		s += "Orderno: " + orderItem.getOrder().getOrderNumber();
+		s += ", " + orderItem.getOrderedQuantity() + " x ";
+		s += +orderItem.getProduct().getProductNumber() + " "
+				+ orderItem.getProduct().getName();
+		s += "\n-------------------------------------";
+		for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()){
+			s += "\n" + type.getSimpleName()+"s: ";
+			for (ReportItem item:getItems(type)){
+				s+="\n     " + item;
+			}
+		}
+		return s;
+	}
+	
 }

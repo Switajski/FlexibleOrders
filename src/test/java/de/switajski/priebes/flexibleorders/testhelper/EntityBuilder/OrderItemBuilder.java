@@ -29,6 +29,9 @@ public class OrderItemBuilder implements Builder<OrderItem> {
 		this.orderedQuantity = orderedQuantity;
 	}
 
+	public OrderItemBuilder() {
+	}
+
 	@Override
 	public OrderItem build() {
 		OrderItem item = new OrderItem(order, product, orderedQuantity);

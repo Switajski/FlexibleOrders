@@ -9,7 +9,7 @@ import javax.persistence.criteria.Subquery;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.application.process.WholesaleProcess;
+import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.ReportItem;
 
@@ -58,7 +58,7 @@ public abstract class AbstractOpenReportItemSpec implements
 	}
 
 	private Class<? extends ReportItem> getReportItemClassToRetrieve(){
-		return WholesaleProcess.getReportItemStepBefore(getReportItemClassToSubtract());
+		return WholesaleProcessSteps.getPreviousReportItemStep(getReportItemClassToSubtract());
 	}
 	
 	abstract Class<? extends ReportItem> getReportItemClassToSubtract();

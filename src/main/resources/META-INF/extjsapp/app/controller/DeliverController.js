@@ -2,7 +2,7 @@ Ext.define('MyApp.controller.DeliverController', {
 	debug : true,
 	extend : 'Ext.app.Controller',
 
-	id : 'ConfirmController',
+	id : 'DeliverController',
 	models : ['ItemData'],
 	stores : ['CreateDeliveryNotesItemDataStore'],
 	views : ['ConfirmWindow'],
@@ -13,7 +13,7 @@ Ext.define('MyApp.controller.DeliverController', {
 	},
 	
 	deliver : function(event, record) {
-		deliveryNotesNumber = record.data.documentNumber.replace(/AB/g, "L");
+		deliveryNotesNumber = record.data.documentNumber.replace(/AU/g, "L");
 
 		record.data.deliveryNotesNumber = record.data.documentNumber;
 		var createDeliveryNotesStore = MyApp.getApplication()

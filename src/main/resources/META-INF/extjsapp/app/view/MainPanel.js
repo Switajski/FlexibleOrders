@@ -117,10 +117,16 @@ Ext.define('MyApp.view.MainPanel', {
 						}, {
 							xtype : 'ShippingItemGrid',
 							store : 'ShippingItemDataStore'
+						},{
+							xtype : 'AgreementItemGrid',
+							store : 'AgreementItemDataStore'
 						}, {
 							xtype : 'DeliveryNotesItemGrid',
 							store : 'DeliveryNotesItemDataStore'
 						}, {
+							xtype : 'InvoiceItemGrid',
+							store : 'InvoiceItemDataStore'
+						},{
 							xtype : 'InvoiceItemGrid',
 							store : 'InvoiceItemDataStore'
 						}

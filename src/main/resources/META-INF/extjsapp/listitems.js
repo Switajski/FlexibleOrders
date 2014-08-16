@@ -27,6 +27,7 @@ Ext.application({
 		'ConfirmWindow',
         'DeliverWindow',
         'PositionGridPanel',
+        'AgreementItemGridPanel',
         'OrderItemGridPanel',
         'ShippingItemGridPanel',
         'InvoiceItemGridPanel',
@@ -36,6 +37,7 @@ Ext.application({
     autoCreateViewport: false,
     controllers: [
         'MyController',
+        'AgreementController',
         'CustomerController',
         'ConfirmController',
         'DeliverController',

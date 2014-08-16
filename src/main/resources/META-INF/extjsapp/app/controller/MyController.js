@@ -29,14 +29,15 @@ Ext.define('MyApp.controller.MyController', {
 	models : ['BestellungData', 'ItemData', 'KundeData'],
 	stores : ['BestellungDataStore', 'ItemDataStore',
 			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
-			'ArchiveItemDataStore', 'OrderNumberDataStore',
+			'ArchiveItemDataStore', 'OrderNumberDataStore', 'AgreementItemDataStore',
 			'DeliveryNotesItemDataStore', 'InvoiceNumberDataStore',
 			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
 			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore',
-			'CreateConfirmationReportItemDataStore', 'DeliveryHistoryDataStore'],
+			'CreateConfirmationReportItemDataStore', 'DeliveryHistoryDataStore',
+			'CreateAgreementItemDataStore'],
 	views : ['MainPanel', 'CreateCustomerWindow',
-			'BestellpositionGridPanel', 'DeliveryHistoryPanel',
-			'ConfirmWindow', 'DeliverWindow',
+			'BestellpositionGridPanel', 'DeliveryHistoryPanel', 'AgreementItemGridPanel',
+			'ConfirmWindow', 'DeliverWindow', 'AgreementWindow',
 			'OrderNumberComboBox', 'InvoiceNumberComboBox',
 			'OrderWindow', 'InvoiceWindow', 'DeliveryNotesItemGridPanel'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
@@ -82,6 +83,7 @@ Ext.define('MyApp.controller.MyController', {
 					}
 				});
 		this.getStore('ItemDataStore').filter('status', 'ordered');
+		this.getStore('AgreementItemDataStore').filter('status', 'agreed');
 		this.getStore('ShippingItemDataStore').filter('status', 'confirmed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');

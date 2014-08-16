@@ -8,28 +8,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
-import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.CancelReport;
-import de.switajski.priebes.flexibleorders.domain.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.Receipt;
-import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
-import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
+import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Receipt;
+import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.repository.CarrierRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -52,6 +54,8 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 @Service
 public class OrderService {
 
+	@Autowired
+	private CarrierRepository carrierRepo;
 	@Autowired
 	private ReportRepository reportRepo;
 	@Autowired
@@ -113,7 +117,7 @@ public class OrderService {
 	
 	@Transactional
 	public OrderConfirmation confirm(String orderNumber, String confirmNumber,
-			Date expectedDelivery, Address shippingAddress, Address invoiceAddress, 
+			Date expectedDelivery, Long carrierNumber, Address shippingAddress, Address invoiceAddress, 
 			List<ItemDto> orderItems) {
 		validateConfirm(orderNumber, confirmNumber, orderItems, shippingAddress);
 
@@ -125,11 +129,16 @@ public class OrderService {
 		Address address = (cust.getInvoiceAddress() == null) ? cust.getShippingAddress() : cust.getInvoiceAddress();
 		shippingAddress = (shippingAddress.isComplete()) ? shippingAddress : address;
 		invoiceAddress = (invoiceAddress.isComplete()) ? invoiceAddress : address;
+		
+		AgreementDetails agreeDet = new AgreementDetails();
+		agreeDet.setShippingAddress(shippingAddress);
+		agreeDet.setInvoiceAddress(invoiceAddress);
+		agreeDet.setExpectedDelivery(expectedDelivery);
+		agreeDet.setCarrier(carrierRepo.findByCarrierNumber(carrierNumber));
 
-		OrderConfirmation cr = new OrderConfirmation(confirmNumber,
-				invoiceAddress, shippingAddress);
-		cr.setExpectedDelivery(expectedDelivery);
-		// TODO: Refactor: DRY!
+		OrderConfirmation cr = new OrderConfirmation();
+		cr.setDocumentNumber(confirmNumber);
+		cr.setAgreementDetails(agreeDet);
 		cr.setCustomerNumber(cust.getCustomerNumber());
 		cr.setCustomerDetails(cust.getDetails());
 
@@ -151,8 +160,10 @@ public class OrderService {
 			throw new IllegalArgumentException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
 		
 		OrderAgreement oa = new OrderAgreement();
-		oa = takeOverConfirmationItems(oc, oa);
 		oa.setDocumentNumber(orderAgreementNo);
+		oa.setAgreementDetails(oc.getAgreementDetails());
+		oa.setCustomerDetails(oc.getCustomerDetails());
+		oa = takeOverConfirmationItems(oc, oa);
 		
 		return reportRepo.save(oa);
 	}

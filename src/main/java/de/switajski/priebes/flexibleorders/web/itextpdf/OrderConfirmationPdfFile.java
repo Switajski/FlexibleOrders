@@ -11,7 +11,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @Component
-public class ConfirmationReportPdfFile extends ConfirmationReportPdfView {
+public class OrderConfirmationPdfFile extends OrderConfirmationPdfView {
 
 	public String filePathAndName;
 

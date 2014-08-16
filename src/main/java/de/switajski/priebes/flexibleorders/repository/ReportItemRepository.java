@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 @Repository
 public interface ReportItemRepository extends JpaRepository<ReportItem, Long>, JpaSpecificationExecutor<ReportItem>{

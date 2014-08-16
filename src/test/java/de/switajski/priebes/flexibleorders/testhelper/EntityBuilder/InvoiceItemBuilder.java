@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 
 public class InvoiceItemBuilder extends ReportItemBuilder<InvoiceItem, Builder<InvoiceItem>> {
 

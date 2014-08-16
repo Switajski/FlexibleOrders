@@ -2,14 +2,14 @@ package de.switajski.priebes.flexibleorders.application;
 
 import java.util.Set;
 
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
-public abstract class ConfirmationReportAttributeRetriever<T> {
+public abstract class OrderConfirmationAttributeRetriever<T> {
 
 	DeliveryHistory history;
 	
-	public ConfirmationReportAttributeRetriever(DeliveryHistory history) {
+	public OrderConfirmationAttributeRetriever(DeliveryHistory history) {
 		this.history = history;
 	}
 	

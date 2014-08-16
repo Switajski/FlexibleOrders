@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class ServiceHelper {
 

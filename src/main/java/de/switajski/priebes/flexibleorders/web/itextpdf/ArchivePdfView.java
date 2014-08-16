@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 
+/**
+ * 
+ * @author Marek Switajski
+ *
+ */
 @Component
 public class ArchivePdfView extends PriebesIText5PdfView {
 

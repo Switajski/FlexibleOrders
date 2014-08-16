@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public abstract class AbstractOpenReportItemSpec implements
 		Specification<ReportItem> {

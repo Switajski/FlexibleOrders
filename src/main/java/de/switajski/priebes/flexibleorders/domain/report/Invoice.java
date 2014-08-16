@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
 
@@ -9,6 +9,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 
 @Entity
 public class Invoice extends Report {

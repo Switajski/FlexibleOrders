@@ -7,8 +7,8 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class ReceiptItemCompletedSpec implements Specification<ReportItem>{
 

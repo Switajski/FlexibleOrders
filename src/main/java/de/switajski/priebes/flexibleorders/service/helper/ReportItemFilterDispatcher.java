@@ -9,13 +9,14 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Controller;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @Controller
@@ -67,6 +68,8 @@ public class ReportItemFilterDispatcher {
 		if (status.equals("ordered"))
 			throw new IllegalArgumentException(
 					"Filter 'ordered' cannot be applied to Reports, but Orders");
+		if (status.equals("agreed"))
+			spec = where(new ToBeAgreedSpec());
 		if (status.equals("ship") || status.equals("confirmed"))
 			spec = where(new OpenShippingItemSpec());
 		if (status.equals("shipped"))

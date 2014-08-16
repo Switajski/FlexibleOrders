@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
-import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 //TODO use on read only objects
 public class DeliveryHistory {
@@ -80,11 +80,11 @@ public class DeliveryHistory {
 	}
 
 	public Address getShippingAddress() {
-		ConfirmationReportAttributeRetriever<Address> retr = new ConfirmationReportAttributeRetriever<Address>(this) {
+		OrderConfirmationAttributeRetriever<Address> retr = new OrderConfirmationAttributeRetriever<Address>(this) {
 
 			@Override
 			public Address retrieveAttribute(ConfirmationItem si) {
-				return ((OrderConfirmation) si.getReport()).getShippingAddress();
+				return ((OrderConfirmation) si.getReport()).getAgreementDetails().getShippingAddress();
 			}
 		};
 		
@@ -92,11 +92,11 @@ public class DeliveryHistory {
 	}
 
 	public Address getInvoiceAddress(){
-		ConfirmationReportAttributeRetriever<Address> retr = new ConfirmationReportAttributeRetriever<Address>(this) {
+		OrderConfirmationAttributeRetriever<Address> retr = new OrderConfirmationAttributeRetriever<Address>(this) {
 
 			@Override
 			public Address retrieveAttribute(ConfirmationItem si) {
-				return ((OrderConfirmation) si.getReport()).getInvoiceAddress();
+				return ((OrderConfirmation) si.getReport()).getAgreementDetails().getInvoiceAddress();
 			}
 		};
 		
@@ -104,7 +104,7 @@ public class DeliveryHistory {
 	}
 	
 	public CustomerDetails getCustomerDetails(){
-		ConfirmationReportAttributeRetriever<CustomerDetails> attr = new ConfirmationReportAttributeRetriever<CustomerDetails>(this) {
+		OrderConfirmationAttributeRetriever<CustomerDetails> attr = new OrderConfirmationAttributeRetriever<CustomerDetails>(this) {
 
 			@Override
 			public CustomerDetails retrieveAttribute(ConfirmationItem si) {

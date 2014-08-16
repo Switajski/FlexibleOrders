@@ -3,6 +3,11 @@ package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
+/**
+ * 
+ * @author Marek Switajski
+ *
+ */
 public class ProductBuilder implements Builder<Product>{
 
 	private Long productNumber;

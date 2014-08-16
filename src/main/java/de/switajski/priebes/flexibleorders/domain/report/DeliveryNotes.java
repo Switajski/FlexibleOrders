@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 
 @Entity
 public class DeliveryNotes extends Report {

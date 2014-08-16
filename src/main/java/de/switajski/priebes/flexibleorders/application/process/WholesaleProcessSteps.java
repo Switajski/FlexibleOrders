@@ -4,19 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.switajski.priebes.flexibleorders.domain.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.Receipt;
-import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
-import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Receipt;
+import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
+/**
+ * 
+ * @deprecated Too complicated - use specific Items instead
+ * @author Marek Switajski
+ *
+ */
 public class WholesaleProcessSteps {
 
 	public static List<Class<? extends ReportItem>> reportItemSteps() {

@@ -4,12 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.Amount;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
+/**
+ * 
+ * @author Marek Switajski
+ * 
+ */
 public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	private Long id;
@@ -41,49 +46,44 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 				.generateAttributes(i).build();
 	}
 
-	public static CatalogProduct buildMiladka() {
-		return new CatalogProductBuilder()
-				.setName("Miladka athra stars lime")
+	public CatalogProductBuilder miladka() {
+		this.setName("Miladka athra stars lime")
 				.setProductNumber(28189L)
 				.setProductType(ProductType.PRODUCT)
-				.setRecommendedPriceNet(new Amount(new BigDecimal("28.99")))
-				.build();
+				.setRecommendedPriceNet(new Amount(new BigDecimal("28.99")));
+		return this;
 	}
 
-	public static CatalogProduct buildAmy() {
-		return new CatalogProductBuilder()
-				.setName("Amy Fleece")
-				.setProductNumber(75195L)
-				.setProductType(ProductType.PRODUCT)
-				.setRecommendedPriceNet(new Amount(new BigDecimal("12.99")))
-				.build();
+	public CatalogProductBuilder amy() {
+		this.setName("Amy Fleece")
+			.setProductNumber(75195L)
+			.setProductType(ProductType.PRODUCT)
+			.setRecommendedPriceNet(new Amount(new BigDecimal("12.99")));
+		return this;
 	}
 
-	public static CatalogProduct buildPaul() {
-		return new CatalogProductBuilder()
-				.setName("Paul anthra dots")
-				.setProductNumber(43092L)
-				.setProductType(ProductType.PRODUCT)
-				.setRecommendedPriceNet(new Amount(new BigDecimal("43.99")))
-				.build();
+	public CatalogProductBuilder paul() {
+		this.setName("Paul anthra dots")
+			.setProductNumber(43092L)
+			.setProductType(ProductType.PRODUCT)
+			.setRecommendedPriceNet(new Amount(new BigDecimal("43.99")));
+		return this;
 	}
 
-	public static CatalogProduct buildSalome() {
-		return new CatalogProductBuilder()
-				.setName("Salome stars lime")
-				.setProductNumber(33025L)
-				.setProductType(ProductType.PRODUCT)
-				.setRecommendedPriceNet(new Amount(new BigDecimal("33.99")))
-				.build();
+	public CatalogProductBuilder salome() {
+		this.setName("Salome stars lime")
+			.setProductNumber(33025L)
+			.setProductType(ProductType.PRODUCT)
+			.setRecommendedPriceNet(new Amount(new BigDecimal("33.99")));
+		return this;
 	}
 
-	public static CatalogProduct buildJurek() {
-		return new CatalogProductBuilder()
-				.setName("Jurek destroyer")
-				.setProductNumber(56026L)
-				.setProductType(ProductType.PRODUCT)
-				.setRecommendedPriceNet(new Amount(new BigDecimal("56.99")))
-				.build();
+	public CatalogProductBuilder jurek() {
+		this.setName("Jurek destroyer")
+			.setProductNumber(56026L)
+			.setProductType(ProductType.PRODUCT)
+			.setRecommendedPriceNet(new Amount(new BigDecimal("56.99")));
+		return this;
 	}
 
 	public CatalogProductBuilder generateAttributes(Integer i) {

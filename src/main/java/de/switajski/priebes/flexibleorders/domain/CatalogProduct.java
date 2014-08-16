@@ -7,8 +7,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
+/**
+ * 
+ * @author Marek Switajski
+ *
+ */
 @Entity
 public class CatalogProduct extends GenericEntity {
 

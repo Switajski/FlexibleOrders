@@ -17,17 +17,17 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
-import de.switajski.priebes.flexibleorders.domain.Address;
-import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Component
-public class ConfirmationReportPdfView extends PriebesIText5PdfView {
+public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
 	// TODO: make VAT_RATE dependent from order
 	public static final Double VAT_RATE = 0.19d;
@@ -41,10 +41,10 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 				.get(OrderConfirmation.class.getSimpleName());
 
 		String heading = "Auftragsbest" + Unicode.aUml + "tigung";
-		Address adresse = report.getInvoiceAddress();
+		Address adresse = report.getAgreementDetails().getInvoiceAddress();
 		String documentNo = "Auftragsnummer: "
 				+ report.getDocumentNumber().toString();
-		Date expectedDelivery = report.getExpectedDelivery();
+		Date expectedDelivery = report.getAgreementDetails().getExpectedDelivery();
 
 		String expectedDeliveryString = "";
 		if (expectedDelivery != null)
@@ -61,7 +61,7 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 		Amount gross = netGoods.add(vat);
 
 		for (Paragraph p : ReportViewHelper.insertAddress(report
-				.getInvoiceAddress())) {
+				.getAgreementDetails().getInvoiceAddress())) {
 			document.add(p);
 		}
 
@@ -77,11 +77,10 @@ public class ConfirmationReportPdfView extends PriebesIText5PdfView {
 					date//leftBottom
 					));
 		} else {
-
 			PdfHelper.insertExtInfoTable(
 					document,
 					report.getCustomerDetails(),
-					report.getShippingAddress(),
+					report.getAgreementDetails(),
 					documentNo,
 					expectedDeliveryString,
 					date,

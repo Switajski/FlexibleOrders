@@ -1,8 +1,8 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.Address;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class CustomerBuilder implements Builder<Customer> {
@@ -54,10 +54,11 @@ public class CustomerBuilder implements Builder<Customer> {
 		return this;
 	}
 
-	public static Customer buildYvonne() {
-		Customer yvonne = new CustomerBuilder()
-			.setCustomerNumber(11L)
+	public CustomerBuilder yvonne() {
+		this.setCustomerNumber(11L)
 			.setEmail("massa.Suspendisse@consequat.edu")
+			.setFirstName("Yvonne")
+			.setLastName("Donaldson")
 			.setShippingAddress(
 				new Address(
 						"Yvonne",
@@ -74,11 +75,26 @@ public class CustomerBuilder implements Builder<Customer> {
 						954,
 						"San Isidro",
 						Country.DEUTSCHLAND))
-			.build();
-		return yvonne;
+			.setDetails(
+					new CustomerDetailsBuilder()
+					.setContactInformation(
+							new ContactInformationBuilder()
+							.setContact1("Herr Priebe")
+							.setContact2("Tel.Nr.: 0715897651")
+							.setContact3("Fax Nr.: 0715897652")
+							.setContact4("info@priebes.eu")
+							.build())
+					.setMark("Yvonnes Happy Baby Shop")
+					.setPaymentConditions("Net 10 - Payment ten days after invoice date")
+					.setSaleRepresentative("Mr. Saloeverything")
+					.setVatIdNo("DE 12869876")
+					.setVendorNumber("DE-Priebes")
+					.build()
+					);
+		return this;
 	}
 	
-	public static Customer buildWyoming() {
+	public CustomerBuilder wyoming() {
 		Address address = new Address(
 				"Wyoming",
 				"Finley",
@@ -86,16 +102,15 @@ public class CustomerBuilder implements Builder<Customer> {
 				1721,
 				"Sens",
 				Country.DEUTSCHLAND);
-		Customer wyoming = new CustomerBuilder()
-			.setCustomerNumber(33L)
+		this.setCustomerNumber(33L)
+			.setFirstName("Wyoming")
 			.setEmail("ullamcorper.Duis.cursus@dolorNullasemper.edu")
 			.setShippingAddress(address)
-			.setInvoiceAddress(address)
-			.build();
-		return wyoming;
+			.setInvoiceAddress(address);
+		return this;
 	}
 
-	public static Customer buildJerome() {
+	public CustomerBuilder jerome() {
 		Address address = new Address(
 					"Jerome",
 					"Greer",
@@ -103,16 +118,15 @@ public class CustomerBuilder implements Builder<Customer> {
 					439,
 					"De Haan",
 					Country.DEUTSCHLAND);
-		Customer jerome = new CustomerBuilder()
-			.setCustomerNumber(55L)
+		this.setCustomerNumber(55L)
+			.setLastName("Greer")
 			.setEmail("lacus@luctusut.net")
 			.setInvoiceAddress(address)
-			.setShippingAddress(address)
-			.build();
-		return jerome;
+			.setShippingAddress(address);
+		return this;
 	}
 
-	public static Customer buildEdward() {
+	public CustomerBuilder edward() {
 		Address address = new Address(
 					"Edward",
 					"Turner",
@@ -120,16 +134,14 @@ public class CustomerBuilder implements Builder<Customer> {
 					97066,
 					"Savona",
 					Country.UNITED_KINGDOM);
-		Customer edward = new CustomerBuilder()
-			.setCustomerNumber(44L)
+		this.setCustomerNumber(44L)
 			.setEmail("Phasellus.in.felis@purusaccumsaninterdum.co.uk")
 			.setInvoiceAddress(address)
-			.setShippingAddress(address)
-			.build();
-		return edward;
+			.setShippingAddress(address);
+		return this;
 	}
 
-	public static Customer buildNaida() {
+	public CustomerBuilder naida() {
 		Address address = new Address(
 					"Naida",
 					"Horne",
@@ -137,13 +149,11 @@ public class CustomerBuilder implements Builder<Customer> {
 					2292,
 					"Zelzate",
 					Country.IRELAND);
-		Customer naida = new CustomerBuilder()
-			.setCustomerNumber(22L)
+		this.setCustomerNumber(22L)
 			.setEmail("vel@laciniaSed.org")
 			.setShippingAddress(address)
-			.setInvoiceAddress(address)
-			.build();
-		return naida;
+			.setInvoiceAddress(address);
+		return this;
 	}
 
 	public static Customer buildWithGeneratedAttributes(Integer i) {

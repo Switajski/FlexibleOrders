@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +17,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import de.switajski.priebes.flexibleorders.domain.GenericEntity;
+import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.Product;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity

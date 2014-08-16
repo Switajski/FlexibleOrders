@@ -3,13 +3,13 @@ package de.switajski.priebes.flexibleorders.application;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
-import de.switajski.priebes.flexibleorders.domain.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 public class QuantityCalculator {
 

@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.ShippingItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 public class ShippingItemBuilder extends ReportItemBuilder<ShippingItem, Builder<ShippingItem>>{
 

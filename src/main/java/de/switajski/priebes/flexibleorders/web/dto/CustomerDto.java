@@ -33,7 +33,7 @@ public class CustomerDto {
     //*********************
     private String vendorNumber, vatIdNo, paymentConditions;
     
-    private String saleRepresentative, mark, contact1, contact2, contact3;
+    private String saleRepresentative, mark, contact1, contact2, contact3, contact4;
 
 	public String getEmail() {
 		return email;
@@ -249,6 +249,14 @@ public class CustomerDto {
 
 	public void setContact3(String contact3) {
 		this.contact3 = contact3;
-	} 
+	}
+
+	public String getContact4() {
+		return contact4;
+	}
+	
+	public void setContact4(String contact4) {
+		this.contact4 = contact4;
+	}
 
 }

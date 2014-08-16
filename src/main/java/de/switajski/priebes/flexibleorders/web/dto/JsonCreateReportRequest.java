@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer;
 
-import de.switajski.priebes.flexibleorders.domain.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
@@ -50,6 +50,8 @@ public class JsonCreateReportRequest {
 	private String orderConfirmationNumber;
 
 	private Date expectedDelivery;
+
+	private Long carrierNumber;
 
 	public Long getCustomerId() {
 		return customerId;
@@ -274,5 +276,13 @@ public class JsonCreateReportRequest {
 
 	public void setBilling(String billing) {
 		this.billing = billing;
+	}
+
+	public Long getCarrierNumber() {
+		return carrierNumber;
+	}
+	
+	public void setCarrierNumber(Long carrierNumber) {
+		this.carrierNumber = carrierNumber;
 	}
 }

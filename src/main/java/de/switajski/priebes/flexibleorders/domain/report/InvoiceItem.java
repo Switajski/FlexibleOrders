@@ -1,8 +1,10 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
 
 import javax.persistence.Entity;
+
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @Entity
 public class InvoiceItem extends ReportItem {

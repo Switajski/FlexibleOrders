@@ -6,27 +6,25 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractProductiveSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ContactInformationBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerDetailsBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
-import de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfFile;
+import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfFile;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class ConfirmationReportPdfFileTest {
+public class OrderConfirmationPdfFileTest extends AbstractProductiveSpringContextTest{
 
 	OrderConfirmation orderConfirmation;
 
@@ -54,7 +52,7 @@ public class ConfirmationReportPdfFileTest {
 				AddressBuilder.buildWithGeneratedAttributes(123),
 				AddressBuilder.buildWithGeneratedAttributes(6623));
 		orderConfirmation.setCustomerDetails(createCustomerDetails());
-		orderConfirmation.setExpectedDelivery(new Date());
+		orderConfirmation.getAgreementDetails().setExpectedDelivery(new Date());
 
 		for (int i = 0; i < 28; i++) {
 			item1.addReportItem(
@@ -68,15 +66,19 @@ public class ConfirmationReportPdfFileTest {
 	}
 
 	private CustomerDetails createCustomerDetails() {
-		CustomerDetails cd = new CustomerDetails();
-		cd.setPaymentConditions("So schnell wie möglich, ohne Prozente sonst Inkasso Moskau");
-		cd.setVatIdNo("ATU-No.111234515");
-		cd.setVendorNumber("PRIEBES-1");
-		cd.setSaleRepresentative("Herr Vertreter1");
-		cd.setContact1("Ihr Ansprechpartner: Hr. Priebe");
-		cd.setContact2("mobil: 0175 / 1243");
-		cd.setContact3("email: info@priebe.eu");
-		cd.setMark("Filiale in LB");
+		CustomerDetails cd = new CustomerDetailsBuilder()
+		.setPaymentConditions("So schnell wie möglich, ohne Prozente sonst Inkasso Moskau")
+		.setVatIdNo("ATU-No.111234515")
+		.setVendorNumber("PRIEBES-1")
+		.setSaleRepresentative("Herr Vertreter1")
+		.setContactInformation(new ContactInformationBuilder()
+			.setContact1("Ihr Ansprechpartner: Hr. Priebe")
+			.setContact2("Mobil: 0175 / 124312541")
+			.setContact3("Fax: 0175 / 12431241")
+			.setContact4("Email: info@priebe.eu")
+			.build())
+		.setMark("Filiale in LB")
+		.build();
 		return cd;
 	}
 
@@ -84,7 +86,7 @@ public class ConfirmationReportPdfFileTest {
 	@Test
 	public void shouldGenerateOrder() throws Exception {
 
-		ConfirmationReportPdfFile bpf = new ConfirmationReportPdfFile();
+		OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
 		bpf.setFilePathAndName(OC_PDF_FILE);
 		bpf
 				.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");

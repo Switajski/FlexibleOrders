@@ -3,7 +3,7 @@ package de.switajski.priebes.flexibleorders.service.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 
 public abstract class ReportFilterHelper {
 

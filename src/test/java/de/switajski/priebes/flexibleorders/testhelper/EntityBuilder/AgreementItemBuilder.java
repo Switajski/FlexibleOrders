@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 
 public class AgreementItemBuilder extends ReportItemBuilder<AgreementItem, Builder<AgreementItem>>{
 

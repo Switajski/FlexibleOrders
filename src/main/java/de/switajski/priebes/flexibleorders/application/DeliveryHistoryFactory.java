@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class DeliveryHistoryFactory {
 

@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 
 /**
  * @author Marek Switajski

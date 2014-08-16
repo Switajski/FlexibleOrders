@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 
 public class OrderAgreementBuilder extends ReportBuilder<OrderAgreement, Builder<OrderAgreement>> {
 

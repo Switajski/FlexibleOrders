@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.repository.specification;
 
-import de.switajski.priebes.flexibleorders.domain.ReceiptItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class InvoiceItemToBePaidSpec extends AbstractOpenReportItemSpec {
 

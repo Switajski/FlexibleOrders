@@ -38,12 +38,10 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					xtype : 'gridcolumn',
 					dataIndex : 'quantityLeft',
 					width : 50,
-					text : 'Menge'/*,
-					editor : {
-						xtype : 'numberfield',
-						allowBlank : false,
-						minValue : 1
-					}*/
+					text : 'Menge'/*
+									 * , editor : { xtype : 'numberfield',
+									 * allowBlank : false, minValue : 1 }
+									 */
 				}, {
 					xtype : 'actioncolumn',
 					width : 30,
@@ -54,7 +52,8 @@ Ext.define('MyApp.view.ConfirmWindow', {
 						tooltip : 'Position l&ouml;schen',
 						scope : this,
 						handler : function(grid, rowIndex) {
-							Ext.getStore('CreateConfirmationReportItemDataStore')
+							Ext
+									.getStore('CreateConfirmationReportItemDataStore')
 									.removeAt(rowIndex);
 						}
 					}]
@@ -88,10 +87,28 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					minValue : Ext.Date.format(new Date(), 'd/m/Y'),
 					minText : 'Datum liegt in der Vergangenheit',
 					name : 'expectedDelivery'
+				}, {
+					xtype : 'fieldset',
+					flex : 1,
+					items : [{
+								xtype : 'customercombobox',
+								id : 'mainCustomerComboBox',
+								fieldLabel : 'Kunde'
+							}, {
+								xtype : 'displayfield',
+								anchor : '100%',
+								name : 'customerNumber',
+								fieldLabel : 'Kundennr'
+							}, {
+								xtype : 'displayfield',
+								anchor : '100%',
+								name : 'customerNumber',
+								fieldLabel : 'Kundennr'
+							}]
 				}]
 	},
 	onSave : function(button, event, option) {
-		MyApp.getApplication().getController('ConfirmController').confirm(button,
-				event, option);
+		MyApp.getApplication().getController('ConfirmController').confirm(
+				button, event, option);
 	}
 });

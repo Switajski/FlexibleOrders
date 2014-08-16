@@ -3,12 +3,12 @@ package de.switajski.priebes.flexibleorders.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.switajski.priebes.flexibleorders.domain.CreditNote;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.Report;
+import de.switajski.priebes.flexibleorders.domain.report.CreditNote;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 
 @Service

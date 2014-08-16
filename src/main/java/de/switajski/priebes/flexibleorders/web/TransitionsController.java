@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import de.switajski.priebes.flexibleorders.domain.Amount;
-import de.switajski.priebes.flexibleorders.domain.CancelReport;
-import de.switajski.priebes.flexibleorders.domain.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.Invoice;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.Receipt;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
@@ -50,6 +50,7 @@ public class TransitionsController extends ExceptionController {
 				extractOrderNumber(confirmRequest),
 				confirmRequest.getOrderConfirmationNumber(),
 				confirmRequest.getExpectedDelivery(),
+				confirmRequest.getCarrierNumber(), 
 				confirmRequest.createDeliveryAddress(),
 				confirmRequest.createInvoiceAddress(),
 				confirmRequest.getItems());

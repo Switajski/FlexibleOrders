@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import de.switajski.priebes.flexibleorders.domain.Carrier;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
+import de.switajski.priebes.flexibleorders.web.dto.CarrierDto;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 /**
@@ -122,13 +124,34 @@ public class JsonSerializationHelper {
 				jc.setVendorNumber(details.getVendorNumber());
 				jc.setVatIdNo(details.getVatIdNo());
 				jc.setPaymentConditions(details.getPaymentConditions());
-				jc.setContact1(details.getContact1());
-				jc.setContact2(details.getContact2());
-				jc.setContact3(details.getContact3());
+				jc.setContact1(details.getContactInformation().getContact1());
+				jc.setContact2(details.getContactInformation().getContact2());
+				jc.setContact3(details.getContactInformation().getContact3());
+				jc.setContact4(details.getContactInformation().getContact4());
 				jc.setMark(details.getMark());
 				jc.setSaleRepresentative(details.getSaleRepresentative());
 			}
 			jsonCustomers.add(jc);
+		}
+		return jsonCustomers;
+	}
+	
+	public static List<CarrierDto> convertToJsonCarriers(
+			Collection<Carrier> carriers) {
+		List<CarrierDto> jsonCustomers = new ArrayList<CarrierDto>();
+		for (Carrier c : carriers){
+			CarrierDto dto = new CarrierDto();
+			dto.setId(c.getId());
+			dto.setCarrierNumber(c.getCarrierNumber());
+			dto.setName(c.getName());
+			dto.setName1(c.getAddress().getName1());
+			dto.setName2(c.getAddress().getName2());
+			dto.setStreet(c.getAddress().getStreet());
+			dto.setPostalCode(c.getAddress().getPostalCode());
+			dto.setCity(c.getAddress().getCity());
+			dto.setCountry(c.getAddress().getCountry().toString());
+			
+			jsonCustomers.add(dto);
 		}
 		return jsonCustomers;
 	}

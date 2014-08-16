@@ -1,12 +1,20 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.embeddable;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
+/**
+ * 
+ * @author Marek Switajski
+ *
+ */
 @Embeddable
 public class CustomerDetails {
 
 	private String vendorNumber, vatIdNo, paymentConditions;
-	private String saleRepresentative, mark, contact1, contact2, contact3;
+	private String saleRepresentative, mark;
+	@Embedded
+	private ContactInformation contactInformation;
 	
 	public String getVendorNumber() {
 		return vendorNumber;
@@ -40,18 +48,6 @@ public class CustomerDetails {
 		this.mark = mark;
 	}
 
-	public String getContact3() {
-		return this.contact3;
-	}
-
-	public String getContact2() {
-		return this.contact2;
-	}
-
-	public String getContact1() {
-		return this.contact1;
-	}
-
 	public String getSaleRepresentative() {
 		return this.saleRepresentative;
 	}
@@ -60,15 +56,11 @@ public class CustomerDetails {
 		this.saleRepresentative = saleRepresentative;
 	}
 
-	public void setContact1(String contact1) {
-		this.contact1 = contact1;
+	public void setContactInformation(ContactInformation contactInformation) {
+		this.contactInformation = contactInformation;
 	}
-
-	public void setContact2(String contact2) {
-		this.contact2 = contact2;
-	}
-
-	public void setContact3(String contact3) {
-		this.contact3 = contact3;
+	
+	public ContactInformation getContactInformation(){
+		return this.contactInformation;
 	}
 }

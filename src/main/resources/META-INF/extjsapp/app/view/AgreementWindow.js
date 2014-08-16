@@ -26,7 +26,44 @@ Ext.define('MyApp.view.AgreementWindow', {
 			hideGroupedHeader : false,
 			startCollapsed : false
 				// id: 'orderNumber'
-		}]
+		}],
+		columns : [{
+					xtype : 'gridcolumn',
+					dataIndex : 'product',
+					text : 'Artikel',
+					width : 85,
+					displayField : 'name',
+					valueField : 'productNumber'
+				}, {
+					xtype : 'gridcolumn',
+					dataIndex : 'productName',
+					width : 150,
+					text : 'Artikel Name'
+				}, {
+					xtype : 'gridcolumn',
+					dataIndex : 'quantityLeft',
+					width : 50,
+					text : 'Menge'/*,
+					editor : {
+						xtype : 'numberfield',
+						allowBlank : false,
+						minValue : 1
+					}*/
+				}, {
+					xtype : 'actioncolumn',
+					width : 30,
+					sortable : false,
+					menuDisabled : true,
+					items : [{
+						icon : '/FlexibleOrders/images/delete.png',
+						tooltip : 'Position l&ouml;schen',
+						scope : this,
+						handler : function(grid, rowIndex) {
+							Ext.getStore('CreateConfirmationReportItemDataStore')
+									.removeAt(rowIndex);
+						}
+					}]
+				}]
 	},
 	headerForm : {
 		xtype : 'fieldset',

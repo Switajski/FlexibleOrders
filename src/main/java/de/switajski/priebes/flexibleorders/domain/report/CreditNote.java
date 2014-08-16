@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.HashSet;
 import java.util.Set;

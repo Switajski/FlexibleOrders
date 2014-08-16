@@ -8,7 +8,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 @JsonAutoDetect
 public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {

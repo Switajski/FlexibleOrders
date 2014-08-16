@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
 
@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.domain.GenericEntity;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

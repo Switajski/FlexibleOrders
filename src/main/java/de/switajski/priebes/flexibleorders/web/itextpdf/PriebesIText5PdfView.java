@@ -43,10 +43,11 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
  * Therefore it has all settings (e.g. {@link Font}) and methods to create
  * letters.
  * 
- * @author Marek
+ * @author Marek Switajski
  * 
  */
 @Component
+//FIXME: Exception Handling
 public abstract class PriebesIText5PdfView extends AbstractView implements
 		PdfPageEvent {
 

@@ -27,14 +27,8 @@ import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 @Controller
 public class CustomerController extends ExceptionController {
 
-	private CustomerRepository customerRepo;
-
-	// private static Logger log = Logger.getLogger(CustomerController.class);
-
 	@Autowired
-	public CustomerController(CustomerRepository customerRepository) {
-		this.customerRepo = customerRepository;
-	}
+	private CustomerRepository customerRepo;
 
 	@RequestMapping(value = "/json", method = RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAll(

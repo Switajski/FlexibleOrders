@@ -12,11 +12,15 @@
 
 	<bean id="OrderPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView">
 	</bean>
-	<bean id="ConfirmationReportPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.ConfirmationReportPdfView">
+	<bean id="OrderConfirmationPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView">
+	</bean>
+	<bean id="OrderAgreementPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderAgreementPdfView">
 	</bean>
 	<bean id="DeliveryNotesPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView">
 	</bean>
 	<bean id="InvoicePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView">
+	</bean>
+	<bean id="CreditNotePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView">
 	</bean>
 	<bean id="ArchivePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.ArchivePdfView">
 	</bean>

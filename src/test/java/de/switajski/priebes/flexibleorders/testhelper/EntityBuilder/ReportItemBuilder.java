@@ -3,8 +3,8 @@ package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 import java.util.Date;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Report;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public abstract class ReportItemBuilder <BEAN extends ReportItem, BUILDER extends Builder<BEAN>> implements Builder<BEAN> {
 

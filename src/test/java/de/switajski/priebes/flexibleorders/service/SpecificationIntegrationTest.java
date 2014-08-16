@@ -13,13 +13,13 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.OrderAgreement;
-import de.switajski.priebes.flexibleorders.domain.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
@@ -56,24 +56,24 @@ public class SpecificationIntegrationTest extends AbstractTestSpringContextTest 
 
 	private static final int JUREK_QTY = 5; // All Jureks from B12
 
-	private static final Product AMY = CatalogProductBuilder
-			.buildAmy()
+	private static final Product AMY = new CatalogProductBuilder()
+			.amy().build()
 			.toProduct();
 
-	private static final Product PAUL = CatalogProductBuilder
-			.buildPaul()
+	private static final Product PAUL = new CatalogProductBuilder()
+			.paul().build()
 			.toProduct();
 
-	private static final Product MILADKA = CatalogProductBuilder
-			.buildMiladka()
+	private static final Product MILADKA = new CatalogProductBuilder()
+			.miladka().build()
 			.toProduct();
 
-	private static final Product SALOME = CatalogProductBuilder
-			.buildSalome()
+	private static final Product SALOME = new CatalogProductBuilder()
+			.salome().build()
 			.toProduct();
 
-	private static final Product JUREK = CatalogProductBuilder
-			.buildJurek()
+	private static final Product JUREK = new CatalogProductBuilder()
+			.jurek().build()
 			.toProduct();
 
 	@Transactional
@@ -233,6 +233,7 @@ public class SpecificationIntegrationTest extends AbstractTestSpringContextTest 
 				b11.getOrderNumber(),
 				"AB11",
 				new Date(),
+				null,
 				AddressBuilder.createDefault(),
 				AddressBuilder.createDefault(),
 				b11AndB12);

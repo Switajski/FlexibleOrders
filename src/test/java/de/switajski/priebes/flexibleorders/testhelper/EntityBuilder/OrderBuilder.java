@@ -33,13 +33,13 @@ public class OrderBuilder {
 	}
 
 	public OrderBuilder withB11() {
-		Customer yvonne = CustomerBuilder.buildYvonne();
+		Customer yvonne = new CustomerBuilder().yvonne().build();
 		this.setOrderNumber("B11")
 		.setCustomer(yvonne)
 		.setItems(new HashSet<OrderItem>(Arrays.asList(
-					OrderItemBuilder.build(CatalogProductBuilder.buildAmy(), 10),
-					OrderItemBuilder.build(CatalogProductBuilder.buildMiladka(), 15),
-					OrderItemBuilder.build(CatalogProductBuilder.buildPaul(), 30))))
+					OrderItemBuilder.build(new CatalogProductBuilder().amy().build(), 10),
+					OrderItemBuilder.build(new CatalogProductBuilder().miladka().build(), 15),
+					OrderItemBuilder.build(new CatalogProductBuilder().paul().build(), 30))))
 		.setCustomerEmail(yvonne.getEmail())
 		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
 		return this;
@@ -50,12 +50,12 @@ public class OrderBuilder {
 	}
 	
 	public OrderBuilder withB12() {
-		Customer yvonne = CustomerBuilder.buildYvonne();
+		Customer yvonne = new CustomerBuilder().yvonne().build();
 		this.setOrderNumber("B12")
 		.setCustomer(yvonne)
 		.setItems(new HashSet<OrderItem>(Arrays.asList(
-					OrderItemBuilder.build(CatalogProductBuilder.buildSalome(), 12),
-					OrderItemBuilder.build(CatalogProductBuilder.buildJurek(), 5))))
+					OrderItemBuilder.build(new CatalogProductBuilder().salome().build(), 12),
+					OrderItemBuilder.build(new CatalogProductBuilder().jurek().build(), 5))))
 		.setCustomerEmail(yvonne.getEmail())
 		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
 		return this;

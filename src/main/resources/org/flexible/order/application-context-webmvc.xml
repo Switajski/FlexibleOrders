@@ -90,5 +90,9 @@
 		</property>
 	</bean>
 	<bean class="de.switajski.priebes.flexibleorders.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService" />
-	<import resource="classpath*:org/flexible/order/application-context-pdf-views.xml" />
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="location">
+			<value>classpath:/org/flexible/order/application-context-pdf-views.xml</value>
+		</property>
+	</bean>
 </beans>

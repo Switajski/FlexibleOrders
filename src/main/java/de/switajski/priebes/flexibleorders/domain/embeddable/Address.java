@@ -109,5 +109,13 @@ public class Address {
 		return true;
 	}
 
+	public String toString(){
+		return new StringBuilder()
+		.append(name1 + " ").append(name2 == null ? "\n" : name2 + "\n")
+		.append(street + "\n")
+		.append(postalCode).append(" " + city + "\n")
+		.append(country)
+		.toString();
+	}
 	
 }

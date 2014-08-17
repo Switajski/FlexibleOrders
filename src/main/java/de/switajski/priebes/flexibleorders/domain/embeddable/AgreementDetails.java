@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import de.switajski.priebes.flexibleorders.domain.Carrier;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 @Embeddable
@@ -40,7 +40,7 @@ public class AgreementDetails {
 	private Address shippingAddress;
 	
 	@ManyToOne
-	private Carrier carrier;
+	private DeliveryMethod deliveryMethod;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
@@ -71,11 +71,11 @@ public class AgreementDetails {
 		this.expectedDelivery = expectedDelivery;
 	}
 
-	public Carrier getCarrier() {
-		return carrier;
+	public DeliveryMethod getDeliveryMethod() {
+		return deliveryMethod;
 	}
 
-	public void setCarrier(Carrier carrier) {
-		this.carrier = carrier;
+	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
 	}
 }

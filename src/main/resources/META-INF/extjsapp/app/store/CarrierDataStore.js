@@ -1,8 +1,8 @@
-Ext.define('MyApp.store.CarrierDataStore', {
+Ext.define('MyApp.store.DeliveryMethodDataStore', {
     extend: 'Ext.data.Store',
     customurl: '/FlexibleOrders/customers/json',
     requires: [
-        'MyApp.model.CarrierData'
+        'MyApp.model.DeliveryMethodData'
     ],
 
     constructor: function(cfg) {
@@ -10,8 +10,8 @@ Ext.define('MyApp.store.CarrierDataStore', {
         cfg = cfg || {};
         me.callParent([Ext.apply({
             autoLoad: true,
-            model: 'MyApp.model.CarrierData',
-            storeId: 'CarrierDataStore',
+            model: 'MyApp.model.DeliveryMethodData',
+            storeId: 'DeliveryMethodDataStore',
             pageSize: 1000,
             proxy: {
                 type: 'ajax',
@@ -25,9 +25,9 @@ Ext.define('MyApp.store.CarrierDataStore', {
                 },
                 api:{
                     read: this.customurl,
-                    update: "/FlexibleOrders/carriers/udpate",
+                    update: "/FlexibleOrders/deliverymethods/udpate",
                     destroy: this.customurl,
-                    create: "/FlexibleOrders/carriers/create"
+                    create: "/FlexibleOrders/deliverymethods/create"
                 },
                 writer : {
                 	type: 'json',

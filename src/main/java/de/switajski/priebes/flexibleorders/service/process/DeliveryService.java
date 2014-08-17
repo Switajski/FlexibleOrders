@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +10,12 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -28,22 +27,20 @@ public class DeliveryService {
 	private ReportItemRepository reportItemRepo;
 	
 	@Transactional
-	public DeliveryNotes deliver(String deliveryNotesNumber,
-			String trackNumber, String packageNumber,
-			Amount shipment, Date created, List<ItemDto> agreementItemDtos) {
-		if (reportRepo.findByDocumentNumber(deliveryNotesNumber) != null)
+	public DeliveryNotes deliver(DeliverParameter deliverParameter) {
+		if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null)
 			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
 		DeliveryNotes deliveryNotes = new DeliveryNotes(
-				deliveryNotesNumber,
+				deliverParameter.deliveryNotesNumber,
 				null,
-				shipment);
-		deliveryNotes.setCreated(created== null ? new Date() : created);
+				deliverParameter.shipment);
+		deliveryNotes.setCreated(deliverParameter.created== null ? new Date() : deliverParameter.created);
 		
 		Order firstOrder = null;
 		
 		Address shippedAddress = null;
-		for (ItemDto agreementItemDto : agreementItemDtos) {
+		for (ItemDto agreementItemDto : deliverParameter.agreementItemDtos) {
 			ReportItem agreementItem = reportItemRepo
 					.findOne(agreementItemDto.getId());
 			OrderItem orderItemToBeDelivered = agreementItem

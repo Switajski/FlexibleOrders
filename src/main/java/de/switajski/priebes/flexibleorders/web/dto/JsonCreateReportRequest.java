@@ -51,7 +51,7 @@ public class JsonCreateReportRequest {
 
 	private Date expectedDelivery;
 
-	private Long carrierNumber;
+	private Long deliveryMethodNo;
 
 	public Long getCustomerId() {
 		return customerId;
@@ -278,11 +278,11 @@ public class JsonCreateReportRequest {
 		this.billing = billing;
 	}
 
-	public Long getCarrierNumber() {
-		return carrierNumber;
+	public Long getDeliveryMethodNo() {
+		return deliveryMethodNo;
 	}
 	
-	public void setCarrierNumber(Long carrierNumber) {
-		this.carrierNumber = carrierNumber;
+	public void setDeliveryMethodNo(Long deliveryMethodNo) {
+		this.deliveryMethodNo = deliveryMethodNo;
 	}
 }

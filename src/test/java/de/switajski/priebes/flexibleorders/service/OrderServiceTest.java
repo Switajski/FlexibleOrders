@@ -27,6 +27,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
+import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ItemDtoBuilder;
@@ -69,7 +70,7 @@ public class OrderServiceTest {
 	
 	@Test
 	public void shouldOrder(){
-		orderService.order(CUSTOMER_ID, "123", new Date(), givenReportItems());
+		orderService.order(new OrderParameter(CUSTOMER_ID, "123", new Date(), givenReportItems()));
 		
 		ArgumentCaptor<Order> orderVarToBeSaved = ArgumentCaptor.forClass(Order.class);
 		Mockito.verify(orderRepoMock).save(orderVarToBeSaved.capture());

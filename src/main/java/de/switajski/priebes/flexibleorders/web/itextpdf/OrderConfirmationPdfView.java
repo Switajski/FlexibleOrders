@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -39,19 +38,12 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
 		OrderConfirmation report = (OrderConfirmation) model
 				.get(OrderConfirmation.class.getSimpleName());
-
-		String heading = "Auftragsbest" + Unicode.aUml + "tigung";
-		Address adresse = report.getAgreementDetails().getInvoiceAddress();
-		String documentNo = "Auftragsnummer: "
-				+ report.getDocumentNumber().toString();
-		Date expectedDelivery = report.getAgreementDetails().getExpectedDelivery();
-
-		String expectedDeliveryString = "";
-		if (expectedDelivery != null)
-			expectedDeliveryString = "voraus. Lieferung: KW "
-					+ weekDateFormat.format(expectedDelivery);
 		
-		String date = "Auftragsdatum: "
+		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+
+		String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.getDocumentNumber().toString();
+
+		String date = "AB-Datum: "
 				+ dateFormat.format(report.getCreated());
 		String customerNo = "Kundennummer: " + report.getCustomerNumber();
 
@@ -69,24 +61,22 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 			document.add(p);
 		}
 
-		if (report.getCustomerDetails() == null){
+		if (report.getCustomerDetails() == null) {
 			document.add(ReportViewHelper.insertInfoTable(
-					customerNo,//rightTop, 
-					expectedDeliveryString,//rightBottom, 
-					documentNo,//leftTop, 
-					date//leftBottom
+					customerNo,// rightTop,
+					ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(report.getAgreementDetails().getExpectedDelivery()),// rightBottom,
+					"",// leftTop,
+					date// leftBottom
 					));
 		} else {
-			PdfHelper.insertExtInfoTable(
-					document,
+			document.add(PdfHelper.insertExtInfoTable(
 					report.getCustomerDetails(),
+					ExpectedDeliveryStringCreator.createDeliveryWeekString(report.getAgreementDetails().getExpectedDelivery(), history),
 					report.getAgreementDetails(),
-					documentNo,
-					expectedDeliveryString,
 					date,
-					customerNo);
+					customerNo,
+					history.getOrderNumbers()));
 		}
-		
 
 		document.add(ParagraphBuilder.createEmptyLine());
 

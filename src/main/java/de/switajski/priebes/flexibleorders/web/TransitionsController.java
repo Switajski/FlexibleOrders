@@ -25,6 +25,9 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
+import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
+import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
+import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
@@ -47,13 +50,14 @@ public class TransitionsController extends ExceptionController {
 			throws Exception {
 
 		OrderConfirmation confirmationReport = orderService.confirm(
-				extractOrderNumber(confirmRequest),
-				confirmRequest.getOrderConfirmationNumber(),
-				confirmRequest.getExpectedDelivery(),
-				confirmRequest.getCarrierNumber(), 
-				confirmRequest.createDeliveryAddress(),
-				confirmRequest.createInvoiceAddress(),
-				confirmRequest.getItems());
+				new ConfirmParameter(
+						extractOrderNumber(confirmRequest),
+						confirmRequest.getOrderConfirmationNumber(),
+						confirmRequest.getExpectedDelivery(),
+						confirmRequest.getDeliveryMethodNo(),
+						confirmRequest.createDeliveryAddress(),
+						confirmRequest.createInvoiceAddress(),
+						confirmRequest.getItems()));
 		return ExtJsResponseCreator.createResponse(confirmationReport);
 	}
 
@@ -70,11 +74,15 @@ public class TransitionsController extends ExceptionController {
 			throws Exception {
 		deliverRequest.validate();
 
-		Order order = orderService.order(
+		OrderParameter orderParameter = new OrderParameter(
 				deliverRequest.getCustomerId(),
 				deliverRequest.getOrderNumber(),
-				deliverRequest.getCreated(),
+				deliverRequest.getCreated(), 
 				deliverRequest.getItems());
+		orderParameter.expectedDelivery = deliverRequest.getExpectedDelivery();
+		
+		Order order = orderService.order(
+				orderParameter);
 
 		return ExtJsResponseCreator.createResponse(order);
 	}
@@ -103,12 +111,13 @@ public class TransitionsController extends ExceptionController {
 		deliverRequest.validate();
 
 		DeliveryNotes dn = deliveryService.deliver(
-				deliverRequest.getDeliveryNotesNumber(),
-				deliverRequest.getTrackNumber(),
-				deliverRequest.getPackageNumber(),
-				new Amount(deliverRequest.getShipment(), Currency.EUR),
-				deliverRequest.getCreated(),
-				deliverRequest.getItems());
+				new DeliverParameter(
+						deliverRequest.getDeliveryNotesNumber(),
+						deliverRequest.getTrackNumber(),
+						deliverRequest.getPackageNumber(),
+						new Amount(deliverRequest.getShipment(), Currency.EUR),
+						deliverRequest.getCreated(),
+						deliverRequest.getItems()));
 		return ExtJsResponseCreator.createResponse(dn);
 	}
 

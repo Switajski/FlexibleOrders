@@ -8,9 +8,9 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  *
  */
 @JsonAutoDetect
-public class CarrierDto {
+public class DeliveryMethodDto {
 
-	private Long id, carrierNumber;
+	private Long id;
 	
     private String name, name1, name2, street, city, country;
     
@@ -22,14 +22,6 @@ public class CarrierDto {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getCarrierNumber() {
-		return carrierNumber;
-	}
-
-	public void setCarrierNumber(Long carrierNumber) {
-		this.carrierNumber = carrierNumber;
 	}
 
 	public String getName1() {

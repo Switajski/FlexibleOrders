@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.repository.CarrierRepository;
+import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -40,6 +40,8 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
+import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
+import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -55,7 +57,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class OrderService {
 
 	@Autowired
-	private CarrierRepository carrierRepo;
+	private DeliveryMethodRepository deliveryMethodRepo;
 	@Autowired
 	private ReportRepository reportRepo;
 	@Autowired
@@ -75,20 +77,17 @@ public class OrderService {
 
 	/**
 	 * Creates initially an order with its order items
+	 * @param orderParameter
 	 * 
-	 * @param customerNumber
-	 * @param orderNumber
-	 * @param reportItems
 	 * @return created order, when successfully persisted
 	 */
 	@Transactional
-	public Order order(Long customerNumber, String orderNumber, Date created,
-			List<ItemDto> reportItems) {
-		if (customerNumber == null || orderNumber == null || reportItems.isEmpty())
+	public Order order(OrderParameter orderParameter) {
+		if (orderParameter.customerNumber == null || orderParameter.orderNumber == null || orderParameter.reportItems.isEmpty())
 			throw new IllegalArgumentException();
-		if (orderRepo.findByOrderNumber(orderNumber) != null)
+		if (orderRepo.findByOrderNumber(orderParameter.orderNumber) != null)
 			throw new IllegalArgumentException("Bestellnr existiert bereits");
-		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
+		Customer customer = customerRepo.findByCustomerNumber(orderParameter.customerNumber);
 		if (customer == null)
 			throw new IllegalArgumentException(
 					"Keinen Kunden mit gegebener Kundennr. gefunden");
@@ -96,12 +95,16 @@ public class OrderService {
 		Order order = new Order(
 				customer,
 				OriginSystem.FLEXIBLE_ORDERS,
-				orderNumber);
-		order.setCreated((created == null) ? new Date() : created);
-		for (ItemDto ri : reportItems) {
-
+				orderParameter.orderNumber);
+		order.setCreated((orderParameter.created == null) ? new Date() : orderParameter.created);
+		if (orderParameter.expectedDelivery != null){
+			AgreementDetails ad = new AgreementDetails();
+			ad.setExpectedDelivery(orderParameter.expectedDelivery);
+			order.setAgreementDetails(ad);
+		}
+		
+		for (ItemDto ri : orderParameter.reportItems) {
 			Product product = (ri.getProduct().equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
-
 			OrderItem oi = new OrderItem(
 					order,
 					product,
@@ -116,12 +119,12 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public OrderConfirmation confirm(String orderNumber, String confirmNumber,
-			Date expectedDelivery, Long carrierNumber, Address shippingAddress, Address invoiceAddress, 
-			List<ItemDto> orderItems) {
-		validateConfirm(orderNumber, confirmNumber, orderItems, shippingAddress);
+	public OrderConfirmation confirm(ConfirmParameter confirmParameter) {
+		Address invoiceAddress = confirmParameter.invoiceAddress;
+				Address shippingAddress = confirmParameter.shippingAddress;
+		validateConfirm(confirmParameter.orderNumber, confirmParameter.confirmNumber, confirmParameter.orderItems, shippingAddress);
 
-		Order order = orderRepo.findByOrderNumber(orderNumber);
+		Order order = orderRepo.findByOrderNumber(confirmParameter.orderNumber);
 		if (order == null)
 			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 
@@ -133,16 +136,16 @@ public class OrderService {
 		AgreementDetails agreeDet = new AgreementDetails();
 		agreeDet.setShippingAddress(shippingAddress);
 		agreeDet.setInvoiceAddress(invoiceAddress);
-		agreeDet.setExpectedDelivery(expectedDelivery);
-		agreeDet.setCarrier(carrierRepo.findByCarrierNumber(carrierNumber));
+		agreeDet.setExpectedDelivery(confirmParameter.expectedDelivery);
+		agreeDet.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
 
 		OrderConfirmation cr = new OrderConfirmation();
-		cr.setDocumentNumber(confirmNumber);
+		cr.setDocumentNumber(confirmParameter.confirmNumber);
 		cr.setAgreementDetails(agreeDet);
 		cr.setCustomerNumber(cust.getCustomerNumber());
 		cr.setCustomerDetails(cust.getDetails());
 
-		for (ItemDto entry : orderItems) {
+		for (ItemDto entry : confirmParameter.orderItems) {
 			OrderItem oi = orderItemRepo.findOne(entry.getId());
 			if (oi == null)
 				throw new IllegalArgumentException(
@@ -163,6 +166,7 @@ public class OrderService {
 		oa.setDocumentNumber(orderAgreementNo);
 		oa.setAgreementDetails(oc.getAgreementDetails());
 		oa.setCustomerDetails(oc.getCustomerDetails());
+		oa.setOrderConfirmationNumber(orderConfirmationNo);
 		oa = takeOverConfirmationItems(oc, oa);
 		
 		return reportRepo.save(oa);

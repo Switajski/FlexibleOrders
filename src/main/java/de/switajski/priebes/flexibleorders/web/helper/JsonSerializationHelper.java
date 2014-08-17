@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import de.switajski.priebes.flexibleorders.domain.Carrier;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
-import de.switajski.priebes.flexibleorders.web.dto.CarrierDto;
+import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 /**
@@ -136,13 +136,12 @@ public class JsonSerializationHelper {
 		return jsonCustomers;
 	}
 	
-	public static List<CarrierDto> convertToJsonCarriers(
-			Collection<Carrier> carriers) {
-		List<CarrierDto> jsonCustomers = new ArrayList<CarrierDto>();
-		for (Carrier c : carriers){
-			CarrierDto dto = new CarrierDto();
+	public static List<DeliveryMethodDto> convertToJsonDeliveryMethodDtos(
+			Collection<DeliveryMethod> deliveryMethods) {
+		List<DeliveryMethodDto> jsonCustomers = new ArrayList<DeliveryMethodDto>();
+		for (DeliveryMethod c : deliveryMethods){
+			DeliveryMethodDto dto = new DeliveryMethodDto();
 			dto.setId(c.getId());
-			dto.setCarrierNumber(c.getCarrierNumber());
 			dto.setName(c.getName());
 			dto.setName1(c.getAddress().getName1());
 			dto.setName2(c.getAddress().getName2());

@@ -1,23 +1,26 @@
 package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Phrase;
 
 import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 
 public class PhraseBuilder {
 
-	private String text;
+	private StringBuilder text = new StringBuilder();
 	private Font font = PriebesIText5PdfView.font;
 
 	public PhraseBuilder(String text) {
-		this.text = text;
+		this.text = new StringBuilder(text);
+	}
+
+	public PhraseBuilder() {
 	}
 
 	public Phrase build() {
 		Phrase p;
-		p = new Phrase(text, font);
+		p = new Phrase(text.toString(), font);
 		return p;
 	}
 
@@ -27,23 +30,30 @@ public class PhraseBuilder {
 	}
 
 	public PhraseBuilder withText(String text) {
-		this.text = text;
+		this.text = new StringBuilder(text);
+		return this;
+	}
+	
+	public PhraseBuilder append(String text){
+		this.text.append(text);
+		return this;
+	}
+	
+	public PhraseBuilder append(Chunk text){
+		this.text.append(text);
 		return this;
 	}
 
-	public static PhraseBuilder bold(String text) {
-		return new PhraseBuilder(text).withFont(PriebesIText5PdfView.boldFont);
+	public PhraseBuilder bold() {
+		return withFont(PriebesIText5PdfView.boldFont);
 	}
 
-	public static PhraseBuilder size11(String text) {
-		return new PhraseBuilder(text)
-				.withFont(PriebesIText5PdfView.twelveSizefont);
+	public PhraseBuilder size11() {
+		return withFont(PriebesIText5PdfView.twelveSizefont);
 	}
 	
-	public static PhraseBuilder size8(String text){
-		return new PhraseBuilder(text)
-		.withFont(PriebesIText5PdfView.eightSizeFont);
-		
+	public PhraseBuilder size8(){
+		return withFont(PriebesIText5PdfView.eightSizeFont);
 	}
 
 }

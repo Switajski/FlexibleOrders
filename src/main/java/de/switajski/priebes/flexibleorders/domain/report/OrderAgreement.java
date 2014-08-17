@@ -20,6 +20,8 @@ public class OrderAgreement extends Report {
 	
 	@Embedded
 	private AgreementDetails agreementDetails;
+	
+	private String orderConfirmationNumber;
 
 	public OrderAgreement() {
 	}
@@ -56,6 +58,14 @@ public class OrderAgreement extends Report {
 
 	public void setAgreementDetails(AgreementDetails agreementDetails) {
 		this.agreementDetails = agreementDetails;
+	}
+
+	public String getOrderConfirmationNumber() {
+		return orderConfirmationNumber;
+	}
+
+	public void setOrderConfirmationNumber(String orderConfirmationNumber) {
+		this.orderConfirmationNumber = orderConfirmationNumber;
 	}
 
 }

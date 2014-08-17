@@ -86,7 +86,6 @@ public class CustomerBuilder implements Builder<Customer> {
 							.build())
 					.setMark("Yvonnes Happy Baby Shop")
 					.setPaymentConditions("Net 10 - Payment ten days after invoice date")
-					.setSaleRepresentative("Mr. Saloeverything")
 					.setVatIdNo("DE 12869876")
 					.setVendorNumber("DE-Priebes")
 					.build()

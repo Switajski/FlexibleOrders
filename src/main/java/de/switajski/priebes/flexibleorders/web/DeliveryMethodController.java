@@ -14,20 +14,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.Carrier;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.CarrierRepository;
-import de.switajski.priebes.flexibleorders.service.CarrierDtoConverterServiceImpl;
-import de.switajski.priebes.flexibleorders.web.dto.CarrierDto;
+import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
+import de.switajski.priebes.flexibleorders.service.DeliveryMethodDtoConverterService;
+import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
-@RequestMapping("/carriers")
+@RequestMapping("/deliverymethods")
 @Controller
-public class CarrierController extends ExceptionController {
+public class DeliveryMethodController extends ExceptionController {
 
 	@Autowired
-	private CarrierRepository carrierRepo;
+	private DeliveryMethodRepository deliveryMethodRepo;
+	
+	@Autowired
+	private DeliveryMethodDtoConverterService deliveryMethodDtoConverterService;
 
 	@RequestMapping(value = "/json", method = RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAll(
@@ -35,35 +38,35 @@ public class CarrierController extends ExceptionController {
 			@RequestParam(value = "start", required = false) Integer start,
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts) {
-		Page<Carrier> carriers = carrierRepo.findAll(new PageRequest(
+		Page<DeliveryMethod> dMethods = deliveryMethodRepo.findAll(new PageRequest(
 				page - 1,
 				limit));
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
-				JsonSerializationHelper.convertToJsonCarriers(carriers
+				JsonSerializationHelper.convertToJsonDeliveryMethodDtos(dMethods
 						.getContent()));
-		response.setTotal(carriers.getTotalElements());
+		response.setTotal(dMethods.getTotalElements());
 		return response;
 	}
 
 	// TODO: illegal use of customerRepository
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody CarrierDto cDto)
+	public @ResponseBody JsonObjectResponse create(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
-		Carrier c = CarrierDtoConverterServiceImpl.toCarrier(
+		DeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
 				cDto,
-				new Carrier());
-		carrierRepo.save(c);
+				new DeliveryMethod());
+		deliveryMethodRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}
 
 	// TODO: illegal use of customerRepository 
 	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse udpate(@RequestBody CarrierDto cDto)
+	public @ResponseBody JsonObjectResponse udpate(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
-		Carrier c = CarrierDtoConverterServiceImpl.toCarrier(
+		DeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
 				cDto,
-				carrierRepo.findOne(cDto.getId()));
-		carrierRepo.save(c);
+				deliveryMethodRepo.findOne(cDto.getId()));
+		deliveryMethodRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}
 

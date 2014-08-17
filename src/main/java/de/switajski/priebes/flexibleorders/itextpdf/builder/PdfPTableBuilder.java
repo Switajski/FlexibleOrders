@@ -224,7 +224,7 @@ public class PdfPTableBuilder {
 		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
 		for (TableProperties prop : tableProperties) {
 			PdfPCell bposHeader = new PdfPCell(
-					PhraseBuilder.size8(prop.heading)
+					new PhraseBuilder(prop.heading).size8()
 							.build());
 			bposHeader.setFixedHeight(12f);
 			bposHeader.setHorizontalAlignment(prop.alignment);

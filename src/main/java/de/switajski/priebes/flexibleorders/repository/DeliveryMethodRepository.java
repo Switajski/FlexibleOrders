@@ -3,11 +3,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import de.switajski.priebes.flexibleorders.domain.Carrier;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 
 @Repository
-public interface CarrierRepository extends JpaSpecificationExecutor<Carrier>, JpaRepository<Carrier, Long> {
-	
-	Carrier findByCarrierNumber(Long carrierNumber);
+public interface DeliveryMethodRepository extends JpaSpecificationExecutor<DeliveryMethod>, JpaRepository<DeliveryMethod, Long> {
 	
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 
 @Entity
@@ -33,6 +35,9 @@ public class Order extends GenericEntity {
 	@NotNull
 	@Column(unique=true)
 	private String orderNumber;
+	
+	@Embedded
+	private AgreementDetails agreementDetails;
 	
 	@ManyToOne
 	private Customer customer;
@@ -165,6 +170,15 @@ public class Order extends GenericEntity {
 		String s = "#"+getId().toString() + " Cust.:" + getCustomer().getId()+" "
 				+ "(items: "+itemsString +")";
 		return s;
+	}
+
+	@JsonIgnore
+	public AgreementDetails getAgreementDetails() {
+		return agreementDetails;
+	}
+
+	public void setAgreementDetails(AgreementDetails agreementDetails) {
+		this.agreementDetails = agreementDetails;
 	}
 
 }

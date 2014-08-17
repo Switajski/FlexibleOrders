@@ -6,8 +6,9 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
  */
 public class Unicode {
 
-	public static String uUml = "\u00fc";
-	public static String aUml = "\u00e4";
-	public static String oUml = "\u00f6";
+	public static final String uUml = "\u00fc";
+	public static final String AUml = "\u00c4";
+	public static final String aUml = "\u00e4";
+	public static final String oUml = "\u00f6";
 
 }

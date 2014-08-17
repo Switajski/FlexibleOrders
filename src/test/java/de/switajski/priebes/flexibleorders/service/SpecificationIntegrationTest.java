@@ -25,6 +25,8 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
+import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
+import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -129,43 +131,23 @@ public class SpecificationIntegrationTest extends AbstractTestSpringContextTest 
 	 */
 	private void givenDeliveryReports(OrderAgreement orderAgreement) {
 		deliveryService.deliver(
-				"L11",
-				"trackNumber",
-				"packNo",
-				null,
-				new Date(),
-				Arrays.asList(
+				new DeliverParameter("L11", "trackNumber", "packNo", null, new Date(), Arrays.asList(
 						createItemDto(2, AMY, orderAgreement),
-						createItemDto(2, MILADKA, orderAgreement)));
+						createItemDto(2, MILADKA, orderAgreement))));
 
 		deliveryService.deliver(
-				"L12",
-				"trackNumber",
-				"packNo",
-				null,
-				new Date(),
-				Arrays.asList(
+				new DeliverParameter("L12", "trackNumber", "packNo", null, new Date(), Arrays.asList(
 						createItemDto(3, AMY, orderAgreement),
-						createItemDto(3, MILADKA, orderAgreement)));
+						createItemDto(3, MILADKA, orderAgreement))));
 
 		deliveryService.deliver(
-				"L13",
-				"trackNumber",
-				"packNo",
-				null,
-				new Date(),
-				Arrays.asList(
+				new DeliverParameter("L13", "trackNumber", "packNo", null, new Date(), Arrays.asList(
 						createItemDto(1, SALOME, orderAgreement),
-						createItemDto(JUREK_QTY, JUREK, orderAgreement)));
+						createItemDto(JUREK_QTY, JUREK, orderAgreement))));
 
 		deliveryService.deliver(
-				"L14",
-				"trackNumber",
-				"packNo",
-				null,
-				new Date(),
-				Arrays.asList(
-						createItemDto(5, PAUL, orderAgreement)));
+				new DeliverParameter("L14", "trackNumber", "packNo", null, new Date(), Arrays.asList(
+						createItemDto(5, PAUL, orderAgreement))));
 	}
 
 	private ItemDto createItemDto(int qty, Product product,
@@ -230,13 +212,14 @@ public class SpecificationIntegrationTest extends AbstractTestSpringContextTest 
 		b11AndB12.addAll(itemDtoConverterService.convert(b12));
 
 		OrderConfirmation confirmationReport = orderService.confirm(
-				b11.getOrderNumber(),
-				"AB11",
-				new Date(),
-				null,
-				AddressBuilder.createDefault(),
-				AddressBuilder.createDefault(),
-				b11AndB12);
+				new ConfirmParameter(
+						b11.getOrderNumber(),
+						"AB11",
+						new Date(),
+						null,
+						AddressBuilder.createDefault(),
+						AddressBuilder.createDefault(),
+						b11AndB12));
 		
 		OrderAgreement orderAgreement = orderService.agree(confirmationReport.getDocumentNumber(), "AU11");
 		return orderAgreement;

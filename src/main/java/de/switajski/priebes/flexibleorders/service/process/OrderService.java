@@ -336,6 +336,8 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public Order retrieveOrder(String orderNumber) {
 		Order order = orderRepo.findByOrderNumber(orderNumber);
+		if (order == null)
+			throw new IllegalArgumentException("Bestellung mit gegebener Bestellnr. nicht gefunden");
 		order.getCustomer();
 		order.getItems();
 		return orderRepo.findByOrderNumber(orderNumber);

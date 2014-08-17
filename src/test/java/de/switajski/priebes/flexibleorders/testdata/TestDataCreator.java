@@ -13,19 +13,20 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
@@ -33,10 +34,10 @@ import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMethodBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMethodBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -46,7 +47,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * @author Marek Switajski
  * 
  */
-public class TestDataCreator extends AbstractTestSpringContextTest {
+public class TestDataCreator extends AbstractSpringContextTest {
 
 	@Autowired
 	private CatalogProductRepository cpRepo;
@@ -70,6 +71,7 @@ public class TestDataCreator extends AbstractTestSpringContextTest {
 	private DeliveryMethodRepository deliveryMethodRepo;
 
 	// @Ignore("This test is to initialize test data for GUI testing")
+	@Rollback(false)
 	@Test
 	public void createTestData() {
 		createProducts();

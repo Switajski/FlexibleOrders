@@ -14,7 +14,7 @@ import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 
 @Transactional
 public abstract class AbstractIntegrationTest<T extends GenericEntity> extends
-		AbstractTestSpringContextTest {
+		AbstractSpringContextTest {
 
 	@Rollback(true)
 	public void shouldCreate() {

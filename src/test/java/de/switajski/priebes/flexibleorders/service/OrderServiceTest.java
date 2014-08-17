@@ -61,7 +61,7 @@ public class OrderServiceTest {
 	public void setupMocks(){
 		MockitoAnnotations.initMocks(this);
 		
-		Mockito.when(customerRepoMock.findOne(CUSTOMER_ID))
+		Mockito.when(customerRepoMock.findByCustomerNumber(CUSTOMER_ID))
 			.thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
 		Mockito.when(cProductRepoMock.findByProductNumber(PRODUCT_NO))
 			.thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(PRODUCT_NO.intValue()));

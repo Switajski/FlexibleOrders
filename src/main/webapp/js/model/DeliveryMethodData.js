@@ -1,10 +1,10 @@
-Ext.define('MyApp.model.CarrierData', {
+Ext.define('MyApp.model.DeliveryMethodData', {
 			extend : 'Ext.data.Model',
 
 			idProperty : 'id',
 
 			fields : [{
-						name : 'carrierNumber'
+						name : 'deliveryMethodNo'
 					}, {
 						name : 'name'
 					}, {

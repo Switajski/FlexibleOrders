@@ -27,13 +27,13 @@ import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractTestSpringContextTest;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class SpecificationIntegrationTest extends AbstractTestSpringContextTest {
+public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
 	@Autowired
 	private CustomerServiceImpl customerService;

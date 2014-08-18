@@ -88,11 +88,10 @@ public class OrderConfirmationPdfFileTest extends AbstractSpringContextTest{
 
 		OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
 		bpf.setFilePathAndName(OC_PDF_FILE);
-		bpf
-				.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
+		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
 
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("ConfirmationReport", orderConfirmation);
+		model.put(OrderConfirmation.class.getSimpleName(), orderConfirmation);
 
 		bpf.render(
 				model,

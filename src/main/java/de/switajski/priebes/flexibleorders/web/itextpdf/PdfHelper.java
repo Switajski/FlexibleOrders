@@ -80,6 +80,8 @@ public class PdfHelper {
     }
 
     private static String createString(DeliveryMethod deliveryMethod) {
+        if (deliveryMethod == null) 
+            return null;
         if (deliveryMethod.getDeliveryType() == DeliveryType.SPEDITION) {
             return new StringBuilder()
                     .append("Lieferart per Spedition:")

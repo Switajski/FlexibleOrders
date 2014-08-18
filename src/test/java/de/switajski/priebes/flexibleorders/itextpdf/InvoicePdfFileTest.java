@@ -20,16 +20,14 @@ import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfFile;
 
-//TODO: split application context to use one part as unit test
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class InvoicePdfFileTest {
+public class InvoicePdfFileTest extends AbstractSpringContextTest {
 
 	private static final String INVOICE_PDF_PATH = "src/test/resources/InvoicePdfFileTest.pdf";
 

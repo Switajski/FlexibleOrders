@@ -137,7 +137,8 @@ public class OrderService {
 		agreeDet.setShippingAddress(shippingAddress);
 		agreeDet.setInvoiceAddress(invoiceAddress);
 		agreeDet.setExpectedDelivery(confirmParameter.expectedDelivery);
-		agreeDet.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
+		if (confirmParameter.deliveryMethodNo != null)
+		    agreeDet.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
 
 		OrderConfirmation cr = new OrderConfirmation();
 		cr.setDocumentNumber(confirmParameter.confirmNumber);

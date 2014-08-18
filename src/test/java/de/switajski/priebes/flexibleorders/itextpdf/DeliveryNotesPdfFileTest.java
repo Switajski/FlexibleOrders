@@ -5,27 +5,22 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfFile;
 
-//TODO: split application context to use one part as unit test
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml")
-public class DeliveryNotesPdfFileTest {
+public class DeliveryNotesPdfFileTest extends AbstractSpringContextTest{
 
 	private static final String INVOICE_PDF_PATH = "src/test/resources/DeliveryNotesPdfFileTest.pdf";
 
@@ -66,11 +61,10 @@ public class DeliveryNotesPdfFileTest {
 
 		DeliveryNotesPdfFile bpf = new DeliveryNotesPdfFile();
 		bpf.setFilePathAndName(INVOICE_PDF_PATH);
-		bpf
-				.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
+		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
 
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("DeliveryNotes", deliveryNotes);
+		model.put(DeliveryNotes.class.getSimpleName(), deliveryNotes);
 
 		bpf.render(
 				model,

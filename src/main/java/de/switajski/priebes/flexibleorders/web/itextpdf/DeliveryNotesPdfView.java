@@ -50,7 +50,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         CustomerDetails customerDetails = aHistory.getCustomerDetails();
         if (customerDetails == null) {
             document.add(ReportViewHelper.insertInfoTable(
-                    packageNo, customerNo, null, date));
+                    packageNo, customerNo, "", date));
         }
         else {
             document.add(PdfHelper.createExtInfoTable(

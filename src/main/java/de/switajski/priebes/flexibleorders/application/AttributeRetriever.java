@@ -5,11 +5,11 @@ import java.util.Set;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
-public abstract class OrderConfirmationAttributeRetriever<T> {
+public abstract class AttributeRetriever<T> {
 
 	DeliveryHistory history;
 	
-	public OrderConfirmationAttributeRetriever(DeliveryHistory history) {
+	public AttributeRetriever(DeliveryHistory history) {
 		this.history = history;
 	}
 	

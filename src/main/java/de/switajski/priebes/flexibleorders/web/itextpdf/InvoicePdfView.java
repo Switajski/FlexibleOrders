@@ -21,12 +21,13 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import de.switajski.priebes.flexibleorders.application.AgreementHistory;
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistoryFactory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -47,6 +48,8 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			HttpServletResponse response) throws Exception {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
+		DeliveryHistory deliveryHistory = DeliveryHistory.createWholeFrom(report);
+		AgreementHistory aHistory = new AgreementHistory(deliveryHistory.getItems(AgreementItem.class));
 
 		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 
 				"" : "Lieferdatum: " + dateFormat.format(getDeliveryNotesDate(report));
@@ -80,11 +83,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		PhraseBuilder pb = new PhraseBuilder("");
 		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
-		DeliveryHistory deliveryHistory = DeliveryHistoryFactory.createFromReport(report);
 		String orderConfirmationNumbers = "Auftragsnr.: " + deliveryHistory.getConfirmationReportNumbers();
 		String vendorNo = "";
 		String atu = "";
-		CustomerDetails customerDetails = deliveryHistory.getCustomerDetails();
+		CustomerDetails customerDetails = aHistory.getCustomerDetails();
 		if (customerDetails != null){
 			vendorNo = customerDetails == null ? "" : "Lieferantennr.: " + customerDetails.getVendorNumber();
 			atu = customerDetails.getVatIdNo() == null ? "" : "ATU: " + customerDetails.getVatIdNo();

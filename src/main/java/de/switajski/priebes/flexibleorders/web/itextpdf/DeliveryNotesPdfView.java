@@ -7,27 +7,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistoryFactory;
+import de.switajski.priebes.flexibleorders.application.AgreementHistory;
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 
 @Component
 public class DeliveryNotesPdfView extends PriebesIText5PdfView {
@@ -39,15 +36,16 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
 		DeliveryNotes report = (DeliveryNotes) model.get(DeliveryNotes.class
 				.getSimpleName());
+		
+		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+		AgreementHistory aHistory = new AgreementHistory(history.getItems(AgreementItem.class));
 
-		String documentNo = "Lieferscheinnummer: "
-				+ report.getDocumentNumber().toString();
 		String date = "Lieferdatum: "
 				+ dateFormat.format(report.getCreated());
 		String packageNo = "Pakete: " + report.getDocumentNumber();
 		String customerNo = "Kundennummer: " + report.getCustomerNumber();
 		Address adresse = report.getShippedAddress();
-		String heading = "Lieferschein";
+		String heading = "Lieferschein " + report.getDocumentNumber();
 
 		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
 			document.add(p);
@@ -57,19 +55,19 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 			document.add(p);
 		}
 
-		CustomerDetails customerDetails = DeliveryHistoryFactory.createFromFirst(report.getItems()).getCustomerDetails();
+		CustomerDetails customerDetails = aHistory.getCustomerDetails();
 		if (customerDetails == null){
 			document.add(ReportViewHelper.insertInfoTable(
-				packageNo, customerNo, documentNo, date));
+				packageNo, customerNo, null, date));
 		}
 		else {
-			insertExtInfoTable(
-					document,
-					report,
-					documentNo,
-					date,
-					customerNo,
-					customerDetails);
+		    PdfHelper.insertExtInfoTable(
+                    customerDetails,
+                    ExpectedDeliveryStringCreator.createDeliveryWeekString(aHistory.getAgreementDetails().getExpectedDelivery(), history),
+                    aHistory.getAgreementDetails(),
+                    date,
+                    customerNo,
+                    history.getOrderNumbers());
 		}
 		
 		document.add(ParagraphBuilder.createEmptyLine());
@@ -78,47 +76,6 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
 	}
 
-	private void insertExtInfoTable(Document document, DeliveryNotes report,
-			String documentNo, String date, String customerNo,
-			CustomerDetails customerDetails) throws DocumentException {
-		PhraseBuilder pb = new PhraseBuilder("");
-		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
-
-		String packageNumber = StringUtils.isEmpty(report.getPackageNumber()) ? "" : "Paket(e): " + report.getPackageNumber();
-		String orderConfirmationNumbers = DeliveryHistoryFactory.createFromReport(report).getConfirmationReportNumbers();
-
-		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
-				PdfPTableBuilder.createPropertiesWithThreeCols())
-
-				.addCell(cellb.withPhrase(
-						pb.withText(date)
-								.build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText(customerNo).build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText(customerDetails.getVendorNumber()).build()).build())
-						
-				.addCell(cellb.withPhrase(
-						pb.withText(documentNo)
-								.build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText(orderConfirmationNumbers).build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText("").build()).build())
-
-				.addCell(cellb.withPhrase(
-						pb.withText(packageNumber).build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText("").build()).build())
-				.addCell(cellb.withPhrase(
-						pb.withText("").build()).build());
-
-		PdfPTable infoTable = infoTableBuilder.build();
-
-		infoTable.setWidthPercentage(100);
-		
-		document.add(infoTable);
-	}
 
 	private PdfPTable createTable(Report cReport) throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(

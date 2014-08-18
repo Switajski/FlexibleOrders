@@ -12,6 +12,10 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -24,60 +28,50 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 @MappedSuperclass
 public abstract class GenericEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
-	@Column(name = "id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "id")
+    private Long id;
 
-	@NotNull
-	@Column(updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
-	protected Date created = new Date();
+    @NotNull
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    protected Date created = new Date();
 
-	@Version
-	@Column(name = "version")
-	private Integer version;
+    @Version
+    @Column(name = "version")
+    private Integer version;
 
-	public Long getId() {
-		return this.id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Integer getVersion() {
-		return this.version;
-	}
+    public Integer getVersion() {
+        return this.version;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	@JsonSerialize(using = JsonDateSerializer.class)
-	public Date getCreated() {
-		return this.created;
-	}
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public Date getCreated() {
+        return this.created;
+    }
 
-	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	// TODO: implement equals method - suggested from
-	// http://notesonjava.wordpress.com/2008/11/03/managing-the-bidirectional-relationship/
-	// public boolean equals(Object object) {
-	// if (object == this)
-	// return true;
-	// if ((object == null) || !(object instanceof A))
-	// return false;
-	//
-	// final A a = (A)object;
-	//
-	// if (id != null && a.getId() != null) {
-	// return id.equals(a.getId());
-	// }
-	// return false;
-	// }
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+    
+    @Override
+    public String toString(){
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+    
 }

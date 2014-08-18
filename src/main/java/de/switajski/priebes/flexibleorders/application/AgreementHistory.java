@@ -22,25 +22,25 @@ public class AgreementHistory {
         Set<AgreementDetails> ocs = new HashSet<AgreementDetails>(); 
         for (AgreementItem cis: agreementItems)
             ocs.add(((OrderAgreement) cis.getReport()).getAgreementDetails());
-        if (ocs.size() < 1)
-            return null;
-        else if (ocs.size() == 1)
-            return ocs.iterator().next();
-        else {
-            throw new IllegalStateException("Widersprechende Daten aus Auftr"+Unicode.aUml+"gen gefunden");
-        }
+        return getOneOrNullIfEmpty(ocs);
     }
     
     public CustomerDetails getCustomerDetails(){
-        CustomerDetails attribute = null;
+        Set<CustomerDetails> cds = new HashSet<CustomerDetails>();
         for (AgreementItem si:agreementItems){
-            CustomerDetails a = ((OrderAgreement) si.getReport()).getCustomerDetails();
-            if (attribute == null)
-                attribute = a;
-            else if (!a.equals(attribute))
-                throw new IllegalStateException("Widersprechende Daten aus Auftr"+Unicode.aUml+"gen gefunden");
+            cds.add(((OrderAgreement) si.getReport()).getCustomerDetails());
         }
-        return attribute;
+        return getOneOrNullIfEmpty(cds);
+    }
+    
+    public <T> T getOneOrNullIfEmpty(Collection<T> collection){
+        if (collection.size() < 1)
+            return null;
+        else if (collection.size() == 1)
+            return collection.iterator().next();
+        else {
+            throw new IllegalStateException("Widersprechende Daten aus Auftr"+Unicode.aUml+"gen gefunden");
+        }
     }
     
 }

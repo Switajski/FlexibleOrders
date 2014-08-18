@@ -91,33 +91,27 @@ public class TestDataCreator extends AbstractSpringContextTest {
 	private void createNaidasOrders() {
 		DateTime dt = new DateTime();
 
-		orderService.order(
-				new OrderParameter(
-						TestData.NAIDA.getCustomerNumber(),
-						"B21",
-						dt.toDate(),
-						converterService.convertOrderItems(
-								TestData.ORDERITEMS_OF_B21))
-				);
+		orderService.order(new OrderParameter(
+		        TestData.NAIDA.getCustomerNumber(),
+		        "B21",
+		        dt.toDate(),
+		        converterService.convertOrderItems(TestData.ORDERITEMS_OF_B21)));
 
-		Order b22 = orderService.order(
-				new OrderParameter(
-						TestData.NAIDA.getCustomerNumber(),
-						"B22",
-						dt.toDate(), 
-						converterService.convertOrderItems(
-								TestData.ORDERITEMS_OF_B22))
-				);
+		Order b22 = orderService.order(new OrderParameter(
+		        TestData.NAIDA.getCustomerNumber(),
+		        "B22",
+		        dt.toDate(), 
+		        converterService.convertOrderItems(
+		                TestData.ORDERITEMS_OF_B22)));
 
-		OrderConfirmation ab22 = orderService.confirm(
-				new ConfirmParameter(
-						b22.getOrderNumber(),
-						"AB22",
-						dt.plusDays(5).toDate(),
-						TestData.DHL.getId(),
-						TestData.YVONNE.getShippingAddress(),
-						TestData.YVONNE.getInvoiceAddress(),
-						converterService.convert(b22)));
+		OrderConfirmation ab22 = orderService.confirm(new ConfirmParameter(
+		        b22.getOrderNumber(),
+		        "AB22",
+		        dt.plusDays(5).toDate(),
+		        TestData.DHL.getId(),
+		        TestData.YVONNE.getShippingAddress(),
+		        TestData.YVONNE.getInvoiceAddress(),
+		        converterService.convert(b22)));
 
 		orderService.cancelReport(ab22.getDocumentNumber());
 
@@ -149,6 +143,14 @@ public class TestDataCreator extends AbstractSpringContextTest {
 						TestData.ORDERITEMS_OF_B13);
 		opB13.expectedDelivery = dt.plusDays(2).toDate();
 		Order b13 = orderService.order(opB13);
+		
+		OrderParameter opB15 = new OrderParameter();
+        opB15.customerNumber = TestData.YVONNE.getCustomerNumber();
+        opB15.orderNumber = "B15";
+        opB15.reportItems = converterService.convertOrderItems(
+                        TestData.ORDERITEMS_OF_B15);
+        opB15.expectedDelivery = dt.plusDays(2).toDate();
+        Order b15 = orderService.order(opB15);
 
 		List<ItemDto> b11Andb12 = new ArrayList<ItemDto>();
 		b11Andb12.addAll(converterService.convert(b11));
@@ -173,10 +175,23 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		cpAB13.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
 		cpAB13.orderItems = converterService.convert(b13);
 		orderService.confirm(cpAB13);
+		
+		ConfirmParameter cpAB15 = new ConfirmParameter();
+        cpAB15.orderNumber = b11.getOrderNumber();
+        cpAB15.confirmNumber = "AB15";
+        cpAB15.expectedDelivery = dt.plusDays(2).toDate();
+        cpAB15.deliveryMethodNo = TestData.DHL.getId();
+        cpAB15.shippingAddress = TestData.YVONNE.getShippingAddress();
+        cpAB15.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
+        cpAB15.orderItems = converterService.convert(b15);
+        orderService.confirm(cpAB15);
 
 		OrderAgreement au11 = orderService.agree(ab11.getDocumentNumber(), "AU11");
+		
+		OrderAgreement au15 = orderService.agree(ab11.getDocumentNumber(), "AU15");
 
-		List<ItemDto> itemDtos = converterService.convertReport(au11);
+		List<ItemDto> itemsFromAu11 = converterService.convertReport(au11);
+		List<ItemDto> itemsFromAu15 = converterService.convertReport(au15);
 
 		DeliveryNotes l11 = deliveryService.deliver(
 				new DeliverParameter(
@@ -186,54 +201,43 @@ public class TestDataCreator extends AbstractSpringContextTest {
 						new Amount(BigDecimal.TEN),
 						new Date(),
 						Arrays.asList(
-								extract(itemDtos, TestData.AMY.getProductNumber(), 2),
-								extract(
-										itemDtos,
-										TestData.MILADKA.getProductNumber(),
-										2))));
-		DeliveryNotes l12 = deliveryService.deliver(
-				new DeliverParameter(
-						"L12",
-						"trackNumber12",
-						"packageNumber12",
-						new Amount(BigDecimal.ONE),
-						new Date(),
-						Arrays.asList(
-								extract(itemDtos, TestData.AMY.getProductNumber(), 3),
-								extract(
-										itemDtos,
-										TestData.MILADKA.getProductNumber(),
-										3))));
-		deliveryService
-				.deliver(
-						new DeliverParameter(
-								"L13",
-								"trackNumber13",
-								"packageNumber13",
-								new Amount(BigDecimal.ONE),
-								new Date(),
-								Arrays.asList(
-										extract(
-												itemDtos,
-												TestData.SALOME.getProductNumber(),
-												1),
-										extract(
-												itemDtos,
-												TestData.JUREK.getProductNumber(),
-												5))));
-		deliveryService
-				.deliver(
-						new DeliverParameter(
-								"L14",
-								"trackNumber14",
-								"packageNumber14",
-								new Amount(BigDecimal.ZERO),
-								new Date(),
-								Arrays.asList(
-										extract(
-												itemDtos,
-												TestData.PAUL.getProductNumber(),
-												5))));
+								extract(itemsFromAu11, TestData.AMY.getProductNumber(), 2),
+								extract(itemsFromAu11, TestData.MILADKA.getProductNumber(), 2))));
+		DeliveryNotes l12 = deliveryService.deliver(new DeliverParameter(
+		        "L12",
+		        "trackNumber12",
+		        "packageNumber12",
+		        new Amount(BigDecimal.ONE),
+		        new Date(),
+		        Arrays.asList(
+		                extract(itemsFromAu11, TestData.AMY.getProductNumber(), 3),
+		                extract(itemsFromAu11, TestData.MILADKA.getProductNumber(), 3))));
+		deliveryService.deliver(new DeliverParameter(
+		        "L13",
+		        "trackNumber13",
+		        "packageNumber13",
+		        new Amount(BigDecimal.ONE),
+		        new Date(),
+		        Arrays.asList(
+		                extract(itemsFromAu11, TestData.SALOME.getProductNumber(), 1),
+		                extract(itemsFromAu11, TestData.JUREK.getProductNumber(), 5))));
+		deliveryService.deliver(new DeliverParameter(
+		        "L14",
+		        "trackNumber14",
+		        "packageNumber14",
+		        new Amount(BigDecimal.ZERO),
+		        new Date(),
+		        Arrays.asList(extract(itemsFromAu11, TestData.PAUL.getProductNumber(), 5))));
+		
+		deliveryService.deliver(new DeliverParameter(
+		        "L15",
+		        "trackNumber15",
+		        "packageNumber15",
+		        new Amount(BigDecimal.ZERO),
+		        new Date(),
+		        Arrays.asList(
+		                extract(itemsFromAu11, TestData.PAUL.getProductNumber(), 15), 
+		                extract(itemsFromAu15, TestData.PAUL.getProductNumber(), 8))));
 
 		List<ItemDto> l11AndL12 = converterService.convertReport(l11);
 		l11AndL12.addAll(converterService.convertReport(l12));
@@ -244,10 +248,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 				new Date(),
 				Arrays.asList(
 						extract(l11AndL12, TestData.AMY.getProductNumber(), 5),
-						extract(
-								l11AndL12,
-								TestData.MILADKA.getProductNumber(),
-								5)),
+						extract(l11AndL12, TestData.MILADKA.getProductNumber(), 5)),
 				"billing");
 	}
 
@@ -376,6 +377,27 @@ public class TestDataCreator extends AbstractSpringContextTest {
 								.setNegotiatedPriceNet(
 										MILADKA.getRecommendedPriceNet())
 								.build());
+		
+		static final List<OrderItem> ORDERITEMS_OF_B15 =
+                Arrays.<OrderItem> asList(
+                        new OrderItemBuilder()
+                                .setProduct(MILADKA.toProduct())
+                                .setOrderedQuantity(5)
+                                .setNegotiatedPriceNet(
+                                        MILADKA.getRecommendedPriceNet())
+                                .build(),
+                        new OrderItemBuilder()
+                                .setProduct(PAUL.toProduct())
+                                .setOrderedQuantity(8)
+                                .setNegotiatedPriceNet(
+                                        PAUL.getRecommendedPriceNet())
+                                .build(),
+                        new OrderItemBuilder()
+                                .setProduct(SALOME.toProduct())
+                                .setOrderedQuantity(3)
+                                .setNegotiatedPriceNet(
+                                        SALOME.getRecommendedPriceNet())
+                                .build());
 
 		static final Collection<OrderItem> ORDERITEMS_OF_B21 =
 				Arrays.<OrderItem> asList(

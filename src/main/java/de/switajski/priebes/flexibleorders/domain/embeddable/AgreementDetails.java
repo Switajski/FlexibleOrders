@@ -10,6 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,63 +23,79 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 @Embeddable
 public class AgreementDetails {
 
-	@AttributeOverrides({
-			@AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
-			@AttributeOverride(name = "name2", column = @Column(name = "invoice_name2")),
-			@AttributeOverride(name = "street", column = @Column(name = "invoice_street")),
-			@AttributeOverride(name = "postalCode", column = @Column(name = "invoice_postal_code")),
-			@AttributeOverride(name = "city", column = @Column(name = "invoice_city")),
-			@AttributeOverride(name = "country", column = @Column(name = "invoice_country"))
-	})
-	private Address invoiceAddress;
+    @AttributeOverrides({
+            @AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
+            @AttributeOverride(name = "name2", column = @Column(name = "invoice_name2")),
+            @AttributeOverride(name = "street", column = @Column(name = "invoice_street")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "invoice_postal_code")),
+            @AttributeOverride(name = "city", column = @Column(name = "invoice_city")),
+            @AttributeOverride(name = "country", column = @Column(name = "invoice_country"))
+    })
+    private Address invoiceAddress;
 
-	@AttributeOverrides({
-			@AttributeOverride(name = "name1", column = @Column(name = "shipping_name1")),
-			@AttributeOverride(name = "name2", column = @Column(name = "shipping_name2")),
-			@AttributeOverride(name = "street", column = @Column(name = "shipping_street")),
-			@AttributeOverride(name = "postalCode", column = @Column(name = "shipping_postal_code")),
-			@AttributeOverride(name = "city", column = @Column(name = "shipping_city")),
-			@AttributeOverride(name = "country", column = @Column(name = "shipping_country"))
-	})
-	private Address shippingAddress;
-	
-	@ManyToOne
-	private DeliveryMethod deliveryMethod;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
-	private Date expectedDelivery;
+    @AttributeOverrides({
+            @AttributeOverride(name = "name1", column = @Column(name = "shipping_name1")),
+            @AttributeOverride(name = "name2", column = @Column(name = "shipping_name2")),
+            @AttributeOverride(name = "street", column = @Column(name = "shipping_street")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "shipping_postal_code")),
+            @AttributeOverride(name = "city", column = @Column(name = "shipping_city")),
+            @AttributeOverride(name = "country", column = @Column(name = "shipping_country"))
+    })
+    private Address shippingAddress;
 
-	public Address getInvoiceAddress() {
-		return invoiceAddress;
-	}
+    @ManyToOne
+    private DeliveryMethod deliveryMethod;
 
-	public void setInvoiceAddress(Address invoiceAddress) {
-		this.invoiceAddress = invoiceAddress;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    private Date expectedDelivery;
 
-	public Address getShippingAddress() {
-		return shippingAddress;
-	}
+    public Address getInvoiceAddress() {
+        return invoiceAddress;
+    }
 
-	public void setShippingAddress(Address shippingAddress) {
-		this.shippingAddress = shippingAddress;
-	}
+    public void setInvoiceAddress(Address invoiceAddress) {
+        this.invoiceAddress = invoiceAddress;
+    }
 
-	@JsonSerialize(using = JsonDateSerializer.class)
-	public Date getExpectedDelivery() {
-		return expectedDelivery;
-	}
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
 
-	public void setExpectedDelivery(Date expectedDelivery) {
-		this.expectedDelivery = expectedDelivery;
-	}
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
 
-	public DeliveryMethod getDeliveryMethod() {
-		return deliveryMethod;
-	}
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public Date getExpectedDelivery() {
+        return expectedDelivery;
+    }
 
-	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
-		this.deliveryMethod = deliveryMethod;
-	}
+    public void setExpectedDelivery(Date expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+    }
+
+    public DeliveryMethod getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, false);
+    }
+
+    @Override
+    public String toString(){
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+    
+    @Override
+    public int hashCode(){
+        return HashCodeBuilder.reflectionHashCode(this, false);
+    }
+
 }

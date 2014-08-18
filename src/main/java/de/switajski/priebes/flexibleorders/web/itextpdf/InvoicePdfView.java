@@ -27,7 +27,6 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -49,7 +48,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 		DeliveryHistory deliveryHistory = DeliveryHistory.createWholeFrom(report);
-		AgreementHistory aHistory = new AgreementHistory(deliveryHistory.getItems(AgreementItem.class));
+		AgreementHistory aHistory = new AgreementHistory(deliveryHistory);
 
 		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 
 				"" : "Lieferdatum: " + dateFormat.format(getDeliveryNotesDate(report));

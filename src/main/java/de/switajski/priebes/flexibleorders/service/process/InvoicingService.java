@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.AgreementHistory;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
@@ -52,11 +53,8 @@ public class InvoicingService {
 			ServiceHelper.validateQuantity(entry.getQuantityLeft(), shipEventToBeInvoiced);
 
 			// validate addresses - DRY at deliver method
-			Address temp = DeliveryHistory.createFrom(orderItemToBeInvoiced).getShippingAddress();
-			if (invoiceAddress == null)
-				invoiceAddress = temp;
-			else if (!invoiceAddress.equals(temp))
-				throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+			AgreementHistory aHistory = new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeInvoiced));
+			invoiceAddress = validateInvoiceAdress(invoiceAddress, aHistory);
 
 			invoice.setInvoiceAddress(invoiceAddress);
 			
@@ -80,4 +78,13 @@ public class InvoicingService {
 
 		return reportRepo.save(invoice);
 	}
+
+    private Address validateInvoiceAdress(Address invoiceAddress, AgreementHistory aHistory) {
+        Address temp = aHistory.getAgreementDetails().getInvoiceAddress(); 
+        if (invoiceAddress == null)
+        	invoiceAddress = temp;
+        else if (!invoiceAddress.equals(temp))
+        	throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+        return invoiceAddress;
+    }
 }

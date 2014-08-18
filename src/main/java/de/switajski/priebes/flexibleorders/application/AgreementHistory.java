@@ -14,8 +14,8 @@ public class AgreementHistory {
 
     private Collection<AgreementItem> agreementItems;
 
-    public AgreementHistory(Collection<AgreementItem> agreementItems) {
-        this.agreementItems = agreementItems;
+    public AgreementHistory(DeliveryHistory deliveryHistory){
+        this.agreementItems = deliveryHistory.getItems(AgreementItem.class);
     }
     
     public AgreementDetails getAgreementDetails(){
@@ -42,4 +42,5 @@ public class AgreementHistory {
         }
         return attribute;
     }
+    
 }

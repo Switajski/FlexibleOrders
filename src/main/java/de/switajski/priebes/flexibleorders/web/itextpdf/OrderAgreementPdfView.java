@@ -74,7 +74,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
 					date// leftBottom
 					));
 		} else {
-			document.add(PdfHelper.insertExtInfoTable(
+			document.add(PdfHelper.createExtInfoTable(
 					report.getCustomerDetails(),
 					ExpectedDeliveryStringCreator.createDeliveryWeekString(
 							report.getAgreementDetails().getExpectedDelivery(),

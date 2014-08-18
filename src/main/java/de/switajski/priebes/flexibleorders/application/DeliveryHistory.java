@@ -14,16 +14,12 @@ import org.joda.time.Days;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 //TODO use on read only objects
 public class DeliveryHistory {
@@ -84,44 +80,6 @@ public class DeliveryHistory {
 		if (sis.size() > 1)
 			throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
 		else return sis.iterator().next();
-	}
-
-	public Address getShippingAddress() {
-		AttributeRetriever<Address> retr = new AttributeRetriever<Address>(this) {
-
-			@Override
-			public Address retrieveAttribute(ConfirmationItem si) {
-				return ((OrderConfirmation) si.getReport()).getAgreementDetails().getShippingAddress();
-			}
-		};
-		
-		return retr.getInvoiceAddress();
-	}
-
-	public Address getInvoiceAddress(){
-		AttributeRetriever<Address> retr = new AttributeRetriever<Address>(this) {
-
-			@Override
-			public Address retrieveAttribute(ConfirmationItem si) {
-				return ((OrderConfirmation) si.getReport()).getAgreementDetails().getInvoiceAddress();
-			}
-		};
-		
-		return retr.getInvoiceAddress();
-	}
-	
-	private OrderConfirmation getSingleOrderConfirmation(){
-	    Set<ConfirmationItem> sis = getItems(ConfirmationItem.class);
-	    Set<OrderConfirmation> ocs = new HashSet<OrderConfirmation>();
-	    for (ConfirmationItem si:sis){
-            ocs.add((OrderConfirmation) si.getReport());
-	    }
-	    if (ocs.size() == 1)
-                return ocs.iterator().next();
-	    else if (ocs.size() < 1)
-            throw new IllegalStateException("Kein Auftragsbest"+Unicode.aUml+"tigungen gefunden");
-	    else 
-	        throw new IllegalStateException("Mehrere Auftragsbest"+Unicode.aUml+"tigungen gefunden");
 	}
 
 	public String getConfirmationReportNumbers() {

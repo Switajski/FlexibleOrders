@@ -53,7 +53,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
                     packageNo, customerNo, "", date));
         }
         else {
-            document.add(PdfHelper.createExtInfoTable(
+            document.add(ReportViewHelper.createExtInfoTable(
                     customerDetails,
                     ExpectedDeliveryStringCreator.createDeliveryWeekString(
                             aHistory.getAgreementDetails().getExpectedDelivery(), history),
@@ -65,7 +65,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         document.add(ParagraphBuilder.createEmptyLine());
         // insert main table
-        document.add(PdfHelper.createTableWithoutPrices(report));
+        document.add(ReportViewHelper.createTableWithoutPrices(report));
 
     }
 

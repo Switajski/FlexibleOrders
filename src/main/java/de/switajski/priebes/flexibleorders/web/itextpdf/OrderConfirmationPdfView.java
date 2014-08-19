@@ -65,7 +65,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 					date// leftBottom
 					));
 		} else {
-			document.add(PdfHelper.createExtInfoTable(
+			document.add(ReportViewHelper.createExtInfoTable(
 					report.getCustomerDetails(),
 					ExpectedDeliveryStringCreator.createDeliveryWeekString(
 					        report.getAgreementDetails().getExpectedDelivery(), history),
@@ -78,7 +78,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 		document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
-		document.add(PdfHelper.createExtendedTable(report));
+		document.add(ReportViewHelper.createExtendedTable(report));
 
 		// insert footer table
 		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder

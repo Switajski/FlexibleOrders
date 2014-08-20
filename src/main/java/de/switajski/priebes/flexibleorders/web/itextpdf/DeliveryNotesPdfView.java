@@ -39,33 +39,35 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         Address adresse = report.getShippedAddress();
         String heading = "Lieferschein " + report.getDocumentNumber();
 
-        for (Paragraph p : ReportViewHelper.insertAddress(adresse)) {
+        for (Paragraph p : ReportViewHelper.createAddress(adresse))
             document.add(p);
-        }
+        
+        document.add(ReportViewHelper.createDate(date));
 
-        for (Paragraph p : ReportViewHelper.insertHeading(heading)) {
+        for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
-        }
 
         CustomerDetails customerDetails = aHistory.getCustomerDetails();
         if (customerDetails == null) {
-            document.add(ReportViewHelper.insertInfoTable(
+            document.add(ReportViewHelper.createInfoTable(
                     packageNo, customerNo, "", date));
         }
         else {
-            document.add(ReportViewHelper.createExtInfoTable(
-                    customerDetails,
-                    ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                            aHistory.getAgreementDetails().getExpectedDelivery(), history),
-                    aHistory.getAgreementDetails(),
-                    date,
-                    customerNo,
-                    history.getOrderNumbers()));
+            ExtInfoTableParameter param = new ExtInfoTableParameter();
+            ReportViewHelper.mapDocumentNumbersToParam(history, param);
+            param.customerDetails = customerDetails;
+            param.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
+                    aHistory.getAgreementDetails().getExpectedDelivery(), history);
+            param.date = date;
+            param.customerNo = customerNo;
+            param.agreementDetails = aHistory.getAgreementDetails();
+
+            document.add(ReportViewHelper.createExtInfoTable(param));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());
         // insert main table
-        document.add(ReportViewHelper.createTableWithoutPrices(report));
+        document.add(ReportViewHelper.createExtendedTable(report));
 
     }
 

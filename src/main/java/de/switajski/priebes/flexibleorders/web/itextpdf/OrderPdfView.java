@@ -55,15 +55,15 @@ public class OrderPdfView extends PriebesIText5PdfView {
 		Amount vat = netGoods.multiply(Order.VAT_RATE);
 		Amount gross = netGoods.add(vat);
 
-		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
+		for (Paragraph p: ReportViewHelper.createAddress(adresse)){
 			document.add(p);
 		};
 
-		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
+		for (Paragraph p: ReportViewHelper.createHeading(heading)){
 			document.add(p);
 		}
 
-		document.add(ReportViewHelper.insertInfoTable(
+		document.add(ReportViewHelper.createInfoTable(
 				rightTop, rightBottom, leftTop, leftBottom));
 		document.add(ParagraphBuilder.createEmptyLine());
 		

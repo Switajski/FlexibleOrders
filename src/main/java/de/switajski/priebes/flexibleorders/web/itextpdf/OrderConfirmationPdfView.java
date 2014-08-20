@@ -23,76 +23,75 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 @Component
 public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
-	// TODO: make VAT_RATE dependent from order
-	public static final Double VAT_RATE = 0.19d;
+    // TODO: make VAT_RATE dependent from order
+    public static final Double VAT_RATE = 0.19d;
 
-	@Override
-	protected void buildPdfDocument(Map<String, Object> model,
-			Document document, PdfWriter writer, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+    @Override
+    protected void buildPdfDocument(Map<String, Object> model,
+            Document document, PdfWriter writer, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
-		OrderConfirmation report = (OrderConfirmation) model
-				.get(OrderConfirmation.class.getSimpleName());
-		
-		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+        OrderConfirmation report = (OrderConfirmation) model
+                .get(OrderConfirmation.class.getSimpleName());
 
-		String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.getDocumentNumber().toString();
+        DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
 
-		String date = "AB-Datum: "
-				+ dateFormat.format(report.getCreated());
-		String customerNo = "Kundennummer: " + report.getCustomerNumber();
+        String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.getDocumentNumber().toString();
 
-		Amount netGoods = AmountCalculator.sum(AmountCalculator
-				.getAmountsTimesQuantity(report));
-		Amount vat = netGoods.multiply(report.getVatRate());
-		Amount gross = netGoods.add(vat);
+        String date = "AB-Datum: " + dateFormat.format(report.getCreated());
+        String customerNo = "Kundennummer: " + report.getCustomerNumber();
 
-		for (Paragraph p : ReportViewHelper.insertAddress(report
-				.getAgreementDetails().getInvoiceAddress())) {
-			document.add(p);
-		}
+        Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
+        Amount vat = netGoods.multiply(report.getVatRate());
+        Amount gross = netGoods.add(vat);
 
-		for (Paragraph p : ReportViewHelper.insertHeading(heading)) {
-			document.add(p);
-		}
+        for (Paragraph p : ReportViewHelper.createAddress(report.getAgreementDetails().getInvoiceAddress()))
+            document.add(p);
 
-		if (report.getCustomerDetails() == null) {
-			document.add(ReportViewHelper.insertInfoTable(
-					customerNo,// rightTop,
-					ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
-					        report.getAgreementDetails().getExpectedDelivery()),// rightBottom,
-					"",// leftTop,
-					date// leftBottom
-					));
-		} else {
-			document.add(ReportViewHelper.createExtInfoTable(
-					report.getCustomerDetails(),
-					ExpectedDeliveryStringCreator.createDeliveryWeekString(
-					        report.getAgreementDetails().getExpectedDelivery(), history),
-					report.getAgreementDetails(),
-					date,
-					customerNo,
-					history.getOrderNumbers()));
-		}
+        document.add(ReportViewHelper.createDate(date));
 
-		document.add(ParagraphBuilder.createEmptyLine());
+        for (Paragraph p : ReportViewHelper.createHeading(heading))
+            document.add(p);
 
-		// insert main table
-		document.add(ReportViewHelper.createExtendedTable(report));
+        if (report.getCustomerDetails() == null) {
+            document.add(ReportViewHelper.createInfoTable(
+                    customerNo,// rightTop,
+                    ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
+                            report.getAgreementDetails().getExpectedDelivery()),// rightBottom,
+                    "",// leftTop,
+                    date// leftBottom
+            ));
+        }
+        else {
+            document.add(ReportViewHelper.createExtInfoTable(
+                    new ExtInfoTableParameter(
+                            report.getCustomerDetails(),
+                            ExpectedDeliveryStringCreator.createDeliveryWeekString(
+                                    report.getAgreementDetails().getExpectedDelivery(), history),
+                            report.getAgreementDetails(),
+                            date,
+                            customerNo,
+                            history.getOrderNumbers())));
+        }
 
-		// insert footer table
-		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-				.createFooterBuilder(
-						netGoods, vat, null, gross, null)
-				.withTotalWidth(PriebesIText5PdfView.WIDTH);
+        document.add(ParagraphBuilder.createEmptyLine());
 
-		PdfPTable footer = footerBuilder.build();
+        // insert main table
+        document.add(ReportViewHelper.createExtendedTable(report));
 
-		footer.writeSelectedRows(0, -1,
-				/* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-						+ FOOTER_MARGIN_BOTTOM,
-				writer.getDirectContent());
-	}
+        // insert footer table
+        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
+                .createFooterBuilder(
+                        netGoods, vat, null, gross, null)
+                .withTotalWidth(PriebesIText5PdfView.WIDTH);
+
+        PdfPTable footer = footerBuilder.build();
+
+        footer.writeSelectedRows(0, -1,
+                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
+                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
+                        + FOOTER_MARGIN_BOTTOM,
+                writer.getDirectContent());
+    }
 
 }

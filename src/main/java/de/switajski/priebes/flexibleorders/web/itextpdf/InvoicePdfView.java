@@ -47,11 +47,11 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			HttpServletResponse response) throws Exception {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
-		DeliveryHistory deliveryHistory = DeliveryHistory.createWholeFrom(report);
-		AgreementHistory aHistory = new AgreementHistory(deliveryHistory);
+		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+		AgreementHistory aHistory = new AgreementHistory(history);
 
 		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 
-				"" : "Lieferdatum: " + dateFormat.format(getDeliveryNotesDate(report));
+				"" : "Lieferscheindatum: " + dateFormat.format(getDeliveryNotesDate(report));//TODO refactor
 		String customerNo = "Kundennummer: " + report.getCustomerNumber();
 		String documentNo = "Rechnungsnummer: "
 				+ report.getDocumentNumber().toString();
@@ -70,60 +70,26 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				.multiply(report.getVatRate());
 		Amount gross = netGoods.add(vat).add(shippingCosts);
 
-		for (Paragraph p: ReportViewHelper.insertAddress(adresse)){
+		for (Paragraph p: ReportViewHelper.createAddress(adresse))
 			document.add(p);
-		};
 
-		for (Paragraph p: ReportViewHelper.insertHeading(heading)){
+		document.add(ReportViewHelper.createDate(date));
+		
+		for (Paragraph p: ReportViewHelper.createHeading(heading))
 			document.add(p);
-		}
 
 
-		PhraseBuilder pb = new PhraseBuilder("");
-		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
+		ExtInfoTableParameter param = new ExtInfoTableParameter();
+        ReportViewHelper.mapDocumentNumbersToParam(history, param);
+        param.customerDetails = aHistory.getCustomerDetails();
+        param.date = date;
+        param.customerNo = customerNo;
+        param.agreementDetails = aHistory.getAgreementDetails();
+        param.billing = StringUtils.isEmpty(report.getBilling()) ? "" : "Abrechnung: " + report.getBilling();
 
-		String orderConfirmationNumbers = "Auftragsnr.: " + deliveryHistory.getConfirmationReportNumbers();
-		String vendorNo = "";
-		String atu = "";
-		CustomerDetails customerDetails = aHistory.getCustomerDetails();
-		if (customerDetails != null){
-			vendorNo = customerDetails == null ? "" : "Lieferantennr.: " + customerDetails.getVendorNumber();
-			atu = customerDetails.getVatIdNo() == null ? "" : "ATU: " + customerDetails.getVatIdNo();
-		}
-		String billing = StringUtils.isEmpty(report.getBilling()) ? "" : "Abrechnung: " + report.getBilling();
+        document.add(ReportViewHelper.createExtInfoTable(param));
 
-		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
-				PdfPTableBuilder.createPropertiesWithThreeCols())
-
-		.addCell(cellb.withPhrase(
-			pb.withText(date).build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText(customerNo).build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText(vendorNo).build()).build())
-
-		.addCell(cellb.withPhrase(
-			pb.withText(documentNo).build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText(atu).build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText("").build()).build())
-		
-		.addCell(cellb.withPhrase(
-			pb.withText("").build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText(orderConfirmationNumbers).build()).build())
-		.addCell(cellb.withPhrase(
-			pb.withText(billing).build()).build());
-
-		PdfPTable infoTable = infoTableBuilder.build();
-
-		infoTable.setWidthPercentage(100);
-
-		document.add(infoTable);
-
-		
-		document.add(ParagraphBuilder.createEmptyLine());
+        document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
 		if (hasItemsWithDifferentCreationDates(report))

@@ -14,7 +14,9 @@ import org.joda.time.Days;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -26,6 +28,16 @@ public class DeliveryHistory {
 
     private Collection<ReportItem> reportItems;
 
+    public static DeliveryHistory createWholeFrom(Report report) {
+        Set<ReportItem> ris = new HashSet<ReportItem>();
+        if (!report.getItems().isEmpty()) {
+            for (ReportItem ri : report.getItems()) {
+                ris.addAll(ri.getOrderItem().getReportItems());
+            }
+        }
+        return new DeliveryHistory(ris);
+    }
+    
     public static DeliveryHistory createFrom(OrderItem orderItem) {
         return new DeliveryHistory(orderItem.getReportItems());
     }
@@ -65,43 +77,10 @@ public class DeliveryHistory {
         return reportItems.isEmpty();
     }
 
-    public String getOrderNumber() {
-        return this.reportItems
-                .iterator()
-                .next()
-                .getOrderItem()
-                .getOrder()
-                .getOrderNumber();
-    }
-
     public ShippingItem getShippingItemOf(InvoiceItem ii) {
         Set<ShippingItem> sis = this.getItems(ShippingItem.class);
         if (sis.size() > 1) throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
         else return sis.iterator().next();
-    }
-
-    public String getConfirmationReportNumbers() {
-        String s = "";
-        Set<String> nos = new HashSet<String>();
-        for (ConfirmationItem ci : getItems(ConfirmationItem.class)) {
-            nos.add(ci.getReport().getDocumentNumber());
-        }
-        for (String no : nos) {
-            s += no + " ";
-        }
-        return s;
-    }
-
-    public String getDeliveryNotesNumbers() {
-        String s = "";
-        Set<String> nos = new HashSet<String>();
-        for (ShippingItem ci : getItems(ShippingItem.class)) {
-            nos.add(ci.getReport().getDocumentNumber());
-        }
-        for (String no : nos) {
-            s += no + " ";
-        }
-        return s;
     }
 
     public Set<String> getOrderNumbers() {
@@ -111,21 +90,35 @@ public class DeliveryHistory {
         return orders;
 
     }
-
-    public String provideStatus() {
-        String s = "TODO";
-        return s;
+    
+    public Set<String> getConfirmationReportNumbers() {
+        return getNumbers(ConfirmationItem.class);
     }
 
-    public static DeliveryHistory createWholeFrom(Report report) {
-        Set<ReportItem> ris = new HashSet<ReportItem>();
-        if (!report.getItems().isEmpty()) {
-            for (ReportItem ri : report.getItems()) {
-                ris.addAll(ri.getOrderItem().getReportItems());
-            }
+    public Set<String> getDeliveryNotesNumbers() {
+        return getNumbers(ShippingItem.class);
+    }
+    
+    public Set<String> getInvoiceNumbers() {
+        return getNumbers(InvoiceItem.class);
+    }
+    
+    public Set<String> getOrderAgreementNumbers(){
+        return getNumbers(AgreementItem.class);
+    }
+    
+    public Collection<String> getCreditNoteNumbers() {
+        return getNumbers(CreditNoteItem.class);
+    }
+    
+    private <T extends ReportItem> Set<String> getNumbers(Class<? extends ReportItem> clazz) {
+        Set<String> nos = new HashSet<String>();
+        for (ReportItem ci : getItems(clazz)) {
+            nos.add(ci.getReport().getDocumentNumber());
         }
-        return new DeliveryHistory(ris);
+        return nos;
     }
+
 
     /**
      * Differs the order's expected delivery date from order confirmation(s)?
@@ -155,22 +148,27 @@ public class DeliveryHistory {
 
         return hasDifferentDeliveryDates;
     }
+    
+    public String provideStatus() {
+        String s = "TODO";
+        return s;
+    }
 
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         OrderItem orderItem = reportItems.iterator().next().getOrderItem();
-        s += "Orderno: " + orderItem.getOrder().getOrderNumber();
-        s += ", " + orderItem.getOrderedQuantity() + " x ";
-        s += +orderItem.getProduct().getProductNumber() + " "
-                + orderItem.getProduct().getName();
-        s += "\n-------------------------------------";
+        s.append("Orderno: " + orderItem.getOrder().getOrderNumber());
+        s.append(", " + orderItem.getOrderedQuantity() + " x ");
+        s.append(orderItem.getProduct().getProductNumber() + " "
+                + orderItem.getProduct().getName());
+        s.append("\n-------------------------------------");
         for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
-            s += "\n" + type.getSimpleName() + "s: ";
+            s.append("\n" + type.getSimpleName() + "s: ");
             for (ReportItem item : getItems(type)) {
-                s += "\n     " + item;
+                s.append("\n     " + item);
             }
         }
-        return s;
+        return s.toString();
     }
 
 }

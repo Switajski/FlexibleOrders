@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
 public class OrderConfirmationPdfView extends PriebesIText5PdfView {
@@ -27,9 +28,8 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
     public static final Double VAT_RATE = 0.19d;
 
     @Override
-    protected void buildPdfDocument(Map<String, Object> model,
-            Document document, PdfWriter writer, HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
         OrderConfirmation report = (OrderConfirmation) model
                 .get(OrderConfirmation.class.getSimpleName());

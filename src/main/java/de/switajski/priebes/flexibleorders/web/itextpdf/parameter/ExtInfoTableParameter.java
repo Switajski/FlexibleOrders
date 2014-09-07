@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.web.itextpdf;
+package de.switajski.priebes.flexibleorders.web.itextpdf.parameter;
 
 import java.util.Collection;
 

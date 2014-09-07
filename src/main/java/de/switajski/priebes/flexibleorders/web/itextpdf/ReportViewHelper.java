@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
@@ -31,6 +33,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 import de.switajski.priebes.flexibleorders.service.helper.StringUtil;
+import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 public class ReportViewHelper {
 
@@ -260,5 +263,31 @@ public class ReportViewHelper {
         param.deliveryNotesNumbers = history.getDeliveryNotesNumbers();
         param.creditNoteNumbers = history.getCreditNoteNumbers();
         return param;
+    }
+    
+    public static String createdDatesOf(Set<ShippingItem> sis) {
+        String createdDates = "";
+        Iterator<ShippingItem> itr = sis.iterator();
+        while (itr.hasNext()){
+            ShippingItem si = itr.next();
+            createdDates+= PriebesIText5PdfView.dateFormat.format(si.getReport().getCreated());
+            if (itr.hasNext())
+                createdDates += " ";
+            
+        }
+        return createdDates;
+    }
+    
+    public static String documentNumbersOf(Set<ShippingItem> sis) {
+        String documentNumbers = "";
+        Iterator<ShippingItem> itr = sis.iterator();
+        while (itr.hasNext()){
+            ShippingItem si = itr.next();
+            documentNumbers+= si.getReport().getDocumentNumber();
+            if (itr.hasNext())
+                documentNumbers += ", ";
+            
+        }
+        return documentNumbers;
     }
 }

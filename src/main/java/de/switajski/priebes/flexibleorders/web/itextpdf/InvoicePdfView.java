@@ -1,8 +1,8 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -26,25 +25,21 @@ import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
 
 	@Override
-	protected void buildPdfDocument(Map<String, Object> model,
-			Document document, PdfWriter writer, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
 		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
@@ -93,7 +88,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		// insert main table
 		if (hasItemsWithDifferentCreationDates(report))
-			document.add(createTableWithDeliveryNotes(report));
+			document.add(createTableWithDeliveryNotes(report.getItems()));
 		else
 			document.add(createTable(report));
 
@@ -160,10 +155,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		return builder.withFooter(false).build();
 	}
 	
-	private PdfPTable createTableWithDeliveryNotes(Report cReport) throws DocumentException {
+	public static PdfPTable createTableWithDeliveryNotes(Collection<ReportItem> cReport) throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSevenCols());
-		for (ReportItem ii : cReport.getItemsOrdered()) {
+		for (ReportItem ii : cReport) {
 			Set<ShippingItem> sis = DeliveryHistory.createFrom(ii.getOrderItem()).getItems(ShippingItem.class);
 			
 			if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
@@ -178,9 +173,9 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				// EK per Stueck
 				list.add(ii.getOrderItem().getNegotiatedPriceNet().toString());
 				// Lieferscheinnr.
-				list.add(documentNumbersOf(sis));
+				list.add(ReportViewHelper.documentNumbersOf(sis));
 				// Lieferdatum
-				list.add(createdDatesOf(sis));
+				list.add(ReportViewHelper.createdDatesOf(sis));
 				// gesamt
 				list.add(ii
 						.getOrderItem()
@@ -193,34 +188,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		}
 
 		return builder.withFooter(false).build();
-	}
-
-	//TODO: Move to Util
-	private String createdDatesOf(Set<ShippingItem> sis) {
-		String createdDates = "";
-		Iterator<ShippingItem> itr = sis.iterator();
-		while (itr.hasNext()){
-			ShippingItem si = itr.next();
-			createdDates+= dateFormat.format(si.getReport().getCreated());
-			if (itr.hasNext())
-				createdDates += " ";
-			
-		}
-		return createdDates;
-	}
-
-	//TODO: Move to Util
-	private String documentNumbersOf(Set<ShippingItem> sis) {
-		String documentNumbers = "";
-		Iterator<ShippingItem> itr = sis.iterator();
-		while (itr.hasNext()){
-			ShippingItem si = itr.next();
-			documentNumbers+= si.getReport().getDocumentNumber();
-			if (itr.hasNext())
-				documentNumbers += ", ";
-			
-		}
-		return documentNumbers;
 	}
 
 	public boolean hasItemsWithDifferentCreationDates(Invoice invoice){

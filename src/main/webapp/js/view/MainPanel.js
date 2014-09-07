@@ -126,10 +126,10 @@ Ext.define('MyApp.view.MainPanel', {
 						}, {
 							xtype : 'InvoiceItemGrid',
 							store : 'InvoiceItemDataStore'
-						},{
-							xtype : 'InvoiceItemGrid',
-							store : 'InvoiceItemDataStore'
-						}
+						}/*,{
+							xtype : 'CreditNoteItemGrid',
+							store : 'CreditNoteItemDataStore'
+						}*/
 
 				]
 			}]

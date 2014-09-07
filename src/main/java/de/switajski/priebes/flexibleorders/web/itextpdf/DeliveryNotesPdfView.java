@@ -17,14 +17,13 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
 public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
     @Override
-    protected void buildPdfDocument(Map<String, Object> model,
-            Document document, PdfWriter writer, HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         DeliveryNotes report = (DeliveryNotes) model.get(DeliveryNotes.class
                 .getSimpleName());

@@ -13,16 +13,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 /**
  * 
  * @author Marek Switajski
- *
+ * 
  */
 @Component
 public class ArchivePdfView extends PriebesIText5PdfView {
 
-	@Override
-	protected void buildPdfDocument(Map<String, Object> model,
-			Document document, PdfWriter writer, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+    @Override
+    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
-	}
+    }
 
 }

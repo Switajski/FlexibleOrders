@@ -9,5 +9,8 @@
         <menu:category id="c_customer" z="Wa+bVSiDyYo/wX1nGU1B/z+OKhE=">
             <menu:item id="i_customer_itemlist" messageCode="global_menu_itemlist" url="/customers/listitems"/>
         </menu:category>
+        <menu:category id="c_creditnotes" z="Wa+bVSiDyYo/wX1nGU1B/z+OKhE=">
+            <menu:item id="i_creditnotes_createissue" messageCode="global_menu_createissue" url="/creditnotes/createissue"/>
+        </menu:category>
     </menu:menu>
 </div>

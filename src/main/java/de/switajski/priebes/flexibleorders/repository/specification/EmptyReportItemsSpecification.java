@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public class ReportItemsAreEmptySpecification implements Specification<OrderItem>{
+public class EmptyReportItemsSpecification implements Specification<OrderItem>{
 
 	@Override
 	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,

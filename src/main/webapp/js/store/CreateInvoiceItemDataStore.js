@@ -1,6 +1,6 @@
-Ext.define('MyApp.store.CreateInvoiceItemDataStore', {
+Ext.define('MyApp.store.CreateCreditNoteItemDataStore', {
     extend: 'MyApp.store.ItemDataStore',
-    alias: 'widget.CreateInvoiceItemDataStore',
+    alias: 'widget.CreateCreditNoteItemDataStore',
 	customurl: '/FlexibleOrders/reportitems/listAllToBeProcessed',
-    groupField: 'deliveryNotesNumber'
+    groupField: 'creditNoteNumber'
 });

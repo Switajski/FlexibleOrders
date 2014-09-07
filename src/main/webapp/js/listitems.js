@@ -13,22 +13,25 @@ Ext.application({
         'KundeData'
     ],
     stores: [
+        'ArtikelDataStore',
+        'ArchiveItemDataStore',
         'BestellungDataStore',
         'ItemDataStore',
-        'ShippingItemDataStore',
         'InvoiceItemDataStore',
-        'ArchiveItemDataStore',
-        'ArtikelDataStore',
-        'KundeDataStore'
+        'CreditNoteItemDataStore',
+        'KundeDataStore',
+        'ShippingItemDataStore'
     ],
     views: [
         'MainPanel',
         'TransitionWindow',
 		'ConfirmWindow',
+		'IssueWindow',
         'DeliverWindow',
         'PositionGridPanel',
         'AgreementItemGridPanel',
         'OrderItemGridPanel',
+        'CreditNoteItemGridPanel',
         'ShippingItemGridPanel',
         'InvoiceItemGridPanel',
         'ArchiveItemGridPanel',
@@ -39,6 +42,7 @@ Ext.application({
         'MyController',
         'AgreementController',
         'CustomerController',
+        'IssueController',
         'ConfirmController',
         'DeliverController',
         'InvoiceController',

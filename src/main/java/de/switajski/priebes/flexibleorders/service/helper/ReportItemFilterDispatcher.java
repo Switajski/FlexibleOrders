@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
@@ -78,6 +79,8 @@ public class ReportItemFilterDispatcher {
 			spec = where(new InvoiceItemToBePaidSpec());
 		if (status.equals("completed"))
 			spec = where(new ReceiptItemCompletedSpec());
+		if (status.equals("issued"))
+            spec = where(new IssuedItemSpec());
 		if (spec == null)
 			throw new IllegalArgumentException("Status nicht angegeben");
 		return where(spec);

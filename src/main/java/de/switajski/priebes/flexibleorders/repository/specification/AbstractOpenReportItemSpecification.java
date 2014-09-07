@@ -86,7 +86,7 @@ public abstract class AbstractOpenReportItemSpecification implements
         return seSq;
     }
 
-    private Class<? extends ReportItem> getReportItemClassToRetrieve() {
+    Class<? extends ReportItem> getReportItemClassToRetrieve() {
         return WholesaleProcessSteps.getPreviousReportItemStep(getReportItemClassToSubtract());
     }
 

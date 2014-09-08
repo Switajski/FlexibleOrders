@@ -30,7 +30,9 @@ Ext.define('MyApp.controller.ConfirmController', {
 		//        }
 		//	}
 		//});
-		createConfirmationReportStore.filter('customer', record.data.customer);
+		createConfirmationReportStore.clearFilter(true);
+		createConfirmationReportStore.filter([{property: 'customer', value:record.data.customerNumber},
+			{property: 'status', value:'ordered'}]);
 
 		var confirmWindow = Ext.create('MyApp.view.ConfirmWindow', {
 					id : "ConfirmWindow",

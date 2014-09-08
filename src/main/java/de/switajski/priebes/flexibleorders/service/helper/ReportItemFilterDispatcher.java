@@ -51,7 +51,7 @@ public class ReportItemFilterDispatcher {
 	}
 
 	private Customer retrieveCustomerSafely(String customerNo) {
-		Customer customer = customerRepo.findOne(
+		Customer customer = customerRepo.findByCustomerNumber(
 				Long.parseLong(customerNo));
 		if (customer == null)
 			throw new IllegalArgumentException(

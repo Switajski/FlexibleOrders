@@ -58,7 +58,7 @@ public class ReportItemController extends ExceptionController {
 
 		if (filterMap != null && filterMap.containsKey("customer")
 				&& filterMap.get("customer") != null) {
-			customer = customerRepo.findOne(Long.parseLong(filterMap
+			customer = customerRepo.findByCustomerNumber(Long.parseLong(filterMap
 					.get("customer")));
 			if (customer == null)
 				throw new IllegalArgumentException(

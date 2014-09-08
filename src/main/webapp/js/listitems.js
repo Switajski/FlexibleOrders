@@ -18,7 +18,6 @@ Ext.application({
         'BestellungDataStore',
         'ItemDataStore',
         'InvoiceItemDataStore',
-        'CreditNoteItemDataStore',
         'KundeDataStore',
         'ShippingItemDataStore'
     ],
@@ -31,7 +30,6 @@ Ext.application({
         'PositionGridPanel',
         'AgreementItemGridPanel',
         'OrderItemGridPanel',
-        'CreditNoteItemGridPanel',
         'ShippingItemGridPanel',
         'InvoiceItemGridPanel',
         'ArchiveItemGridPanel',
@@ -42,7 +40,7 @@ Ext.application({
         'MyController',
         'AgreementController',
         'CustomerController',
-        'IssueController',
+        'IssueController', // FIXME: removing that useless line of code makes the extjs application not starting
         'ConfirmController',
         'DeliverController',
         'InvoiceController',

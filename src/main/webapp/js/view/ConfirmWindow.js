@@ -83,7 +83,7 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					xtype : 'datefield',
 					format : 'd/m/Y',
 					allowBlank : true,
-					fieldLabel : 'vorauss. Liefertermin',
+					fieldLabel : 'Liefertermin',
 					minValue : Ext.Date.format(new Date(), 'd/m/Y'),
 					minText : 'Datum liegt in der Vergangenheit',
 					name : 'expectedDelivery'
@@ -91,10 +91,6 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					xtype : 'fieldset',
 					flex : 1,
 					items : [{
-								xtype : 'customercombobox',
-								id : 'mainCustomerComboBox',
-								fieldLabel : 'Kunde'
-							}, {
 								xtype : 'displayfield',
 								anchor : '100%',
 								name : 'customerNumber',

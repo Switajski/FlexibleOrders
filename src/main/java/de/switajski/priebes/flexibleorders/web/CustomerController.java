@@ -21,7 +21,6 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerDtoConverterServiceImpl;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
-import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @RequestMapping("/customers")
 @Controller
@@ -40,7 +39,7 @@ public class CustomerController extends ExceptionController {
 				page - 1,
 				limit));
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
-				JsonSerializationHelper.convertToJsonCustomers(customers
+				CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
 						.getContent()));
 		response.setTotal(customers.getTotalElements());
 		return response;
@@ -52,7 +51,6 @@ public class CustomerController extends ExceptionController {
 		return "customers/listitems";
 	}
 
-	// TODO: illegal use of customerRepository
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -63,7 +61,6 @@ public class CustomerController extends ExceptionController {
 		return ExtJsResponseCreator.createResponse(c);
 	}
 
-	// TODO: illegal use of customerRepository 
 	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {

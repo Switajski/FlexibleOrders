@@ -15,6 +15,7 @@ import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 /**
+ * TODO: try Jackson serializer with public attributes - anyhow this is a data structure
  * Can have several orders
  * @author Marek Switajski
  *
@@ -24,11 +25,13 @@ public class JsonCreateReportRequest {
 	
 	private Long customerId;
 	
-	private String paymentConditions;
+	private String paymentConditions, mark;
 	
 	private Date created;
 
 	private String name1, name2, street, city, country;
+	
+	private String contact1, contact2, contact3, contact4;
 	
 	private Integer postalCode;
 	
@@ -52,6 +55,12 @@ public class JsonCreateReportRequest {
 	private Date expectedDelivery;
 
 	private Long deliveryMethodNo;
+
+    private String saleRepresentative;
+
+    private String valueAddedTaxIdNo;
+
+    private String vendorNumber;
 
 	public Long getCustomerId() {
 		return customerId;
@@ -285,4 +294,69 @@ public class JsonCreateReportRequest {
 	public void setDeliveryMethodNo(Long deliveryMethodNo) {
 		this.deliveryMethodNo = deliveryMethodNo;
 	}
+
+    public String getContact1() {
+        return contact1;
+    }
+
+    public void setContact1(String contact1) {
+        this.contact1 = contact1;
+    }
+
+    public String getContact2() {
+        return contact2;
+    }
+
+    public void setContact2(String contact2) {
+        this.contact2 = contact2;
+    }
+
+    public String getContact3() {
+        return contact3;
+    }
+
+    public void setContact3(String contact3) {
+        this.contact3 = contact3;
+    }
+
+    public String getContact4() {
+        return contact4;
+    }
+
+    public void setContact4(String contact4) {
+        this.contact4 = contact4;
+    }
+
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public String getSaleRepresentative() {
+        return saleRepresentative;
+    }
+
+    public void setSaleRepresentative(String saleRepresentative) {
+        this.saleRepresentative = saleRepresentative;
+    }
+
+    public String getValueAddedTaxIdNo() {
+        return valueAddedTaxIdNo;
+    }
+
+    public void setValueAddedTaxIdNo(String valueAddedTaxIdNo) {
+        this.valueAddedTaxIdNo = valueAddedTaxIdNo;
+    }
+
+    public String getVendorNumber() {
+        return vendorNumber;
+    }
+
+    public void setVendorNumber(String vendorNumber) {
+        this.vendorNumber = vendorNumber;
+    }
+
 }

@@ -9,12 +9,9 @@ import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
 import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;
-import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 /**
  * NOT USED - Backup for filters implementation. Method from former controller-filter-method:
@@ -97,6 +94,7 @@ public class JsonSerializationHelper {
 		for (DeliveryMethod c : deliveryMethods){
 			DeliveryMethodDto dto = new DeliveryMethodDto();
 			dto.setId(c.getId());
+			dto.setDeliveryMethodNo(c.getId());
 			dto.setName(c.getName());
 			dto.setName1(c.getAddress().getName1());
 			dto.setName2(c.getAddress().getName2());

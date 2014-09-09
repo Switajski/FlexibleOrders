@@ -64,6 +64,12 @@ Ext.define('MyApp.view.ConfirmWindow', {
 		// title : 'Kunde',
 		flex : 1,
 		items : [{
+					id : 'newOrderConfirmationNumber',
+					xtype : 'textfield',
+					anchor : '100%',
+					fieldLabel : 'ABnr',
+					name : 'orderConfirmationNumber'
+				}, {
 					xtype : 'displayfield',
 					anchor : '100%',
 					name : 'customerNumber',
@@ -74,32 +80,69 @@ Ext.define('MyApp.view.ConfirmWindow', {
 					name : 'lastName',
 					fieldLabel : 'Nachname'
 				}, {
-					id : 'newOrderConfirmationNumber',
-					anchor : '100%',
-					xtype : 'textfield',
-					fieldLabel : 'ABnr',
-					name : 'orderConfirmationNumber'
-				}, {
 					xtype : 'datefield',
 					format : 'd/m/Y',
+					anchor : '100%',
 					allowBlank : true,
 					fieldLabel : 'Liefertermin',
 					minValue : Ext.Date.format(new Date(), 'd/m/Y'),
 					minText : 'Datum liegt in der Vergangenheit',
 					name : 'expectedDelivery'
 				}, {
+					xtype : 'deliverymethodcombobox',
+					anchor : '100%',
+					store : 'DeliveryMethodDataStore',
+					id : 'confirmDMComboBox',
+					fieldLabel : 'Lieferart'
+				}, {
 					xtype : 'fieldset',
 					flex : 1,
+					title : 'Details',
 					items : [{
-								xtype : 'displayfield',
+								xtype : 'textfield',
 								anchor : '100%',
-								name : 'customerNumber',
-								fieldLabel : 'Kundennr'
+								name : 'contact1',
+								fieldLabel : 'Anspr.1'
 							}, {
-								xtype : 'displayfield',
+								xtype : 'textfield',
 								anchor : '100%',
-								name : 'customerNumber',
-								fieldLabel : 'Kundennr'
+								name : 'contact2',
+								fieldLabel : 'Anspr.2'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'contact3',
+								fieldLabel : 'Anspr.3'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'contact4',
+								fieldLabel : 'Anspr.4'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'mark',
+								fieldLabel : 'Ihr Zeichen'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'paymentConditions',
+								fieldLabel : 'Zahlungskond.'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'saleRepresentative',
+								fieldLabel : 'Vertreter'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'vatIdNo',
+								fieldLabel : 'GUT'
+							}, {
+								xtype : 'textfield',
+								anchor : '100%',
+								name : 'vendorNumber',
+								fieldLabel : 'Lieferantennr.'
 							}]
 				}]
 	},

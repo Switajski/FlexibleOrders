@@ -48,7 +48,6 @@ public class DeliveryMethodController extends ExceptionController {
 		return response;
 	}
 
-	// TODO: illegal use of customerRepository
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse create(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -59,7 +58,6 @@ public class DeliveryMethodController extends ExceptionController {
 		return ExtJsResponseCreator.createResponse(c);
 	}
 
-	// TODO: illegal use of customerRepository 
 	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse udpate(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {

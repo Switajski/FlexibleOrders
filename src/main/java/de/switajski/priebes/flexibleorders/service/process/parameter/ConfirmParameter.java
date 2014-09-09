@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ConfirmParameter {
@@ -14,6 +15,7 @@ public class ConfirmParameter {
 	public Address shippingAddress;
 	public Address invoiceAddress;
 	public List<ItemDto> orderItems;
+	public CustomerDetails customerDetails;
 
 	public ConfirmParameter(String orderNumber, String confirmNumber,
 			Date expectedDelivery, Long deliveryMethodNoNumber, Address shippingAddress,

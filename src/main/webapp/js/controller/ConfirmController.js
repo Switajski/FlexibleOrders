@@ -16,7 +16,7 @@ Ext.define('MyApp.controller.ConfirmController', {
 	},
 	
 	onConfirm : function(record) {
-		confirmationReportNumber = 'AB' + record.data.orderNumber;
+		confirmationReportNumber = record.data.orderNumber.replace(/B/g, "AB");
 
 		record.data.confirmationReportNumber = record.data.documentNumber;
 		var createConfirmationReportStore = MyApp.getApplication()
@@ -30,6 +30,8 @@ Ext.define('MyApp.controller.ConfirmController', {
 		//        }
 		//	}
 		//});
+		//
+		// See solution how DeliveryHistoryStore works
 		createConfirmationReportStore.clearFilter(true);
 		createConfirmationReportStore.filter([{property: 'customer', value:record.data.customerNumber},
 			{property: 'status', value:'ordered'}]);
@@ -42,33 +44,43 @@ Ext.define('MyApp.controller.ConfirmController', {
 										createConfirmationReportStore);
 					}
 				});
-		kunde = Ext.getStore('KundeDataStore').findRecord("id",
-				record.data.customer);
-		kundeId = kunde.data.id;
+		kunde = Ext.getStore('KundeDataStore').findRecord("customerNumber",
+				record.data.customerNumber);
 		email = kunde.data.email;
 
 		confirmWindow.show();
 		confirmWindow.down('form').getForm().setValues({
-					name1 : kunde.data.name1,
-					name2 : kunde.data.name2,
-					street : kunde.data.street,
-					postalCode : kunde.data.postalCode,
-					city : kunde.data.city,
-					country : kunde.data.country,
 					email : kunde.data.email,
 					firstName : kunde.data.firstName,
 					id : kunde.data.id,
 					lastName : kunde.data.lastName,
 					phone : kunde.data.phone,
 					customerNumber : kunde.data.customerNumber,
+
+					name1 : kunde.data.name1,
+					name2 : kunde.data.name2,
+					street : kunde.data.street,
+					postalCode : kunde.data.postalCode,
+					city : kunde.data.city,
+					country : kunde.data.country,
 					
 					dname1 : kunde.data.dname1,
 					dname2 : kunde.data.dname2,
 					dstreet : kunde.data.dstreet,
 					dpostalCode :kunde.data.dpostalCode,
 					dcity : kunde.data.dcity,
-					dcountry : kunde.data.dcountry
-					
+					dcountry : kunde.data.dcountry,
+
+				    contact1 : kunde.data.contact1,
+				    contact2 : kunde.data.contact2,
+				    contact3 : kunde.data.contact3,
+				    contact4 : kunde.data.contact4,
+			
+			        mark : kunde.data.mark,
+			        paymentConditions : kunde.data.paymentConditions,
+			        saleRepresentative : kunde.data.saleRepresentative,
+			        vatIdNo : kunde.data.vatIdNo,
+			        vendorNumber : kunde.data.vendorNumber
 				});
 		// somehow the id is deleted onShow
 		// Ext.getCmp('confirmationReportNumber')
@@ -104,6 +116,18 @@ Ext.define('MyApp.controller.ConfirmController', {
 					dpostalCode :form.getValues().dpostalCode,
 					dcity : form.getValues().dcity,
 					dcountry : form.getValues().dcountry,
+					
+					contact1 : form.getValues().contact1,
+				    contact2 : form.getValues().contact2,
+				    contact3 : form.getValues().contact3,
+				    contact4 : form.getValues().contact4,
+			
+			        mark : form.getValues().mark,
+			        paymentConditions : form.getValues().paymentConditions,
+			        saleRepresentative : form.getValues().saleRepresentative,
+			        valueAddedTaxIdNo : form.getValues().vatIdNo,
+			        vendorNumber : form.getValues().vendorNumber,
+			        //TODO DeliveryMethodNo
 					
 					items : Ext.pluck(createConfirmationReportStore.data.items,
 							'data')

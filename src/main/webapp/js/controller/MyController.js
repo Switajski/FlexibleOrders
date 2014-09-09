@@ -26,20 +26,21 @@ Ext.define('MyApp.controller.MyController', {
 	extend : 'Ext.app.Controller',
 
 	id : 'MyController',
-	models : ['BestellungData', 'ItemData', 'KundeData'],
-	stores : ['BestellungDataStore', 'ItemDataStore',
-			'KundeDataStore', 'InvoiceItemDataStore', 'ShippingItemDataStore',
-			'ArchiveItemDataStore', 'OrderNumberDataStore', 'AgreementItemDataStore',
-			'DeliveryNotesItemDataStore', 'InvoiceNumberDataStore',
-			'CreateOrderDataStore', 'CreateDeliveryNotesItemDataStore',
-			'CreateInvoiceItemDataStore', 'DeliveryNotesItemDataStore',
-			'CreateConfirmationReportItemDataStore', 'DeliveryHistoryDataStore',
-			'CreateAgreementItemDataStore'],
-	views : ['MainPanel', 'CreateCustomerWindow',
-			'BestellpositionGridPanel', 'DeliveryHistoryPanel', 'AgreementItemGridPanel',
-			'ConfirmWindow', 'DeliverWindow', 'AgreementWindow',
-			'OrderNumberComboBox', 'InvoiceNumberComboBox',
-			'OrderWindow', 'InvoiceWindow', 'DeliveryNotesItemGridPanel'],
+	models : ['BestellungData', 'ItemData', 'KundeData', 'DeliveryMethodData'],
+	stores : ['BestellungDataStore', 'ItemDataStore', 'KundeDataStore',
+			'InvoiceItemDataStore', 'ShippingItemDataStore',
+			'ArchiveItemDataStore', 'OrderNumberDataStore',
+			'AgreementItemDataStore', 'DeliveryNotesItemDataStore',
+			'InvoiceNumberDataStore', 'CreateOrderDataStore',
+			'CreateDeliveryNotesItemDataStore', 'CreateInvoiceItemDataStore',
+			'DeliveryNotesItemDataStore', 'DeliveryMethodDataStore',
+			'CreateConfirmationReportItemDataStore',
+			'DeliveryHistoryDataStore', 'CreateAgreementItemDataStore'],
+	views : ['MainPanel', 'CreateCustomerWindow', 'BestellpositionGridPanel',
+			'DeliveryHistoryPanel', 'AgreementItemGridPanel', 'ConfirmWindow',
+			'DeliverWindow', 'AgreementWindow', 'OrderNumberComboBox',
+			'InvoiceNumberComboBox', 'OrderWindow', 'InvoiceWindow',
+			'DeliveryNotesItemGridPanel', 'DeliveryMethodComboBox'],
 	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
 	// implementieren
 
@@ -115,7 +116,7 @@ Ext.define('MyApp.controller.MyController', {
 		return buttons;
 	},
 
-	retrieveChosenCustomerSavely : function(){
+	retrieveChosenCustomerSavely : function() {
 		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
 		if (customerId == 0 || customerId == "" || customerId == null) {
 			Ext.MessageBox.show({
@@ -126,10 +127,10 @@ Ext.define('MyApp.controller.MyController', {
 					});
 			return;
 		}
-		
+
 		var customer = MyApp.getApplication().getStore('KundeDataStore')
 				.getById(customerId);
-				
+
 		return customer;
 	},
 
@@ -157,13 +158,13 @@ Ext.define('MyApp.controller.MyController', {
 						+ '.pdf', '_blank');
 		win.focus();
 	},
-	
+
 	showAbPdf : function(button, event, options) {
 		var win = window.open('/leanorders/orderConfirmations/'
 						+ this.activeBestellnr + '.pdf', '_blank');
 		win.focus();
 	},
-	
+
 	showRechnungPdf : function(button, event, options) {
 		var win = window.open('/leanorders/invoices/' + this.activeBestellnr
 						+ '.pdf', '_blank');
@@ -178,14 +179,14 @@ Ext.define('MyApp.controller.MyController', {
 			}
 		}
 	},
-	
-	syncAll : function(){
+
+	syncAll : function() {
 		var allGrids = Ext.ComponentQuery.query('PositionGrid');
-				allGrids.forEach(function(grid) {
-							grid.getStore().load();
-						});
+		allGrids.forEach(function(grid) {
+					grid.getStore().load();
+				});
 	},
-	
+
 	complete : function(event, anr, record) {
 		record.data.accountNumber = record.data.invoiceNumber
 				.replace(/R/g, "Q");
@@ -241,40 +242,54 @@ Ext.define('MyApp.controller.MyController', {
 
 	deleteReport : function(varDocumentNumber) {
 		var request = Ext.Ajax.request({
-			url : '/FlexibleOrders/transitions/deleteReport',
-			params : {
-				documentNumber : varDocumentNumber
-			},
-			success : function(response) {
-				controller = MyApp.getApplication().getController('MyController');
-				controller.sleep(500);
-				controller.syncAll();
-			}
-		});
+					url : '/FlexibleOrders/transitions/deleteReport',
+					params : {
+						documentNumber : varDocumentNumber
+					},
+					success : function(response) {
+						controller = MyApp.getApplication()
+								.getController('MyController');
+						controller.sleep(500);
+						controller.syncAll();
+					}
+				});
 	},
-	
-	onShowSums : function(){
-		statesToGrids = [
-			{state : 'ship', grid : 'ShippingItemGrid', text : 'Auftragsbest&auml;tigungen'},
-			{state : 'shipped', grid : 'DeliveryNotesItemGrid', text : 'Lieferscheine'},
-			{state : 'invoiced', grid : 'InvoiceItemGrid', text : 'Rechnungen'}],
-		
+
+	onShowSums : function() {
+		statesToGrids = [{
+					state : 'ship',
+					grid : 'ShippingItemGrid',
+					text : 'Auftragsbest&auml;tigungen'
+				}, {
+					state : 'shipped',
+					grid : 'DeliveryNotesItemGrid',
+					text : 'Lieferscheine'
+				}, {
+					state : 'invoiced',
+					grid : 'InvoiceItemGrid',
+					text : 'Rechnungen'
+				}],
+
 		statesToGrids.forEach(function(stateToGrid) {
-			Ext.Ajax.request({
-				url : '/FlexibleOrders/statistics/openAmount',
-				method : 'GET',
-				params : {
-					state : stateToGrid.state
-				},
-				success : function(response) {
-					var text = response.responseText;
-					shippedAmount = Ext.JSON.decode(text).data;
-					Ext.getCmp(stateToGrid.grid).setTitle(
-						stateToGrid.text + ' - Offener Betrag: ' 
-						+ shippedAmount.value + ' ' + shippedAmount.currency);
-				}
-			});
-		});
+					Ext.Ajax.request({
+								url : '/FlexibleOrders/statistics/openAmount',
+								method : 'GET',
+								params : {
+									state : stateToGrid.state
+								},
+								success : function(response) {
+									var text = response.responseText;
+									shippedAmount = Ext.JSON.decode(text).data;
+									Ext
+											.getCmp(stateToGrid.grid)
+											.setTitle(stateToGrid.text
+															+ ' - Offener Betrag: '
+															+ shippedAmount.value
+															+ ' '
+															+ shippedAmount.currency);
+								}
+							});
+				});
 	}
 
 });

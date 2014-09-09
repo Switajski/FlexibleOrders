@@ -166,7 +166,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		console.error('not overidden');
 	},
 	onitemdblclick : function(grid, record) {
-		console.error('not implemented 658276');
+		this.onDeliveryHistoryClick(null, null, null, null, null, record);
 	},
 	onRemoveClick : function(view, a, b, column, event, record, f) {
 		console.log('deliveryNotesItemGrid - customtransitionfunction');

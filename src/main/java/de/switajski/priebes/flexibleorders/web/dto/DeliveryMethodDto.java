@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 @JsonAutoDetect
 public class DeliveryMethodDto {
 
-	private Long id;
+	private Long id, deliveryMethodNo;
 	
     private String name, name1, name2, street, city, country;
     
@@ -79,5 +79,13 @@ public class DeliveryMethodDto {
 	public String getName() {
 		return name;
 	}
+
+    public void setDeliveryMethodNo(Long deliveryMethodNo) {
+        this.deliveryMethodNo = deliveryMethodNo;
+    }
+
+    public Long getDeliveryMethodNo() {
+        return deliveryMethodNo;
+    }
     
 }

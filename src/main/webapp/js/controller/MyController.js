@@ -222,8 +222,9 @@ Ext.define('MyApp.controller.MyController', {
 		var stores = new Array();
 		stores[0] = Ext.data.StoreManager.lookup('ItemDataStore');
 		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
-		stores[2] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
-		stores[3] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
+		stores[2] = Ext.data.StoreManager.lookup('AgreementItemDataStore');
+		stores[3] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
+		stores[4] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
 
 		stores.forEach(function(store) {
 					found = false;

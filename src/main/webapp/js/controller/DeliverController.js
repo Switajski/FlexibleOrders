@@ -20,7 +20,7 @@ Ext.define('MyApp.controller.DeliverController', {
 				.getStore('CreateDeliveryNotesItemDataStore');
 		createDeliveryNotesStore.filter([{
 					property : "customer",
-					value : record.data.customer
+					value : record.data.customerNumber
 				}, {
 					property : "status",
 					value : "confirmed"

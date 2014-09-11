@@ -20,7 +20,7 @@ Ext.define('MyApp.controller.InvoiceController', {
 		var createInvoiceStore = MyApp.getApplication()
 				.getStore('CreateInvoiceItemDataStore');
 		createInvoiceStore.filter([{
-					property : "customer",
+					property : "customerNumber",
 					value : record.data.customer
 				}, {
 					property : "status",

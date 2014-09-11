@@ -19,7 +19,7 @@ Ext.define('MyApp.controller.IssueController', {
 		var createCreditNoteStore = MyApp.getApplication()
 				.getStore('CreateDeliveryNotesItemDataStore');
 		createCreditNoteStore.filter([{
-					property : "customer",
+					property : "customerNumber",
 					value : record.data.customer
 				}, {
 					property : "status",

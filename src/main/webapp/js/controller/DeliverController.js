@@ -19,7 +19,7 @@ Ext.define('MyApp.controller.DeliverController', {
 		var createDeliveryNotesStore = MyApp.getApplication()
 				.getStore('CreateDeliveryNotesItemDataStore');
 		createDeliveryNotesStore.filter([{
-					property : "customer",
+					property : "customerNumber",
 					value : record.data.customerNumber
 				}, {
 					property : "status",

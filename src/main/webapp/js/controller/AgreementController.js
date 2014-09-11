@@ -19,8 +19,8 @@ Ext.define('MyApp.controller.AgreementController', {
 		var createAgreementStore = MyApp.getApplication()
 				.getStore('CreateAgreementItemDataStore');
 		createAgreementStore.filter([{
-					property : "customer",
-					value : record.data.customer
+					property : "customerNumber",
+					value : record.data.customerNumber
 				}, {
 					property : "status",
 					value : "agreed"

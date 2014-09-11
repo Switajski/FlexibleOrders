@@ -20,7 +20,7 @@ Ext.define('MyApp.controller.IssueController', {
 				.getStore('CreateDeliveryNotesItemDataStore');
 		createCreditNoteStore.filter([{
 					property : "customerNumber",
-					value : record.data.customer
+					value : record.data.customerNumber
 				}, {
 					property : "status",
 					value : "confirmed"

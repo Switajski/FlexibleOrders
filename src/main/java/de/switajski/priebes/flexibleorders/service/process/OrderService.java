@@ -144,7 +144,7 @@ public class OrderService {
 		cr.setDocumentNumber(confirmParameter.confirmNumber);
 		cr.setAgreementDetails(agreeDet);
 		cr.setCustomerNumber(cust.getCustomerNumber());
-		cr.setCustomerDetails(cust.getDetails());
+		cr.setCustomerDetails(confirmParameter.customerDetails);
 
 		for (ItemDto entry : confirmParameter.orderItems) {
 			OrderItem oi = orderItemRepo.findOne(entry.getId());

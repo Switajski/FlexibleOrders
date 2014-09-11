@@ -105,8 +105,10 @@ public class Address {
     }
 
     public boolean isComplete() {
-        if (name1 == null && name2 == null) return false;
-        if (street == null || city == null || postalCode < 1 || country == null) return false;
+        if (name1 == null && name2 == null) 
+            return false;
+        if (street == null || city == null || postalCode < 1) 
+            return false;
         return true;
     }
 

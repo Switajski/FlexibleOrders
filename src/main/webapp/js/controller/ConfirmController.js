@@ -127,7 +127,8 @@ Ext.define('MyApp.controller.ConfirmController', {
 			        saleRepresentative : form.getValues().saleRepresentative,
 			        valueAddedTaxIdNo : form.getValues().vatIdNo,
 			        vendorNumber : form.getValues().vendorNumber,
-			        //TODO DeliveryMethodNo
+			        
+			        deliveryMethodNo : form.getValues().deliverymethod,
 					
 					items : Ext.pluck(createConfirmationReportStore.data.items,
 							'data')

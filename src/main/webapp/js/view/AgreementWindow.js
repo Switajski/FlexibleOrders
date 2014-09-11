@@ -1,6 +1,6 @@
 Ext.define('MyApp.view.AgreementWindow', {
 	extend : 'MyApp.view.TransitionWindow',
-	title : 'Auftrag liefern',
+	title : 'Auftrag annehmen',
 	itemid : 'AgreementWindow',
 	alias : 'widget.AgreementWindow',
 	layout : 'fit',

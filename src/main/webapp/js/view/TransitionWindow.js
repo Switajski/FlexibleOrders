@@ -1,6 +1,6 @@
 Ext.define('MyApp.view.TransitionWindow', {
 	extend : 'Ext.window.Window',
-	title : 'Auftrag liefern',
+	title : 'Abstrakte Transaktion',
 	itemid : 'TransitionWindow',
 	alias : 'widget.TransitionWindow',
 	layout : 'fit',

@@ -12,7 +12,7 @@ Ext.define('MyApp.controller.AgreementController', {
 				});
 	},
 	
-	agree : function(event, record) {
+	onAgree : function(event, record) {
 		agreementNumber = record.data.documentNumber.replace(/AB/g, "AU");
 
 		record.data.agreementNumber = record.data.documentNumber;
@@ -48,7 +48,7 @@ Ext.define('MyApp.controller.AgreementController', {
 		Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
 	},
 
-	deliver2 : function(event, record, createAgreementStore) {
+	agree : function(event, record, createAgreementStore) {
 		var form = Ext.getCmp('AgreementWindow').down('form').getForm();
 		if (event == "ok") {
 

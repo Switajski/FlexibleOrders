@@ -1,5 +1,3 @@
-
-//@require @packageOverrides
 Ext.Loader.setConfig({
     enabled: true
 });

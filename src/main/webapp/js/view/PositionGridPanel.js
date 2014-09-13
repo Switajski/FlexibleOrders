@@ -6,8 +6,7 @@ var filters = {
 	local : false, // defaults to false (remote filtering)
 
 	// Filters are most naturally placed in the column definition, but can also
-	// be
-	// added here.
+	// be added here.
 	filters : [{
 				type : 'string',
 				dataIndex : 'visible'
@@ -57,16 +56,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						format : 'd/m/Y'
 					}, {
 						xtype : 'gridcolumn',
-						dataIndex : 'orderNumber',
-						width : 90,
-						text : 'Bestellung'
-						// }, {
-					// xtype : 'gridcolumn',
-					// dataIndex : 'invoiceNumber',
-					// width : 80,
-					// text : 'Rechnung'
-				}	, {
-						xtype : 'gridcolumn',
 						dataIndex : 'quantity',
 						width : 50,
 						text : 'Menge'
@@ -111,32 +100,32 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						width : 30,
 						sortable : false,
 						items : [{
-							icon : '/FlexibleOrders/images/list.png',
-							tooltip : 'Lieferhistorie anschauen',
-							scope : this,
-							handler : this.onDeliveryHistoryClick
-						}]
-					},{
+									icon : '/FlexibleOrders/images/list.png',
+									tooltip : 'Lieferhistorie anschauen',
+									scope : this,
+									handler : this.onDeliveryHistoryClick
+								}]
+					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
 						items : [{
-							icon : '/FlexibleOrders/images/pdf_button.png',
-							tooltip : 'Pdf anzeigen',
-							scope : this,
-							handler : this.onPdfClick
-						}]
+									icon : '/FlexibleOrders/images/pdf_button.png',
+									tooltip : 'Pdf anzeigen',
+									scope : this,
+									handler : this.onPdfClick
+								}]
 					}, {
 						xtype : 'actioncolumn',
 						width : 30,
 						sortable : false,
 						menuDisabled : true,
 						items : [{
-							icon : '/FlexibleOrders/images/delete.png',
-							tooltip : 'Dokument l&ouml;schen',
-							scope : this,
-							handler : this.onRemoveClick
-						}]
+									icon : '/FlexibleOrders/images/delete.png',
+									tooltip : 'Dokument l&ouml;schen',
+									scope : this,
+									handler : this.onRemoveClick
+								}]
 					}
 
 			],
@@ -151,11 +140,11 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		me.callParent(arguments);
 
 	},
-	
+
 	onPdfClick : function(view, a, b, column, event, record, f) {
-				var win = window.open('/FlexibleOrders/reports/'
-								+ record.data.documentNumber + '.pdf', '_blank');
-				win.focus();
+		var win = window.open('/FlexibleOrders/reports/'
+						+ record.data.documentNumber + '.pdf', '_blank');
+		win.focus();
 	},
 
 	onSync : function() {
@@ -170,15 +159,15 @@ Ext.define('MyApp.view.PositionGridPanel', {
 	},
 	onRemoveClick : function(view, a, b, column, event, record, f) {
 		console.log('deliveryNotesItemGrid - customtransitionfunction');
-		MyApp.getApplication().getController('MyController').deleteReport(
-				record.data.documentNumber);
+		MyApp.getApplication().getController('MyController')
+				.deleteReport(record.data.documentNumber);
 	},
-	onDeliveryHistoryClick : function(view, a, b, column, event, record, f){
-		//TODO: this is hacking
-		var dhPanel = Ext.create('MyApp.view.DeliveryHistoryPanel', {
-		});
+	onDeliveryHistoryClick : function(view, a, b, column, event, record, f) {
+		// TODO: this is hacking
+		var dhPanel = Ext.create('MyApp.view.DeliveryHistoryPanel', {});
 		store = dhPanel.items.items[0].getStore();
-		store.getProxy().url = '/FlexibleOrders/deliveryHistory/byReportItemId/'+record.data.id;
+		store.getProxy().url = '/FlexibleOrders/deliveryHistory/byReportItemId/'
+				+ record.data.id;
 		store.reload();
 		dhPanel.show();
 	}

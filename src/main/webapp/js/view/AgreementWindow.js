@@ -33,9 +33,7 @@ Ext.define('MyApp.view.AgreementWindow', {
 														fieldLabel : 'Name'
 													}, {
 														xtype : 'displayfield',
-														format : 'd/m/Y',
 														anchor : '100%',
-														allowBlank : true,
 														fieldLabel : 'Liefertermin',
 														name : 'expectedDelivery'
 													}, {

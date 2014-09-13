@@ -51,23 +51,23 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'created',
-						width : 90,
+						width : 75,
 						text : 'erstellt',
 						format : 'd/m/Y'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantity',
-						width : 50,
-						text : 'Menge'
+						width : 35,
+						text : 'Anz.'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'quantityLeft',
-						width : 50,
+						width : 38,
 						text : 'offen'
 					}, {
 						xtype : 'numbercolumn',
 						dataIndex : 'priceNet',
-						width : 50,
+						width : 45,
 						text : 'Preis',
 						renderer : Ext.util.Format.euMoney
 					}, {
@@ -78,8 +78,8 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customerNumber',
-						width : 70,
-						text : 'Kundennr'
+						width : 35,
+						text : 'KNr'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customerName',

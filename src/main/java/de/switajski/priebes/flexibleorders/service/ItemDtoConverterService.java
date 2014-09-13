@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.AgreementHistory;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
@@ -104,12 +104,20 @@ public class ItemDtoConverterService {
 	public ItemDto convert(ReportItem ri){
 			ItemDto item = new ItemDto();
 			item.setDocumentNumber(ri.getReport().getDocumentNumber());
-			//TODO: this is not subject of this class
+			//TODO: instanceof: this is not subject of this class
 			if (ri.getReport() instanceof OrderConfirmation){
 				item.setOrderConfirmationNumber(ri.getReport().getDocumentNumber());
+				//TODO: DRY
+				AgreementDetails ad = ((OrderConfirmation) ri.getReport()).getAgreementDetails();
+				if (ad != null)
+				    item.setExpectedDelivery(ad.getExpectedDelivery());
 			}
 			if (ri.getReport() instanceof OrderAgreement){
                 item.setOrderAgreementNumber(ri.getReport().getDocumentNumber());
+                //TODO: DRY
+                AgreementDetails ad = ((OrderAgreement) ri.getReport()).getAgreementDetails();
+                if (ad != null)
+                    item.setExpectedDelivery(ad.getExpectedDelivery());
             }
 			if (ri.getReport() instanceof Invoice){
 				Invoice invoice = (Invoice) ri.getReport();
@@ -132,9 +140,6 @@ public class ItemDtoConverterService {
 			item.setCustomerNumber(order.getCustomer().getCustomerNumber());
 			item.setCustomerName(order.getCustomer().getLastName());
 			item.setDocumentNumber(ri.getReport().getDocumentNumber());
-			AgreementHistory agreementHistory = new AgreementHistory(DeliveryHistory.createFrom(ri));
-			if (agreementHistory != null && agreementHistory.getAgreementDetails() != null)
-			    item.setExpectedDelivery(agreementHistory.getAgreementDetails().getExpectedDelivery());
 			item.setId(ri.getId());
 			item.setOrderNumber(order.getOrderNumber());
 			if (ri.getOrderItem().getNegotiatedPriceNet() != null)

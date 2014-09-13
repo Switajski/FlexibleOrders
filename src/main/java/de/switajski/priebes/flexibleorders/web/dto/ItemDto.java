@@ -92,6 +92,7 @@ public class ItemDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	@JsonSerialize(using = JsonDateSerializer.class)
 	public Date getExpectedDelivery() {
 		return expectedDelivery;
 	}

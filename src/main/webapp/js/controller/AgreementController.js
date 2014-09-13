@@ -31,7 +31,7 @@ Ext.define('MyApp.controller.AgreementController', {
 					onSave : function() {
 						MyApp
 								.getApplication()
-								.getController('AgreeController')
+								.getController('AgreementController')
 								.agree("ok", kunde, createAgreementStore);
 					}
 				});
@@ -44,13 +44,10 @@ console.log('programming here');
 		agreementWindow.down('form').getForm().setValues({
 				customerNumber : kunde.data.customerNumber,
 				lastName : kunde.data.lastName,
-				expectedDelivery : kunde.data.expectedDelivery,
+				expectedDelivery : record.data.expectedDelivery,
 				orderConfirmationNumber : record.data.documentNumber,
-				agreementNumber : agreementNumber
+				orderAgreementNumber : agreementNumber
 				});
-		// somehow the id is deleted onShow
-		//Ext.getCmp('agreementNumber').setValue(agreementNumber);
-		//Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
 	},
 
 	agree : function(event, record, createAgreementStore) {

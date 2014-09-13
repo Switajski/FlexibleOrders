@@ -33,6 +33,7 @@ public class ItemDto {
 	private String receiptNumber;
 	private String deliveryNotesNumber;
 	private String orderConfirmationNumber;
+	private String orderAgreementNumber;
 	private Integer quantity;
 	private Integer quantityLeft;
 	@JsonDeserialize(using = BigDecimalDeserializer.class)
@@ -202,4 +203,11 @@ public class ItemDto {
 	public String toString(){
 		return this.getClass().getSimpleName() + ": " + getQuantityLeft()+ " x " + getProductName();
 	}
+    public void setOrderAgreementNumber(String orderAgreementNumber) {
+        this.orderAgreementNumber = orderAgreementNumber;
+    }
+    
+    public String getOrderAgreementNumber(){
+        return this.orderAgreementNumber;
+    }
 }

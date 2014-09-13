@@ -27,25 +27,30 @@ Ext.define('MyApp.controller.AgreementController', {
 				}]);
 
 		var agreementWindow = Ext.create('MyApp.view.AgreementWindow', {
-					id : "DeliverWindow",
+					id : "AgreementWindow",
 					onSave : function() {
 						MyApp
 								.getApplication()
 								.getController('AgreeController')
-								.agree2("ok", kunde, createAgreementStore);
+								.agree("ok", kunde, createAgreementStore);
 					}
 				});
-		kunde = Ext.getStore('KundeDataStore').findRecord("id",
-				record.data.customer);
+		kunde = Ext.getStore('KundeDataStore').findRecord("customerNumber",
+				record.data.customerNumber);
 		kundeId = kunde.data.id;
 		email = kunde.data.email;
-
+console.log('programming here');
 		agreementWindow.show();
 		agreementWindow.down('form').getForm().setValues({
+				customerNumber : kunde.data.customerNumber,
+				lastName : kunde.data.lastName,
+				expectedDelivery : kunde.data.expectedDelivery,
+				orderConfirmationNumber : record.data.documentNumber,
+				agreementNumber : agreementNumber
 				});
 		// somehow the id is deleted onShow
-		Ext.getCmp('agreementNumber').setValue(agreementNumber);
-		Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
+		//Ext.getCmp('agreementNumber').setValue(agreementNumber);
+		//Ext.getStore('KundeDataStore').findRecord("email", email).data.id = kundeId;
 	},
 
 	agree : function(event, record, createAgreementStore) {
@@ -53,7 +58,7 @@ Ext.define('MyApp.controller.AgreementController', {
 		if (event == "ok") {
 
 			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/deliver/json',
+				url : '/FlexibleOrders/transitions/agree/json',
 				// headers: { 'Content-Type': 'application/json' },
 				jsonData : {
 					orderAgreementNumber : form.getValues().agreementNumber

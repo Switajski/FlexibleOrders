@@ -21,7 +21,6 @@ import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 		CustomerIntegrationTest.class,
 		DeliveryNotesPdfFileTest.class,
 		InvoicePdfFileTest.class,
-		JacksonDeserializationTest.class,
 		OrderPdfFileTest.class,
 		ProductIntegrationTest.class,
 		SpecificationIntegrationTest.class

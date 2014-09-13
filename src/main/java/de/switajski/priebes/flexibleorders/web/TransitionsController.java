@@ -176,22 +176,4 @@ public class TransitionsController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(receipt);
     }
 
-    @RequestMapping(value = "/decomplete/json", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse decomplete(
-            @RequestParam(value = "documentNumber", required = true) String documentNumber)
-            throws Exception {
-        // TODO Implement
-        throw new NotImplementedException();
-    }
-
-    @RequestMapping(value = "/delete/json", method = RequestMethod.DELETE)
-    public @ResponseBody
-    JsonObjectResponse delete(
-            @RequestParam(value = "id", required = true) long id)
-            throws NotFoundException {
-        // TODO Implement
-        throw new NotImplementedException();
-    }
-
 }

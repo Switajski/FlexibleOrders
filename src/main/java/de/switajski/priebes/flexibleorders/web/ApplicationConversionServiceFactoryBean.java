@@ -1,11 +1,10 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-import org.springframework.roo.addon.web.mvc.controller.converter.RooConversionService;
+import org.springframework.stereotype.Service;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -19,11 +18,9 @@ import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 /**
  * A central place to register application converters and formatters. 
  */
-@RooConversionService
+@Service
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
-	private static Logger log = Logger.getLogger(ApplicationConversionServiceFactoryBean.class);
-	
 	@Override
 	protected void installFormatters(FormatterRegistry registry) {
 		super.installFormatters(registry);

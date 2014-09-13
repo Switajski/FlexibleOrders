@@ -5,7 +5,7 @@ Ext.define('MyApp.view.AgreementWindow', {
 	alias : 'widget.AgreementWindow',
 	layout : 'fit',
 	defaultInvoiceNumber : 0,
-	width : 378,
+	// width : 378,
 	record : null,
 	closeAction : 'destroy',
 
@@ -31,6 +31,23 @@ Ext.define('MyApp.view.AgreementWindow', {
 														anchor : '100%',
 														name : 'lastName',
 														fieldLabel : 'Name'
+													}, {
+														xtype : 'displayfield',
+														format : 'd/m/Y',
+														anchor : '100%',
+														allowBlank : true,
+														fieldLabel : 'Liefertermin',
+														name : 'expectedDelivery'
+													}, {
+														xtype : 'displayfield',
+														anchor : '100%',
+														name : 'orderConfirmationNumber',
+														fieldLabel : 'Name'
+													}, {
+														xtype : 'textfield',
+														anchor : '100%',
+														name : 'orderAgreementNumber',
+														fieldLabel : 'Auftragsnummer'
 													}]
 										}],
 								dockedItems : [{
@@ -40,7 +57,7 @@ Ext.define('MyApp.view.AgreementWindow', {
 											items : ['->', {
 														iconCls : 'icon-save',
 														itemId : 'save',
-														text : 'Speichern',
+														text : 'annehmen',
 														disabled : false,
 														scope : this,
 														handler : this.onSave
@@ -51,18 +68,14 @@ Ext.define('MyApp.view.AgreementWindow', {
 
 		me.callParent(arguments);
 
-	},
-
-	onSave : function() {
-		var active = this.activeRecord, form = this.getForm();
-
-		if (!active) {
-			return;
-		}
-		if (form.isValid()) {
-			form.updateRecord(active);
-			this.onReset();
-		}
 	}
+
+		/*
+		 * onSave : function() { var active = this.activeRecord, form =
+		 * this.getForm();
+		 * 
+		 * if (!active) { return; } if (form.isValid()) {
+		 * form.updateRecord(active); this.onReset(); } }
+		 */
 
 });

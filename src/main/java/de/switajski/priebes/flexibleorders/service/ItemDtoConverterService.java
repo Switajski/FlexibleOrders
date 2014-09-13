@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.AgreementHistory;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -102,10 +104,13 @@ public class ItemDtoConverterService {
 	public ItemDto convert(ReportItem ri){
 			ItemDto item = new ItemDto();
 			item.setDocumentNumber(ri.getReport().getDocumentNumber());
-			
+			//TODO: this is not subject of this class
 			if (ri.getReport() instanceof OrderConfirmation){
 				item.setOrderConfirmationNumber(ri.getReport().getDocumentNumber());
 			}
+			if (ri.getReport() instanceof OrderAgreement){
+                item.setOrderAgreementNumber(ri.getReport().getDocumentNumber());
+            }
 			if (ri.getReport() instanceof Invoice){
 				Invoice invoice = (Invoice) ri.getReport();
 				item.setInvoiceNumber(ri.getReport().getDocumentNumber());
@@ -122,12 +127,16 @@ public class ItemDtoConverterService {
 				item.setReceiptNumber(ri.getReport().getDocumentNumber());
 			}
 			item.setCreated(ri.getCreated());
-			item.setCustomer(ri.getOrderItem().getOrder().getCustomer().getId());
-			item.setCustomerNumber(ri.getOrderItem().getOrder().getCustomer().getCustomerNumber());
-			item.setCustomerName(ri.getOrderItem().getOrder().getCustomer().getLastName());
+			Order order = ri.getOrderItem().getOrder();
+            item.setCustomer(order.getCustomer().getId());
+			item.setCustomerNumber(order.getCustomer().getCustomerNumber());
+			item.setCustomerName(order.getCustomer().getLastName());
 			item.setDocumentNumber(ri.getReport().getDocumentNumber());
+			AgreementHistory agreementHistory = new AgreementHistory(DeliveryHistory.createFrom(ri));
+			if (agreementHistory != null && agreementHistory.getAgreementDetails() != null)
+			    item.setExpectedDelivery(agreementHistory.getAgreementDetails().getExpectedDelivery());
 			item.setId(ri.getId());
-			item.setOrderNumber(ri.getOrderItem().getOrder().getOrderNumber());
+			item.setOrderNumber(order.getOrderNumber());
 			if (ri.getOrderItem().getNegotiatedPriceNet() != null)
 				item.setPriceNet(ri.getOrderItem().getNegotiatedPriceNet().getValue());
 			item.setProduct(ri.getOrderItem().getProduct().getProductNumber());

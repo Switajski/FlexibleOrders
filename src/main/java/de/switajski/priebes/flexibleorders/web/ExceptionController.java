@@ -21,49 +21,67 @@ public class ExceptionController {
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public String handleException(Exception ex) {
-		log.error(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Server: " + ex.getClass().getSimpleName();
-		return stringify(ex);
+		return handleExceptionAsError(ex);
 	}
 
 	@ExceptionHandler(NotImplementedException.class)
 	@ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
 	@ResponseBody
-	public String handleException(NotImplementedException ex) {
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Funktion noch nicht implementiert";
-		return stringify(ex);
+	public String receiveException(NotImplementedException ex) {
+		return handleExceptionAsNotification(ex, "Funktion noch nicht implementiert");
 	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public String handleIllegalArgumentException(IllegalArgumentException ex) {
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Funktion mit falschen Parameter aufgerufen";
-		return stringify(ex);
+	    return handleExceptionAsNotification(ex, "Funktion mit falschen Parameter aufgerufen");
 	}
 	
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public String handleNotFoundException(NotFoundException ex) {
-		log.warn(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Nicht gefunden";
-		return stringify(ex);
+	    return handleExceptionAsNotification(ex, "Nicht gefunden");
 	}
 	
 	@ExceptionHandler(JsonParseException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public String handleException(JsonParseException ex) {
-		log.error(ex.getClass().getSimpleName(), ex);
-		if (ex.getMessage() == null) return "Fehler beim Parsen der Anfrage";
-		return stringify(ex);
+	    return handleExceptionAsNotification(ex, "Fehler beim Parsen der Anfrage");
+	}
+	
+	private String handleExceptionAsError(Exception ex) {
+        log.error(ex.getClass().getSimpleName(), ex);
+        if (ex.getMessage() == null) 
+            return stringifyWithStackTrace(ex, "Fehler beim Server: ");
+        return stringify(ex);
+    }
+	
+	private String handleExceptionAsNotification(Exception ex, String messageToUser){
+        log.warn(ex.getClass().getSimpleName(), ex);
+        if (ex.getMessage() == null) 
+            return messageToUser;
+        return stringify(ex);
+    }
+	
+	private String stringifyWithStackTrace(Exception ex, String message) {
+		StringBuilder builder = new StringBuilder("<b>")
+		.append(message)
+		.append(ex.getClass().getSimpleName())
+		.append("</b>");
+		if (ex.getMessage() != null)
+		    builder.append("</b> :</br> ")
+		    .append(ex.getMessage());
+		builder.append("</br></br>Stack Trace:</br>");
+		for (StackTraceElement line:ex.getStackTrace())
+		    builder.append(line.toString()).append("</br>");
+        return builder.toString();
 	}
 	
 	private String stringify(Exception ex) {
-		return "<b>" + ex.getClass().getSimpleName() + "</b> :</br> "+ ex.getMessage();
-	}
+        return "<b>" + ex.getClass().getSimpleName() + "</b> :</br> "+ ex.getMessage();
+    }
 	
 }

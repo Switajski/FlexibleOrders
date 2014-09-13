@@ -2,7 +2,6 @@
 
 body,div {
 	font-family: Arial, Courier, Helvetica, sans-serif;
-	font-size: 12px;
 	color: #666;
 }
 
@@ -16,9 +15,9 @@ body {
 }
 
 #wrapper {
-	width:1200px;
-	min-width: 1200px;
-	max-width: 1200px;
+	width:1150px;
+	min-width: 1150px;
+	max-width: 1150px;
 	margin-right: auto;
 	margin-left: auto;
 

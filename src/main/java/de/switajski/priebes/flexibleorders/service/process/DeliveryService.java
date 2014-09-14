@@ -29,7 +29,8 @@ public class DeliveryService {
 
     @Transactional
     public DeliveryNotes deliver(DeliverParameter deliverParameter) {
-        if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+        if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) 
+            throw new IllegalArgumentException("Lieferscheinnummer existiert bereits");
 
         DeliveryNotes deliveryNotes = new DeliveryNotes(
                 deliverParameter.deliveryNotesNumber,
@@ -57,7 +58,9 @@ public class DeliveryService {
                     new Date()));
 
             // validate addresses DRY!
-            shippedAddress = validateShippingAddress(shippedAddress, new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeDelivered)));
+            shippedAddress = validateShippingAddress(
+                    shippedAddress, 
+                    new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeDelivered)));
 
             deliveryNotes.setShippedAddress(shippedAddress);
 
@@ -72,10 +75,23 @@ public class DeliveryService {
     }
 
     private Address validateShippingAddress(Address shippedAddress, AgreementHistory history) {
-        Address temp = history.getAgreementDetails().getShippingAddress();
-        if (shippedAddress == null) shippedAddress = temp;
-        else if (!shippedAddress.equals(temp)) throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+        if (hasShippingAddressFromAgreementDetails(history)){
+            Address temp = history.getAgreementDetails().getShippingAddress();
+            if (shippedAddress == null) shippedAddress = temp;
+            else if (!shippedAddress.equals(temp)) 
+                throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+        }
         return shippedAddress;
+    }
+
+    private boolean hasShippingAddressFromAgreementDetails(AgreementHistory history) {
+        if (history == null)
+            return false;
+        if (history.getAgreementDetails() == null)
+            return false;
+        if (history.getAgreementDetails().getShippingAddress() == null)
+            return false;
+        return true;
     }
 
 }

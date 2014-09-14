@@ -66,7 +66,7 @@ public class CustomerController extends ExceptionController {
 			throws JsonParseException, JsonMappingException, IOException {
 		Customer c = CustomerDtoConverterServiceImpl.toCustomer(
 				cDto,
-				customerRepo.findByCustomerNumber(cDto.getCustomerNumber()));
+				customerRepo.findByCustomerNumber(cDto.customerNumber));
 		customerRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}

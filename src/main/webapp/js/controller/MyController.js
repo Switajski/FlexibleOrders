@@ -258,7 +258,11 @@ Ext.define('MyApp.controller.MyController', {
 
 	onShowSums : function() {
 		statesToGrids = [{
-					state : 'ship',
+					state : 'agreed',
+					grid : 'AgreementItemGrid',
+					text : 'Auftr&auml;e'
+				},{
+					state : 'confirmed',
 					grid : 'ShippingItemGrid',
 					text : 'Auftragsbest&auml;tigungen'
 				}, {

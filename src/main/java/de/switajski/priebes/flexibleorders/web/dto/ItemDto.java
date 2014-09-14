@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer
 
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 
 /**
  * Data Transfer Object for ExtJs GUI </br>
@@ -102,6 +103,7 @@ public class ItemDto {
 	public String getProductName() {
 		return productName;
 	}
+	@JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}

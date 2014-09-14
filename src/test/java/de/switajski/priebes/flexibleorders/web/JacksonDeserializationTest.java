@@ -1,6 +1,10 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -48,10 +52,13 @@ public class JacksonDeserializationTest {
 			+ "\"status\":\"ORDERED\","
 			+ "\"expectedDelivery\":\"\""
 			+ "}]";
+
+    private static final String PRODUCT_NAME = "Jasiu Wedrowiec";
 	
 	public static final String CREATE_REPORTITEM_REQUEST_JSON2 = "{"
 			+ "\"id\":1015808,"
 			+ "\"product\":10071,"
+			+ "\"productName\":\"" + PRODUCT_NAME + "\","
 			+ "\"customer\":2,"
 			+ "\"orderNumber\":777,"
 			+ "\"invoiceNumber\":null,"
@@ -81,12 +88,44 @@ public class JacksonDeserializationTest {
 	
 	@Test
 	public void shouldDeserializeReportItem() throws JsonParseException, JsonMappingException, IOException {
+	    // GIVEN
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
+		
+		// WHEN
 		ItemDto reportItem = mapper.readValue(CREATE_REPORTITEM_REQUEST_JSON, 
 				ItemDto.class);
-		assertTrue(reportItem.getProduct().equals(1809935791l));
+		
+		//THEN
+		assertThat(reportItem.getProduct(), is(equalTo(1809935791L)));
 	}
+	
+	@Test
+    public void readValue_shouldDeserializeEmptyStringsAsNull() throws JsonParseException, JsonMappingException, IOException {
+        // GIVEN
+	    ObjectMapper mapper = new ObjectMapper();
+        mapper.getSerializationConfig();
+        
+        // WHEN
+        ItemDto reportItem = mapper.readValue(CREATE_REPORTITEM_REQUEST_JSON, 
+                ItemDto.class);
+        
+        // THEN
+        assertThat(reportItem.getProductName(), is(nullValue()));
+    }
+	
+	@Test
+    public void readValue_shouldDeserializeStrings() throws JsonParseException, JsonMappingException, IOException {
+        // GIVEN
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getSerializationConfig();
+        
+        // WHEN
+        ItemDto reportItem = mapper.readValue(CREATE_REPORTITEM_REQUEST_JSON2, 
+                ItemDto.class);
+        
+        // THEN
+        assertThat(reportItem.getProductName(), is(equalTo(PRODUCT_NAME)));
+    }
 
 	@Test
 	public void shouldDeserializeReporItems() throws JsonParseException, JsonMappingException, IOException {

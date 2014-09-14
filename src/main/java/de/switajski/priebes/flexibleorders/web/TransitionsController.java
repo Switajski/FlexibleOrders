@@ -52,27 +52,27 @@ public class TransitionsController extends ExceptionController {
         // TODO: see if Conversion factory / Jackson serializer has a strip to
         // null method
         ContactInformation contactInformation = new ContactInformation();
-        contactInformation.setContact1(StringUtils.stripToNull(confirmRequest.getContact1()));
-        contactInformation.setContact2(StringUtils.stripToNull(confirmRequest.getContact2()));
-        contactInformation.setContact3(StringUtils.stripToNull(confirmRequest.getContact3()));
-        contactInformation.setContact4(StringUtils.stripToNull(confirmRequest.getContact4()));
+        contactInformation.setContact1(confirmRequest.contact1);
+        contactInformation.setContact2(confirmRequest.contact2);
+        contactInformation.setContact3(confirmRequest.contact3);
+        contactInformation.setContact4(confirmRequest.contact4);
 
         CustomerDetails customerDetails = new CustomerDetails();
         customerDetails.setContactInformation(contactInformation);
-        customerDetails.setMark(StringUtils.stripToNull(confirmRequest.getMark()));
-        customerDetails.setPaymentConditions(StringUtils.stripToNull(confirmRequest.getPaymentConditions()));
-        customerDetails.setSaleRepresentative(StringUtils.stripToNull(confirmRequest.getSaleRepresentative()));
-        customerDetails.setVatIdNo(StringUtils.stripToNull(confirmRequest.getValueAddedTaxIdNo()));
-        customerDetails.setVendorNumber(StringUtils.stripToNull(confirmRequest.getVendorNumber()));
+        customerDetails.setMark(confirmRequest.mark);
+        customerDetails.setPaymentConditions(confirmRequest.paymentConditions);
+        customerDetails.setSaleRepresentative(confirmRequest.saleRepresentative);
+        customerDetails.setVatIdNo(confirmRequest.valueAddedTaxIdNo);
+        customerDetails.setVendorNumber(confirmRequest.vendorNumber);
 
         ConfirmParameter confirmParameter = new ConfirmParameter(
                 extractOrderNumber(confirmRequest),
-                StringUtils.stripToNull(confirmRequest.getOrderConfirmationNumber()),
-                confirmRequest.getExpectedDelivery(),
-                confirmRequest.getDeliveryMethodNo(),
+                StringUtils.stripToNull(confirmRequest.orderConfirmationNumber),
+                confirmRequest.expectedDelivery,
+                confirmRequest.deliveryMethodNo,
                 confirmRequest.createDeliveryAddress(),
                 confirmRequest.createInvoiceAddress(),
-                confirmRequest.getItems());
+                confirmRequest.items);
         confirmParameter.customerDetails = customerDetails;
         OrderConfirmation confirmationReport = orderService.confirm(
                 confirmParameter);
@@ -80,9 +80,9 @@ public class TransitionsController extends ExceptionController {
     }
 
     private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
-        if (confirmRequest.getItems().isEmpty()) throw new IllegalArgumentException(
+        if (confirmRequest.items.isEmpty()) throw new IllegalArgumentException(
                 "Liste der Auftragspositionen ist leer");
-        return confirmRequest.getItems().iterator().next().orderNumber;
+        return confirmRequest.items.iterator().next().orderNumber;
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
@@ -92,11 +92,11 @@ public class TransitionsController extends ExceptionController {
         deliverRequest.validate();
 
         OrderParameter orderParameter = new OrderParameter(
-                deliverRequest.getCustomerId(),
-                deliverRequest.getOrderNumber(),
-                deliverRequest.getCreated(),
-                deliverRequest.getItems());
-        orderParameter.expectedDelivery = deliverRequest.getExpectedDelivery();
+                deliverRequest.customerId,
+                deliverRequest.orderNumber,
+                deliverRequest.created,
+                deliverRequest.items);
+        orderParameter.expectedDelivery = deliverRequest.expectedDelivery;
 
         Order order = orderService.order(
                 orderParameter);
@@ -112,11 +112,11 @@ public class TransitionsController extends ExceptionController {
         deliverRequest.validate();
 
         Invoice invoice = invoicingService.invoice(
-                deliverRequest.getInvoiceNumber(),
-                deliverRequest.getPaymentConditions(),
-                deliverRequest.getCreated(),
-                deliverRequest.getItems(),
-                deliverRequest.getBilling());
+                deliverRequest.invoiceNumber,
+                deliverRequest.paymentConditions,
+                deliverRequest.created,
+                deliverRequest.items,
+                deliverRequest.billing);
         return ExtJsResponseCreator.createResponse(invoice);
     }
 
@@ -129,12 +129,12 @@ public class TransitionsController extends ExceptionController {
 
         DeliveryNotes dn = deliveryService.deliver(
                 new DeliverParameter(
-                        deliverRequest.getDeliveryNotesNumber(),
-                        deliverRequest.getTrackNumber(),
-                        deliverRequest.getPackageNumber(),
-                        new Amount(deliverRequest.getShipment(), Currency.EUR),
-                        deliverRequest.getCreated(),
-                        deliverRequest.getItems()));
+                        deliverRequest.deliveryNotesNumber,
+                        deliverRequest.trackNumber,
+                        deliverRequest.packageNumber,
+                        new Amount(deliverRequest.shipment, Currency.EUR),
+                        deliverRequest.created,
+                        deliverRequest.items));
         return ExtJsResponseCreator.createResponse(dn);
     }
 

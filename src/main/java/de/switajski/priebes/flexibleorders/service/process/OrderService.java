@@ -162,7 +162,7 @@ public class OrderService {
 		OrderConfirmation oc = reportingService.retrieveOrderConfirmation(orderConfirmationNo);
 		if (oc == null)
 			throw new IllegalArgumentException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
-		
+
 		OrderAgreement oa = new OrderAgreement();
 		oa.setDocumentNumber(orderAgreementNo);
 		oa.setAgreementDetails(oc.getAgreementDetails());
@@ -173,11 +173,14 @@ public class OrderService {
 		return reportRepo.save(oa);
 	}
 
-	private OrderAgreement takeOverConfirmationItems(OrderConfirmation oc,
+    private OrderAgreement takeOverConfirmationItems(OrderConfirmation oc,
 			OrderAgreement oa) {
 		for (ReportItem ri:oc.getItems()){
 			AgreementItem ai = new AgreementItem();
-			ai.setQuantity(QuantityCalculator.calculateLeft(ri));
+            int calculateLeft = QuantityCalculator.calculateLeft(ri);
+            if (calculateLeft < 1)
+                throw new IllegalArgumentException("Eine angegebene position hat keine offenen Positionen mehr");
+            ai.setQuantity(calculateLeft);
 			ai.setOrderItem(ri.getOrderItem());
 			//TODO: bidirectional management of relationship
 			ai.setReport(oa);

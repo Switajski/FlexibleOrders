@@ -11,13 +11,13 @@ import org.springframework.stereotype.Controller;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.ToBeAgreedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.AgreementItemToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @Controller
@@ -69,18 +69,24 @@ public class ReportItemFilterDispatcher {
 		if (status.equals("ordered"))
 			throw new IllegalArgumentException(
 					"Filter 'ordered' cannot be applied to Reports, but Orders");
+		if (status.equals("confirmed"))
+		    spec = where(new ConfirmationItemToBeAgreedSpec());
+		
 		if (status.equals("agreed"))
-			spec = where(new ToBeAgreedSpec());
-		if (status.equals("ship") || status.equals("confirmed"))
-			spec = where(new OpenShippingItemSpec());
+			spec = where(new AgreementItemToBeShippedSpec());
+		
 		if (status.equals("shipped"))
 			spec = where(new ShippingItemToBeInvoicedSpec());
+		
 		if (status.equals("invoiced"))
 			spec = where(new InvoiceItemToBePaidSpec());
+		
 		if (status.equals("completed"))
 			spec = where(new ReceiptItemCompletedSpec());
+		
 		if (status.equals("issued"))
             spec = where(new IssuedItemSpec());
+		
 		if (spec == null)
 			throw new IllegalArgumentException("Status nicht angegeben");
 		return where(spec);

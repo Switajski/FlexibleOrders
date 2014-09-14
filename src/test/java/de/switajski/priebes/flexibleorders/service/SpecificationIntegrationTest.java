@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.OpenShippingItemSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -87,7 +87,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
 		// WHEN
 		List<ReportItem> retrievedRis = reportItemRepository
-				.findAll(new OpenShippingItemSpec());
+				.findAll(new ConfirmationItemToBeAgreedSpec());
 
 		// THEN
 		assertAllItemsAreAgreementItems(retrievedRis);

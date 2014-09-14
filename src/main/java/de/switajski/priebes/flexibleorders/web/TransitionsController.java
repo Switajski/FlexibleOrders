@@ -43,7 +43,7 @@ public class TransitionsController extends ExceptionController {
     @Autowired
     private DeliveryService deliveryService;
 
-    @RequestMapping(value = "/confirm/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse confirm(
             @RequestBody JsonCreateReportRequest confirmRequest)
@@ -102,7 +102,7 @@ public class TransitionsController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(order);
     }
 
-    @RequestMapping(value = "/invoice/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse invoice(
             @RequestBody JsonCreateReportRequest deliverRequest)
@@ -118,7 +118,7 @@ public class TransitionsController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(invoice);
     }
 
-    @RequestMapping(value = "/deliver/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/deliver", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse deliver(
             @RequestBody JsonCreateReportRequest deliverRequest)
@@ -134,6 +134,14 @@ public class TransitionsController extends ExceptionController {
                         deliverRequest.getCreated(),
                         deliverRequest.getItems()));
         return ExtJsResponseCreator.createResponse(dn);
+    }
+    
+    @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+    public @ResponseBody
+    JsonObjectResponse agree(
+            @RequestParam(value = "orderNumber", required = true) String orderNumber) {
+        orderService.deleteOrder(orderNumber);
+        return ExtJsResponseCreator.createResponse(orderNumber);
     }
 
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
@@ -163,7 +171,7 @@ public class TransitionsController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(cr);
     }
 
-    @RequestMapping(value = "/complete/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/complete", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse complete(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)

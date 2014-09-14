@@ -65,7 +65,7 @@ Ext.define('MyApp.controller.DeliverController', {
 		if (event == "ok") {
 
 			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/deliver/json',
+				url : '/FlexibleOrders/transitions/deliver',
 				// headers: { 'Content-Type': 'application/json' },
 				jsonData : {
 					orderConfirmationNumber : form.getValues().confirmationNumber,

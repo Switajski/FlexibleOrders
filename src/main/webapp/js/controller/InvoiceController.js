@@ -64,7 +64,7 @@ Ext.define('MyApp.controller.InvoiceController', {
 		var form = Ext.getCmp('InvoiceWindow').down('form').getForm();
 		if (event == "ok") {
 			var request = Ext.Ajax.request({
-						url : '/FlexibleOrders/transitions/invoice/json',
+						url : '/FlexibleOrders/transitions/invoice',
 						jsonData : {
 							customerId : form.getValues().id,
 							billing : form.getValues().billing,

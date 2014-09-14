@@ -55,7 +55,7 @@ console.log('programming here');
 		if (event == "ok") {
 
 			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/agree/json',
+				url : '/FlexibleOrders/transitions/agree',
 				// headers: { 'Content-Type': 'application/json' },
 				jsonData : {
 					orderAgreementNumber : form.getValues().agreementNumber

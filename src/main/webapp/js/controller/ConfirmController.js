@@ -96,7 +96,7 @@ Ext.define('MyApp.controller.ConfirmController', {
 		if (event == "ok") {
 
 			var request = Ext.Ajax.request({
-				url : '/FlexibleOrders/transitions/confirm/json',
+				url : '/FlexibleOrders/transitions/confirm',
 				jsonData : {
 					orderNumber : form.getValues().orderNumber,
 					orderConfirmationNumber : form.getValues().orderConfirmationNumber,

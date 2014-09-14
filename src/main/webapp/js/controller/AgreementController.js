@@ -39,7 +39,7 @@ Ext.define('MyApp.controller.AgreementController', {
 				record.data.customerNumber);
 		kundeId = kunde.data.id;
 		email = kunde.data.email;
-console.log('programming here');
+
 		agreementWindow.show();
 		agreementWindow.down('form').getForm().setValues({
 				customerNumber : kunde.data.customerNumber,
@@ -48,6 +48,7 @@ console.log('programming here');
 				orderConfirmationNumber : record.data.documentNumber,
 				orderAgreementNumber : agreementNumber
 				});
+		agreementWindow.down('form').getForm().baseParams = {orderConfirmationNumber : record.data.documentNumber};
 	},
 
 	agree : function(event, record, createAgreementStore) {
@@ -56,9 +57,9 @@ console.log('programming here');
 
 			var request = Ext.Ajax.request({
 				url : '/FlexibleOrders/transitions/agree',
-				// headers: { 'Content-Type': 'application/json' },
-				jsonData : {
-					orderAgreementNumber : form.getValues().agreementNumber
+				params : {
+					orderAgreementNumber : form.getValues().orderAgreementNumber,
+					orderConfirmationNumber : form.baseParams.orderConfirmationNumber
 				},
 				success : function(response) {
 					var text = response.responseText;

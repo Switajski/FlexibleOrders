@@ -40,12 +40,12 @@ Ext.define('MyApp.view.AgreementWindow', {
 														xtype : 'displayfield',
 														anchor : '100%',
 														name : 'orderConfirmationNumber',
-														fieldLabel : 'Name'
+														fieldLabel : 'ABNr'
 													}, {
 														xtype : 'textfield',
 														anchor : '100%',
 														name : 'orderAgreementNumber',
-														fieldLabel : 'Auftragsnummer'
+														fieldLabel : 'Auftragsnr'
 													}]
 										}],
 								dockedItems : [{

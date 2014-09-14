@@ -18,6 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -48,7 +49,8 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse confirm(
             @RequestBody JsonCreateReportRequest confirmRequest)
             throws Exception {
-// TODO: see if Conversion factory / Jackson serializer has a strip to null method 
+        // TODO: see if Conversion factory / Jackson serializer has a strip to
+        // null method
         ContactInformation contactInformation = new ContactInformation();
         contactInformation.setContact1(StringUtils.stripToNull(confirmRequest.getContact1()));
         contactInformation.setContact2(StringUtils.stripToNull(confirmRequest.getContact2()));
@@ -135,13 +137,14 @@ public class TransitionsController extends ExceptionController {
                         deliverRequest.getItems()));
         return ExtJsResponseCreator.createResponse(dn);
     }
-    
-    @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/agree", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse agree(
-            @RequestParam(value = "orderNumber", required = true) String orderNumber) {
-        orderService.deleteOrder(orderNumber);
-        return ExtJsResponseCreator.createResponse(orderNumber);
+            @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
+            @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
+        OrderAgreement orderAgreement = orderService.agree(orderConfirmationNumber, orderAgreementNumber);
+        return ExtJsResponseCreator.createResponse(orderAgreement);
     }
 
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)

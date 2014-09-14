@@ -214,9 +214,9 @@ public class JsonCreateReportRequest {
 		if (getItems().isEmpty())
 			throw new IllegalArgumentException("Keine Positionen angegeben!");
 		for (ItemDto item:getItems()){
-			if (item.getQuantity() < 1)
-				throw new IllegalArgumentException("Menge von "+item.getProductName()+" ist kleiner als 1");
-			if (item.getPriceNet() == null)
+			if (item.quantity < 1)
+				throw new IllegalArgumentException("Menge von "+item.productName+" ist kleiner als 1");
+			if (item.priceNet == null)
 				throw new IllegalArgumentException("Keinen Preis angegeben");
 		}
 	}

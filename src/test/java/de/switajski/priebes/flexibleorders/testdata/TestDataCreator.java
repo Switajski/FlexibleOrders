@@ -254,8 +254,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
 	private ItemDto extract(List<ItemDto> itemDtos, Long productNumber, int i) {
 		for (ItemDto item : itemDtos) {
-			if (item.getProduct().equals(productNumber)) {
-				item.setQuantityLeft(i);
+			if (item.product.equals(productNumber)) {
+				item.quantityLeft = i;
 				return item;
 			}
 		}

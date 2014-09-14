@@ -96,7 +96,7 @@ public class JacksonDeserializationTest {
 				ItemDto.class);
 		
 		//THEN
-		assertThat(reportItem.getProduct(), is(equalTo(1809935791L)));
+		assertThat(reportItem.product, is(equalTo(1809935791L)));
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class JacksonDeserializationTest {
                 ItemDto.class);
         
         // THEN
-        assertThat(reportItem.getProductName(), is(nullValue()));
+        assertThat(reportItem.productName, is(nullValue()));
     }
 	
 	@Test
@@ -124,7 +124,7 @@ public class JacksonDeserializationTest {
                 ItemDto.class);
         
         // THEN
-        assertThat(reportItem.getProductName(), is(equalTo(PRODUCT_NAME)));
+        assertThat(reportItem.productName, is(equalTo(PRODUCT_NAME)));
     }
 
 	@Test
@@ -135,7 +135,7 @@ public class JacksonDeserializationTest {
 				ItemDto[].class);
 		HashSet<Long> productNumbers = new HashSet<Long>();
 		for (ItemDto oi:ois)
-			productNumbers.add(oi.getProduct());
+			productNumbers.add(oi.product);
 
 		assertTrue(productNumbers.contains(10055l));
 		assertTrue(productNumbers.contains(44210l));

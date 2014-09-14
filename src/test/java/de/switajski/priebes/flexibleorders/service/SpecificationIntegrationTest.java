@@ -156,7 +156,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 				getFirstItemOf(
 						product,
 						agreement));
-		item.setQuantityLeft(qty);
+		item.quantityLeft = qty;
 		return item;
 	}
 

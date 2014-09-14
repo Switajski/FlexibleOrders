@@ -42,16 +42,16 @@ public class DeliveryService {
         Address shippedAddress = null;
         for (ItemDto agreementItemDto : deliverParameter.agreementItemDtos) {
             ReportItem agreementItem = reportItemRepo
-                    .findOne(agreementItemDto.getId());
+                    .findOne(agreementItemDto.id);
             OrderItem orderItemToBeDelivered = agreementItem
                     .getOrderItem();
 
-            ServiceHelper.validateQuantity(agreementItemDto.getQuantityLeft(), agreementItem);
+            ServiceHelper.validateQuantity(agreementItemDto.quantityLeft, agreementItem);
 
             deliveryNotes.addItem(new ShippingItem(
                     deliveryNotes,
                     orderItemToBeDelivered,
-                    agreementItemDto.getQuantityLeft(), // TODO: GUI sets
+                    agreementItemDto.quantityLeft, // TODO: GUI sets
                     // quanitityToDeliver at this
                     // nonsense parameter
                     new Date()));

@@ -24,67 +24,63 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 @Service
 public class InvoicingService {
 
-	@Autowired
-	private ReportRepository reportRepo;
-	
-	@Autowired
-	private ReportItemRepository reportItemRepo;
-	
-	@Autowired
-	private ItemDtoConverterService itemDtoConverterService;
-	
-	@Transactional
-	public Invoice invoice(String invoiceNumber, String paymentConditions,
-			Date created, List<ItemDto> shippingItemDtos, String billing) {
-		if (reportRepo.findByDocumentNumber(invoiceNumber) != null)
-			throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+    @Autowired
+    private ReportRepository reportRepo;
 
-		Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
-		invoice.setBilling(billing);
+    @Autowired
+    private ReportItemRepository reportItemRepo;
 
-		Order order = null;
-		Address invoiceAddress = null;
-		for (ItemDto entry : shippingItemDtos) {
-			ReportItem shipEventToBeInvoiced = reportItemRepo.findOne(entry.getId());
+    @Autowired
+    private ItemDtoConverterService itemDtoConverterService;
 
-			OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
-					.getOrderItem();
+    @Transactional
+    public Invoice invoice(String invoiceNumber, String paymentConditions,
+            Date created, List<ItemDto> shippingItemDtos, String billing) {
+        if (reportRepo.findByDocumentNumber(invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
-			ServiceHelper.validateQuantity(entry.getQuantityLeft(), shipEventToBeInvoiced);
+        Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
+        invoice.setBilling(billing);
 
-			// validate addresses - DRY at deliver method
-			AgreementHistory aHistory = new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeInvoiced));
-			invoiceAddress = validateInvoiceAdress(invoiceAddress, aHistory);
+        Order order = null;
+        Address invoiceAddress = null;
+        for (ItemDto entry : shippingItemDtos) {
+            ReportItem shipEventToBeInvoiced = reportItemRepo.findOne(entry.id);
 
-			invoice.setInvoiceAddress(invoiceAddress);
-			
-			invoice.addItem(new InvoiceItem(
-					invoice,
-					shipEventToBeInvoiced.getOrderItem(),
-					entry.getQuantityLeft(), // TODO: GUI sets the quantity to
-												// this nonsense place
-					new Date()));
+            OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
+                    .getOrderItem();
 
-			if (order == null)
-				order = orderItemToBeInvoiced.getOrder();
-		}
+            ServiceHelper.validateQuantity(entry.quantityLeft, shipEventToBeInvoiced);
 
-		invoice.setShippingCosts(new ShippingCostsCalculator()
-				.calculate(itemDtoConverterService
-						.convertToShippingItems(shippingItemDtos)));
-		invoice.setCreated((created == null) ? new Date() : created); 
-		// TODO: refactor DRY!
-		invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
+            // validate addresses - DRY at deliver method
+            AgreementHistory aHistory = new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeInvoiced));
+            invoiceAddress = validateInvoiceAdress(invoiceAddress, aHistory);
 
-		return reportRepo.save(invoice);
-	}
+            invoice.setInvoiceAddress(invoiceAddress);
+
+            invoice.addItem(new InvoiceItem(
+                    invoice,
+                    shipEventToBeInvoiced.getOrderItem(),
+                    entry.quantityLeft, // TODO: GUI sets the quantity to
+                                        // this nonsense place
+                    new Date()));
+
+            if (order == null) order = orderItemToBeInvoiced.getOrder();
+        }
+
+        invoice.setShippingCosts(new ShippingCostsCalculator()
+                .calculate(itemDtoConverterService
+                        .convertToShippingItems(shippingItemDtos)));
+        invoice.setCreated((created == null) ? new Date() : created);
+        // TODO: refactor DRY!
+        invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
+
+        return reportRepo.save(invoice);
+    }
 
     private Address validateInvoiceAdress(Address invoiceAddress, AgreementHistory aHistory) {
-        Address temp = aHistory.getAgreementDetails().getInvoiceAddress(); 
-        if (invoiceAddress == null)
-        	invoiceAddress = temp;
-        else if (!invoiceAddress.equals(temp))
-        	throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
+        Address temp = aHistory.getAgreementDetails().getInvoiceAddress();
+        if (invoiceAddress == null) invoiceAddress = temp;
+        else if (!invoiceAddress.equals(temp)) throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
         return invoiceAddress;
     }
 }

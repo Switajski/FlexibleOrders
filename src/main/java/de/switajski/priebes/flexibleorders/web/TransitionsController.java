@@ -2,8 +2,6 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.util.Date;
 
-import javassist.NotFoundException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
@@ -83,7 +80,7 @@ public class TransitionsController extends ExceptionController {
     private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
         if (confirmRequest.getItems().isEmpty()) throw new IllegalArgumentException(
                 "Liste der Auftragspositionen ist leer");
-        return confirmRequest.getItems().iterator().next().getOrderNumber();
+        return confirmRequest.getItems().iterator().next().orderNumber;
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)

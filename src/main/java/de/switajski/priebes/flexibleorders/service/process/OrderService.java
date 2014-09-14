@@ -31,9 +31,9 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
@@ -104,13 +104,13 @@ public class OrderService {
 		}
 		
 		for (ItemDto ri : orderParameter.reportItems) {
-			Product product = (ri.getProduct().equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
+			Product product = (ri.product.equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
 			OrderItem oi = new OrderItem(
 					order,
 					product,
-					ri.getQuantity());
+					ri.quantity);
 			oi.setNegotiatedPriceNet(new Amount(
-					ri.getPriceNet(),
+					ri.priceNet,
 					Currency.EUR));
 			order.addOrderItem(oi);
 		}
@@ -147,12 +147,12 @@ public class OrderService {
 		cr.setCustomerDetails(confirmParameter.customerDetails);
 
 		for (ItemDto entry : confirmParameter.orderItems) {
-			OrderItem oi = orderItemRepo.findOne(entry.getId());
+			OrderItem oi = orderItemRepo.findOne(entry.id);
 			if (oi == null)
 				throw new IllegalArgumentException(
 						"Bestellposition nicht gefunden");
 			cr.addItem(new ConfirmationItem(cr, oi,
-					entry.getQuantityLeft(), new Date()));
+					entry.quantityLeft, new Date()));
 		}
 		return reportRepo.save(cr);
 	}
@@ -200,7 +200,7 @@ public class OrderService {
 		if (shippingAddress == null)
 			throw new IllegalArgumentException("Keine Lieferadresse angegeben");
 		for (ItemDto item : orderItems) {
-			if (item.getId() == null)
+			if (item.id == null)
 				throw new IllegalArgumentException("Position hat keine Id");
 		}
 	}
@@ -209,7 +209,7 @@ public class OrderService {
 	private Product createProductFromCatalog(ItemDto ri) {
 		Product product;
 		CatalogProduct cProduct = cProductRepo.findByProductNumber(
-				ri.getProduct());
+				ri.product);
 		if (cProduct == null)
 			throw new IllegalArgumentException("Artikelnr nicht gefunden");
 		product = cProduct.toProduct();
@@ -218,7 +218,7 @@ public class OrderService {
 
 	private Product createCustomProduct(ItemDto ri) {
 		Product p = new Product();
-		p.setName(ri.getProductName());
+		p.setName(ri.productName);
 		p.setProductType(ProductType.CUSTOM);
 		p.setProductNumber(0L);
 		return p;
@@ -250,7 +250,7 @@ public class OrderService {
 		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
 
 		for (ItemDto ri : ris) {
-			ReportItem reportItem = reportItemRepo.findOne(ri.getId());
+			ReportItem reportItem = reportItemRepo.findOne(ri.id);
 			receipt.addItem(
 					new ReceiptItem(receipt, reportItem
 							.getOrderItem(),

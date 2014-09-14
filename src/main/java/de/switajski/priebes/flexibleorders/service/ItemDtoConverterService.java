@@ -43,22 +43,22 @@ public class ItemDtoConverterService {
 		ItemDto item = new ItemDto();
 		Order order = orderItem.getOrder();
 		if (order != null){
-			item.setCustomer(order.getCustomer().getId());
-			item.setCustomerNumber(order
+			item.customer = order.getCustomer().getId();
+			item.customerNumber = order
 					.getCustomer()
-					.getCustomerNumber());
-			item.setCustomerName(order.getCustomer().getLastName());
-			item.setOrderNumber(order.getOrderNumber());
+					.getCustomerNumber();
+			item.customerName = order.getCustomer().getLastName();
+			item.orderNumber = order.getOrderNumber();
 		}
-		item.setCreated(orderItem.getCreated());
-		item.setId(orderItem.getId());
+		item.created = orderItem.getCreated();
+		item.id = orderItem.getId();
 		if (orderItem.getNegotiatedPriceNet() != null)
-			item.setPriceNet(orderItem.getNegotiatedPriceNet().getValue());
-		item.setProduct(orderItem.getProduct().getProductNumber());
-		item.setProductName(orderItem.getProduct().getName());
-		item.setStatus(DeliveryHistory.createFrom(orderItem).provideStatus());
-		item.setQuantity(orderItem.getOrderedQuantity());
-		item.setQuantityLeft(QuantityCalculator.calculateLeft(orderItem));
+			item.priceNet = orderItem.getNegotiatedPriceNet().getValue();
+		item.product = orderItem.getProduct().getProductNumber();
+		item.productName = orderItem.getProduct().getName();
+		item.status = DeliveryHistory.createFrom(orderItem).provideStatus();
+		item.quantity = orderItem.getOrderedQuantity();
+		item.quantityLeft = QuantityCalculator.calculateLeft(orderItem);
 		return item;
 	}
 	
@@ -66,7 +66,7 @@ public class ItemDtoConverterService {
 	public Set<ReportItem> convert(List<ItemDto> itemDtos) {
 		Set<ReportItem> ris = new HashSet<ReportItem>();
 		for (ItemDto entry : itemDtos) {
-			ReportItem ri = reportItemRepo.findOne(entry.getId());
+			ReportItem ri = reportItemRepo.findOne(entry.id);
 			if (ri != null)
 				ris.add(ri);
 		}
@@ -103,52 +103,52 @@ public class ItemDtoConverterService {
 	
 	public ItemDto convert(ReportItem ri){
 			ItemDto item = new ItemDto();
-			item.setDocumentNumber(ri.getReport().getDocumentNumber());
+			item.documentNumber = ri.getReport().getDocumentNumber();
 			//TODO: instanceof: this is not subject of this class
 			if (ri.getReport() instanceof OrderConfirmation){
-				item.setOrderConfirmationNumber(ri.getReport().getDocumentNumber());
+				item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
 				//TODO: DRY
 				AgreementDetails ad = ((OrderConfirmation) ri.getReport()).getAgreementDetails();
 				if (ad != null)
-				    item.setExpectedDelivery(ad.getExpectedDelivery());
+				    item.expectedDelivery = ad.getExpectedDelivery();
 			}
 			if (ri.getReport() instanceof OrderAgreement){
-                item.setOrderAgreementNumber(ri.getReport().getDocumentNumber());
+                item.orderAgreementNumber = ri.getReport().getDocumentNumber();
                 //TODO: DRY
                 AgreementDetails ad = ((OrderAgreement) ri.getReport()).getAgreementDetails();
                 if (ad != null)
-                    item.setExpectedDelivery(ad.getExpectedDelivery());
+                    item.expectedDelivery = ad.getExpectedDelivery();
             }
 			if (ri.getReport() instanceof Invoice){
 				Invoice invoice = (Invoice) ri.getReport();
-				item.setInvoiceNumber(ri.getReport().getDocumentNumber());
-				item.setDeliveryNotesNumber(ri.getReport().getDocumentNumber());
-				item.setPaymentConditions(invoice.getPaymentConditions());
+				item.invoiceNumber = ri.getReport().getDocumentNumber();
+				item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
+				item.paymentConditions = invoice.getPaymentConditions();
 			}
 			if (ri.getReport() instanceof DeliveryNotes){
 				DeliveryNotes deliveryNotes = (DeliveryNotes) ri.getReport();
-				item.setDeliveryNotesNumber(ri.getReport().getDocumentNumber());
-				item.setTrackNumber(deliveryNotes.getTrackNumber());
-				item.setPackageNumber(deliveryNotes.getPackageNumber());
+				item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
+				item.trackNumber = deliveryNotes.getTrackNumber();
+				item.packageNumber = deliveryNotes.getPackageNumber();
 			}
 			if (ri.getReport() instanceof Receipt){
-				item.setReceiptNumber(ri.getReport().getDocumentNumber());
+				item.receiptNumber = ri.getReport().getDocumentNumber();
 			}
-			item.setCreated(ri.getCreated());
+			item.created = ri.getCreated();
 			Order order = ri.getOrderItem().getOrder();
-            item.setCustomer(order.getCustomer().getId());
-			item.setCustomerNumber(order.getCustomer().getCustomerNumber());
-			item.setCustomerName(order.getCustomer().getLastName());
-			item.setDocumentNumber(ri.getReport().getDocumentNumber());
-			item.setId(ri.getId());
-			item.setOrderNumber(order.getOrderNumber());
+            item.customer = order.getCustomer().getId();
+			item.customerNumber = order.getCustomer().getCustomerNumber();
+			item.customerName = order.getCustomer().getLastName();
+			item.documentNumber = ri.getReport().getDocumentNumber();
+			item.id = ri.getId();
+			item.orderNumber = order.getOrderNumber();
 			if (ri.getOrderItem().getNegotiatedPriceNet() != null)
-				item.setPriceNet(ri.getOrderItem().getNegotiatedPriceNet().getValue());
-			item.setProduct(ri.getOrderItem().getProduct().getProductNumber());
-			item.setProductName(ri.getOrderItem().getProduct().getName());
-			item.setQuantity(ri.getQuantity());
-			item.setStatus(ri.provideStatus());
-			item.setQuantityLeft(QuantityCalculator.calculateLeft(ri));
+				item.priceNet = ri.getOrderItem().getNegotiatedPriceNet().getValue();
+			item.product = ri.getOrderItem().getProduct().getProductNumber();
+			item.productName = ri.getOrderItem().getProduct().getName();
+			item.quantity = ri.getQuantity();
+			item.status = ri.provideStatus();
+			item.quantityLeft = QuantityCalculator.calculateLeft(ri);
 		return item;
 	}
 

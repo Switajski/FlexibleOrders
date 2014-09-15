@@ -11,19 +11,19 @@ import org.springframework.stereotype.Controller;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.specification.AgreementItemToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.AgreementItemToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 
 @Controller
 public class ReportItemFilterDispatcher {
 
-	private static final String CUSTOMER_NO = "customer";
+	private static final String CUSTOMER_NO = "customerNumber";
 
 	private static final String STATUS = "status";
 

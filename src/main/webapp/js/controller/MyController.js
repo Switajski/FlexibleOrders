@@ -1,10 +1,17 @@
 // Global Exception Handling
 Ext.Ajax.on('requestexception', function(conn, response, options) {
 			if (response.status === 400) {
-				Ext.MessageBox.alert('Eingabefehler', response.responseText);
+				Ext.MessageBox.alert(response.status + ' Eingabefehler', response.responseText);
+			} else if (response.status === 404) {
+				Ext.MessageBox.alert(response.status + ' ' + response.statusText, options.url);
+			} else if (response.status === 500) {
+				Ext.MessageBox.alert('Schwerwiegender Fehler', response.responseText);
 			} else {
-				Ext.MessageBox.alert('Server meldet Fehler',
-						response.responseText);
+				cause = response.status;
+				if (response.timedout)
+					cause = 'Timed out';
+				Ext.MessageBox.alert(response.statusText,
+						cause);
 			}
 		});
 
@@ -261,7 +268,7 @@ Ext.define('MyApp.controller.MyController', {
 					state : 'agreed',
 					grid : 'AgreementItemGrid',
 					text : 'Auftr&auml;e'
-				},{
+				}, {
 					state : 'confirmed',
 					grid : 'ShippingItemGrid',
 					text : 'Auftragsbest&auml;tigungen'
@@ -285,13 +292,11 @@ Ext.define('MyApp.controller.MyController', {
 								success : function(response) {
 									var text = response.responseText;
 									shippedAmount = Ext.JSON.decode(text).data;
-									Ext
-											.getCmp(stateToGrid.grid)
+									Ext.getCmp(stateToGrid.grid)
 											.setTitle(stateToGrid.text
-															+ ' - Offener Betrag: '
-															+ shippedAmount.value
-															+ ' '
-															+ shippedAmount.currency);
+													+ ' - Offener Betrag: '
+													+ shippedAmount.value + ' '
+													+ shippedAmount.currency);
 								}
 							});
 				});

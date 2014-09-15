@@ -18,11 +18,16 @@ public class AgreementHistory {
         this.agreementItems = deliveryHistory.getItems(AgreementItem.class);
     }
     
-    public AgreementDetails getAgreementDetails(){
+    public AgreementDetails getOneAgreementDetail(){
+        Set<AgreementDetails> ocs = getAgreementDetails();
+        return getOneOrNullIfEmpty(ocs);
+    }
+
+    public Set<AgreementDetails> getAgreementDetails() {
         Set<AgreementDetails> ocs = new HashSet<AgreementDetails>(); 
         for (AgreementItem cis: agreementItems)
             ocs.add(((OrderAgreement) cis.getReport()).getAgreementDetails());
-        return getOneOrNullIfEmpty(ocs);
+        return ocs;
     }
     
     public CustomerDetails getCustomerDetails(){

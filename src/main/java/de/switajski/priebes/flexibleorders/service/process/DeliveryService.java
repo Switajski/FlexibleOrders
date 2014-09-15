@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,11 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -58,9 +61,11 @@ public class DeliveryService {
                     new Date()));
 
             // validate addresses DRY!
+            AgreementHistory agreementHistory = new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeDelivered));
             shippedAddress = validateShippingAddress(
                     shippedAddress, 
-                    new AgreementHistory(DeliveryHistory.createFrom(orderItemToBeDelivered)));
+                    agreementHistory);
+            validateAgreementDetails(agreementHistory.getAgreementDetails());
 
             deliveryNotes.setShippedAddress(shippedAddress);
 
@@ -74,9 +79,14 @@ public class DeliveryService {
         return reportRepo.save(deliveryNotes);
     }
 
+    private void validateAgreementDetails(Set<AgreementDetails> agreementDetails) {
+        if (agreementDetails.size() > 1)
+            throw new IllegalArgumentException("Zu liefernde Auftr"+Unicode.aUml+"ge haben unterschiedlich Vereinbarungen");
+    }
+
     private Address validateShippingAddress(Address shippedAddress, AgreementHistory history) {
         if (hasShippingAddressFromAgreementDetails(history)){
-            Address temp = history.getAgreementDetails().getShippingAddress();
+            Address temp = history.getOneAgreementDetail().getShippingAddress();
             if (shippedAddress == null) shippedAddress = temp;
             else if (!shippedAddress.equals(temp)) 
                 throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
@@ -87,9 +97,9 @@ public class DeliveryService {
     private boolean hasShippingAddressFromAgreementDetails(AgreementHistory history) {
         if (history == null)
             return false;
-        if (history.getAgreementDetails() == null)
+        if (history.getOneAgreementDetail() == null)
             return false;
-        if (history.getAgreementDetails().getShippingAddress() == null)
+        if (history.getOneAgreementDetail().getShippingAddress() == null)
             return false;
         return true;
     }

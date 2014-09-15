@@ -24,4 +24,7 @@ public class DeliverParameter {
 		this.created = created;
 		this.agreementItemDtos = agreementItemDtos;
 	}
+
+    public DeliverParameter() {
+    }
 }

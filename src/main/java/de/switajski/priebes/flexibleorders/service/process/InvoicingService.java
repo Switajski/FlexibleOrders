@@ -78,7 +78,7 @@ public class InvoicingService {
     }
 
     private Address validateInvoiceAdress(Address invoiceAddress, AgreementHistory aHistory) {
-        Address temp = aHistory.getAgreementDetails().getInvoiceAddress();
+        Address temp = aHistory.getOneAgreementDetail().getInvoiceAddress();
         if (invoiceAddress == null) invoiceAddress = temp;
         else if (!invoiceAddress.equals(temp)) throw new IllegalStateException("AB-Positionen haben unterschiedliche Lieferadressen");
         return invoiceAddress;

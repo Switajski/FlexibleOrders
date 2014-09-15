@@ -245,6 +245,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         cpAB15.shippingAddress = TestData.YVONNE.getShippingAddress();
         cpAB15.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
         cpAB15.orderItems = converterService.convert(b15);
+        cpAB15.customerDetails = TestData.YVONNE.getDetails();
         return orderService.confirm(cpAB15);
     }
 
@@ -257,6 +258,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		cpAB13.shippingAddress = TestData.YVONNE.getShippingAddress();
 		cpAB13.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
 		cpAB13.orderItems = converterService.convert(b13);
+		cpAB13.customerDetails = TestData.YVONNE.getDetails();
 		orderService.confirm(cpAB13);
     }
 
@@ -269,6 +271,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		cpAB11.shippingAddress = TestData.YVONNE.getShippingAddress();
 		cpAB11.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
 		cpAB11.orderItems = b11Andb12;
+		cpAB11.customerDetails = TestData.YVONNE.getDetails();
 		OrderConfirmation ab11 = orderService.confirm(cpAB11);
         return ab11;
     }

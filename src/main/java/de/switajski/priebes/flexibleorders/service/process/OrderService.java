@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
@@ -16,12 +15,10 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
@@ -157,38 +154,6 @@ public class OrderService {
 		return reportRepo.save(cr);
 	}
 	
-	@Transactional
-	public OrderAgreement agree(String orderConfirmationNo, String orderAgreementNo){
-		OrderConfirmation oc = reportingService.retrieveOrderConfirmation(orderConfirmationNo);
-		if (oc == null)
-			throw new IllegalArgumentException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
-
-		OrderAgreement oa = new OrderAgreement();
-		oa.setDocumentNumber(orderAgreementNo);
-		oa.setAgreementDetails(oc.getAgreementDetails());
-		oa.setCustomerDetails(oc.getCustomerDetails());
-		oa.setOrderConfirmationNumber(orderConfirmationNo);
-		oa = takeOverConfirmationItems(oc, oa);
-		
-		return reportRepo.save(oa);
-	}
-
-    private OrderAgreement takeOverConfirmationItems(OrderConfirmation oc,
-			OrderAgreement oa) {
-		for (ReportItem ri:oc.getItems()){
-			AgreementItem ai = new AgreementItem();
-            int calculateLeft = QuantityCalculator.calculateLeft(ri);
-            if (calculateLeft < 1)
-                throw new IllegalArgumentException("Eine angegebene position hat keine offenen Positionen mehr");
-            ai.setQuantity(calculateLeft);
-			ai.setOrderItem(ri.getOrderItem());
-			//TODO: bidirectional management of relationship
-			ai.setReport(oa);
-			oa.addItem(ai);
-		}
-		return oa;
-	}
-
 	private void validateConfirm(String orderNumber, String confirmNumber,
 			List<ItemDto> orderItems, Address shippingAddress) {
 		if (reportRepo.findByDocumentNumber(confirmNumber) != null)

@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.process.AgreementService;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
@@ -69,6 +70,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
 	@Autowired
 	private DeliveryMethodRepository deliveryMethodRepo;
+
+	@Autowired
+    private AgreementService agreementService;
 
 	// @Ignore("This test is to initialize test data for GUI testing")
 	@Rollback(false)
@@ -146,8 +150,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		createAB13(dt, b11, b13);
 		OrderConfirmation ab15 = createAB15(dt, b11, b15);
 
-		OrderAgreement au11 = orderService.agree(ab11.getDocumentNumber(), "AU11");
-		OrderAgreement au15 = orderService.agree(ab15.getDocumentNumber(), "AU15");
+		OrderAgreement au11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
+		OrderAgreement au15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
 
 		List<ItemDto> itemsFromAu11 = converterService.convertReport(au11);
 		List<ItemDto> itemsFromAu15 = converterService.convertReport(au15);

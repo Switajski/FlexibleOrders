@@ -9,7 +9,7 @@ Ext.Ajax.on('requestexception', function(conn, response, options) {
 			} else {
 				cause = response.status;
 				if (response.timedout)
-					cause = 'Timed out';
+					cause = 'Request timed out';
 				Ext.MessageBox.alert(response.statusText,
 						cause);
 			}

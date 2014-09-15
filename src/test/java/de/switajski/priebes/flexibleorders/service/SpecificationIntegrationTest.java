@@ -23,6 +23,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
+import de.switajski.priebes.flexibleorders.service.process.AgreementService;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -55,6 +56,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
 	@Autowired
 	private DeliveryService deliveryService;
+	
+	@Autowired
+    private AgreementService agreementService;
 
 	private static final int JUREK_QTY = 5; // All Jureks from B12
 
@@ -221,7 +225,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 						AddressBuilder.createDefault(),
 						b11AndB12));
 		
-		OrderAgreement orderAgreement = orderService.agree(confirmationReport.getDocumentNumber(), "AU11");
+		OrderAgreement orderAgreement = agreementService.agree(confirmationReport.getDocumentNumber(), "AU11");
 		return orderAgreement;
 	}
 }

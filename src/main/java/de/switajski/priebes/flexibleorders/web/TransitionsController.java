@@ -23,6 +23,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
+import de.switajski.priebes.flexibleorders.service.process.AgreementService;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
@@ -43,6 +44,8 @@ public class TransitionsController extends ExceptionController {
     private InvoicingService invoicingService;
     @Autowired
     private DeliveryService deliveryService;
+    @Autowired
+    private AgreementService agreementService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
@@ -143,7 +146,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse agree(
             @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
-        OrderAgreement orderAgreement = orderService.agree(orderConfirmationNumber, orderAgreementNumber);
+        OrderAgreement orderAgreement = agreementService.agree(orderConfirmationNumber, orderAgreementNumber);
         return ExtJsResponseCreator.createResponse(orderAgreement);
     }
 

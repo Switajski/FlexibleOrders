@@ -23,7 +23,7 @@ Ext.define('MyApp.controller.DeliverController', {
 					value : record.data.customerNumber
 				}, {
 					property : "status",
-					value : "confirmed"
+					value : "agreed"
 				}]);
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {

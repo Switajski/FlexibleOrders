@@ -23,7 +23,7 @@ Ext.define('MyApp.controller.AgreementController', {
 					value : record.data.customerNumber
 				}, {
 					property : "status",
-					value : "agreed"
+					value : "confirmed"
 				}]);
 
 		var agreementWindow = Ext.create('MyApp.view.AgreementWindow', {

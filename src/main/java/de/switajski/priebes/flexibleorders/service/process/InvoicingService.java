@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,16 +33,15 @@ public class InvoicingService {
     private ItemDtoConverterService itemDtoConverterService;
 
     @Transactional
-    public Invoice invoice(String invoiceNumber, String paymentConditions,
-            Date created, List<ItemDto> shippingItemDtos, String billing) {
-        if (reportRepo.findByDocumentNumber(invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+    public Invoice invoice(InvoicingParameter invoicingParameter) {
+        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
-        Invoice invoice = new Invoice(invoiceNumber, paymentConditions, null);
-        invoice.setBilling(billing);
+        Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, invoicingParameter.paymentConditions, null);
+        invoice.setBilling(invoicingParameter.billing);
 
         Order order = null;
         Address invoiceAddress = null;
-        for (ItemDto entry : shippingItemDtos) {
+        for (ItemDto entry : invoicingParameter.shippingItemDtos) {
             ReportItem shipEventToBeInvoiced = reportItemRepo.findOne(entry.id);
 
             OrderItem orderItemToBeInvoiced = shipEventToBeInvoiced
@@ -69,8 +67,8 @@ public class InvoicingService {
 
         invoice.setShippingCosts(new ShippingCostsCalculator()
                 .calculate(itemDtoConverterService
-                        .convertToShippingItems(shippingItemDtos)));
-        invoice.setCreated((created == null) ? new Date() : created);
+                        .convertToShippingItems(invoicingParameter.shippingItemDtos)));
+        invoice.setCreated((invoicingParameter.created == null) ? new Date() : invoicingParameter.created);
         // TODO: refactor DRY!
         invoice.setCustomerNumber(order.getCustomer().getCustomerNumber());
 

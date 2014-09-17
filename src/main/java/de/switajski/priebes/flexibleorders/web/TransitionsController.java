@@ -24,7 +24,9 @@ import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.process.AgreementService;
+import de.switajski.priebes.flexibleorders.service.process.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.process.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -78,7 +80,7 @@ public class TransitionsController extends ExceptionController {
                 confirmRequest.items);
         confirmParameter.customerDetails = customerDetails;
         confirmParameter.customerNumber = confirmRequest.customerId;
-        
+
         OrderConfirmation confirmationReport = orderService.confirm(
                 confirmParameter);
         return ExtJsResponseCreator.createResponse(confirmationReport);
@@ -112,16 +114,19 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody
     JsonObjectResponse invoice(
-            @RequestBody JsonCreateReportRequest deliverRequest)
+            @RequestBody JsonCreateReportRequest invoicingRequest)
             throws Exception {
-        deliverRequest.validate();
+        invoicingRequest.validate();
 
+        InvoicingParameter invoicingParameter = new InvoicingParameter(
+                invoicingRequest.invoiceNumber,
+                invoicingRequest.paymentConditions,
+                invoicingRequest.created,
+                invoicingRequest.items,
+                invoicingRequest.billing);
+        invoicingParameter.customerNumber = invoicingRequest.customerId;
         Invoice invoice = invoicingService.invoice(
-                deliverRequest.invoiceNumber,
-                deliverRequest.paymentConditions,
-                deliverRequest.created,
-                deliverRequest.items,
-                deliverRequest.billing);
+                invoicingParameter);
         return ExtJsResponseCreator.createResponse(invoice);
     }
 
@@ -186,8 +191,8 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse complete(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
             throws Exception {
-        Receipt receipt = orderService.markAsPayed(invoiceNumber, "B"
-                + invoiceNumber, new Date());
+        Receipt receipt = orderService.markAsPayed(new BillingParameter(invoiceNumber, "B"
+                + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createResponse(receipt);
     }
 

@@ -30,6 +30,7 @@ import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.AgreementService;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.process.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -170,13 +171,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     private void createR11(List<ItemDto> l11AndL12) {
         invoicingService.invoice(
-				"R11",
-				"5 % Skonto, wenn innerhalb 5 Tagen",
-				new Date(),
-				Arrays.asList(
+				new InvoicingParameter("R11", "5 % Skonto, wenn innerhalb 5 Tagen", new Date(), Arrays.asList(
 						extract(l11AndL12, TestData.AMY.getProductNumber(), 5),
-						extract(l11AndL12, TestData.MILADKA.getProductNumber(), 5)),
-				"billing");
+						extract(l11AndL12, TestData.MILADKA.getProductNumber(), 5)), "billing"));
     }
 
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {

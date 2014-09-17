@@ -205,30 +205,6 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Receipt markAsPayed(String documentNumber, String receiptNumber,
-			Date receivedPaymentDate, List<ItemDto> ris) {
-		if (receivedPaymentDate == null)
-			receivedPaymentDate = new Date();
-
-		Report report = reportRepo.findByDocumentNumber(documentNumber);
-		if (report == null)
-			throw new IllegalArgumentException(
-					"Bericht mit gegebener Nummer nicht gefunden");
-
-		Receipt receipt = new Receipt(receiptNumber, receivedPaymentDate);
-
-		for (ItemDto ri : ris) {
-			ReportItem reportItem = reportItemRepo.findOne(ri.id);
-			receipt.addItem(
-					new ReceiptItem(receipt, reportItem
-							.getOrderItem(),
-							reportItem.getQuantity(), receivedPaymentDate));
-		}
-		receipt.setCustomerNumber(report.getCustomerNumber());
-		return reportRepo.save(receipt);
-	}
-
-	@Transactional
 	public boolean deleteOrder(String orderNumber) {
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
@@ -271,13 +247,12 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Receipt markAsPayed(String invoiceNumber, String receiptNumber,
-			Date date) {
-		if (reportRepo.findByDocumentNumber(receiptNumber) != null)
-			receiptNumber.concat("-2");
+	public Receipt markAsPayed(BillingParameter billingParameter) {
+		if (reportRepo.findByDocumentNumber(billingParameter.receiptNumber) != null)
+			billingParameter.receiptNumber.concat("-2");
 
-		Invoice invoice = retrieveInvoiceSavely(invoiceNumber);
-		Receipt receipt = new Receipt(receiptNumber, date);
+		Invoice invoice = retrieveInvoiceSavely(billingParameter.invoiceNumber);
+		Receipt receipt = new Receipt(billingParameter.receiptNumber, billingParameter.date);
 		ReportItem reportItem = null;
 		for (ReportItem ri : invoice.getItems()) {
 			receipt.addItem(

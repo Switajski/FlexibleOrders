@@ -36,10 +36,8 @@ public class DeliveryService {
         deliveryNotes.setCustomerNumber(deliverParameter.customerNumber);
 
         for (ItemDto agreementItemDto : deliverParameter.agreementItemDtos) {
-            ReportItem agreementItem = reportItemRepo
-                    .findOne(agreementItemDto.id);
-            OrderItem orderItemToBeDelivered = agreementItem
-                    .getOrderItem();
+            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
+            OrderItem orderItemToBeDelivered = agreementItem.getOrderItem();
 
             ServiceHelper.validateQuantity(agreementItemDto.quantityLeft, agreementItem);
 

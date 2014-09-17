@@ -131,10 +131,10 @@ public class DeliveryHistory {
         Set<Date> expectedDates = new HashSet<Date>();
         Set<Date> confirmedDates = new HashSet<Date>();
         for (ReportItem ri : getItems())
-            if (ri.getOrderItem().getOrder().getAgreementDetails() != null) expectedDates.add(ri.getOrderItem().getOrder().getAgreementDetails().getExpectedDelivery());
+            if (ri.getOrderItem().getOrder().getPurchaseAgreement() != null) expectedDates.add(ri.getOrderItem().getOrder().getPurchaseAgreement().getExpectedDelivery());
 
         for (ConfirmationItem ci : getItems(ConfirmationItem.class))
-            if (ci.getOrderItem().getOrder().getAgreementDetails() != null) confirmedDates.add(((OrderConfirmation) ci.getReport()).getAgreementDetails().getExpectedDelivery());
+            if (ci.getOrderItem().getOrder().getPurchaseAgreement() != null) confirmedDates.add(((OrderConfirmation) ci.getReport()).getPurchaseAgreement().getExpectedDelivery());
 
         Boolean hasDifferentDeliveryDates = null;
         if (!expectedDates.isEmpty() || !confirmedDates.isEmpty()) {

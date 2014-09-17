@@ -15,7 +15,7 @@ import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -101,14 +101,14 @@ public abstract class ReportItem extends GenericEntity implements
         if (this.getReport() instanceof OrderConfirmation) {
             item.orderConfirmationNumber = this.getReport().getDocumentNumber();
             // TODO: DRY
-            AgreementDetails ad = ((OrderConfirmation) this.getReport()).getAgreementDetails();
-            if (ad != null) item.expectedDelivery = ad.getExpectedDelivery();
+            PurchaseAgreement pa = ((OrderConfirmation) this.getReport()).getPurchaseAgreement();
+            if (pa != null) item.expectedDelivery = pa.getExpectedDelivery();
         }
         if (this.getReport() instanceof OrderAgreement) {
             item.orderAgreementNumber = this.getReport().getDocumentNumber();
             // TODO: DRY
-            AgreementDetails ad = ((OrderAgreement) this.getReport()).getAgreementDetails();
-            if (ad != null) item.expectedDelivery = ad.getExpectedDelivery();
+            PurchaseAgreement pa = ((OrderAgreement) this.getReport()).getAgreementDetails();
+            if (pa != null) item.expectedDelivery = pa.getExpectedDelivery();
         }
         if (this.getReport() instanceof Invoice) {
             Invoice invoice = (Invoice) this.getReport();

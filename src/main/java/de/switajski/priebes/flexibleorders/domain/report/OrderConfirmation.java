@@ -4,7 +4,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 
 /**
@@ -19,7 +19,7 @@ public class OrderConfirmation extends Report {
 	private CustomerDetails customerDetails;
 	
 	@Embedded
-	private AgreementDetails agreementDetails;
+	private PurchaseAgreement purchaseAgreement;
 
 	public OrderConfirmation() {
 	}
@@ -36,10 +36,10 @@ public class OrderConfirmation extends Report {
 			Address invoiceAddress,
 			Address shippingAddress) {
 		super(orderConfirmationNumber);
-		AgreementDetails ad = new AgreementDetails();
-		ad.setInvoiceAddress(invoiceAddress);
-		ad.setShippingAddress(shippingAddress);
-		setAgreementDetails(ad);
+		PurchaseAgreement pa = new PurchaseAgreement();
+		pa.setInvoiceAddress(invoiceAddress);
+		pa.setShippingAddress(shippingAddress);
+		setPurchaseAgreement(pa);
 	}
 
 	public void setCustomerDetails(CustomerDetails customerDetails){
@@ -50,12 +50,12 @@ public class OrderConfirmation extends Report {
 		return this.customerDetails;
 	}
 
-	public AgreementDetails getAgreementDetails() {
-		return agreementDetails;
+	public PurchaseAgreement getPurchaseAgreement() {
+		return purchaseAgreement;
 	}
 
-	public void setAgreementDetails(AgreementDetails agreementDetails) {
-		this.agreementDetails = agreementDetails;
+	public void setPurchaseAgreement(PurchaseAgreement purchaseAgreement) {
+		this.purchaseAgreement = purchaseAgreement;
 	}
 
 }

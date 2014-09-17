@@ -79,7 +79,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         param.customerDetails = aHistory.getCustomerDetails();
         param.date = date;
         param.customerNo = customerNo;
-        param.agreementDetails = aHistory.getOneAgreementDetail();
+        param.purchaseAgreement = aHistory.retrieveOnePurchaseAgreementOrFail();
         param.billing = StringUtils.isEmpty(report.getBilling()) ? "" : "Abrechnung: " + report.getBilling();
 
         document.add(ReportViewHelper.createExtInfoTable(param));

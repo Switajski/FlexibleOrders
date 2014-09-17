@@ -13,8 +13,8 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
@@ -84,6 +84,7 @@ public class OrderService {
 			throw new IllegalArgumentException();
 		if (orderRepo.findByOrderNumber(orderParameter.orderNumber) != null)
 			throw new IllegalArgumentException("Bestellnr existiert bereits");
+		// TODO: Customer entity has nothing to do here!
 		Customer customer = customerRepo.findByCustomerNumber(orderParameter.customerNumber);
 		if (customer == null)
 			throw new IllegalArgumentException(
@@ -94,11 +95,9 @@ public class OrderService {
 				OriginSystem.FLEXIBLE_ORDERS,
 				orderParameter.orderNumber);
 		order.setCreated((orderParameter.created == null) ? new Date() : orderParameter.created);
-		if (orderParameter.expectedDelivery != null){
-			AgreementDetails ad = new AgreementDetails();
-			ad.setExpectedDelivery(orderParameter.expectedDelivery);
-			order.setAgreementDetails(ad);
-		}
+		PurchaseAgreement purchaseAgreement = new PurchaseAgreement();
+		purchaseAgreement.setCustomerNumber(customer.getCustomerNumber());
+		purchaseAgreement.setExpectedDelivery(orderParameter.expectedDelivery);
 		
 		for (ItemDto ri : orderParameter.reportItems) {
 			Product product = (ri.product.equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
@@ -130,16 +129,17 @@ public class OrderService {
 		shippingAddress = (shippingAddress.isComplete()) ? shippingAddress : address;
 		invoiceAddress = (invoiceAddress.isComplete()) ? invoiceAddress : address;
 		
-		AgreementDetails agreeDet = new AgreementDetails();
-		agreeDet.setShippingAddress(shippingAddress);
-		agreeDet.setInvoiceAddress(invoiceAddress);
-		agreeDet.setExpectedDelivery(confirmParameter.expectedDelivery);
+		PurchaseAgreement pAgree = new PurchaseAgreement();
+		pAgree.setShippingAddress(shippingAddress);
+		pAgree.setInvoiceAddress(invoiceAddress);
+		pAgree.setExpectedDelivery(confirmParameter.expectedDelivery);
+		pAgree.setCustomerNumber(confirmParameter.customerNumber);
 		if (confirmParameter.deliveryMethodNo != null)
-		    agreeDet.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
+		    pAgree.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
 
 		OrderConfirmation cr = new OrderConfirmation();
 		cr.setDocumentNumber(confirmParameter.confirmNumber);
-		cr.setAgreementDetails(agreeDet);
+		cr.setPurchaseAgreement(pAgree);
 		cr.setCustomerNumber(cust.getCustomerNumber());
 		cr.setCustomerDetails(confirmParameter.customerDetails);
 

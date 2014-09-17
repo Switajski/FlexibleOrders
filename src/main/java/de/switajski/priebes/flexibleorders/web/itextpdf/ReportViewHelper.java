@@ -97,7 +97,7 @@ public class ReportViewHelper {
         PhraseBuilder pb = new PhraseBuilder("");
         PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
-        String shipAddress = createString(p.agreementDetails.getShippingAddress());
+        String shipAddress = createString(p.purchaseAgreement.getShippingAddress());
 
         Phrase firstCol = new PhraseBuilder().append(createString(p.orderNumbers, "B-Nr.")).build();
         appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol, "AB-Nr.");
@@ -123,7 +123,7 @@ public class ReportViewHelper {
                 .append(NEWLINE + shipAddress)
                 .append(NEWLINE)
                 .append(NEWLINE)
-                .append(createString(p.agreementDetails.getDeliveryMethod()))
+                .append(createString(p.purchaseAgreement.getDeliveryMethod()))
                 .toString();
 
         String rdCol = new StringBuilder()

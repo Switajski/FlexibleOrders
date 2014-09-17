@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
@@ -18,13 +18,19 @@ public class AgreementHistory {
         this.agreementItems = deliveryHistory.getItems(AgreementItem.class);
     }
     
-    public AgreementDetails getOneAgreementDetail(){
-        Set<AgreementDetails> ocs = getAgreementDetails();
+    public PurchaseAgreement retrieveOnePurchaseAgreementOrFail(){
+        Set<PurchaseAgreement> ocs = getPuchaseAgreement();
+        validateAgreementDetails(agreementItems);
         return getOneOrNullIfEmpty(ocs);
     }
+    
+    private void validateAgreementDetails(Collection<AgreementItem> agreementItems) {
+        if (agreementItems.size() > 1)
+            throw new IllegalStateException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
+    }
 
-    public Set<AgreementDetails> getAgreementDetails() {
-        Set<AgreementDetails> ocs = new HashSet<AgreementDetails>(); 
+    public Set<PurchaseAgreement> getPuchaseAgreement() {
+        Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
         for (AgreementItem cis: agreementItems)
             ocs.add(((OrderAgreement) cis.getReport()).getAgreementDetails());
         return ocs;

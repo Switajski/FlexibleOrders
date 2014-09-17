@@ -4,7 +4,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 
 /**
@@ -19,7 +19,7 @@ public class OrderAgreement extends Report {
 	private CustomerDetails customerDetails;
 	
 	@Embedded
-	private AgreementDetails agreementDetails;
+	private PurchaseAgreement agreementDetails;
 	
 	private String orderConfirmationNumber;
 
@@ -38,7 +38,7 @@ public class OrderAgreement extends Report {
 			Address invoiceAddress,
 			Address shippingAddress) {
 		super(orderAgreementNumber);
-		AgreementDetails ad = new AgreementDetails();
+		PurchaseAgreement ad = new PurchaseAgreement();
 		ad.setInvoiceAddress(invoiceAddress);
 		ad.setShippingAddress(shippingAddress);
 		setAgreementDetails(ad);
@@ -52,11 +52,11 @@ public class OrderAgreement extends Report {
 		return this.customerDetails;
 	}
 
-	public AgreementDetails getAgreementDetails() {
+	public PurchaseAgreement getAgreementDetails() {
 		return agreementDetails;
 	}
 
-	public void setAgreementDetails(AgreementDetails agreementDetails) {
+	public void setAgreementDetails(PurchaseAgreement agreementDetails) {
 		this.agreementDetails = agreementDetails;
 	}
 

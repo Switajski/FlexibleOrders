@@ -52,7 +52,7 @@ public class OrderConfirmationPdfFileTest extends AbstractSpringContextTest{
 				AddressBuilder.buildWithGeneratedAttributes(123),
 				AddressBuilder.buildWithGeneratedAttributes(6623));
 		orderConfirmation.setCustomerDetails(createCustomerDetails());
-		orderConfirmation.getAgreementDetails().setExpectedDelivery(new Date());
+		orderConfirmation.getPurchaseAgreement().setExpectedDelivery(new Date());
 
 		for (int i = 0; i < 28; i++) {
 			item1.addReportItem(

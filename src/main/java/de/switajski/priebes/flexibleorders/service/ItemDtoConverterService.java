@@ -14,7 +14,7 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
@@ -108,16 +108,16 @@ public class ItemDtoConverterService {
 			if (ri.getReport() instanceof OrderConfirmation){
 				item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
 				//TODO: DRY
-				AgreementDetails ad = ((OrderConfirmation) ri.getReport()).getAgreementDetails();
-				if (ad != null)
-				    item.expectedDelivery = ad.getExpectedDelivery();
+				PurchaseAgreement pa = ((OrderConfirmation) ri.getReport()).getPurchaseAgreement();
+				if (pa != null)
+				    item.expectedDelivery = pa.getExpectedDelivery();
 			}
 			if (ri.getReport() instanceof OrderAgreement){
                 item.orderAgreementNumber = ri.getReport().getDocumentNumber();
                 //TODO: DRY
-                AgreementDetails ad = ((OrderAgreement) ri.getReport()).getAgreementDetails();
-                if (ad != null)
-                    item.expectedDelivery = ad.getExpectedDelivery();
+                PurchaseAgreement pa = ((OrderAgreement) ri.getReport()).getAgreementDetails();
+                if (pa != null)
+                    item.expectedDelivery = pa.getExpectedDelivery();
             }
 			if (ri.getReport() instanceof Invoice){
 				Invoice invoice = (Invoice) ri.getReport();

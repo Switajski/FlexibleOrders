@@ -56,10 +56,10 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
             ReportViewHelper.mapDocumentNumbersToParam(history, param);
             param.customerDetails = customerDetails;
             param.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                    aHistory.getOneAgreementDetail().getExpectedDelivery(), history);
+                    aHistory.retrieveOnePurchaseAgreementOrFail().getExpectedDelivery(), history);
             param.date = date;
             param.customerNo = customerNo;
-            param.agreementDetails = aHistory.getOneAgreementDetail();
+            param.purchaseAgreement = aHistory.retrieveOnePurchaseAgreementOrFail();
 
             document.add(ReportViewHelper.createExtInfoTable(param));
         }

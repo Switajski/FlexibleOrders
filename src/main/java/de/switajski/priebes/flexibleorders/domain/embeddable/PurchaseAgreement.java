@@ -21,7 +21,7 @@ import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 
 @Embeddable
-public class AgreementDetails {
+public class PurchaseAgreement {
 
     @AttributeOverrides({
             @AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
@@ -49,6 +49,9 @@ public class AgreementDetails {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;
+
+    @Column(name = "pa_customer_number")
+    private Long customerNumber;
 
     public Address getInvoiceAddress() {
         return invoiceAddress;
@@ -96,6 +99,14 @@ public class AgreementDetails {
     @Override
     public int hashCode(){
         return HashCodeBuilder.reflectionHashCode(this, false);
+    }
+
+    public Long getCustomerNumber() {
+        return customerNumber;
+    }
+
+    public void setCustomerNumber(Long customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
 }

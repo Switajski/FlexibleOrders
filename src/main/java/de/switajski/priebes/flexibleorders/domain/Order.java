@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 
 @Entity
@@ -37,7 +37,7 @@ public class Order extends GenericEntity {
 	private String orderNumber;
 	
 	@Embedded
-	private AgreementDetails agreementDetails;
+	private PurchaseAgreement puchaseAgreement;
 	
 	@ManyToOne
 	private Customer customer;
@@ -173,12 +173,12 @@ public class Order extends GenericEntity {
 	}
 
 	@JsonIgnore
-	public AgreementDetails getAgreementDetails() {
-		return agreementDetails;
+	public PurchaseAgreement getPurchaseAgreement() {
+		return puchaseAgreement;
 	}
 
-	public void setAgreementDetails(AgreementDetails agreementDetails) {
-		this.agreementDetails = agreementDetails;
+	public void setPurchaseAgreement(PurchaseAgreement purchaseAgreement) {
+		this.puchaseAgreement = purchaseAgreement;
 	}
 
 }

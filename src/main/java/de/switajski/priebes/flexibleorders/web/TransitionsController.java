@@ -77,6 +77,8 @@ public class TransitionsController extends ExceptionController {
                 confirmRequest.createInvoiceAddress(),
                 confirmRequest.items);
         confirmParameter.customerDetails = customerDetails;
+        confirmParameter.customerNumber = confirmRequest.customerId;
+        
         OrderConfirmation confirmationReport = orderService.confirm(
                 confirmParameter);
         return ExtJsResponseCreator.createResponse(confirmationReport);
@@ -130,14 +132,16 @@ public class TransitionsController extends ExceptionController {
             throws Exception {
         deliverRequest.validate();
 
+        DeliverParameter deliverParameter = new DeliverParameter(
+                deliverRequest.deliveryNotesNumber,
+                deliverRequest.trackNumber,
+                deliverRequest.packageNumber,
+                new Amount(deliverRequest.shipment, Currency.EUR),
+                deliverRequest.created,
+                deliverRequest.items);
+        deliverParameter.customerNumber = deliverRequest.customerId;
         DeliveryNotes dn = deliveryService.deliver(
-                new DeliverParameter(
-                        deliverRequest.deliveryNotesNumber,
-                        deliverRequest.trackNumber,
-                        deliverRequest.packageNumber,
-                        new Amount(deliverRequest.shipment, Currency.EUR),
-                        deliverRequest.created,
-                        deliverRequest.items));
+                deliverParameter);
         return ExtJsResponseCreator.createResponse(dn);
     }
 

@@ -16,6 +16,7 @@ public class ConfirmParameter {
 	public Address invoiceAddress;
 	public List<ItemDto> orderItems;
 	public CustomerDetails customerDetails;
+    public Long customerNumber;
 
 	public ConfirmParameter(String orderNumber, String confirmNumber,
 			Date expectedDelivery, Long deliveryMethodNoNumber, Address shippingAddress,

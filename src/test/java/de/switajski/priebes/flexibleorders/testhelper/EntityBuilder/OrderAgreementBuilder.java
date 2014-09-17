@@ -1,11 +1,11 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.AgreementDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 
 public class OrderAgreementBuilder extends ReportBuilder<OrderAgreement, Builder<OrderAgreement>> {
 
-    private AgreementDetails agreementDetails;
+    private PurchaseAgreement agreementDetails;
     
 	@Override
 	public OrderAgreement build() {
@@ -15,7 +15,7 @@ public class OrderAgreementBuilder extends ReportBuilder<OrderAgreement, Builder
 		return oa;
 	}
 
-    public OrderAgreementBuilder setAgreementDetails(AgreementDetails agreementDetails) {
+    public OrderAgreementBuilder setAgreementDetails(PurchaseAgreement agreementDetails) {
         this.agreementDetails = agreementDetails;
         return this;
     }

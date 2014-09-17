@@ -8,6 +8,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class DeliverParameter {
 	public String deliveryNotesNumber;
+	public Long customerNumber;
 	public String trackNumber;
 	public String packageNumber;
 	public Amount shipment;

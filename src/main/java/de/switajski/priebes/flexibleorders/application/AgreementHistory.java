@@ -19,7 +19,7 @@ public class AgreementHistory {
     }
     
     public PurchaseAgreement retrieveOnePurchaseAgreementOrFail(){
-        Set<PurchaseAgreement> ocs = getPuchaseAgreement();
+        Set<PurchaseAgreement> ocs = getPuchaseAgreements();
         validateAgreementDetails(agreementItems);
         return getOneOrNullIfEmpty(ocs);
     }
@@ -29,7 +29,7 @@ public class AgreementHistory {
             throw new IllegalStateException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
     }
 
-    public Set<PurchaseAgreement> getPuchaseAgreement() {
+    public Set<PurchaseAgreement> getPuchaseAgreements() {
         Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
         for (AgreementItem cis: agreementItems)
             ocs.add(((OrderAgreement) cis.getReport()).getAgreementDetails());

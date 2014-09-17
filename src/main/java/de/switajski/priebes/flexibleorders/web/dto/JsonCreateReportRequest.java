@@ -77,7 +77,7 @@ public class JsonCreateReportRequest {
 	@JsonDeserialize(using = BigDecimalDeserializer.class)
 	public BigDecimal shipment;
 
-	@JsonDeserialize(using = BigDecimalDeserializer.class) 
+	@JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
 	public String orderConfirmationNumber;
 
 	@JsonSerialize(using = JsonDateSerializer.class)

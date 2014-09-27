@@ -76,7 +76,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		ExtInfoTableParameter param = new ExtInfoTableParameter();
         ReportViewHelper.mapDocumentNumbersToParam(history, param);
-        param.customerDetails = aHistory.getCustomerDetails();
+        param.customerDetails = aHistory.getOneCustomerDetailOrFail();
         param.date = date;
         param.customerNo = customerNo;
         param.purchaseAgreement = aHistory.retrieveOnePurchaseAgreementOrFail();

@@ -14,10 +14,12 @@ import org.joda.time.Days;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -49,7 +51,23 @@ public class DeliveryHistory {
     public DeliveryHistory(Collection<ReportItem> reportItems) {
         this.reportItems = Collections.unmodifiableCollection(reportItems);
     }
+    
+    public boolean hasEqualPurchaseAgreements(){
+        Set<PurchaseAgreement> ocs = getPurchaseAgreements();
+        
+        if (ocs.size() > 1)
+            return false;
+        
+        return true;
+    }
 
+    public Set<PurchaseAgreement> getPurchaseAgreements() {
+        Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
+        for (AgreementItem cis: getItems(AgreementItem.class))
+            ocs.add(((OrderAgreement) cis.getReport()).getPurchaseAgreement());
+        return ocs;
+    }
+    
     public <T extends ReportItem> Set<T> getItems(Class<T> type) {
         Set<T> riToReturn = new HashSet<T>();
         for (ReportItem ri : reportItems) {

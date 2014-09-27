@@ -115,7 +115,7 @@ public class ItemDtoConverterService {
 			if (ri.getReport() instanceof OrderAgreement){
                 item.orderAgreementNumber = ri.getReport().getDocumentNumber();
                 //TODO: DRY
-                PurchaseAgreement pa = ((OrderAgreement) ri.getReport()).getAgreementDetails();
+                PurchaseAgreement pa = ((OrderAgreement) ri.getReport()).getPurchaseAgreement();
                 if (pa != null)
                     item.expectedDelivery = pa.getExpectedDelivery();
             }

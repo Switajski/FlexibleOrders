@@ -36,13 +36,15 @@ public class DeliveryServiceTest {
     @InjectMocks
     private DeliveryService deliveryService = new DeliveryService();
 
-    @Test(expected = IllegalArgumentException.class)
-    public void deliver_shouldRejectContradictingAgreementDetails() {
+    @Test(expected = IllegalStateException.class)
+    public void deliver_shouldRejectContradictingPurchaseAgreements() {
         // GIVEN
-        givenMocks();
+        MockitoAnnotations.initMocks(this);
+        when(reportItemRepository.findOne(1L)).thenReturn(givenAgreementItem());
+        when(reportItemRepository.findOne(2L)).thenReturn(givenAgreementItemWithDifferentPurchaseAgreement());
 
         // WHEN
-        deliveryService.deliver(givenDeliverParameter());
+        deliveryService.deliver(createDeliverParameter(givenItemDto1(), givenItemDto2()));
 
         // THEN expect IllegalArgumentException
     }
@@ -50,23 +52,19 @@ public class DeliveryServiceTest {
     @Test
     public void deliver_shouldAcceptEqualAgreementDetails() {
         // GIVEN
-        givenMocks();
+        MockitoAnnotations.initMocks(this);
+        when(reportItemRepository.findOne(1L)).thenReturn(givenAgreementItem());
+        when(reportItemRepository.findOne(2L)).thenReturn(givenAgreementItem());
 
         // WHEN
-        deliveryService.deliver(givenDeliverParameter());
+        deliveryService.deliver(createDeliverParameter(givenItemDto1(), givenItemDto2()));
 
         // THEN 
         verify(reportRepository).save(Matchers.any(DeliveryNotes.class));
     }
 
 
-    private void givenMocks() {
-        MockitoAnnotations.initMocks(this);
-        when(reportItemRepository.findOne(1L)).thenReturn(givenAgreementItem());
-        when(reportItemRepository.findOne(2L)).thenReturn(givenAgreementItemWithDifferentAgreementDetails());
-    }
-
-    private ReportItem givenAgreementItemWithDifferentAgreementDetails() {
+    private ReportItem givenAgreementItemWithDifferentPurchaseAgreement() {
         return new AgreementItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
@@ -98,34 +96,34 @@ public class DeliveryServiceTest {
                 .setQuantity(6)
                 .setReport(
                         new OrderAgreementBuilder()
-                                .setAgreementDetails(givenOtherAgreementDetails())
+                                .setAgreementDetails(givenOtherPurchaseAgreement())
                                 .build())
                 .build();
     }
 
-    private PurchaseAgreement givenOtherAgreementDetails() {
+    private PurchaseAgreement givenOtherPurchaseAgreement() {
         PurchaseAgreement ad = new PurchaseAgreement();
         ad.setExpectedDelivery(new DateTime(new Date()).plusDays(10).toDate());
         ad.setCustomerNumber(123L);
         return ad;
     }
 
-    private DeliverParameter givenDeliverParameter() {
+    private DeliverParameter createDeliverParameter(ItemDto... items) {
         DeliverParameter dp = new DeliverParameter();
         dp.agreementItemDtos = new ArrayList<ItemDto>();
-        dp.agreementItemDtos.add(givenAgreementItemDto());
-        dp.agreementItemDtos.add(givenAgreementItemDtoWithDifferentAgreementDetails());
+        for (ItemDto item:items)
+            dp.agreementItemDtos.add(item);
         return dp;
     }
 
-    private ItemDto givenAgreementItemDtoWithDifferentAgreementDetails() {
+    private ItemDto givenItemDto2() {
         ItemDto i = new ItemDto();
         i.id = 2L;
         i.quantityLeft = 2;
         return i;
     }
 
-    private ItemDto givenAgreementItemDto() {
+    private ItemDto givenItemDto1() {
         ItemDto i = new ItemDto();
         i.id = 1L;
         i.quantityLeft = 1;

@@ -52,7 +52,7 @@ public class OrderAgreement extends Report {
 		return this.customerDetails;
 	}
 
-	public PurchaseAgreement getAgreementDetails() {
+	public PurchaseAgreement getPurchaseAgreement() {
 		return agreementDetails;
 	}
 

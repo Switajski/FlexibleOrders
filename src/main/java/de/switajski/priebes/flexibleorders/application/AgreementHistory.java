@@ -4,47 +4,82 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
+/**
+ * @deprecated use DeliveryHistory instead
+ * @author Marek Switajski
+ *
+ */
 public class AgreementHistory {
 
     private Collection<AgreementItem> agreementItems;
 
+    /**
+     * @deprecated use {@link #AgreementHistory(Collection)} instead
+     * @param deliveryHistory
+     */
     public AgreementHistory(DeliveryHistory deliveryHistory){
         this.agreementItems = deliveryHistory.getItems(AgreementItem.class);
     }
     
-    public PurchaseAgreement retrieveOnePurchaseAgreementOrFail(){
-        Set<PurchaseAgreement> ocs = getPuchaseAgreements();
-        validateAgreementDetails(agreementItems);
-        return getOneOrNullIfEmpty(ocs);
+    public AgreementHistory(Collection<AgreementItem> agreementItems){
+        this.agreementItems = agreementItems;
     }
     
-    private void validateAgreementDetails(Collection<AgreementItem> agreementItems) {
-        if (agreementItems.size() > 1)
-            throw new IllegalStateException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
-    }
-
-    public Set<PurchaseAgreement> getPuchaseAgreements() {
+    public boolean hasEqualPurchaseAgreements(){
         Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
         for (AgreementItem cis: agreementItems)
-            ocs.add(((OrderAgreement) cis.getReport()).getAgreementDetails());
-        return ocs;
+            ocs.add(((OrderAgreement) cis.getReport()).getPurchaseAgreement());
+        
+        if (ocs.size() > 1)
+            return false;
+        
+        return true;
     }
     
-    public CustomerDetails getCustomerDetails(){
+    /**
+     * @deprecated use {@link #hasEqualPurchaseAgreements()} and fail in logic
+     * @return
+     */
+    public PurchaseAgreement retrieveOnePurchaseAgreementOrFail(){
+        Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
+        for (AgreementItem cis: agreementItems)
+            ocs.add(((OrderAgreement) cis.getReport()).getPurchaseAgreement());
+        
+        if (!hasEqualPurchaseAgreements())
+            throw new IllegalStateException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
+        return getOneOrNullIfEmptyOrFail(ocs);
+    }
+    
+    public boolean hasEqualCustomerDetails(){
+        Set<CustomerDetails> customerDetails = new HashSet<CustomerDetails>();
+        for (AgreementItem si:agreementItems){
+            customerDetails.add(((OrderAgreement) si.getReport()).getCustomerDetails());
+        }
+        
+        if (customerDetails.size() > 1)
+            return false;
+        return true;
+    }
+
+    /**
+     * @deprecated use {@link #hasEqualCustomerDetails()}
+     * @return
+     */
+    public CustomerDetails getOneCustomerDetailOrFail(){
         Set<CustomerDetails> cds = new HashSet<CustomerDetails>();
         for (AgreementItem si:agreementItems){
             cds.add(((OrderAgreement) si.getReport()).getCustomerDetails());
         }
-        return getOneOrNullIfEmpty(cds);
+        return getOneOrNullIfEmptyOrFail(cds);
     }
     
-    public <T> T getOneOrNullIfEmpty(Collection<T> collection){
+    private <T> T getOneOrNullIfEmptyOrFail(Collection<T> collection){
         if (collection.size() < 1)
             return null;
         else if (collection.size() == 1)

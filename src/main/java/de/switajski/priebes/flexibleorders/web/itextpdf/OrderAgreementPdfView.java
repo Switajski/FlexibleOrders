@@ -54,7 +54,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.getVatRate());
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.getAgreementDetails().getInvoiceAddress()))
+        for (Paragraph p : ReportViewHelper.createAddress(report.getPurchaseAgreement().getInvoiceAddress()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -67,7 +67,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
                     customerNo,// rightTop,
                     ExpectedDeliveryStringCreator
                             .createExpectedDeliveryWeekString(report
-                                    .getAgreementDetails()
+                                    .getPurchaseAgreement()
                                     .getExpectedDelivery()),// rightBottom,
                     "",// leftTop,
                     date// leftBottom
@@ -76,8 +76,8 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         else {
             document.add(ReportViewHelper.createExtInfoTable(
                     new ExtInfoTableParameter(report.getCustomerDetails(), ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                            report.getAgreementDetails().getExpectedDelivery(),
-                            history), report.getAgreementDetails(), date, customerNo, history.getOrderNumbers())));
+                            report.getPurchaseAgreement().getExpectedDelivery(),
+                            history), report.getPurchaseAgreement(), date, customerNo, history.getOrderNumbers())));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

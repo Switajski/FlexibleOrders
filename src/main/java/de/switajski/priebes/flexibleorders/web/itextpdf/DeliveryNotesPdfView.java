@@ -46,7 +46,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        CustomerDetails customerDetails = aHistory.getCustomerDetails();
+        CustomerDetails customerDetails = aHistory.getOneCustomerDetailOrFail();
         if (customerDetails == null) {
             document.add(ReportViewHelper.createInfoTable(
                     packageNo, customerNo, "", date));

@@ -107,7 +107,7 @@ public abstract class ReportItem extends GenericEntity implements
         if (this.getReport() instanceof OrderAgreement) {
             item.orderAgreementNumber = this.getReport().getDocumentNumber();
             // TODO: DRY
-            PurchaseAgreement pa = ((OrderAgreement) this.getReport()).getAgreementDetails();
+            PurchaseAgreement pa = ((OrderAgreement) this.getReport()).getPurchaseAgreement();
             if (pa != null) item.expectedDelivery = pa.getExpectedDelivery();
         }
         if (this.getReport() instanceof Invoice) {

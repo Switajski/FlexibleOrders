@@ -163,6 +163,10 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		reportItems.remove(handlingEvent);
 		handlingEvent.setOrderItem(null);
 	}
+	
+	public DeliveryHistory getDeliveryHistory(){
+	    return new DeliveryHistory(getReportItems());
+	}
 
 	public Report getReport(String invoiceNo) {
 		for (ReportItem he : getReportItems())

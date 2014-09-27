@@ -30,7 +30,11 @@ public class DeliveryHistory {
 
     private Collection<ReportItem> reportItems;
 
-    public static DeliveryHistory createWholeFrom(Report report) {
+    public DeliveryHistory(Collection<ReportItem> reportItems) {
+        this.reportItems = Collections.unmodifiableCollection(reportItems);
+    }
+
+    public static DeliveryHistory of(Report report) {
         Set<ReportItem> ris = new HashSet<ReportItem>();
         if (!report.getItems().isEmpty()) {
             for (ReportItem ri : report.getItems()) {
@@ -46,10 +50,6 @@ public class DeliveryHistory {
     
     public static DeliveryHistory of(OrderItem orderItem){
         return new DeliveryHistory(orderItem.getReportItems());
-    }
-
-    public DeliveryHistory(Collection<ReportItem> reportItems) {
-        this.reportItems = Collections.unmodifiableCollection(reportItems);
     }
     
     /**

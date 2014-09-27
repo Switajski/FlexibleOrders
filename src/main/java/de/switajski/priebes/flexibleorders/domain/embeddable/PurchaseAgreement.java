@@ -92,11 +92,6 @@ public class PurchaseAgreement {
     }
 
     @Override
-    public String toString(){
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
-    
-    @Override
     public int hashCode(){
         return HashCodeBuilder.reflectionHashCode(this, false);
     }
@@ -107,6 +102,11 @@ public class PurchaseAgreement {
 
     public void setCustomerNumber(Long customerNumber) {
         this.customerNumber = customerNumber;
+    }
+    
+    @Override
+    public String toString(){
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }

@@ -1,10 +1,15 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 //TODO: bring qtyLeft methods back to domain
-public class ServiceHelper {
+public class ProcessServiceHelper {
 
     /**
      * 
@@ -18,5 +23,12 @@ public class ServiceHelper {
         if (qty < 1) throw new IllegalArgumentException("Menge kleiner eins");
         if (qty > QuantityCalculator.calculateLeft(reportItem)) throw new IllegalArgumentException(
                 "angeforderte Menge ist zu gross");
+    }
+    
+    public static Set<Long> extractReportItemIds(List<ItemDto> agreementItemDtos) {
+        Set<Long> riIds = new HashSet<Long>();
+        for (ItemDto i:agreementItemDtos)
+            riIds.add(i.id);
+        return riIds;
     }
 }

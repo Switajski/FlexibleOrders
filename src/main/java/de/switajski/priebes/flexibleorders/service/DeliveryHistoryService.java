@@ -24,7 +24,7 @@ public class DeliveryHistoryService {
 		if (ri == null){
 			throw new IllegalArgumentException("ReportItem with given id " + itemDtoId + " not found");
 		}
-		return new DeliveryHistoryDto(DeliveryHistory.createFrom(ri));
+		return new DeliveryHistoryDto(DeliveryHistory.of(ri));
 	}
 	
 	public DeliveryHistoryDto retrieveByOrderItemId(Long itemDtoId){
@@ -32,6 +32,7 @@ public class DeliveryHistoryService {
 		if (oi == null){
 			throw new IllegalArgumentException("OrderItem with given id not found");
 		}
-		return new DeliveryHistoryDto(DeliveryHistory.createFrom(oi));
+		return new DeliveryHistoryDto(DeliveryHistory.of(oi));
 	}
+	
 }

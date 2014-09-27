@@ -40,18 +40,21 @@ public class DeliveryHistory {
         return new DeliveryHistory(ris);
     }
     
-    public static DeliveryHistory createFrom(OrderItem orderItem) {
-        return new DeliveryHistory(orderItem.getReportItems());
-    }
-
-    public static DeliveryHistory createFrom(ReportItem reportItem) {
+    public static DeliveryHistory of(ReportItem reportItem) {
         return new DeliveryHistory(reportItem.getOrderItem().getReportItems());
+    }
+    
+    public static DeliveryHistory of(OrderItem orderItem){
+        return new DeliveryHistory(orderItem.getReportItems());
     }
 
     public DeliveryHistory(Collection<ReportItem> reportItems) {
         this.reportItems = Collections.unmodifiableCollection(reportItems);
     }
     
+    /**
+     * @return also true, if there are no purchase agreements 
+     */
     public boolean hasEqualPurchaseAgreements(){
         Set<PurchaseAgreement> ocs = getPurchaseAgreements();
         

@@ -1,27 +1,25 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
-import java.util.Collection;
+import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.extractReportItemIds;
+import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.validateQuantity;
+
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class DeliveryService {
@@ -29,24 +27,28 @@ public class DeliveryService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private ReportItemRepository reportItemRepo;
+    private PurchaseAgreementService purchaseAgreementService;
+    @Autowired
+    private ItemDtoConverterService convService;
 
     @Transactional
     public DeliveryNotes deliver(DeliverParameter deliverParameter) {
         if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
                 "Lieferscheinnummer existiert bereits");
 
-        Map<ReportItem, Integer> risWithQty = mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
-        Address shippingAddress = retrieveOneShippingAddressOrFail(risWithQty.keySet());
+        Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
+        Address shippingAddress = purchaseAgreementService.retrieveOneOrFail(
+                extractReportItemIds(deliverParameter.agreementItemDtos))
+                .getShippingAddress();
 
-        DeliveryNotes deliveryNotes = createNewDeliveryNotes(deliverParameter);
+        DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
             ReportItem agreementItem = riWithQty.getKey();
             int qty = riWithQty.getValue();
             OrderItem orderItemToBeDelivered = agreementItem.getOrderItem();
 
-            ServiceHelper.validateQuantity(qty, agreementItem);
+            validateQuantity(qty, agreementItem);
 
             deliveryNotes.addItem(new ShippingItem(
                     deliveryNotes,
@@ -60,34 +62,13 @@ public class DeliveryService {
         return reportRepo.save(deliveryNotes);
     }
 
-    private Address retrieveOneShippingAddressOrFail(Set<ReportItem> risWithQty) {
-        DeliveryHistory dh = new DeliveryHistory(risWithQty);
-        if (!dh.hasEqualPurchaseAgreements()) throw new IllegalStateException("Unterschiedliche Kaufvertr" + Unicode.aUml + "ge vorhanden");
-        Address shippingAddress = dh.getPurchaseAgreements().iterator().next().getShippingAddress();
-        return shippingAddress;
-    }
-
-    private DeliveryNotes createNewDeliveryNotes(DeliverParameter deliverParameter) {
+    private DeliveryNotes createDeliveryNotes(DeliverParameter deliverParameter) {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
+        //TODO: could this be retrieved from DB?
         deliveryNotes.setCustomerNumber(deliverParameter.customerNumber);
         return deliveryNotes;
-    }
-
-    private Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
-        Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
-        for (ItemDto agreementItemDto : itemDtos) {
-            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
-            if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
-            risWithQty.put(
-                    agreementItem,
-                    agreementItemDto.quantityLeft); // TODO: GUI sets
-                                                    // quanitityToDeliver at
-                                                    // this nonsense
-                                                    // parameter
-        }
-        return risWithQty;
     }
 
 }

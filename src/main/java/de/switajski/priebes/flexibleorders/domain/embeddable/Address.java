@@ -6,6 +6,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import de.switajski.priebes.flexibleorders.reference.Country;
 
@@ -113,12 +115,7 @@ public class Address {
     }
 
     public String toString() {
-        return new StringBuilder()
-                .append(name1 + " ").append(name2 == null ? "\n" : name2 + "\n")
-                .append(street + "\n")
-                .append(postalCode).append(" " + city + "\n")
-                .append(country)
-                .toString();
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
     @Override

@@ -2,8 +2,10 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,7 @@ public class ItemDtoConverterService {
 			item.priceNet = orderItem.getNegotiatedPriceNet().getValue();
 		item.product = orderItem.getProduct().getProductNumber();
 		item.productName = orderItem.getProduct().getName();
-		item.status = DeliveryHistory.createFrom(orderItem).provideStatus();
+		item.status = DeliveryHistory.of(orderItem).provideStatus();
 		item.quantity = orderItem.getOrderedQuantity();
 		item.quantityLeft = QuantityCalculator.calculateLeft(orderItem);
 		return item;
@@ -72,6 +74,22 @@ public class ItemDtoConverterService {
 		}
 		return ris;
 	}
+	
+	@Transactional(readOnly=true)
+	public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
+        Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
+        for (ItemDto agreementItemDto : itemDtos) {
+            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
+            if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+            risWithQty.put(
+                    agreementItem,
+                    agreementItemDto.quantityLeft); // TODO: GUI sets
+                                                    // quanitityToDeliver at
+                                                    // this nonsense
+                                                    // parameter
+        }
+        return risWithQty;
+    }
 
 	public Set<ShippingItem> convertToShippingItems(
 			List<ItemDto> shippingItemDtos) {

@@ -16,7 +16,7 @@ public class QuantityCalculator {
 
     // TODO: refactor this - too many dependencies
     public static int calculateLeft(ReportItem reportItem) {
-        DeliveryHistory history = DeliveryHistory.createFrom(reportItem);
+        DeliveryHistory history = DeliveryHistory.of(reportItem);
         if (reportItem instanceof ConfirmationItem) return toBeAgreed(history, ConfirmationItem.class);
         else if (reportItem instanceof AgreementItem) return toBeShipped(history);
         else if (reportItem instanceof ShippingItem) return toBeInvoiced(history);
@@ -25,7 +25,7 @@ public class QuantityCalculator {
     }
 
     public static int calculateLeft(OrderItem orderItem) {
-        DeliveryHistory deliveryHistory = DeliveryHistory.createFrom(orderItem);
+        DeliveryHistory deliveryHistory = DeliveryHistory.of(orderItem);
         if (deliveryHistory.isEmpty()) return orderItem.getOrderedQuantity();
         return orderItem.getOrderedQuantity() - sumQty(deliveryHistory.getItems(WholesaleProcessSteps.reportItemSteps().get(0)));
     }

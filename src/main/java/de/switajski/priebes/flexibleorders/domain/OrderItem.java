@@ -74,7 +74,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
 	public String toString() {
 		String s = "#" + getId().toString() + ": " + getOrderedQuantity() +
-				" x " + getProduct().getName() + " " + DeliveryHistory.createFrom(this).provideStatus();
+				" x " + getProduct().getName() + " " + DeliveryHistory.of(this).provideStatus();
 		return s;
 	}
 
@@ -164,10 +164,6 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		handlingEvent.setOrderItem(null);
 	}
 	
-	public DeliveryHistory getDeliveryHistory(){
-	    return new DeliveryHistory(getReportItems());
-	}
-
 	public Report getReport(String invoiceNo) {
 		for (ReportItem he : getReportItems())
 			if (he.getReport().getDocumentNumber().equals(invoiceNo))

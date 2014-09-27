@@ -27,6 +27,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
@@ -70,7 +71,7 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
-        if (report == null) throw new IllegalArgumentException("Report with given id not found");
+        if (report == null) throw new BusinessInputException("Report with given id not found");
         return createReportSpecificModelAndView(report);
     }
 

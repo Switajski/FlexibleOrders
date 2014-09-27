@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 
 @Service
@@ -46,7 +47,7 @@ public class CustomerServiceImpl {
 	private Customer retrieveCustomerSavely(Long customerNumber) {
 		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
 		if (customer == null) 
-			throw new IllegalArgumentException("Kunde mit gegebener Kundennummer nicht gefunden");
+			throw new BusinessInputException("Kunde mit gegebener Kundennummer nicht gefunden");
 		return customer;
 	}
 

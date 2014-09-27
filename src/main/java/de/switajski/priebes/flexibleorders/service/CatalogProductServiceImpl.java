@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 
 @Service
@@ -32,7 +33,7 @@ public class CatalogProductServiceImpl {
 	public void delete(Long productNumber) {
 		CatalogProduct p = catalogProductRepo.findByProductNumber(productNumber);
 		if (p == null)
-			throw new IllegalArgumentException("Produktnr. nicht gefunden");
+			throw new BusinessInputException("Produktnr. nicht gefunden");
 		catalogProductRepo.delete(p);
 	}
 	
@@ -47,9 +48,9 @@ public class CatalogProductServiceImpl {
 				catalogProductRepo.findByProductNumber(productNumber);
 		if (product == null)
 			//TODO: find a more suitable Exception - something like NotFoundException
-			throw new IllegalArgumentException("Product with given productno. not found in catalog");
+			throw new BusinessInputException("Product with given productno. not found in catalog");
 		if (product.getRecommendedPriceNet() == null)
-			throw new IllegalArgumentException("Price of product with given productno. not set in catalog");
+			throw new BusinessInputException("Price of product with given productno. not set in catalog");
 		return product.getRecommendedPriceNet();	
 	}
 }

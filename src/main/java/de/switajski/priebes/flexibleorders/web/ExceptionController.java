@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 
 @Controller
 public class ExceptionController {
@@ -37,6 +38,13 @@ public class ExceptionController {
 	public String handleIllegalArgumentException(IllegalArgumentException ex) {
 	    return handleExceptionAsNotification(ex, "Funktion mit falschen Parameter aufgerufen");
 	}
+	
+	@ExceptionHandler(BusinessInputException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String handleBusinessInputException(IllegalArgumentException ex) {
+        return handleExceptionAsNotification(ex, "Falsche Eingabe");
+    }
 	
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)

@@ -16,6 +16,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
@@ -33,7 +34,7 @@ public class DeliveryService {
 
     @Transactional
     public DeliveryNotes deliver(DeliverParameter deliverParameter) {
-        if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
+        if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new BusinessInputException(
                 "Lieferscheinnummer existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);

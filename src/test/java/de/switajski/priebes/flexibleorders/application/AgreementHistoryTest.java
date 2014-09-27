@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
@@ -20,7 +21,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuild
 
 public class AgreementHistoryTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = BusinessInputException.class)
     public void retrieveOnePurchaseAgreementOrFail_shouldThrowExceptionOnContradictingPurchaseAgreements() {
         // GIVEN
         AgreementHistory agreementHistory = new AgreementHistory(

@@ -16,6 +16,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
@@ -37,7 +38,7 @@ public class InvoicingService {
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
-        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new BusinessInputException("Rechnungsnr. existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
         Address invoicingAddress = purchaseAgreementService.retrieveOneOrFail(

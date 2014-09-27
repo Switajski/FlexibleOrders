@@ -34,9 +34,9 @@ public class PurchaseAgreementService {
         PurchaseAgreement pa1 = dh.getPurchaseAgreements().iterator().next();
         PurchaseAgreement pa2 = findDiffering(dh.getPurchaseAgreements(), pa1);
         String msg;
-        String error = "Die Attribute der Kaufvertr"+Unicode.aUml+"ge %s sind widersprechend";
+        String error = "Bestellnr.%s : Die Attribute der Kaufvertr"+Unicode.aUml+"ge %s sind widersprechend";
         try {
-            msg = String.format(error, BeanUtil.getDifferencesOfObjects(pa1, pa2).toString());
+            msg = String.format(error, dh.getOrderNumbers().toString(), BeanUtil.getDifferencesOfObjects(pa1, pa2).toString());
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.warn("Could not compare two purchaseAgreements:", e);

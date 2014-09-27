@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictingPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 
@@ -24,8 +24,10 @@ public class PurchaseAgreementService {
     
     public PurchaseAgreement retrieveOneOrFail(Set<Long> riIds){
         DeliveryHistory dh = new DeliveryHistory(reportItemRepo.findAll(riIds));
+        if (dh.getPurchaseAgreements().isEmpty())
+            throw new IllegalStateException("Konnte keine Kaufvertr"+Unicode.aUml+"ge finden");
         if (!dh.hasEqualPurchaseAgreements()){
-            throw new BusinessInputException(createErrorMessage(dh));
+            throw new ContradictingPurchaseAgreementException(createErrorMessage(dh));
         }
         return dh.getPurchaseAgreements().iterator().next();
     }
@@ -34,9 +36,9 @@ public class PurchaseAgreementService {
         PurchaseAgreement pa1 = dh.getPurchaseAgreements().iterator().next();
         PurchaseAgreement pa2 = findDiffering(dh.getPurchaseAgreements(), pa1);
         String msg;
-        String error = "Bestellnr.%s : Die Attribute der Kaufvertr"+Unicode.aUml+"ge %s sind widersprechend";
+        String error = "Auftragsnr.%s : Die Attribute der Kaufvertr"+Unicode.aUml+"ge %s sind widersprechend";
         try {
-            msg = String.format(error, dh.getOrderNumbers().toString(), BeanUtil.getDifferencesOfObjects(pa1, pa2).toString());
+            msg = String.format(error, dh.getOrderAgreementNumbers().toString(), BeanUtil.getDifferencesOfObjects(pa1, pa2).toString());
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.warn("Could not compare two purchaseAgreements:", e);

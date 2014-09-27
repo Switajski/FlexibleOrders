@@ -42,7 +42,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
-		DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+		DeliveryHistory history = DeliveryHistory.of(report);
 		AgreementHistory aHistory = new AgreementHistory(history);
 
 		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 

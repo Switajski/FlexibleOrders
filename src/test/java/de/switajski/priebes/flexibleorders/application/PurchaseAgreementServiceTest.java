@@ -4,33 +4,51 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictingPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 
-public class AgreementHistoryTest {
+public class PurchaseAgreementServiceTest {
 
-    @Test(expected = BusinessInputException.class)
+    @Mock
+    private ReportItemRepository reportItemRepo;
+    @InjectMocks
+    private PurchaseAgreementService purchaseAgreementService = new PurchaseAgreementService();
+    
+    @Before
+    public void setUp(){
+        MockitoAnnotations.initMocks(this);
+    }
+    
+    @Test(expected = ContradictingPurchaseAgreementException.class)
     public void retrieveOnePurchaseAgreementOrFail_shouldThrowExceptionOnContradictingPurchaseAgreements() {
         // GIVEN
-        AgreementHistory agreementHistory = new AgreementHistory(
-                Arrays.asList(
-                        givenAgreementItem(),
-                        givenAgreementItemWithOtherPurchaseAgreement()));
+        HashSet<Long> riIds = new HashSet<Long>(Arrays.asList(1L, 2L));
+        when(reportItemRepo.findAll(riIds)).thenReturn(Arrays.asList(
+                givenAgreementItem(),
+                givenAgreementItemWithOtherPurchaseAgreement()));
 
         // WHEN
-        agreementHistory.retrieveOnePurchaseAgreementOrFail();
+        purchaseAgreementService.retrieveOneOrFail(riIds);
 
         // THEN expect Exception
     }
@@ -38,19 +56,19 @@ public class AgreementHistoryTest {
     @Test
     public void retrieveOnePurchaseAgreementOrFail_shouldReturnOneIfPurchaseAgreementsAreEqual() {
         // GIVEN
-        AgreementHistory agreementHistory = new AgreementHistory(
-                Arrays.asList(
-                        givenAgreementItem(),
-                        givenAgreementItem()));
+        HashSet<Long> riIds = new HashSet<Long>(Arrays.asList(1L, 2L));
+        when(reportItemRepo.findAll(riIds)).thenReturn(Arrays.asList(
+                givenAgreementItem(),
+                givenAgreementItem()));
 
         // WHEN
-        PurchaseAgreement purchaseAgreement = agreementHistory.retrieveOnePurchaseAgreementOrFail();
+        PurchaseAgreement purchaseAgreement = purchaseAgreementService.retrieveOneOrFail(riIds);
 
         // THEN 
         assertThat(purchaseAgreement, is(not(nullValue())));
     }
     
-    private AgreementItem givenAgreementItem() {
+    private ReportItem givenAgreementItem() {
         return new AgreementItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
@@ -72,7 +90,7 @@ public class AgreementHistoryTest {
         return ad;
     }
 
-    private AgreementItem givenAgreementItemWithOtherPurchaseAgreement() {
+    private ReportItem givenAgreementItemWithOtherPurchaseAgreement() {
         return new AgreementItemBuilder()
                 .setItem(
                         new OrderItemBuilder()

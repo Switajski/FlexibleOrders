@@ -34,7 +34,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         OrderConfirmation report = (OrderConfirmation) model
                 .get(OrderConfirmation.class.getSimpleName());
 
-        DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+        DeliveryHistory history = DeliveryHistory.of(report);
 
         String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.getDocumentNumber().toString();
 

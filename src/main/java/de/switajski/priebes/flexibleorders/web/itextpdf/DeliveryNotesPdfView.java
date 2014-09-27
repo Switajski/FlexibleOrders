@@ -28,7 +28,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         DeliveryNotes report = (DeliveryNotes) model.get(DeliveryNotes.class
                 .getSimpleName());
 
-        DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+        DeliveryHistory history = DeliveryHistory.of(report);
         AgreementHistory aHistory = new AgreementHistory(history);
 
         String date = "Lieferdatum: "

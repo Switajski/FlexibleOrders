@@ -241,7 +241,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ConfirmParameter cpAB15 = new ConfirmParameter();
         cpAB15.orderNumber = b11.getOrderNumber();
         cpAB15.confirmNumber = "AB15";
-        cpAB15.expectedDelivery = dt.plusDays(2).toDate();
+        cpAB15.expectedDelivery = dt.plusDays(10).toDate();
         cpAB15.deliveryMethodNo = TestData.DHL.getId();
         cpAB15.shippingAddress = TestData.YVONNE.getShippingAddress();
         cpAB15.invoiceAddress = TestData.YVONNE.getInvoiceAddress();

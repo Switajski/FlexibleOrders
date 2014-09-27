@@ -39,7 +39,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         OrderAgreement report = (OrderAgreement) model
                 .get(OrderAgreement.class.getSimpleName());
 
-        DeliveryHistory history = DeliveryHistory.createWholeFrom(report);
+        DeliveryHistory history = DeliveryHistory.of(report);
 
         String heading = "Auftragsbest" + Unicode.aUml + "tigung "
                 + report.getOrderConfirmationNumber()

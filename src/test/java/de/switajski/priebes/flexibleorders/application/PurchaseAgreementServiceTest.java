@@ -40,7 +40,7 @@ public class PurchaseAgreementServiceTest {
     }
     
     @Test(expected = ContradictingPurchaseAgreementException.class)
-    public void retrieveOnePurchaseAgreementOrFail_shouldThrowExceptionOnContradictingPurchaseAgreements() {
+    public void retrieveOneOrFail_shouldThrowExceptionOnContradictingPurchaseAgreements() {
         // GIVEN
         HashSet<Long> riIds = new HashSet<Long>(Arrays.asList(1L, 2L));
         when(reportItemRepo.findAll(riIds)).thenReturn(Arrays.asList(
@@ -54,7 +54,7 @@ public class PurchaseAgreementServiceTest {
     }
     
     @Test
-    public void retrieveOnePurchaseAgreementOrFail_shouldReturnOneIfPurchaseAgreementsAreEqual() {
+    public void retrieveOneOrFail_shouldReturnOneIfPurchaseAgreementsAreEqual() {
         // GIVEN
         HashSet<Long> riIds = new HashSet<Long>(Arrays.asList(1L, 2L));
         when(reportItemRepo.findAll(riIds)).thenReturn(Arrays.asList(

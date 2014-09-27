@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculatorTest;
+import de.switajski.priebes.flexibleorders.application.PurchaseAgreementServiceTest;
 import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculatorTest;
 import de.switajski.priebes.flexibleorders.domain.ProductTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
@@ -21,6 +22,7 @@ import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 		ReportingServiceTest.class,
 		ShippingCostsCalculatorTest.class,
 		QuantityCalculatorTest.class,
+		PurchaseAgreementServiceTest.class
 })
 public class UnitTestSuite {
 

@@ -46,7 +46,7 @@ public class PurchaseAgreement {
     @ManyToOne
     private DeliveryMethod deliveryMethod;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "M-")
     private Date expectedDelivery;
 

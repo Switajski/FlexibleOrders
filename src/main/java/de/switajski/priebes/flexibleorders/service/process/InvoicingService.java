@@ -38,17 +38,14 @@ public class InvoicingService {
         if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new BusinessInputException("Rechnungsnr. existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
-
-        Address invoicingAddress = retrieveInvoicingAddress(risWithQty.keySet());
-
         Invoice invoice = createInvoice(invoicingParameter);
+        invoice.setInvoiceAddress(retrieveInvoicingAddress(risWithQty.keySet()));
 
         for (Entry<ReportItem, Integer> entry : risWithQty.entrySet()) {
             ReportItem shippingItem = entry.getKey();
             Integer qty = entry.getValue();
 
             validateQuantity(qty, shippingItem);
-            invoice.setInvoiceAddress(invoicingAddress);
             invoice.addItem(new InvoiceItem(
                     invoice,
                     shippingItem.getOrderItem(),

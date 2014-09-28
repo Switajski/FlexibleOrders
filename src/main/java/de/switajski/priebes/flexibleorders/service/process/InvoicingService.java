@@ -19,11 +19,9 @@ import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 
 @Service
 public class InvoicingService {
@@ -31,13 +29,7 @@ public class InvoicingService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private ReportItemRepository reportItemRepo;
-    @Autowired
     private ItemDtoConverterService itemDtoConverterService;
-    @Autowired
-    private PurchaseAgreementService addressService;
-    @Autowired
-    private PurchaseAgreementService purchaseAgreementService;
     @Autowired
     private InvoicingAddressService invoicingAddressService;
 

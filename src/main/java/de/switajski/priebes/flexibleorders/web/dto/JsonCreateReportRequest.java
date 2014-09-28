@@ -8,12 +8,15 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer;
+import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 /**
@@ -81,9 +84,9 @@ public class JsonCreateReportRequest {
 	@JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
 	public String orderConfirmationNumber;
 
-	@JsonSerialize(using = JsonDateSerializer.class)
-	@JsonDeserialize(using = JsonDateDeserializer.class)
-	public Date expectedDelivery;
+	@JsonSerialize(using = JsonJodaLocalDateSerializer.class)
+	@JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
+	public LocalDate expectedDelivery;
 
 	public Long deliveryMethodNo;
 

@@ -108,7 +108,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         OrderConfirmation ab22 = orderService.confirm(new ConfirmParameter(
 		        b22.getOrderNumber(),
 		        "AB22",
-		        dt.plusDays(5).toDate(),
+		        dt.plusDays(5).toLocalDate(),
 		        TestData.DHL.getId(),
 		        TestData.YVONNE.getShippingAddress(),
 		        TestData.YVONNE.getInvoiceAddress(),
@@ -241,7 +241,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ConfirmParameter cpAB15 = new ConfirmParameter();
         cpAB15.orderNumber = b11.getOrderNumber();
         cpAB15.confirmNumber = "AB15";
-        cpAB15.expectedDelivery = dt.plusDays(10).toDate();
+        cpAB15.expectedDelivery = dt.plusDays(10).toLocalDate();
         cpAB15.deliveryMethodNo = TestData.DHL.getId();
         cpAB15.shippingAddress = TestData.YVONNE.getShippingAddress();
         cpAB15.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
@@ -254,7 +254,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ConfirmParameter cpAB13 = new ConfirmParameter();
 		cpAB13.orderNumber = b11.getOrderNumber();
 		cpAB13.confirmNumber = "AB13";
-		cpAB13.expectedDelivery = dt.plusDays(2).toDate();
+		cpAB13.expectedDelivery = dt.plusDays(2).toLocalDate();
 		cpAB13.deliveryMethodNo = TestData.DHL.getId();
 		cpAB13.shippingAddress = TestData.YVONNE.getShippingAddress();
 		cpAB13.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
@@ -267,7 +267,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ConfirmParameter cpAB11 = new ConfirmParameter();
 		cpAB11.orderNumber = b11.getOrderNumber();
 		cpAB11.confirmNumber = "AB11";
-		cpAB11.expectedDelivery = dt.plusDays(10).toDate();
+		cpAB11.expectedDelivery = dt.plusDays(10).toLocalDate();
 		cpAB11.deliveryMethodNo = TestData.DHL.getId();
 		cpAB11.shippingAddress = TestData.YVONNE.getShippingAddress();
 		cpAB11.invoiceAddress = TestData.YVONNE.getInvoiceAddress();
@@ -283,7 +283,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         opB15.orderNumber = "B15";
         opB15.reportItems = converterService.convertOrderItems(
                         TestData.ORDERITEMS_OF_B15);
-        opB15.expectedDelivery = dt.plusDays(2).toDate();
+        opB15.expectedDelivery = dt.plusDays(2).toLocalDate();
         Order b15 = orderService.order(opB15);
         return b15;
     }
@@ -294,7 +294,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		opB13.orderNumber = "B13";
 		opB13.reportItems = converterService.convertOrderItems(
 						TestData.ORDERITEMS_OF_B13);
-		opB13.expectedDelivery = dt.plusDays(2).toDate();
+		opB13.expectedDelivery = dt.plusDays(2).toLocalDate();
 		Order b13 = orderService.order(opB13);
         return b13;
     }
@@ -305,7 +305,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		opB12.orderNumber= "B12";
 		opB12.reportItems = converterService.convertOrderItems(
 				TestData.ORDERITEMS_OF_B12);
-		opB12.expectedDelivery = dt.plusDays(2).toDate();
+		opB12.expectedDelivery = dt.plusDays(2).toLocalDate();
 		Order b12 = orderService.order(opB12);
         return b12;
     }
@@ -316,7 +316,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		opB11.orderNumber = "B11";
 		opB11.reportItems = converterService.convertOrderItems(
 						TestData.ORDERITEMS_OF_B11);
-		opB11.expectedDelivery = dt.plusDays(2).toDate();
+		opB11.expectedDelivery = dt.plusDays(2).toLocalDate();
 		Order b11 = orderService.order(opB11);
         return b11;
     }

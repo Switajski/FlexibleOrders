@@ -7,10 +7,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -85,7 +84,7 @@ public class PurchaseAgreementServiceTest {
 
     private PurchaseAgreement givenOtherPurchaseAgreement() {
         PurchaseAgreement ad = new PurchaseAgreement();
-        ad.setExpectedDelivery(new DateTime(new Date()).plusDays(10).toDate());
+        ad.setExpectedDelivery(new LocalDate().plusDays(10));
         ad.setCustomerNumber(123L);
         return ad;
     }
@@ -107,7 +106,7 @@ public class PurchaseAgreementServiceTest {
 
     private PurchaseAgreement givenPurchaseAgreement() {
         PurchaseAgreement pa = new PurchaseAgreement();
-        pa.setExpectedDelivery(new Date());
+        pa.setExpectedDelivery(new LocalDate());
         pa.setCustomerNumber(123L);
         return pa;
     }

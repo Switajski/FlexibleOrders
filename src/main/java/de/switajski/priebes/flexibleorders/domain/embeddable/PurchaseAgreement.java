@@ -1,20 +1,17 @@
 package de.switajski.priebes.flexibleorders.domain.embeddable;
 
-import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
@@ -46,9 +43,8 @@ public class PurchaseAgreement {
     @ManyToOne
     private DeliveryMethod deliveryMethod;
 
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "M-")
-    private Date expectedDelivery;
+    private java.sql.Date expectedDelivery;
 
     @Column(name = "pa_customer_number")
     private Long customerNumber;
@@ -70,12 +66,15 @@ public class PurchaseAgreement {
     }
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    public Date getExpectedDelivery() {
-        return expectedDelivery;
+    public LocalDate getExpectedDelivery() {
+        return new LocalDate(expectedDelivery);
     }
 
-    public void setExpectedDelivery(Date expectedDelivery) {
-        this.expectedDelivery = expectedDelivery;
+    public void setExpectedDelivery(LocalDate expectedDelivery) {
+        if (expectedDelivery == null)
+            this.expectedDelivery = null;
+        else
+            this.expectedDelivery = new java.sql.Date(expectedDelivery.toDateTimeAtStartOfDay().toDate().getTime());
     }
 
     public DeliveryMethod getDeliveryMethod() {

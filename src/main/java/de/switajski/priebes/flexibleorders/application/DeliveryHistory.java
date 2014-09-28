@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -149,8 +148,8 @@ public class DeliveryHistory {
     public Boolean hasDifferentDeliveryDates() {
         Days tolerance = Days.ONE;
 
-        Set<Date> expectedDates = new HashSet<Date>();
-        Set<Date> confirmedDates = new HashSet<Date>();
+        Set<LocalDate> expectedDates = new HashSet<LocalDate>();
+        Set<LocalDate> confirmedDates = new HashSet<LocalDate>();
         for (ReportItem ri : getItems())
             if (ri.getOrderItem().getOrder().getPurchaseAgreement() != null) expectedDates.add(ri.getOrderItem().getOrder().getPurchaseAgreement().getExpectedDelivery());
 
@@ -160,9 +159,9 @@ public class DeliveryHistory {
         Boolean hasDifferentDeliveryDates = null;
         if (!expectedDates.isEmpty() || !confirmedDates.isEmpty()) {
             hasDifferentDeliveryDates = false;
-            for (Date ed : expectedDates) {
-                for (Date cd : confirmedDates) {
-                    if (Days.daysBetween(new DateTime(ed), new DateTime(cd)).isGreaterThan(tolerance)) hasDifferentDeliveryDates = true;
+            for (LocalDate ed : expectedDates) {
+                for (LocalDate cd : confirmedDates) {
+                    if (Days.daysBetween(ed, cd).isGreaterThan(tolerance)) hasDifferentDeliveryDates = true;
                 }
             }
         }

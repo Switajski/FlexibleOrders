@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer;
+import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
@@ -55,7 +56,7 @@ public class ItemDto {
     
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
-    public Date expectedDelivery;
+    public LocalDate expectedDelivery;
 
     @Override
     public int hashCode() {

@@ -1,9 +1,9 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -52,7 +52,7 @@ public class OrderConfirmationPdfFileTest extends AbstractSpringContextTest{
 				AddressBuilder.buildWithGeneratedAttributes(123),
 				AddressBuilder.buildWithGeneratedAttributes(6623));
 		orderConfirmation.setCustomerDetails(createCustomerDetails());
-		orderConfirmation.getPurchaseAgreement().setExpectedDelivery(new Date());
+		orderConfirmation.getPurchaseAgreement().setExpectedDelivery(new LocalDate());
 
 		for (int i = 0; i < 28; i++) {
 			item1.addReportItem(

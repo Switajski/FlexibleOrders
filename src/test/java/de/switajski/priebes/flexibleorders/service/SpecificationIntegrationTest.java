@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -219,7 +220,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 				new ConfirmParameter(
 						b11.getOrderNumber(),
 						"AB11",
-						new Date(),
+						new LocalDate(),
 						null,
 						AddressBuilder.createDefault(),
 						AddressBuilder.createDefault(),

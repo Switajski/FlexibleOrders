@@ -38,6 +38,7 @@ public class InvoicingService {
     private PurchaseAgreementService addressService;
     @Autowired
     private PurchaseAgreementService purchaseAgreementService;
+    @Autowired
     private InvoicingAddressService invoicingAddressService;
 
     @Transactional

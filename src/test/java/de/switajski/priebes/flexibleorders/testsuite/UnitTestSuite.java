@@ -11,6 +11,7 @@ import de.switajski.priebes.flexibleorders.domain.ProductTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
 import de.switajski.priebes.flexibleorders.service.QuantityCalculatorTest;
 import de.switajski.priebes.flexibleorders.service.ReportingServiceTest;
+import de.switajski.priebes.flexibleorders.service.process.InvoicingServiceTest;
 import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 
 @RunWith(Suite.class)
@@ -22,7 +23,8 @@ import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 		ReportingServiceTest.class,
 		ShippingCostsCalculatorTest.class,
 		QuantityCalculatorTest.class,
-		PurchaseAgreementServiceTest.class
+		PurchaseAgreementServiceTest.class,
+		InvoicingServiceTest.class
 })
 public class UnitTestSuite {
 

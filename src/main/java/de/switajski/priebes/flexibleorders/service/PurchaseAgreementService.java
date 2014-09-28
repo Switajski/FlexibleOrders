@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictingPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 
@@ -27,7 +27,7 @@ public class PurchaseAgreementService {
         if (dh.getPurchaseAgreements().isEmpty())
             throw new IllegalStateException("Konnte keine Kaufvertr"+Unicode.aUml+"ge finden");
         if (!dh.hasEqualPurchaseAgreements()){
-            throw new ContradictingPurchaseAgreementException(createErrorMessage(dh));
+            throw new ContradictoryPurchaseAgreementException(createErrorMessage(dh));
         }
         return dh.getPurchaseAgreements().iterator().next();
     }

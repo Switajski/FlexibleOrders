@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictingPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
@@ -38,8 +38,8 @@ public class PurchaseAgreementServiceTest {
         MockitoAnnotations.initMocks(this);
     }
     
-    @Test(expected = ContradictingPurchaseAgreementException.class)
-    public void retrieveOneOrFail_shouldThrowExceptionOnContradictingPurchaseAgreements() {
+    @Test(expected = ContradictoryPurchaseAgreementException.class)
+    public void retrieveOneOrFail_shouldThrowExceptionOnContradictoryPurchaseAgreements() {
         // GIVEN
         HashSet<Long> riIds = new HashSet<Long>(Arrays.asList(1L, 2L));
         when(reportItemRepo.findAll(riIds)).thenReturn(Arrays.asList(

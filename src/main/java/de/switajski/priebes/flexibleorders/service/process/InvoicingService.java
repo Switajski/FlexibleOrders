@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
-import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.extractReportItemIds;
 import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.validateQuantity;
 
 import java.util.Date;
@@ -41,9 +40,7 @@ public class InvoicingService {
         if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new BusinessInputException("Rechnungsnr. existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
-        Address invoicingAddress = purchaseAgreementService.retrieveOneOrFail(
-                extractReportItemIds(invoicingParameter.shippingItemDtos))
-                .getInvoiceAddress();
+        Address invoicingAddress = purchaseAgreementService.retrieveOne(risWithQty.keySet()).getInvoiceAddress();
         
         Invoice invoice = createInvoice(invoicingParameter);
 

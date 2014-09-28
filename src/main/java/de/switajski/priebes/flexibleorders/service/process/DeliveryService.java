@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
-import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.extractReportItemIds;
 import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.validateQuantity;
 
 import java.util.Date;
@@ -38,9 +37,7 @@ public class DeliveryService {
                 "Lieferscheinnummer existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
-        Address shippingAddress = purchaseAgreementService.retrieveOneOrFail(
-                extractReportItemIds(deliverParameter.agreementItemDtos))
-                .getShippingAddress();
+        Address shippingAddress = purchaseAgreementService.retrieveOne(risWithQty.keySet()).getShippingAddress();
 
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
 
@@ -67,7 +64,7 @@ public class DeliveryService {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
-        //TODO: could this be retrieved from DB?
+        // TODO: could this be retrieved from DB?
         deliveryNotes.setCustomerNumber(deliverParameter.customerNumber);
         return deliveryNotes;
     }

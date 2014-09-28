@@ -14,6 +14,7 @@ public class DeliverParameter {
 	public Amount shipment;
 	public Date created;
 	public List<ItemDto> agreementItemDtos;
+    public boolean ignoreContradictoryExpectedDeliveryDates;
 
 	public DeliverParameter(String deliveryNotesNumber, String trackNumber,
 			String packageNumber, Amount shipment, Date created,

@@ -41,11 +41,9 @@ public class BeanUtil {
                 else {
                     differences.add(property1 == null ?
                             intro + "null != \"" + property2 + "\")":
-                            intro + "\"" + property2 + "\" != null)");
+                            intro + "\"" + property1 + "\" != null)");
                 }
-            }
-
-            if (!property1.equals(property2)) {
+            } else if (!property1.equals(property2)) {
                 differences.add(intro + "\"" + property1 + "\" != \"" + property2 + "\")");
             }
         }
@@ -53,4 +51,23 @@ public class BeanUtil {
         return differences;
 
     }
+
+    public static String createStringOfDifferingAttributes(Iterable<?> pas) {
+        Object pa1 = pas.iterator().next();
+        Object pa2 = findDiffering(pas, pa1);
+        try {
+            return BeanUtil.getDifferencesOfObjects(pa1, pa2).toString();
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException("Exception when comparing generic objects.", e);
+        }
+    }
+
+    private static Object findDiffering(Iterable<?> pas, Object pa) {
+        for (Object pa2:pas)
+            if (!pa2.equals(pa))
+                return pa2;
+        throw new IllegalArgumentException("No differing found");
+    }
+
 }

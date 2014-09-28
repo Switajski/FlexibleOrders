@@ -20,4 +20,7 @@ public class InvoicingParameter {
         this.shippingItemDtos = shippingItemDtos;
         this.billing = billing;
     }
+
+    public InvoicingParameter() {
+    }
 }

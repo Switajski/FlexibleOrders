@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.exceptions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import de.switajski.priebes.flexibleorders.application.BeanUtil;
@@ -26,30 +25,10 @@ public class ContradictoryPurchaseAgreementException extends IllegalArgumentExce
     public ContradictoryPurchaseAgreementException(Throwable cause) {
         super(cause);
     }
-    
-    public ContradictoryPurchaseAgreementException(Collection<PurchaseAgreement> contradictingPurchaseAgreements) {
-        super(createErrorMessage(contradictingPurchaseAgreements));
-    }
-    
-    private static String createErrorMessage(Collection<PurchaseAgreement> pas) {
-        PurchaseAgreement pa1 = pas.iterator().next();
-        PurchaseAgreement pa2 = findDiffering(pas, pa1);
-        String msg;
-        String error = "Die Attribute der Kaufvertr"+Unicode.aUml+"ge %s sind widersprechend";
-        try {
-            msg = String.format(error, BeanUtil.getDifferencesOfObjects(pa1, pa2).toString());
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException("Error occured, when creating ContradictoryPurchaseAgreementException", e);
-        }
-        return msg;
-    }
 
-    private static PurchaseAgreement findDiffering(Collection<PurchaseAgreement> pas, PurchaseAgreement pa) {
-        for (PurchaseAgreement pa2:pas)
-            if (!pa2.equals(pa))
-                return pa2;
-        throw new IllegalArgumentException("No differing found");
+    public ContradictoryPurchaseAgreementException(Collection<PurchaseAgreement> contradictingPurchaseAgreements) {
+        super("Folgende Attribute der Kaufvertr" + Unicode.aUml + "ge sind widersprechend\n"
+                + BeanUtil.createStringOfDifferingAttributes(contradictingPurchaseAgreements));
     }
 
 }

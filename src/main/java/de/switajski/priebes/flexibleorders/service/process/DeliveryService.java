@@ -5,6 +5,7 @@ import static de.switajski.priebes.flexibleorders.service.process.ProcessService
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
@@ -37,8 +39,11 @@ public class DeliveryService {
                 "Lieferscheinnummer existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
-        Address shippingAddress = purchaseAgreementService.retrieveOne(risWithQty.keySet()).getShippingAddress();
-
+        Set<ReportItem> ris = risWithQty.keySet();
+        if (!purchaseAgreementService.hasEqualPurchaseAgreements(ris) && !deliverParameter.ignoreContradictoryExpectedDeliveryDates)
+            throw new ContradictoryPurchaseAgreementException(purchaseAgreementService.getPurchaseAgreements(ris));
+            
+        Address shippingAddress = purchaseAgreementService.retrieveOne(ris).getShippingAddress();
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {

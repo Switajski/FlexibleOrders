@@ -5,19 +5,23 @@ import static de.switajski.priebes.flexibleorders.service.process.ProcessService
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculator;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 
@@ -34,14 +38,16 @@ public class InvoicingService {
     private PurchaseAgreementService addressService;
     @Autowired
     private PurchaseAgreementService purchaseAgreementService;
+    private InvoicingAddressService invoicingAddressService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
         if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new BusinessInputException("Rechnungsnr. existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
-        Address invoicingAddress = purchaseAgreementService.retrieveOne(risWithQty.keySet()).getInvoiceAddress();
-        
+
+        Address invoicingAddress = retrieveInvoicingAddress(risWithQty.keySet());
+
         Invoice invoice = createInvoice(invoicingParameter);
 
         for (Entry<ReportItem, Integer> entry : risWithQty.entrySet()) {
@@ -53,7 +59,7 @@ public class InvoicingService {
             invoice.addItem(new InvoiceItem(
                     invoice,
                     shippingItem.getOrderItem(),
-                    qty, 
+                    qty,
                     new Date()));
 
         }
@@ -65,11 +71,20 @@ public class InvoicingService {
         return reportRepo.save(invoice);
     }
 
+    private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
+        Set<Address> ias = invoicingAddressService.retrieve(reportItems);
+        if (ias.size() > 1) throw new BusinessInputException("Verschiedene Rechnungsadressen in Auftr" + Unicode.aUml + "gen gefunden: "
+                + BeanUtil.createStringOfDifferingAttributes(ias));
+        else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
+        Address invoicingAddress = ias.iterator().next();
+        return invoicingAddress;
+    }
+
     private Invoice createInvoice(InvoicingParameter invoicingParameter) {
         Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, invoicingParameter.paymentConditions, null);
         invoice.setBilling(invoicingParameter.billing);
         invoice.setCreated((invoicingParameter.created == null) ? new Date() : invoicingParameter.created);
-        //TODO: could this be retrieved from DB?
+        // TODO: could this be retrieved from DB?
         invoice.setCustomerNumber(invoicingParameter.customerNumber);
         return invoice;
     }

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
@@ -18,17 +19,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonDateDeserializer extends JsonDeserializer<Date> {
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"dd/MM/yyyy");
-
 	@Override
 	public Date deserialize(JsonParser jsonparser,
 			DeserializationContext deserializationcontext) throws IOException,
 			JsonProcessingException {
 
-		SimpleDateFormat format = dateFormat;
+		SimpleDateFormat format = JsonFormatterConstants.DATE_FORMAT;
 		String date = jsonparser.getText();
-		if (date.equals(""))
+		if (StringUtils.isEmpty(date))
 			return null;
 		try {
 			return format.parse(date);

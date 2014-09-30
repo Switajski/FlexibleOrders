@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.web;
 
 import javassist.NotFoundException;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -14,8 +13,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Controller
 public class ExceptionController {
-	
-	private static Logger log = Logger.getLogger(ExceptionController.class);
 
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
@@ -53,14 +50,12 @@ public class ExceptionController {
 	}
 	
 	private String handleExceptionAsError(Exception ex) {
-        log.error(ex.getClass().getSimpleName(), ex);
         if (ex.getMessage() == null) 
             return stringifyWithStackTrace(ex, "Fehler beim Server: ");
         return stringify(ex);
     }
 	
 	private String handleExceptionAsNotification(Exception ex, String messageToUser){
-        log.warn(ex.getClass().getSimpleName(), ex);
         if (ex.getMessage() == null) 
             return messageToUser;
         return stringify(ex);

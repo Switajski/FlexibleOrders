@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -35,7 +34,6 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementIte
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.PurchaseAgreementBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class DeliveryServiceTest {
@@ -159,18 +157,6 @@ public class DeliveryServiceTest {
                                 .setAgreementDetails(pa)
                                 .build())
                 .build();
-    }
-
-    private PurchaseAgreement givenPurchaseAgreement() {
-        return new PurchaseAgreementBuilder()
-                .setExpectedDelivery(new LocalDate())
-                .setShippingAddress(ADDRESS_1).build();
-    }
-
-    private PurchaseAgreement givenPaWithOtherShippingAddress() {
-        PurchaseAgreement pa = givenPurchaseAgreement();
-        pa.setShippingAddress(ADDRESS_2);
-        return pa;
     }
 
 }

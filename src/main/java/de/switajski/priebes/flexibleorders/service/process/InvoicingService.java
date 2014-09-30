@@ -17,7 +17,6 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
@@ -35,7 +34,7 @@ public class InvoicingService {
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
-        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new BusinessInputException("Rechnungsnr. existiert bereits");
+        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
         Invoice invoice = createInvoice(invoicingParameter);
@@ -63,7 +62,7 @@ public class InvoicingService {
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
         Set<Address> ias = invoicingAddressService.retrieve(reportItems);
-        if (ias.size() > 1) throw new BusinessInputException("Verschiedene Rechnungsadressen in Auftr" + Unicode.aUml + "gen gefunden: "
+        if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.aUml + "gen gefunden: "
                 + BeanUtil.createStringOfDifferingAttributes(ias));
         else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();

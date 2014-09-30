@@ -8,7 +8,6 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 /**
@@ -53,7 +52,7 @@ public class AgreementHistory {
             ocs.add(((OrderAgreement) cis.getReport()).getPurchaseAgreement());
         
         if (!hasEqualPurchaseAgreements())
-            throw new BusinessInputException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
+            throw new IllegalArgumentException("Unterschiedliche Kaufvertr"+Unicode.aUml+"ge vorhanden");
         return getOneOrNullIfEmptyOrFail(ocs);
     }
     

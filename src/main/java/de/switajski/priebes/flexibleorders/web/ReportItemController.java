@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
@@ -62,7 +61,7 @@ public class ReportItemController extends ExceptionController {
 			customer = customerRepo.findByCustomerNumber(Long.parseLong(filterMap
 					.get("customer")));
 			if (customer == null)
-				throw new BusinessInputException(
+				throw new IllegalArgumentException(
 						"Kunde mit gegebener Id nicht gefunden");
 			ordered = reportItemService.retrieveAllToBeConfirmedByCustomer(
 					customer,

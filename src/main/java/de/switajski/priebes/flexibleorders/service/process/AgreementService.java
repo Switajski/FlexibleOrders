@@ -9,7 +9,6 @@ import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
@@ -26,7 +25,7 @@ public class AgreementService {
     public OrderAgreement agree(String orderConfirmationNo, String orderAgreementNo){
         OrderConfirmation oc = reportingService.retrieveOrderConfirmation(orderConfirmationNo);
         if (oc == null)
-            throw new BusinessInputException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
+            throw new IllegalArgumentException("Auftragsbest"+Unicode.aUml+"tigung mit angegebener Nummer nicht gefunden");
 
         OrderAgreement oa = new OrderAgreement();
         oa.setDocumentNumber(orderAgreementNo);
@@ -44,7 +43,7 @@ public class AgreementService {
             AgreementItem ai = new AgreementItem();
             int calculateLeft = QuantityCalculator.calculateLeft(ri);
             if (calculateLeft < 1)
-                throw new BusinessInputException("Eine angegebene position hat keine offenen Positionen mehr");
+                throw new IllegalArgumentException("Eine angegebene position hat keine offenen Positionen mehr");
             ai.setQuantity(calculateLeft);
             ai.setOrderItem(ri.getOrderItem());
             //TODO: bidirectional management of relationship

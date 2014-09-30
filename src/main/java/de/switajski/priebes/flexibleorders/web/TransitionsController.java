@@ -21,7 +21,6 @@ import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.process.AgreementService;
@@ -88,7 +87,7 @@ public class TransitionsController extends ExceptionController {
     }
 
     private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
-        if (confirmRequest.items.isEmpty()) throw new BusinessInputException(
+        if (confirmRequest.items.isEmpty()) throw new IllegalArgumentException(
                 "Liste der Auftragspositionen ist leer");
         return confirmRequest.items.iterator().next().orderNumber;
     }

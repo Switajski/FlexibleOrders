@@ -24,7 +24,6 @@ import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
@@ -82,13 +81,13 @@ public class OrderService {
 	@Transactional
 	public Order order(OrderParameter orderParameter) {
 		if (orderParameter.customerNumber == null || orderParameter.orderNumber == null || orderParameter.reportItems.isEmpty())
-			throw new BusinessInputException("Parameter sind nicht vollst"+Unicode.aUml+"ndig");
+			throw new IllegalArgumentException("Parameter sind nicht vollst"+Unicode.aUml+"ndig");
 		if (orderRepo.findByOrderNumber(orderParameter.orderNumber) != null)
-			throw new BusinessInputException("Bestellnr existiert bereits");
+			throw new IllegalArgumentException("Bestellnr existiert bereits");
 		// TODO: Customer entity has nothing to do here!
 		Customer customer = customerRepo.findByCustomerNumber(orderParameter.customerNumber);
 		if (customer == null)
-			throw new BusinessInputException(
+			throw new IllegalArgumentException(
 					"Keinen Kunden mit gegebener Kundennr. gefunden");
 
 		Order order = new Order(
@@ -123,7 +122,7 @@ public class OrderService {
 
 		Order order = orderRepo.findByOrderNumber(confirmParameter.orderNumber);
 		if (order == null)
-			throw new BusinessInputException("Bestellnr. nicht gefunden");
+			throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 
 		Customer cust = order.getCustomer();
 		Address address = (cust.getInvoiceAddress() == null) ? cust.getShippingAddress() : cust.getInvoiceAddress();
@@ -147,7 +146,7 @@ public class OrderService {
 		for (ItemDto entry : confirmParameter.orderItems) {
 			OrderItem oi = orderItemRepo.findOne(entry.id);
 			if (oi == null)
-				throw new BusinessInputException(
+				throw new IllegalArgumentException(
 						"Bestellposition nicht gefunden");
 			cr.addItem(new ConfirmationItem(cr, oi,
 					entry.quantityLeft, new Date()));
@@ -158,19 +157,19 @@ public class OrderService {
 	private void validateConfirm(String orderNumber, String confirmNumber,
 			List<ItemDto> orderItems, Address shippingAddress) {
 		if (reportRepo.findByDocumentNumber(confirmNumber) != null)
-			throw new BusinessInputException("Auftragsnr. " + confirmNumber
+			throw new IllegalArgumentException("Auftragsnr. " + confirmNumber
 					+ " besteht bereits");
 		if (orderItems.isEmpty())
-			throw new BusinessInputException("Keine Positionen angegeben");
+			throw new IllegalArgumentException("Keine Positionen angegeben");
 		if (orderNumber == null)
-			throw new BusinessInputException("Keine Bestellnr angegeben");
+			throw new IllegalArgumentException("Keine Bestellnr angegeben");
 		if (confirmNumber == null)
-			throw new BusinessInputException("Keine AB-nr angegeben");
+			throw new IllegalArgumentException("Keine AB-nr angegeben");
 		if (shippingAddress == null)
-			throw new BusinessInputException("Keine Lieferadresse angegeben");
+			throw new IllegalArgumentException("Keine Lieferadresse angegeben");
 		for (ItemDto item : orderItems) {
 			if (item.id == null)
-				throw new BusinessInputException("Position hat keine Id");
+				throw new IllegalArgumentException("Position hat keine Id");
 		}
 	}
 
@@ -180,7 +179,7 @@ public class OrderService {
 		CatalogProduct cProduct = cProductRepo.findByProductNumber(
 				ri.product);
 		if (cProduct == null)
-			throw new BusinessInputException("Artikelnr nicht gefunden");
+			throw new IllegalArgumentException("Artikelnr nicht gefunden");
 		product = cProduct.toProduct();
 		return product;
 	}
@@ -209,7 +208,7 @@ public class OrderService {
 	public boolean deleteOrder(String orderNumber) {
 		Order order = orderRepo.findByOrderNumber(orderNumber);
 		if (order == null)
-			throw new BusinessInputException(
+			throw new IllegalArgumentException(
 					"Bestellnr. zum l"+Unicode.oUml+"schen nicht gefunden"); 
 		orderRepo.delete(order);
 		return true;
@@ -219,7 +218,7 @@ public class OrderService {
 	public CancelReport cancelReport(String reportNo) {
 		Report cr = reportRepo.findByDocumentNumber(reportNo);
 		if (cr == null)
-			throw new BusinessInputException("Angegebene Dokumentennummer nicht gefunden");
+			throw new IllegalArgumentException("Angegebene Dokumentennummer nicht gefunden");
 		CancelReport cancelReport = createCancelReport(cr);
 		return reportRepo.save(cancelReport);
 	}
@@ -241,7 +240,7 @@ public class OrderService {
 	public boolean deleteReport(String reportNumber) {
 		Report r = reportRepo.findByDocumentNumber(reportNumber);
 		if (r == null)
-			throw new BusinessInputException(
+			throw new IllegalArgumentException(
 					"Bericht zum l"+Unicode.oUml+"schen nicht gefunden");
 		reportRepo.delete(r);
 		return true;
@@ -273,7 +272,7 @@ public class OrderService {
 	private Invoice retrieveInvoiceSavely(String invoiceNumber) {
 		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
 		if (r == null || !(r instanceof Invoice))
-			throw new BusinessInputException("Rechnungsnr nicht gefunden");
+			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
 		return (Invoice) r;
 	}
 

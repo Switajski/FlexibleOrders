@@ -11,7 +11,6 @@ import org.codehaus.jackson.map.deser.std.StdDeserializer.BigDecimalDeserializer
 import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
@@ -108,12 +107,12 @@ public class JsonCreateReportRequest {
 
 	public void validate(){
 		if (items.isEmpty())
-			throw new BusinessInputException("Keine Positionen angegeben!");
+			throw new IllegalArgumentException("Keine Positionen angegeben!");
 		for (ItemDto item:items){
 			if (item.quantity < 1)
-				throw new BusinessInputException("Menge von "+item.productName+" ist kleiner als 1");
+				throw new IllegalArgumentException("Menge von "+item.productName+" ist kleiner als 1");
 			if (item.priceNet == null)
-				throw new BusinessInputException("Keinen Preis angegeben");
+				throw new IllegalArgumentException("Keinen Preis angegeben");
 		}
 	}
 

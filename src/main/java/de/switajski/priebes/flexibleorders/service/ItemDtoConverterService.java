@@ -25,7 +25,6 @@ import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessInputException;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -100,7 +99,7 @@ public class ItemDtoConverterService {
 			if (ri instanceof ShippingItem)
 				sis.add((ShippingItem) ri);
 			else
-				throw new BusinessInputException("Given ItemDto is not a shipping item");
+				throw new IllegalArgumentException("Given ItemDto is not a shipping item");
 		return sis;
 	}
 	

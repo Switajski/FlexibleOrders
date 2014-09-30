@@ -10,12 +10,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
 
 @Embeddable
 public class PurchaseAgreement {
@@ -65,11 +67,12 @@ public class PurchaseAgreement {
         this.shippingAddress = shippingAddress;
     }
 
-    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonSerialize(using = JsonJodaLocalDateSerializer.class)
     public LocalDate getExpectedDelivery() {
         return new LocalDate(expectedDelivery);
     }
 
+    @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
     public void setExpectedDelivery(LocalDate expectedDelivery) {
         if (expectedDelivery == null)
             this.expectedDelivery = null;

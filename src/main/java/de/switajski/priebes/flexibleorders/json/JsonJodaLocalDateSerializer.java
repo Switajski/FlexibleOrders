@@ -12,7 +12,7 @@ public class JsonJodaLocalDateSerializer extends JsonSerializer<LocalDate>{
 
     @Override
     public void serialize(LocalDate value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
-        jgen.writeString(value.toString());
+        jgen.writeString(value.toString(JsonFormatterConstants.JODA_DATE_FORMAT));
     }
 
 }

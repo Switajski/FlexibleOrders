@@ -50,6 +50,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						text : 'Artikel Name'
 					}, {
 						xtype : 'gridcolumn',
+						dataIndex : 'expectedDelivery',
+						width : 90,
+						text : 'Lieferdatum',
+						format : 'd/m/Y'
+					},{
+						xtype : 'gridcolumn',
 						dataIndex : 'created',
 						width : 75,
 						text : 'erstellt',
@@ -70,11 +76,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						width : 45,
 						text : 'Preis',
 						renderer : Ext.util.Format.euMoney
-					}, {
-						xtype : 'gridcolumn',
-						dataIndex : 'status',
-						width : 90,
-						text : 'Status'
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'customerNumber',

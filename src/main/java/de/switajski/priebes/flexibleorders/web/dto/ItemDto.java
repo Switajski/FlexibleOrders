@@ -12,6 +12,8 @@ import org.joda.time.LocalDate;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
 
 /**
  * Data Transfer Object for ExtJs GUI </br> Build on
@@ -54,8 +56,8 @@ public class ItemDto {
     
     public String status;
     
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonJodaLocalDateSerializer.class)
+    @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
     public LocalDate expectedDelivery;
 
     @Override

@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.json;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonGenerator;
@@ -20,15 +19,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"dd/MM/yyyy");
-
 	@Override
 	public void serialize(Date date, JsonGenerator gen,
 			SerializerProvider provider)
 			throws IOException, JsonProcessingException {
 
-		String formattedDate = dateFormat.format(date);
+		String formattedDate = JsonFormatterConstants.DATE_FORMAT.format(date);
 
 		gen.writeString(formattedDate);
 	}

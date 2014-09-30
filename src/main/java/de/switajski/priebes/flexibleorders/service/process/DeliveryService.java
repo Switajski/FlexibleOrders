@@ -11,15 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessErrorCode;
+import de.switajski.priebes.flexibleorders.exceptions.SystemException;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 
 @Service
@@ -28,9 +31,9 @@ public class DeliveryService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private PurchaseAgreementService purchaseAgreementService;
-    @Autowired
     private ItemDtoConverterService convService;
+    @Autowired
+    private ShippingAddressService shippingAddressService;
 
     @Transactional
     public DeliveryNotes deliver(DeliverParameter deliverParameter) {
@@ -39,10 +42,8 @@ public class DeliveryService {
 
         Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
         Set<ReportItem> ris = risWithQty.keySet();
-        if (!purchaseAgreementService.hasEqualPurchaseAgreements(ris) && !deliverParameter.ignoreContradictoryExpectedDeliveryDates)
-            throw new ContradictoryPurchaseAgreementException(purchaseAgreementService.getPurchaseAgreements(ris));
-            
-        Address shippingAddress = purchaseAgreementService.retrieveOne(ris).getShippingAddress();
+
+        Address shippingAddress = retrieveInvoicingAddress(ris, deliverParameter.ignoreContradictoryExpectedDeliveryDates);
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
@@ -71,6 +72,17 @@ public class DeliveryService {
         // TODO: could this be retrieved from DB?
         deliveryNotes.setCustomerNumber(deliverParameter.customerNumber);
         return deliveryNotes;
+    }
+
+    private Address retrieveInvoicingAddress(Set<ReportItem> reportItems, boolean ignoreContradictoryExpectedDeliveryDates) {
+        Set<Address> ias = shippingAddressService.retrieve(reportItems);
+        if (ias.size() > 1 && !ignoreContradictoryExpectedDeliveryDates) 
+            throw new SystemException("Verschiedene Lieferadressen in Auftr"+ Unicode.aUml + "gen gefunden: "
+                + BeanUtil.createStringOfDifferingAttributes(ias), BusinessErrorCode.CONTRADICTORY_PAYMENT_AGREEMENTS);
+        else if (ias.size() == 0) 
+            throw new SystemException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden", BusinessErrorCode.NOT_FOUND);
+        Address invoicingAddress = ias.iterator().next();
+        return invoicingAddress;
     }
 
 }

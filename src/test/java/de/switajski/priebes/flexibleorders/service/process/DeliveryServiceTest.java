@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.service.process;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,11 +24,11 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.BusinessErrorCode;
+import de.switajski.priebes.flexibleorders.exceptions.SystemException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
-import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
@@ -48,45 +49,42 @@ public class DeliveryServiceTest {
     @InjectMocks
     DeliveryService deliveryService = new DeliveryService();
     @Mock
-    PurchaseAgreementService purchaseAgreementService = new PurchaseAgreementService();
-    @Mock
     ItemDtoConverterService convService;
     @Mock
     ReportRepository reportRepo;
+    @Mock
+    ShippingAddressService shippingAddressService;
 
-    @Test(expected = ContradictoryPurchaseAgreementException.class)
+    @Test
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
         // GIVEN
         givenMocks();
-        when(purchaseAgreementService.hasEqualPurchaseAgreements(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(false);
-        when(purchaseAgreementService.getPurchaseAgreements(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(new HashSet<PurchaseAgreement>(Arrays.asList(
-                        givenPurchaseAgreement(), 
-                        givenPaWithOtherShippingAddress())));
-
         DeliverParameter deliverParam = new DeliverParameter();
         deliverParam.deliveryNotesNumber = DN_NO;
+        givenTwoContradictingAddresses();
         
-        // WHEN
-        deliveryService.deliver(deliverParam);
+        try {
+            // WHEN
+            deliveryService.deliver(deliverParam);
+            fail("SystemException expected, but test completed without Exceptions");
+        } catch (SystemException e){
+            
+            // THEN expect SystemException
+            assertThat(e.getErrorCode() == BusinessErrorCode.CONTRADICTORY_PAYMENT_AGREEMENTS, is(true));
+        } 
+    }
+
+    private void givenTwoContradictingAddresses() {
+        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1, ADDRESS_2)));
     }
 
     @Test
     public void shouldDeliverIfContradictoryExpectedDeliveryDatesExistAndIgnoreFlagIsSet() {
         givenMocks();
-        when(purchaseAgreementService.hasEqualPurchaseAgreements(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(false);
-        when(purchaseAgreementService.getPurchaseAgreements(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(new HashSet<PurchaseAgreement>(Arrays.asList(
-                        givenPurchaseAgreement(), 
-                        givenPurchaseAgreementWithOtherExpectedDeliveryDate())));
-        when(purchaseAgreementService.retrieveOne(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(givenPurchaseAgreement());
-
         DeliverParameter deliverParameter = new DeliverParameter();
         deliverParameter.deliveryNotesNumber = DN_NO;
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
+        givenOneShippingAddress();
 
         // WHEN
         deliveryService.deliver(deliverParameter);
@@ -94,33 +92,29 @@ public class DeliveryServiceTest {
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
     }
-    
+
     @Test
     public void shouldDeliverIfNoExpectedDeliveryDateIsSet() {
         givenMocks();
-        when(purchaseAgreementService.hasEqualPurchaseAgreements(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(true);
-        when(purchaseAgreementService.retrieveOne(Matchers.anyCollectionOf(ReportItem.class)))
-                .thenReturn(givenPaWithNoExpectedDeliveryDate());
-
         DeliverParameter deliverParameter = new DeliverParameter();
         deliverParameter.deliveryNotesNumber = DN_NO;
+        givenOneShippingAddress();
 
         // WHEN
         deliveryService.deliver(deliverParameter);
 
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
+    }
+
+    private void givenOneShippingAddress() {
+        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1)));
     }
 
     private void assertThatDeliveryNotesIsSavedWithTwoItems() {
         ArgumentCaptor<DeliveryNotes> argument = ArgumentCaptor.forClass(DeliveryNotes.class);
         verify(reportRepo).save(argument.capture());
         assertThat(argument.getValue().getItems().size(), is(equalTo(2)));
-    }
-
-    private PurchaseAgreement givenPaWithNoExpectedDeliveryDate() {
-        return new PurchaseAgreementBuilder().setShippingAddress(ADDRESS_1).build();
     }
 
     private void givenMocks() {
@@ -152,12 +146,6 @@ public class DeliveryServiceTest {
                 .build();
     }
 
-    private PurchaseAgreement givenPurchaseAgreementWithOtherExpectedDeliveryDate() {
-        PurchaseAgreement ad = givenPurchaseAgreement();
-        ad.setExpectedDelivery(new LocalDate().plusDays(10));
-        return ad;
-    }
-
     private ReportItem givenAgreementItemOtherWith(PurchaseAgreement pa) {
         return new AgreementItemBuilder()
                 .setItem(
@@ -175,8 +163,8 @@ public class DeliveryServiceTest {
 
     private PurchaseAgreement givenPurchaseAgreement() {
         return new PurchaseAgreementBuilder()
-        .setExpectedDelivery(new LocalDate())
-        .setShippingAddress(ADDRESS_1).build();
+                .setExpectedDelivery(new LocalDate())
+                .setShippingAddress(ADDRESS_1).build();
     }
 
     private PurchaseAgreement givenPaWithOtherShippingAddress() {

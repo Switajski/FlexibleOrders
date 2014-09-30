@@ -6,11 +6,11 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 
 @Service
-public class InvoicingAddressService extends AddressFromPurchaseAgreementRetriever{
+public class ShippingAddressService extends AddressFromPurchaseAgreementRetriever{
 
     @Override
     Address retrieveAddressFromPurchaseAgreement(PurchaseAgreement purchaseAgreement) {
-        return purchaseAgreement.getInvoiceAddress();
+        return purchaseAgreement.getShippingAddress();
     }
-    
+
 }

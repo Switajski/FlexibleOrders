@@ -47,6 +47,8 @@ Ext.define('MyApp.model.ItemData', {
 						name : 'trackNumber'
 					}, {
 						name : 'packageNumber'
+					}, {
+						name : 'shareHistory'
 					}
 			]
 		});

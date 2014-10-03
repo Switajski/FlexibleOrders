@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemC
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.ProcessStep;
 
-@Controller
+@Service
 public class StatusFilterDispatcher {
 
     static final String STATUS_STRING = "status";

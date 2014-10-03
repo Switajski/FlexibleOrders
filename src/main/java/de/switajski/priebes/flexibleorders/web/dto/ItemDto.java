@@ -54,6 +54,8 @@ public class ItemDto {
     @JsonDeserialize(using = BigDecimalDeserializer.class)
     public BigDecimal priceNet;
     
+    public boolean shareHistory;
+
     public String status;
     
     @JsonSerialize(using = JsonJodaLocalDateSerializer.class)

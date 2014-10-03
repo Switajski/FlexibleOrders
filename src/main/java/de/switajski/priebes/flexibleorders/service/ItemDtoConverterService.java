@@ -136,18 +136,22 @@ public class ItemDtoConverterService {
                 PurchaseAgreement pa = ((OrderAgreement) ri.getReport()).getPurchaseAgreement();
                 if (pa != null)
                     item.expectedDelivery = pa.getExpectedDelivery();
+                item.shareHistory = (DeliveryHistory.of(ri).getOrderAgreementNumbers().size() > 1) ? true : false;
             }
 			if (ri.getReport() instanceof Invoice){
 				Invoice invoice = (Invoice) ri.getReport();
 				item.invoiceNumber = ri.getReport().getDocumentNumber();
 				item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
 				item.paymentConditions = invoice.getPaymentConditions();
+				item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
 			}
 			if (ri.getReport() instanceof DeliveryNotes){
 				DeliveryNotes deliveryNotes = (DeliveryNotes) ri.getReport();
 				item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
 				item.trackNumber = deliveryNotes.getTrackNumber();
 				item.packageNumber = deliveryNotes.getPackageNumber();
+				//TODO refactor to separate class
+				item.shareHistory = (DeliveryHistory.of(ri).getDeliveryNotesNumbers().size() > 1) ? true : false;
 			}
 			if (ri.getReport() instanceof Receipt){
 				item.receiptNumber = ri.getReport().getDocumentNumber();

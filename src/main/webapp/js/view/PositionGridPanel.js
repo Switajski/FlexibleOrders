@@ -34,6 +34,12 @@ Ext.define('MyApp.view.PositionGridPanel', {
 			listeners : {
 				itemdblclick : this.onitemdblclick
 			},
+			viewConfig : {
+				stripeRows : false,
+				getRowClass : function(record) {
+					return record.get('shareHistory') === true ? 'emphasized-row' : 'normal-row';
+				}
+			},
 			features : [grouping],
 
 			columns : [{
@@ -54,7 +60,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 						width : 90,
 						text : 'Lieferdatum',
 						format : 'd/m/Y'
-					},{
+					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'created',
 						width : 75,

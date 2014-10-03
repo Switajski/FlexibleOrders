@@ -89,7 +89,6 @@ public class JsonCreateReportRequest {
 
 	public Long deliveryMethodNo;
 
-	@JsonDeserialize(using = BigDecimalDeserializer.class)
     public String saleRepresentative, 
         valueAddedTaxIdNo, 
         vendorNumber;

@@ -71,7 +71,10 @@ Ext.define('MyApp.view.MainPanel', {
 							xtype : 'InvoiceItemGrid',
 							store : 'InvoiceItemDataStore'
 						}]
-			}]
+			}],
+			render : function(){
+				console.log('rendered');
+			}
 
 		});
 		me.callParent(arguments);

@@ -1,17 +1,19 @@
 // Global Exception Handling
 Ext.Ajax.on('requestexception', function(conn, response, options) {
 			if (response.status === 400) {
-				Ext.MessageBox.alert(response.status + ' Eingabefehler', response.responseText);
+				Ext.MessageBox.alert(response.status + ' Eingabefehler',
+						response.responseText);
 			} else if (response.status === 404) {
-				Ext.MessageBox.alert(response.status + ' ' + response.statusText, options.url);
+				Ext.MessageBox.alert(response.status + ' '
+								+ response.statusText, options.url);
 			} else if (response.status === 500) {
-				Ext.MessageBox.alert('Schwerwiegender Fehler', response.responseText);
+				Ext.MessageBox.alert('Schwerwiegender Fehler',
+						response.responseText);
 			} else {
 				cause = response.status;
 				if (response.timedout)
 					cause = 'Request timed out';
-				Ext.MessageBox.alert(response.statusText,
-						cause);
+				Ext.MessageBox.alert(response.statusText, cause);
 			}
 		});
 
@@ -90,11 +92,14 @@ Ext.define('MyApp.controller.MyController', {
 						click : this.onShowSums
 					}
 				});
+
+
 		this.getStore('ItemDataStore').filter('status', 'ordered');
 		this.getStore('AgreementItemDataStore').filter('status', 'confirmed');
 		this.getStore('ShippingItemDataStore').filter('status', 'agreed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');
+
 	},
 
 	onSelectionchange : function(view, selections, options) {
@@ -203,18 +208,18 @@ Ext.define('MyApp.controller.MyController', {
 		stores[4] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
 
 		stores.forEach(function(store) {
-					found = false;
-					store.filters.items.forEach(function(filter) {
-								if (filter.property == 'customer') {
-									filter.value = newValue;
-									found = true;
-									store.load();
-								}
-							});
-					if (!found) {
-						store.filter("customer", newValue);
-					}
-				});
+			found = false;
+			store.filters.items.forEach(function(filter) {
+						if (filter.property == MyApp.constants.FILTER_ON_CUSTOMER) {
+							filter.value = newValue;
+							found = true;
+							store.load();
+						}
+					});
+			if (!found) {
+				store.filter(MyApp.constants.FILTER_ON_CUSTOMER, newValue);
+			}
+		});
 	},
 
 	deleteReport : function(varDocumentNumber) {

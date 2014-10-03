@@ -12,13 +12,16 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.service.helper.ReportItemFilterDispatcher;
+import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 
 @Service
 public class StatisticsService {
 
 	@Autowired
 	private ReportItemRepository reportItemRepo;
+	
+	@Autowired
+	private StatusFilterDispatcher dispatcher;
 
 	public Amount calculateOpenAmount(String state) {
 		QuantityCalculator calculator = new QuantityCalculator();
@@ -26,7 +29,7 @@ public class StatisticsService {
 		Amount summed = Amount.ZERO_EURO;
 
 		List<ReportItem> ris = reportItemRepo
-				.findAll(ReportItemFilterDispatcher.dispatchStatus(state));
+				.findAll(dispatcher.dispatchStatus(state));
 
 		for (ReportItem ri : ris) {
 			if (calculated.add(ri.getOrderItem())){

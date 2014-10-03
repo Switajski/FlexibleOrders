@@ -83,7 +83,8 @@ public class ReportItemController extends ExceptionController {
 			throws Exception {
 
 		Specifications<ReportItem> spec = filterDispatcher
-				.dispatchToSpecifications(filters);
+				.dispatchToSpecifications(JsonSerializationHelper
+		                .deserializeFiltersJson(filters));
 
 		Page<ItemDto> openItems = reportItemService.retrieve(
 				new PageRequest((page - 1), limit), spec);

@@ -18,10 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.report.Receipt;
-import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -244,36 +241,6 @@ public class OrderService {
 					"Bericht zum l"+Unicode.oUml+"schen nicht gefunden");
 		reportRepo.delete(r);
 		return true;
-	}
-
-	@Transactional
-	public Receipt markAsPayed(BillingParameter billingParameter) {
-		if (reportRepo.findByDocumentNumber(billingParameter.receiptNumber) != null)
-			billingParameter.receiptNumber.concat("-2");
-
-		Invoice invoice = retrieveInvoiceSavely(billingParameter.invoiceNumber);
-		Receipt receipt = new Receipt(billingParameter.receiptNumber, billingParameter.date);
-		ReportItem reportItem = null;
-		for (ReportItem ri : invoice.getItems()) {
-			receipt.addItem(
-					new ReceiptItem(receipt, ri.getOrderItem(), ri
-							.getQuantity(), new Date()));
-			if (reportItem == null)
-				reportItem = ri;
-		}
-		receipt.setCustomerNumber(reportItem
-				.getOrderItem()
-				.getOrder()
-				.getCustomer()
-				.getCustomerNumber());
-		return reportRepo.save(receipt);
-	}
-
-	private Invoice retrieveInvoiceSavely(String invoiceNumber) {
-		Report r = reportRepo.findByDocumentNumber(invoiceNumber);
-		if (r == null || !(r instanceof Invoice))
-			throw new IllegalArgumentException("Rechnungsnr nicht gefunden");
-		return (Invoice) r;
 	}
 
 	@Transactional(readOnly = true)

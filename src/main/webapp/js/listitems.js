@@ -44,6 +44,7 @@ Ext.application({
         'ConfirmController',
         'DeliverController',
         'InvoiceController',
+        'MarkPaidController',
         'OrderController'
     ],
     name: 'MyApp',

@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.service.process.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingService;
+import de.switajski.priebes.flexibleorders.service.process.MarkPaidService;
 import de.switajski.priebes.flexibleorders.service.process.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -48,6 +49,8 @@ public class TransitionsController extends ExceptionController {
     private DeliveryService deliveryService;
     @Autowired
     private AgreementService agreementService;
+    @Autowired
+    private MarkPaidService markPaidService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
@@ -186,12 +189,12 @@ public class TransitionsController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(cr);
     }
 
-    @RequestMapping(value = "/complete", method = RequestMethod.POST)
+    @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
     public @ResponseBody
-    JsonObjectResponse complete(
+    JsonObjectResponse markPaid(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
             throws Exception {
-        Receipt receipt = orderService.markAsPayed(new BillingParameter(invoiceNumber, "B"
+        Receipt receipt = markPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createResponse(receipt);
     }

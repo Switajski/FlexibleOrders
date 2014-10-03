@@ -5,7 +5,7 @@ Ext.define('MyApp.view.ArchiveItemGridPanel', {
 			customicon : '',
 			onActionClick : function(view, a, b, column, event, record, f) {
 				console.log('ArchiveItemGrid - customtransitionfunction');
-				MyApp.getApplication().getController('MyController').complete(
+				MyApp.getApplication().getController('MarkPaidController').markPaid(
 						"ok", record);
 
 			}

@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.service.process;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,8 +22,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessErrorCode;
-import de.switajski.priebes.flexibleorders.exceptions.SystemException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
@@ -53,23 +51,17 @@ public class DeliveryServiceTest {
     @Mock
     ShippingAddressService shippingAddressService;
 
-    @Test
+    @Test(expected = ContradictoryPurchaseAgreementException.class)
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
         // GIVEN
         givenMocks();
         DeliverParameter deliverParam = new DeliverParameter();
         deliverParam.deliveryNotesNumber = DN_NO;
         givenTwoContradictingAddresses();
-        
-        try {
-            // WHEN
-            deliveryService.deliver(deliverParam);
-            fail("SystemException expected, but test completed without Exceptions");
-        } catch (SystemException e){
-            
-            // THEN expect SystemException
-            assertThat(e.getErrorCode() == BusinessErrorCode.CONTRADICTORY_PAYMENT_AGREEMENTS, is(true));
-        } 
+
+        // WHEN / THEN
+        deliveryService.deliver(deliverParam);
+
     }
 
     private void givenTwoContradictingAddresses() {

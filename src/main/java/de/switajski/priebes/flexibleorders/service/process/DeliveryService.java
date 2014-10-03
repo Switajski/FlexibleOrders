@@ -17,8 +17,8 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.exceptions.BusinessErrorCode;
-import de.switajski.priebes.flexibleorders.exceptions.SystemException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
@@ -77,10 +77,10 @@ public class DeliveryService {
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems, boolean ignoreContradictoryExpectedDeliveryDates) {
         Set<Address> ias = shippingAddressService.retrieve(reportItems);
         if (ias.size() > 1 && !ignoreContradictoryExpectedDeliveryDates) 
-            throw new SystemException("Verschiedene Lieferadressen in Auftr"+ Unicode.aUml + "gen gefunden: "
-                + BeanUtil.createStringOfDifferingAttributes(ias), BusinessErrorCode.CONTRADICTORY_PAYMENT_AGREEMENTS);
+            throw new ContradictoryPurchaseAgreementException("Verschiedene Lieferadressen in Auftr"+ Unicode.aUml + "gen gefunden: "
+                + BeanUtil.createStringOfDifferingAttributes(ias));
         else if (ias.size() == 0) 
-            throw new SystemException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden", BusinessErrorCode.NOT_FOUND);
+            throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;
     }

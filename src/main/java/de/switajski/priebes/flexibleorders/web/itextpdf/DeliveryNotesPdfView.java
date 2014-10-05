@@ -11,12 +11,9 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.AgreementHistory;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
@@ -25,18 +22,14 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        DeliveryNotes report = (DeliveryNotes) model.get(DeliveryNotes.class
-                .getSimpleName());
-
-        DeliveryHistory history = DeliveryHistory.of(report);
-        AgreementHistory aHistory = new AgreementHistory(history);
+        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
         String date = "Lieferdatum: "
-                + dateFormat.format(report.getCreated());
-        String packageNo = "Pakete: " + report.getDocumentNumber();
-        String customerNo = "Kundennummer: " + report.getCustomerNumber();
-        Address adresse = report.getShippedAddress();
-        String heading = "Lieferschein " + report.getDocumentNumber();
+                + dateFormat.format(report.created);
+        String packageNo = "Pakete: " + report.documentNumber;
+        String customerNo = "Kundennummer: " + report.customerNumber;
+        Address adresse = report.shippedAddress;
+        String heading = "Lieferschein " + report.documentNumber;
 
         for (Paragraph p : ReportViewHelper.createAddress(adresse))
             document.add(p);
@@ -46,20 +39,19 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        CustomerDetails customerDetails = aHistory.getOneCustomerDetailOrFail();
-        if (customerDetails == null) {
+        if (report.customerDetails == null) {
             document.add(ReportViewHelper.createInfoTable(
                     packageNo, customerNo, "", date));
         }
         else {
             ExtInfoTableParameter param = new ExtInfoTableParameter();
-            ReportViewHelper.mapDocumentNumbersToParam(history, param);
-            param.customerDetails = customerDetails;
+            ReportViewHelper.mapDocumentNumbersToParam(report.deliveryHistory, param);
+            param.customerDetails = report.customerDetails;
             param.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                    aHistory.retrieveOnePurchaseAgreementOrFail().getExpectedDelivery(), history);
+                    report.expectedDelivery, report.deliveryHistory);
             param.date = date;
             param.customerNo = customerNo;
-            param.purchaseAgreement = aHistory.retrieveOnePurchaseAgreementOrFail();
+            param.purchaseAgreement = report.purchaseAgreement;
 
             document.add(ReportViewHelper.createExtInfoTable(param));
         }

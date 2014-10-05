@@ -18,9 +18,11 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Product;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
@@ -112,5 +114,5 @@ public abstract class Report extends GenericEntity {
 	public double getVatRate() {
 		return Order.VAT_RATE;
 	}
-
+	
 }

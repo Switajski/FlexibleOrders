@@ -1,6 +1,6 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
-import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.validateQuantity;
+import static de.switajski.priebes.flexibleorders.service.helper.ProcessServiceHelper.validateQuantity;
 
 import java.util.Date;
 import java.util.Map;
@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
-import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 
 @Service
 public class InvoicingService {

@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.web.itextpdf;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
@@ -20,19 +18,16 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.AgreementHistory;
-import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
@@ -41,28 +36,22 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		Invoice report = (Invoice) model.get(Invoice.class.getSimpleName());
-		DeliveryHistory history = DeliveryHistory.of(report);
-		AgreementHistory aHistory = new AgreementHistory(history);
+		ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
+		DeliveryHistory history = report.deliveryHistory;
 
-		String deliveryDate = hasItemsWithDifferentCreationDates(report) ? 
-				"" : "Lieferscheindatum: " + dateFormat.format(getDeliveryNotesDate(report));//TODO refactor
-		String customerNo = "Kundennummer: " + report.getCustomerNumber();
-		String documentNo = "Rechnungsnummer: "
-				+ report.getDocumentNumber().toString();
+		String customerNo = "Kundennummer: " + report.customerNumber;
 		String date = "Rechnungsdatum: "
-				+ dateFormat.format(report.getCreated());
-		Address adresse = report.getInvoiceAddress();
+				+ dateFormat.format(report.created);
+		Address adresse = report.invoiceAddress;
 		String heading = "Rechnung";
 
 		Amount shippingCosts = Amount.ZERO_EURO;
-		if (report.getShippingCosts() != null)
-			shippingCosts = report.getShippingCosts();
+		if (report.shippingCosts != null)
+			shippingCosts = report.shippingCosts;
 
-		Amount netGoods = AmountCalculator.sum(AmountCalculator
-				.getAmountsTimesQuantity(report));
+		Amount netGoods = report.netGoods;
 		Amount vat = (netGoods.add(shippingCosts))
-				.multiply(report.getVatRate());
+				.multiply(report.vatRate);
 		Amount gross = netGoods.add(vat).add(shippingCosts);
 
 		for (Paragraph p: ReportViewHelper.createAddress(adresse))
@@ -76,19 +65,19 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		ExtInfoTableParameter param = new ExtInfoTableParameter();
         ReportViewHelper.mapDocumentNumbersToParam(history, param);
-        param.customerDetails = aHistory.getOneCustomerDetailOrFail();
+        param.customerDetails = report.customerDetails;
         param.date = date;
         param.customerNo = customerNo;
-        param.purchaseAgreement = aHistory.retrieveOnePurchaseAgreementOrFail();
-        param.billing = StringUtils.isEmpty(report.getBilling()) ? "" : "Abrechnung: " + report.getBilling();
+        param.purchaseAgreement = report.purchaseAgreement;
+        param.billing = StringUtils.isEmpty(report.billing) ? "" : "Abrechnung: " + report.billing;
 
         document.add(ReportViewHelper.createExtInfoTable(param));
 
         document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
-		if (hasItemsWithDifferentCreationDates(report))
-			document.add(createTableWithDeliveryNotes(report.getItems()));
+		if (report.hasItemsWithDifferentCreationDates)
+			document.add(createTableWithDeliveryNotes(report.items));
 		else
 			document.add(createTable(report));
 
@@ -99,7 +88,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 						vat,
 						shippingCosts,
 						gross,
-						report.getPaymentConditions())
+						report.paymentConditions)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 
 		PdfPTable footer = footerBuilder.build();
@@ -111,23 +100,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				writer.getDirectContent());
 	}
 
-	private Date getDeliveryNotesDate(Invoice report) {
-		Date deliveryNotesDate;
-		try {
-			DeliveryHistory deliveryHistory = DeliveryHistory.of(report.getItems().iterator().next().getOrderItem());
-			deliveryNotesDate = deliveryHistory.getItems(ShippingItem.class).iterator().next().getCreated();
-			return deliveryNotesDate;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e);
-		}
-		return new Date();
-	}
-
-	private PdfPTable createTable(Report cReport) throws DocumentException {
+	private PdfPTable createTable(ReportDto cReport) throws DocumentException {
 		PdfPTableBuilder builder = new PdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithSixCols());
-		for (ReportItem he : cReport.getItemsOrdered()) {
+		for (ReportItem he : cReport.getItemsByOrder()) {
 			if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
 				List<String> list = new ArrayList<String>();
 				// Art.Nr.:
@@ -188,21 +164,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		}
 
 		return builder.withFooter(false).build();
-	}
-
-	public boolean hasItemsWithDifferentCreationDates(Invoice invoice){
-		
-		try {
-			Set<ShippingItem> shippingItems = invoice.getItems().iterator().next().getOrderItem().getShippingItems();
-			Date firstDate = shippingItems.iterator().next().getCreated();
-			for (ShippingItem si: shippingItems){
-				if (!DateUtils.isSameDay(si.getDeliveryNotes().getCreated(), firstDate))
-					return true;
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return false;
 	}
 
 }

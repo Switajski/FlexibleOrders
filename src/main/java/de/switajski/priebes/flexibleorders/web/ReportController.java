@@ -1,9 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +27,19 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.service.process.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderAgreementToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderConfirmationToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.OrderAgreementPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 
@@ -53,8 +55,6 @@ public class ReportController {
 
     private static Logger log = Logger.getLogger(ReportController.class);
     @Autowired
-    OrderItemRepository invoiceItemService;
-    @Autowired
     ReportRepository reportRepo;
     @Autowired
     OrderRepository orderRepo;
@@ -64,6 +64,19 @@ public class ReportController {
     CustomerRepository customerService;
     @Autowired
     OrderService orderService;
+    @Autowired 
+    ReportToDtoConversionService reportDtoConversionService;
+    @Autowired 
+    ReportToDtoConversionService creditNoteDtoConversionService;
+    @Autowired 
+    InvoiceToDtoConversionService invoiceDtoConversionService;
+    @Autowired 
+    DeliveryNotesToDtoConversionService deliveryNotesDtoConversionService;
+    @Autowired 
+    OrderAgreementToDtoConversionService orderAgreementDtoConversionService;
+    @Autowired 
+    OrderConfirmationToDtoConversionService orderConfirmationDtoConversionService;
+    
 
     @RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showReportPdf(@PathVariable("id") String id) {
@@ -75,64 +88,29 @@ public class ReportController {
     }
 
     private ModelAndView createReportSpecificModelAndView(Report report) {
-        ModelToView modelToView = new ModelToView();
+    	String model = ReportDto.class.getSimpleName();
         if (report instanceof OrderConfirmation) {
-            String model = OrderConfirmation.class.getSimpleName();
-            return new ModelAndView(modelToView.getView(model),
-                    model, (OrderConfirmation) report);
+            return new ModelAndView(OrderConfirmationPdfView.class.getSimpleName(),
+                    model, orderConfirmationDtoConversionService.toDto((OrderConfirmation) report));
         }
         if (report instanceof OrderAgreement) {
-            String model = OrderAgreement.class.getSimpleName();
-            return new ModelAndView(modelToView.getView(model),
-                    model, (OrderAgreement) report);
+            return new ModelAndView(OrderAgreement.class.getSimpleName(),
+                    model, orderAgreementDtoConversionService.toDto((OrderAgreement) report));
         }
         if (report instanceof DeliveryNotes) {
-            String model = DeliveryNotes.class.getSimpleName();
-            return new ModelAndView(modelToView.getView(model),
-                    model, (DeliveryNotes) report);
+            return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),
+                    model, deliveryNotesDtoConversionService.toDto((DeliveryNotes) report));
         }
         if (report instanceof Invoice) {
-            String model = Invoice.class.getSimpleName();
-            return new ModelAndView(modelToView.getView(model),
-                    model, (Invoice) report);
+            return new ModelAndView(InvoicePdfView.class.getSimpleName(),
+                    model, invoiceDtoConversionService.toDto((Invoice) report));
         }
         if (report instanceof CreditNote) {
-            String model = CreditNote.class.getSimpleName();
-            return new ModelAndView(modelToView.getView(model),
-                    model, (CreditNote) report);
+            return new ModelAndView(CreditNotePdfView.class.getSimpleName(),
+                    model, creditNoteDtoConversionService.toDto(report));
         }
         throw new IllegalStateException(
                 "Could not find view handler for given Document");
-    }
-
-    private class ModelToView {
-        Map<String, String> modelToView = new HashMap<String, String>();
-
-        ModelToView() {
-            modelToView.put(
-                    OrderConfirmation.class.getSimpleName(),
-                    OrderConfirmationPdfView.class.getSimpleName());
-            modelToView.put(
-                    OrderAgreement.class.getSimpleName(),
-                    OrderAgreementPdfView.class.getSimpleName());
-            modelToView.put(
-                    DeliveryNotes.class.getSimpleName(),
-                    DeliveryNotesPdfView.class.getSimpleName());
-            modelToView.put(
-                    Invoice.class.getSimpleName(),
-                    InvoicePdfView.class.getSimpleName());
-            modelToView.put(
-                    CreditNote.class.getSimpleName(),
-                    CreditNotePdfView.class.getSimpleName());
-        }
-
-        String getView(String model) {
-            String view = modelToView.get(model);
-            if (view == null) throw new IllegalStateException(
-                    "There is no view for given model defined");
-            return view;
-        }
-
     }
 
     @RequestMapping(value = "/orders/{orderNumber}.pdf", headers = "Accept=application/pdf")

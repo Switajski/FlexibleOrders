@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -8,26 +9,29 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 @Entity
 public class Invoice extends Report {
 
 	private String paymentConditions;
-	
+
 	@NotNull
 	private Address invoiceAddress;
-	
+
 	/**
 	 * net shipping costs
 	 */
 	@Embedded
-	private Amount shippingCosts; 
-	
+	private Amount shippingCosts;
+
 	/**
 	 * Date on which due date is calculated.
 	 */
@@ -36,15 +40,17 @@ public class Invoice extends Report {
 	private Date evaluationDate;
 
 	private String billing;
-	
-	protected Invoice() {}
-	
-	public Invoice(String invoiceNumber, String paymentConditions, Address invoiceAddress) {
+
+	protected Invoice() {
+	}
+
+	public Invoice(String invoiceNumber, String paymentConditions,
+			Address invoiceAddress) {
 		super(invoiceNumber);
 		this.paymentConditions = paymentConditions;
 		this.invoiceAddress = invoiceAddress;
 	}
-	
+
 	public String getPaymentConditions() {
 		return paymentConditions;
 	}
@@ -68,15 +74,15 @@ public class Invoice extends Report {
 	public void setShippingCosts(Amount shippingCosts) {
 		this.shippingCosts = shippingCosts;
 	}
-	
-	public void addShippingCosts(Amount shippingCost){
+
+	public void addShippingCosts(Amount shippingCost) {
 		this.shippingCosts.add(shippingCost);
 	}
 
 	public double getVatRate() {
 		return Order.VAT_RATE;
 	}
-	
+
 	public Date getEvaluationDate() {
 		return evaluationDate;
 	}
@@ -88,8 +94,8 @@ public class Invoice extends Report {
 	public String getBilling() {
 		return billing;
 	}
-	
-	public void setBilling(String billing){
+
+	public void setBilling(String billing) {
 		this.billing = billing;
 	}
 

@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
 import java.util.List;
@@ -32,8 +32,8 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;

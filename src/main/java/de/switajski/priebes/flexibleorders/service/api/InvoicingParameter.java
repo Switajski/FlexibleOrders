@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
 import java.util.List;

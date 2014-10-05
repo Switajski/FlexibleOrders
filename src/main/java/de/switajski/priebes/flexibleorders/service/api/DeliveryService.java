@@ -1,6 +1,6 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
-import static de.switajski.priebes.flexibleorders.service.process.ProcessServiceHelper.validateQuantity;
+import static de.switajski.priebes.flexibleorders.service.helper.ProcessServiceHelper.validateQuantity;
 
 import java.util.Date;
 import java.util.Map;
@@ -21,8 +21,8 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgree
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 
 @Service

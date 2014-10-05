@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service;
+package de.switajski.priebes.flexibleorders.service.conversion;
 
 import java.util.ArrayList;
 import java.util.Collection;

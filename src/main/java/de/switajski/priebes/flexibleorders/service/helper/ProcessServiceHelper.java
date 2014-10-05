@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.helper;
 
 import java.util.HashSet;
 import java.util.List;

@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.service.process.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.OrderService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration(value = "src/main/webapp/WEB-INF/spring")

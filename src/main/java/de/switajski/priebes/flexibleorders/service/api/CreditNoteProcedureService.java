@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
 import org.springframework.stereotype.Service;
 

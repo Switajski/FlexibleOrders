@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.process;
+package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
 
@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 
 @Service
 public class MarkPaidService {

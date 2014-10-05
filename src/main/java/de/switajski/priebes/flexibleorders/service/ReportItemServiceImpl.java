@@ -19,6 +19,8 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoPageConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service

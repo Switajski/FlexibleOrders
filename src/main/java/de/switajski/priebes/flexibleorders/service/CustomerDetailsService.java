@@ -3,42 +3,45 @@ package de.switajski.priebes.flexibleorders.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
+import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public abstract class AddressFromPurchaseAgreementRetriever {
+@Service
+public class CustomerDetailsService {
 
-    abstract Address retrieve(PurchaseAgreement purchaseAgreement);
-    
-    @Transactional(readOnly = true)
-    public Set<Address> retrieve(ReportItem reportItem) {
-        Set<Address> addresses = new HashSet<Address>();
+	@Autowired
+	PurchaseAgreementService purchaseAgreementService;
+
+	@Transactional(readOnly = true)
+    public Set<CustomerDetails> retrieve(ReportItem reportItem) {
+        Set<CustomerDetails> customerDetailss = new HashSet<CustomerDetails>();
         DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
         for (AgreementItem ai : dh.getItems(AgreementItem.class)) {
             try {
-                PurchaseAgreement purchaseAgreement = ((OrderAgreement) ai.getReport()).getPurchaseAgreement();
-                addresses.add(retrieve(purchaseAgreement));
+                CustomerDetails customerDetails = ((OrderAgreement) ai.getReport()).getCustomerDetails();
+                customerDetailss.add(customerDetails);
             }
             catch (ClassCastException e) {
                 throw new RuntimeException("AgreementItem expected to have OrderAgreement as Report", e);
             }
         }
-        return addresses;
+        return customerDetailss;
     }
 
     @Transactional(readOnly = true)
-    public Set<Address> retrieve(Set<ReportItem> reportItems){
-        Set<Address> addresses = new HashSet<Address>();
+    public Set<CustomerDetails> retrieve(Set<ReportItem> reportItems){
+        Set<CustomerDetails> customerDetails = new HashSet<CustomerDetails>();
         for (ReportItem ri:reportItems){
-            addresses.addAll(retrieve(ri));
+            customerDetails.addAll(retrieve(ri));
         }
-        return addresses; 
+        return customerDetails; 
     }
-    
+
 }

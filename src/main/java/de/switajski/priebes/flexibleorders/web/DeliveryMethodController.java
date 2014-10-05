@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
-import de.switajski.priebes.flexibleorders.service.DeliveryMethodDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.DeliveryMethodDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;

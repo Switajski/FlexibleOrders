@@ -35,6 +35,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDto
 import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderAgreementToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderConfirmationToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView;
@@ -76,6 +77,8 @@ public class ReportController {
     OrderAgreementToDtoConversionService orderAgreementDtoConversionService;
     @Autowired 
     OrderConfirmationToDtoConversionService orderConfirmationDtoConversionService;
+	@Autowired
+    OrderToDtoConversionService orderDtoConversionService;
     
 
     @RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
@@ -83,8 +86,16 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
-        if (report == null) throw new IllegalArgumentException("Report with given id not found");
-        return createReportSpecificModelAndView(report);
+        
+        if (report != null){
+        	return createReportSpecificModelAndView(report);
+        } else {
+        	Order order = orderRepo.findByOrderNumber(id);
+        	if (order != null)
+        		return new ModelAndView(OrderPdfView.class.getSimpleName(),
+                        ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
+        }
+        throw new IllegalArgumentException("Report or order with given id not found");
     }
 
     private ModelAndView createReportSpecificModelAndView(Report report) {
@@ -111,18 +122,6 @@ public class ReportController {
         }
         throw new IllegalStateException(
                 "Could not find view handler for given Document");
-    }
-
-    @RequestMapping(value = "/orders/{orderNumber}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showOrderPdf(
-            @PathVariable("orderNumber") String orderNumber) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/pdf; charset=utf-8");
-        Order record = orderService.retrieveOrder(orderNumber);
-        if (record == null) throw new IllegalArgumentException(
-                "Bestellung mit gegebener Bestellnr. nicht gefunden");
-        return new ModelAndView(OrderPdfView.class.getSimpleName(),
-                Order.class.getSimpleName(), record);
     }
 
     @RequestMapping(value = "/listDocumentNumbersLike", method = RequestMethod.GET)

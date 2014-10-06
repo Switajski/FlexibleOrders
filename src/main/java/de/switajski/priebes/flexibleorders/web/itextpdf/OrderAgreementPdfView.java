@@ -15,8 +15,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.AmountCalculator;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -24,6 +22,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuild
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
@@ -36,25 +35,22 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        OrderAgreement report = (OrderAgreement) model
+        ReportDto report = (ReportDto) model
                 .get(OrderAgreement.class.getSimpleName());
 
-        DeliveryHistory history = DeliveryHistory.of(report);
-
         String heading = "Auftragsbest" + Unicode.aUml + "tigung "
-                + report.getOrderConfirmationNumber()
-                + " - best" + Unicode.aUml + "tigt mit " + report.getDocumentNumber();
+                + report.orderConfirmationNumber
+                + " - best" + Unicode.aUml + "tigt mit " + report.documentNumber;
 
         String date = "AB-Datum: "
-                + dateFormat.format(report.getCreated());
-        String customerNo = "Kundennummer: " + report.getCustomerNumber();
+                + dateFormat.format(report.created);
+        String customerNo = "Kundennummer: " + report.customerNumber;
 
-        Amount netGoods = AmountCalculator.sum(AmountCalculator
-                .getAmountsTimesQuantity(report));
-        Amount vat = netGoods.multiply(report.getVatRate());
+        Amount netGoods = report.netGoods;
+        Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.getPurchaseAgreement().getInvoiceAddress()))
+        for (Paragraph p : ReportViewHelper.createAddress(report.purchaseAgreement.getInvoiceAddress()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -62,12 +58,12 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        if (report.getCustomerDetails() == null) {
+        if (report.customerDetails == null) {
             document.add(ReportViewHelper.createInfoTable(
                     customerNo,// rightTop,
                     ExpectedDeliveryStringCreator
                             .createExpectedDeliveryWeekString(report
-                                    .getPurchaseAgreement()
+                                    .purchaseAgreement
                                     .getExpectedDelivery()),// rightBottom,
                     "",// leftTop,
                     date// leftBottom
@@ -75,9 +71,9 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         }
         else {
             document.add(ReportViewHelper.createExtInfoTable(
-                    new ExtInfoTableParameter(report.getCustomerDetails(), ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                            report.getPurchaseAgreement().getExpectedDelivery(),
-                            history), report.getPurchaseAgreement(), date, customerNo, history.getOrderNumbers())));
+                    new ExtInfoTableParameter(report.customerDetails, ExpectedDeliveryStringCreator.createDeliveryWeekString(
+                            report.purchaseAgreement.getExpectedDelivery(),
+                            report.deliveryHistory), report.purchaseAgreement, date, customerNo, report.deliveryHistory.getOrderNumbers())));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());
@@ -96,11 +92,11 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         writeTable(writer, footer);
     }
 
-    private PdfPTable createTable(OrderAgreement cReport)
+    private PdfPTable createTable(ReportDto cReport)
             throws DocumentException {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithSixCols());
-        for (ReportItem he : cReport.getItemsOrdered()) {
+        for (ReportItem he : cReport.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
             Long pNo = he.getOrderItem().getProduct().getProductNumber();

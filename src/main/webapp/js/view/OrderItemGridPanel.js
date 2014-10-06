@@ -11,7 +11,7 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 
 	},
 	onPdfClick : function(view, a, b, column, event, record, f) {
-		var win = window.open('/FlexibleOrders/reports/orders/'
+		var win = window.open('/FlexibleOrders/reports/'
 						+ record.data.orderNumber + '.pdf', '_blank');
 		win.focus();
 	},

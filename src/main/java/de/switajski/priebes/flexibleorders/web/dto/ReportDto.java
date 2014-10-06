@@ -13,6 +13,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
@@ -34,7 +35,14 @@ public class ReportDto {
 
 	public Date created;
 	
+	// TODO: expectedDelivery is part of PurchaseAgreement
 	public LocalDate expectedDelivery;
+	
+	// TODO: only needed for expected delivery?! 
+	public DeliveryHistory deliveryHistory;
+
+	// order agreement specific
+	public String orderConfirmationNumber;
 	
 
 	// shipping specific
@@ -46,19 +54,22 @@ public class ReportDto {
 
 	public Amount shippingCosts;
 
-	public DeliveryHistory deliveryHistory;
-
 	
 	// invoice specific
 	public boolean hasItemsWithDifferentCreationDates;
-
+	//this attribute is invoice and order specific
 	public Address invoiceAddress;
 	
-	public Amount netGoods, vatRate;
+	public Amount netGoods;
+
+	public Double vatRate;
 
 	public String paymentConditions;
 
 	public String billing;
+
+	//order specific TODO: merge to ItemDto
+	public Set<OrderItem> orderItems;
 	
 	@JsonIgnore
 	public Collection<ReportItem> getItemsByOrder() {
@@ -87,6 +98,32 @@ public class ReportDto {
 		});
 		return Collections.unmodifiableCollection(ris);
 	}
+	
+	public List<OrderItem> getOrderItemsByOrder() {
+		List<OrderItem> ris = new ArrayList<OrderItem>(orderItems);
+		Collections.sort(ris, new Comparator<OrderItem>(){
 
+			@Override
+			public int compare(OrderItem r1, OrderItem r2) {
+				Product p1 = r1.getProduct();
+				Product p2 = r2.getProduct();
+				if (p1.hasProductNo() && p2.hasProductNo())
+					return p1.getProductNumber().compareTo(p2.getProductNumber());
+				else if (!p1.hasProductNo() && !p2.hasProductNo()){
+					return p1.getName().compareTo(p2.getName());
+				} else if (p1.hasProductNo()){
+					return 1;
+				}
+				else if (p2.hasProductNo()){
+					return -1;
+				}
+				
+				else return 0;
+				
+			}
+			
+		});
+		return ris;
+	}
 
 }

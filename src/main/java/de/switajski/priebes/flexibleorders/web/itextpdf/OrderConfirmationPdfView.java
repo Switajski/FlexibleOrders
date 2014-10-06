@@ -12,13 +12,11 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.AmountCalculator;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 
 @Component
@@ -31,21 +29,19 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        OrderConfirmation report = (OrderConfirmation) model
-                .get(OrderConfirmation.class.getSimpleName());
+        ReportDto report = (ReportDto) model
+                .get(ReportDto.class.getSimpleName());
 
-        DeliveryHistory history = DeliveryHistory.of(report);
+        String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.documentNumber.toString();
 
-        String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.getDocumentNumber().toString();
+        String date = "AB-Datum: " + dateFormat.format(report.created);
+        String customerNo = "Kundennummer: " + report.customerNumber;
 
-        String date = "AB-Datum: " + dateFormat.format(report.getCreated());
-        String customerNo = "Kundennummer: " + report.getCustomerNumber();
-
-        Amount netGoods = AmountCalculator.sum(AmountCalculator.getAmountsTimesQuantity(report));
-        Amount vat = netGoods.multiply(report.getVatRate());
+        Amount netGoods = report.netGoods;
+        Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.getPurchaseAgreement().getInvoiceAddress()))
+        for (Paragraph p : ReportViewHelper.createAddress(report.invoiceAddress))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -53,11 +49,11 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        if (report.getCustomerDetails() == null) {
+        if (report.customerDetails == null) {
             document.add(ReportViewHelper.createInfoTable(
                     customerNo,// rightTop,
                     ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
-                            report.getPurchaseAgreement().getExpectedDelivery()),// rightBottom,
+                            report.purchaseAgreement.getExpectedDelivery()),// rightBottom,
                     "",// leftTop,
                     date// leftBottom
             ));
@@ -65,13 +61,13 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         else {
             document.add(ReportViewHelper.createExtInfoTable(
                     new ExtInfoTableParameter(
-                            report.getCustomerDetails(),
+                            report.customerDetails,
                             ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                                    report.getPurchaseAgreement().getExpectedDelivery(), history),
-                            report.getPurchaseAgreement(),
+                                    report.purchaseAgreement.getExpectedDelivery(), report.deliveryHistory),
+                            report.purchaseAgreement,
                             date,
                             customerNo,
-                            history.getOrderNumbers())));
+                            report.deliveryHistory.getOrderNumbers())));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

@@ -24,6 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 /**
  * Pdf view customized for the display of an order
@@ -38,19 +39,18 @@ public class OrderPdfView extends PriebesIText5PdfView {
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        Order report = (Order) model.get(Order.class.getSimpleName());
+        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
         String rightTop = "";
         String rightBottom = "Kundennummer: "
-                + report.getCustomer().getCustomerNumber();
-        String leftTop = "Bestellnummer: " + report.getOrderNumber().toString();
+                + report.customerNumber;
+        String leftTop = "Bestellnummer: " + report.documentNumber.toString();
         String leftBottom = "Bestelldatum: "
-                + dateFormat.format(report.getCreated());
-        Address adresse = report.getCustomer().getInvoiceAddress();
+                + dateFormat.format(report.created);
+        Address adresse = report.invoiceAddress;
         String heading = "Bestellung";
 
-        Amount netGoods = AmountCalculator.sum(AmountCalculator
-                .getAmountsTimesQuantity(report));
+        Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(Order.VAT_RATE);
         Amount gross = netGoods.add(vat);
 
@@ -88,11 +88,11 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
     }
 
-    private PdfPTable createTable(Order order) throws DocumentException {
+    private PdfPTable createTable(ReportDto order) throws DocumentException {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithFiveCols());
-        for (OrderItem oi : order.getItemsOrdered()) {
+        for (OrderItem oi : order.getOrderItemsByOrder()) {
             if (!oi.isShippingCosts()) {
                 List<String> row = new ArrayList<String>();
                 Product product = oi.getProduct();
@@ -130,16 +130,17 @@ public class OrderPdfView extends PriebesIText5PdfView {
         return priceString;
     }
 
-    private boolean hasVat(Order order) {
-        return !(order.getVatRate() == null);
+    private boolean hasVat(ReportDto order) {
+        return !(order.vatRate == null);
     }
-
-    private boolean hasRecommendedPrices(Order order) {
-        for (OrderItem oi : order.getItems()) {
+    
+	private boolean hasRecommendedPrices(ReportDto order) {
+        for (OrderItem oi : order.orderItems) {
             if (oi.getNegotiatedPriceNet() == null
                     || oi.getNegotiatedPriceNet().getValue() == null) return false;
         }
         return true;
     }
+
 
 }

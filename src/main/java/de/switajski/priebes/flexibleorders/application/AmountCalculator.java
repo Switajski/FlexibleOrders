@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 
@@ -27,9 +25,9 @@ public class AmountCalculator {
 		return sum;
 	}
 
-	public static List<Amount> getAmountsTimesQuantity(Report report) {
+	public static List<Amount> getAmountsTimesQuantity(Collection<ReportItem> reportItems) {
 		List<Amount> amounts = new ArrayList<Amount>();
-		for (ReportItem ri : report.getItems()) {
+		for (ReportItem ri : reportItems) {
 			Amount priceNet = ri.getOrderItem().getNegotiatedPriceNet();
 			if (priceNet == null)
 				throw new IllegalArgumentException(
@@ -40,9 +38,9 @@ public class AmountCalculator {
 		return amounts;
 	}
 
-	public static List<Amount> getAmountsTimesQuantity(Order report) {
+	public static List<Amount> getAmountsTimesQuantity2(Collection<OrderItem> orderItems) {
 		List<Amount> amounts = new ArrayList<Amount>();
-		for (OrderItem ri : report.getItems()) {
+		for (OrderItem ri : orderItems) {
 			Amount priceNet = ri.getNegotiatedPriceNet();
 			if (priceNet == null)
 				throw new IllegalArgumentException(
@@ -52,5 +50,5 @@ public class AmountCalculator {
 		}
 		return amounts;
 	}
-
+	
 }

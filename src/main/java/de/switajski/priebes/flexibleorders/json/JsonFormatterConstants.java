@@ -12,6 +12,6 @@ public class JsonFormatterConstants {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
             DD_MM_YYYY);
     
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("MM/dd/yyyy");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("dd/MM/yyyy");
     
 }

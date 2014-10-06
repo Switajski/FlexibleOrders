@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
@@ -24,29 +25,40 @@ public class DeliveryNotesToDtoConversionService {
 	ShippingAddressService shippingAddressService;
 	@Autowired
 	CustomerDetailsService customerDetailsService;
-	
-	@Transactional(readOnly=true)
-	public ReportDto toDto(DeliveryNotes report){
-			ReportDto dto = reportToDtoConversionService.toDto(report);
-			
-			Set<Address> shippingAddresses = shippingAddressService.retrieve(report.getItems());
-			if (shippingAddresses.isEmpty())
-				throw new NotFoundException("No shipping address for DeliveryNotes found");
-			else if (shippingAddresses.size() > 1)
-				throw new ContradictoryPurchaseAgreementException("Found more than one shipping address for one delivery notes");
-			dto.shippedAddress = shippingAddresses.iterator().next();
-			
-			dto.trackNumber = report.getTrackNumber();
-			dto.shippingCosts = report.getShippingCosts();
-			
-			Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
-			if (customerDetailss.isEmpty())
-				dto.customerDetails = null;
-			else if (customerDetailss.size() > 1)
-				throw new ContradictoryPurchaseAgreementException("Found contradictory information about customer");
-			else dto.customerDetails = customerDetailss.iterator().next();
-				
-			return dto;
+	@Autowired
+	PurchaseAgreementService purchaseAgreementService;
+
+	@Transactional(readOnly = true)
+	public ReportDto toDto(DeliveryNotes report) {
+		ReportDto dto = reportToDtoConversionService.toDto(report);
+
+		Set<Address> shippingAddresses = shippingAddressService.retrieve(report
+				.getItems());
+		if (shippingAddresses.isEmpty())
+			throw new NotFoundException(
+					"No shipping address for DeliveryNotes found");
+		else if (shippingAddresses.size() > 1)
+			throw new ContradictoryPurchaseAgreementException(
+					"Found more than one shipping address for one delivery notes");
+		dto.shippingSpecific_shippingAddress = shippingAddresses.iterator().next();
+
+		dto.shippingSpecific_trackNumber = report.getTrackNumber();
+		dto.shippingSpecific_shippingCosts = report.getShippingCosts();
+
+		Set<CustomerDetails> customerDetailss = customerDetailsService
+				.retrieve(report.getItems());
+		if (customerDetailss.size() > 1)
+			throw new ContradictoryPurchaseAgreementException(
+					"Found contradictory information about customer");
+
+		CustomerDetails det = customerDetailss.iterator().next();
+		dto.customerSpecific_contactInformation = det.getContactInformation();
+		dto.customerSpecific_mark = det.getMark();
+		dto.customerSpecific_saleRepresentative = det.getSaleRepresentative();
+		dto.customerSpecific_vatIdNo = det.getVatIdNo();
+		dto.customerSpecific_vendorNumber = det.getVendorNumber();
+
+		return dto;
 	}
-	
+
 }

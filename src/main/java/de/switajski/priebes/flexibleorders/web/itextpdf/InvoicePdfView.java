@@ -19,7 +19,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
@@ -37,24 +36,22 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
-		DeliveryHistory history = report.deliveryHistory;
 
 		String customerNo = "Kundennummer: " + report.customerNumber;
 		String date = "Rechnungsdatum: "
 				+ dateFormat.format(report.created);
-		Address adresse = report.invoiceAddress;
 		String heading = "Rechnung";
 
 		Amount shippingCosts = Amount.ZERO_EURO;
-		if (report.shippingCosts != null)
-			shippingCosts = report.shippingCosts;
+		if (report.shippingSpecific_shippingCosts != null)
+			shippingCosts = report.shippingSpecific_shippingCosts;
 
 		Amount netGoods = report.netGoods;
 		Amount vat = (netGoods.add(shippingCosts))
 				.multiply(report.vatRate);
 		Amount gross = netGoods.add(vat).add(shippingCosts);
 
-		for (Paragraph p: ReportViewHelper.createAddress(adresse))
+		for (Paragraph p: ReportViewHelper.createAddress(report.invoiceSpecific_invoiceAddress))
 			document.add(p);
 
 		document.add(ReportViewHelper.createDate(date));
@@ -64,19 +61,26 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 
 		ExtInfoTableParameter param = new ExtInfoTableParameter();
-        ReportViewHelper.mapDocumentNumbersToParam(history, param);
-        param.customerDetails = report.customerDetails;
+        param.orderNumbers = report.related_orderNumbers;
+		param.invoiceNumbers = report.related_invoiceNumbers;
+		param.orderAgreementNumbers = report.related_orderAgreementNumbers;
+		param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
+		param.creditNoteNumbers = report.related_creditNoteNumbers;
+		
+        param.vendorNumber = report.customerSpecific_vendorNumber;
+        param.contactInformation = report.customerSpecific_contactInformation;
+        param.mark = report.customerSpecific_mark;
+        param.vatIdNo = report.customerSpecific_vatIdNo;
         param.date = date;
         param.customerNo = customerNo;
-        param.purchaseAgreement = report.purchaseAgreement;
-        param.billing = StringUtils.isEmpty(report.billing) ? "" : "Abrechnung: " + report.billing;
+        param.billing = StringUtils.isEmpty(report.invoiceSpecific_billing) ? "" : "Abrechnung: " + report.invoiceSpecific_billing;
 
         document.add(ReportViewHelper.createExtInfoTable(param));
 
         document.add(ParagraphBuilder.createEmptyLine());
 
 		// insert main table
-		if (report.hasItemsWithDifferentCreationDates)
+		if (report.invoiceSpecific_hasItemsWithDifferentCreationDates)
 			document.add(createTableWithDeliveryNotes(report.items));
 		else
 			document.add(createTable(report));
@@ -88,7 +92,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 						vat,
 						shippingCosts,
 						gross,
-						report.paymentConditions)
+						report.invoiceSpecific_paymentConditions)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 
 		PdfPTable footer = footerBuilder.build();

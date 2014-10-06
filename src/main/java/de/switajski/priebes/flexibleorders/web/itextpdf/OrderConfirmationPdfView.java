@@ -41,7 +41,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.invoiceAddress))
+        for (Paragraph p : ReportViewHelper.createAddress(report.invoiceSpecific_invoiceAddress))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -49,25 +49,17 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        if (report.customerDetails == null) {
+        if (!report.customerSpecific_isFilled()) {
             document.add(ReportViewHelper.createInfoTable(
                     customerNo,// rightTop,
                     ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
-                            report.purchaseAgreement.getExpectedDelivery()),// rightBottom,
+                            report.shippingSpecific_expectedDelivery),// rightBottom,
                     "",// leftTop,
                     date// leftBottom
             ));
         }
         else {
-            document.add(ReportViewHelper.createExtInfoTable(
-                    new ExtInfoTableParameter(
-                            report.customerDetails,
-                            ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                                    report.purchaseAgreement.getExpectedDelivery(), report.deliveryHistory),
-                            report.purchaseAgreement,
-                            date,
-                            customerNo,
-                            report.deliveryHistory.getOrderNumbers())));
+            document.add(ReportViewHelper.createExtInfoTable(new ExtInfoTableParameter(report)));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

@@ -2,32 +2,47 @@ package de.switajski.priebes.flexibleorders.web.itextpdf.parameter;
 
 import java.util.Collection;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.web.itextpdf.ExpectedDeliveryStringCreator;
 
 public class ExtInfoTableParameter {
-    public CustomerDetails customerDetails;
+	public String saleRepresentative, mark;
     public String expectedDelivery;
-    public PurchaseAgreement purchaseAgreement;
     public String date;
     public String customerNo;
     public Collection<String> orderNumbers, orderConfirmationNumbers, orderAgreementNumbers, deliveryNotesNumbers, invoiceNumbers, creditNoteNumbers;
     public String billing;
+	public ContactInformation contactInformation;
+	public String vendorNumber;
+	public String vatIdNo;
+	public DeliveryMethod deliveryMethod;
+	public DeliveryMethod shippingAddress;
 
     public ExtInfoTableParameter(
-            CustomerDetails details,
             String expectedDelivery,
-            PurchaseAgreement agreem,
             String date,
             String customerNo,
             Collection<String> orderNumbers) {
-        this.customerDetails = details;
         this.expectedDelivery = expectedDelivery;
-        this.purchaseAgreement = agreem;
         this.date = date;
         this.customerNo = customerNo;
         this.orderNumbers = orderNumbers;
     }
 
     public ExtInfoTableParameter() {}
+
+	public ExtInfoTableParameter(ReportDto report) {
+		creditNoteNumbers = report.related_creditNoteNumbers;
+		orderNumbers = report.related_orderNumbers;
+		orderAgreementNumbers = report.related_orderAgreementNumbers;
+		deliveryNotesNumbers = report.related_deliveryNotesNumbers;
+		invoiceNumbers = report.related_invoiceNumbers;
+		
+        this.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
+                report.shippingSpecific_expectedDelivery, report.shippingSpecific_expectedDeliveryDateDeviates);
+        this.date = date.toString();
+        this.customerNo = report.customerNumber.toString();
+	}
 }

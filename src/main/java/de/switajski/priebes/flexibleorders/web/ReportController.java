@@ -41,6 +41,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.OrderAgreementPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 
@@ -105,7 +106,7 @@ public class ReportController {
                     model, orderConfirmationDtoConversionService.toDto((OrderConfirmation) report));
         }
         if (report instanceof OrderAgreement) {
-            return new ModelAndView(OrderAgreement.class.getSimpleName(),
+            return new ModelAndView(OrderAgreementPdfView.class.getSimpleName(),
                     model, orderAgreementDtoConversionService.toDto((OrderAgreement) report));
         }
         if (report instanceof DeliveryNotes) {

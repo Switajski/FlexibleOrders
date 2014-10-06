@@ -19,7 +19,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
@@ -91,13 +90,10 @@ public class ReportViewHelper {
 		PhraseBuilder pb = new PhraseBuilder("");
 		PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
-		String shipAddress = createString(p.purchaseAgreement
-				.getShippingAddress());
+		String shipAddress = createString(p.shippingAddress);
 
-		Phrase firstCol = new PhraseBuilder().append(
-				createString(p.orderNumbers, "B-Nr.")).build();
-		appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol,
-				"AB-Nr.");
+		Phrase firstCol = new PhraseBuilder().append(createString(p.orderNumbers, "B-Nr.")).build();
+		appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol,"AB-Nr.");
 		appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, firstCol, "L-Nr.");
 		appendDocNumbersIfNotEmpty(p.invoiceNumbers, firstCol, "R-Nr.");
 		appendDocNumbersIfNotEmpty(p.creditNoteNumbers, firstCol,
@@ -105,37 +101,30 @@ public class ReportViewHelper {
 
 		firstCol.add(NEWLINE);
 		if (p.expectedDelivery != null)
-			firstCol.add(new PhraseBuilder().append(
-					NEWLINE + "" + p.expectedDelivery).build());
+			firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
 		firstCol.add(new PhraseBuilder()
 				.append(NEWLINE)
 				.append(NEWLINE)
-				.append(isEmpty(p.customerDetails.getMark()) ? ""
-						: "Ihr Zeichen: " + NEWLINE
-								+ p.customerDetails.getMark())
-				.append(StringUtils.isEmpty(p.customerDetails
-						.getSaleRepresentative()) ? "" : NEWLINE + "" + NEWLINE
-						+ "Vertreter: " + NEWLINE
-						+ p.customerDetails.getSaleRepresentative()).build());
+				.append(isEmpty(p.mark) ? "": "Ihr Zeichen: " + NEWLINE + p.mark)
+				.append(StringUtils.isEmpty(p.saleRepresentative) ? "" : 
+					NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
 
-		String sdCol = new StringBuilder().append("Lieferadresse:")
+		String secondCol = new StringBuilder().append("Lieferadresse:")
 				.append(NEWLINE + shipAddress).append(NEWLINE).append(NEWLINE)
-				.append(createString(p.purchaseAgreement.getDeliveryMethod()))
+				.append(createString(p.deliveryMethod))
 				.toString();
 
-		String rdCol = new StringBuilder()
-				.append(isEmpty(p.customerDetails.getVendorNumber()) ? ""
-						: "Lieferantennr.: "
-								+ p.customerDetails.getVendorNumber() + NEWLINE
-								+ NEWLINE)
-				.append(createString(p.customerDetails.getContactInformation()))
+		String thirdCol = new StringBuilder()
+				.append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
+								+ p.vendorNumber + NEWLINE + NEWLINE)
+				.append(createString(p.contactInformation))
 				.toString();
 
 		CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
 				PdfPTableBuilder.createPropertiesWithThreeCols())
 				.addCell(cellb.withPhrase(firstCol).build())
-				.addCell(cellb.withPhrase(pb.withText(sdCol).build()).build())
-				.addCell(cellb.withPhrase(pb.withText(rdCol).build()).build());
+				.addCell(cellb.withPhrase(pb.withText(secondCol).build()).build())
+				.addCell(cellb.withPhrase(pb.withText(thirdCol).build()).build());
 
 		PdfPTable infoTable = infoTableBuilder.build();
 
@@ -296,16 +285,6 @@ public class ReportViewHelper {
 	public static Paragraph createDate(String date) {
 		return new ParagraphBuilder(date).withAlignment(Element.ALIGN_RIGHT)
 				.build();
-	}
-
-	public static ExtInfoTableParameter mapDocumentNumbersToParam(
-			DeliveryHistory history, ExtInfoTableParameter param) {
-		param.orderNumbers = history.getOrderNumbers();
-		param.invoiceNumbers = history.getInvoiceNumbers();
-		param.orderAgreementNumbers = history.getOrderAgreementNumbers();
-		param.deliveryNotesNumbers = history.getDeliveryNotesNumbers();
-		param.creditNoteNumbers = history.getCreditNoteNumbers();
-		return param;
 	}
 
 	public static String createdDatesOf(Set<ShippingItem> sis) {

@@ -24,7 +24,7 @@ public class InvoiceToDtoConversionService {
 
 	@Autowired
 	private InvoicingAddressService invocingAddressService;
-	
+
 	@Autowired
 	ReportToDtoConversionService reportToDtoConversionService;
 
@@ -34,13 +34,13 @@ public class InvoiceToDtoConversionService {
 	@Transactional(readOnly = true)
 	public ReportDto toDto(Invoice report) {
 		ReportDto dto = reportToDtoConversionService.toDto(report);
-		dto.hasItemsWithDifferentCreationDates = hasShippingItemsWithDifferingCreatedDates(report);
 		dto.netGoods = AmountCalculator.sum(AmountCalculator
-				.getAmountsTimesQuantity(report));
-		dto.billing = report.getBilling();
+				.getAmountsTimesQuantity(report.getItems()));
 		dto.vatRate = report.getVatRate();
-		dto.paymentConditions = report.getPaymentConditions();
-		dto.shippingCosts = report.getShippingCosts();
+		dto.invoiceSpecific_billing = report.getBilling();
+		dto.invoiceSpecific_hasItemsWithDifferentCreationDates = hasShippingItemsWithDifferingCreatedDates(report);
+		dto.invoiceSpecific_paymentConditions = report.getPaymentConditions();
+		dto.shippingSpecific_shippingCosts = report.getShippingCosts();
 		dto.vatRate = report.getVatRate();
 		
 		Set<Address> invoiceAdresses = invocingAddressService.retrieve(report.getItems());
@@ -48,18 +48,22 @@ public class InvoiceToDtoConversionService {
 			throw new NotFoundException("Could not find an invoicing address for invoice!");
 		if (invoiceAdresses.size() > 1)
 			throw new ContradictoryPurchaseAgreementException("Several invoicing addresses for one onvoice found!");
-		else dto.invoiceAddress = invoiceAdresses.iterator().next();
+		else dto.invoiceSpecific_invoiceAddress = invoiceAdresses.iterator().next();
 		
 		Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
-		if (customerDetailss.isEmpty())
-			dto.customerDetails = null;
-		else if (customerDetailss.size() > 1)
+		if (customerDetailss.size() > 1)
 			throw new ContradictoryPurchaseAgreementException("Found contradictory information about customer");
-		else dto.customerDetails = customerDetailss.iterator().next();
+
+		CustomerDetails det = customerDetailss.iterator().next();
+		dto.customerSpecific_contactInformation = det.getContactInformation();
+		dto.customerSpecific_mark = det.getMark();
+		dto.customerSpecific_saleRepresentative = det.getSaleRepresentative();
+		dto.customerSpecific_vatIdNo = det.getVatIdNo();
+		dto.customerSpecific_vendorNumber = det.getVendorNumber();
 		
 		return dto;
 	}
-	
+
 	/**
 	 * @param invoice
 	 * @return

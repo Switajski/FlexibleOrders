@@ -16,7 +16,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
@@ -36,7 +35,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
             throws Exception {
 
         ReportDto report = (ReportDto) model
-                .get(OrderAgreement.class.getSimpleName());
+                .get(ReportDto.class.getSimpleName());
 
         String heading = "Auftragsbest" + Unicode.aUml + "tigung "
                 + report.orderConfirmationNumber
@@ -50,7 +49,7 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.purchaseAgreement.getInvoiceAddress()))
+        for (Paragraph p : ReportViewHelper.createAddress(report.invoiceSpecific_invoiceAddress))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -58,22 +57,21 @@ public class OrderAgreementPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        if (report.customerDetails == null) {
+        if (report.customerSpecific_isFilled()) {
             document.add(ReportViewHelper.createInfoTable(
                     customerNo,// rightTop,
                     ExpectedDeliveryStringCreator
-                            .createExpectedDeliveryWeekString(report
-                                    .purchaseAgreement
-                                    .getExpectedDelivery()),// rightBottom,
+                            .createExpectedDeliveryWeekString(report.shippingSpecific_expectedDelivery),// rightBottom,
                     "",// leftTop,
                     date// leftBottom
             ));
         }
         else {
-            document.add(ReportViewHelper.createExtInfoTable(
-                    new ExtInfoTableParameter(report.customerDetails, ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                            report.purchaseAgreement.getExpectedDelivery(),
-                            report.deliveryHistory), report.purchaseAgreement, date, customerNo, report.deliveryHistory.getOrderNumbers())));
+        	ExtInfoTableParameter p = new ExtInfoTableParameter();
+        	p.contactInformation = report.customerSpecific_contactInformation;
+        	p.customerNo = report.customerNumber.toString();
+        	//TODO: massive mapping
+            document.add(ReportViewHelper.createExtInfoTable(p));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

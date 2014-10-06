@@ -40,6 +40,7 @@ Ext.define('MyApp.view.OrderWindow', {
 					}
 				}]
 	},
+	deliveryAddressForm : null,
 	addressForm : null,
 	bottomGrid : {
 		xtype : 'BestellpositionGrid',

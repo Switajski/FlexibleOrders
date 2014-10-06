@@ -47,7 +47,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         String leftTop = "Bestellnummer: " + report.documentNumber.toString();
         String leftBottom = "Bestelldatum: "
                 + dateFormat.format(report.created);
-        Address adresse = report.invoiceAddress;
+        Address adresse = report.invoiceSpecific_invoiceAddress;
         String heading = "Bestellung";
 
         Amount netGoods = report.netGoods;

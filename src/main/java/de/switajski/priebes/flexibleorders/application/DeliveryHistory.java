@@ -106,7 +106,7 @@ public class DeliveryHistory {
         return getNumbers(AgreementItem.class);
     }
     
-    public Collection<String> getCreditNoteNumbers() {
+    public Set<String> getCreditNoteNumbers() {
         return getNumbers(CreditNoteItem.class);
     }
     
@@ -118,36 +118,6 @@ public class DeliveryHistory {
         return nos;
     }
 
-
-    /**
-     * Differs the order's expected delivery date from order confirmation(s)?
-     * 
-     * @return null if dates are not set.
-     */
-    public Boolean hasDifferentDeliveryDates() {
-        Days tolerance = Days.ONE;
-
-        Set<LocalDate> expectedDates = new HashSet<LocalDate>();
-        Set<LocalDate> confirmedDates = new HashSet<LocalDate>();
-        for (ReportItem ri : getItems())
-            if (ri.getOrderItem().getOrder().getPurchaseAgreement() != null) expectedDates.add(ri.getOrderItem().getOrder().getPurchaseAgreement().getExpectedDelivery());
-
-        for (ConfirmationItem ci : getItems(ConfirmationItem.class))
-            if (ci.getOrderItem().getOrder().getPurchaseAgreement() != null) confirmedDates.add(((OrderConfirmation) ci.getReport()).getPurchaseAgreement().getExpectedDelivery());
-
-        Boolean hasDifferentDeliveryDates = null;
-        if (!expectedDates.isEmpty() || !confirmedDates.isEmpty()) {
-            hasDifferentDeliveryDates = false;
-            for (LocalDate ed : expectedDates) {
-                for (LocalDate cd : confirmedDates) {
-                    if (Days.daysBetween(ed, cd).isGreaterThan(tolerance)) hasDifferentDeliveryDates = true;
-                }
-            }
-        }
-
-        return hasDifferentDeliveryDates;
-    }
-    
     public String provideStatus() {
         String s = "TODO";
         return s;

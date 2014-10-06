@@ -16,10 +16,10 @@ public class OrderToDtoConversionService {
 		dto.created = order.getCreated();
 		dto.customerNumber = order.getCustomer().getCustomerNumber();
 		dto.documentNumber = order.getOrderNumber();
-		dto.invoiceAddress = order.getCustomer().getInvoiceAddress();
+		dto.invoiceSpecific_invoiceAddress = order.getCustomer().getInvoiceAddress();
 		dto.orderItems = order.getItems(); 
 		dto.netGoods = AmountCalculator.sum(AmountCalculator
-                .getAmountsTimesQuantity(order));
+                .getAmountsTimesQuantity2(order.getItems()));
 		dto.vatRate = order.getVatRate();
 		return dto;
 	}

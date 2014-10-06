@@ -1,4 +1,4 @@
-Ext.define('MyApp.controller.ConfirmController', {
+Ext.define('MyApp.controller.ConfirmController', { 
 	debug : true,
 	extend : 'Ext.app.Controller',
 
@@ -33,7 +33,7 @@ Ext.define('MyApp.controller.ConfirmController', {
 		//
 		// See solution how DeliveryHistoryStore works
 		createConfirmationReportStore.clearFilter(true);
-		createConfirmationReportStore.filter([{property: 'customer', value:record.data.customerNumber},
+		createConfirmationReportStore.filter([{property: 'customerNumber', value:record.data.customerNumber},
 			{property: 'status', value:'ordered'}]);
 
 		var confirmWindow = Ext.create('MyApp.view.ConfirmWindow', {

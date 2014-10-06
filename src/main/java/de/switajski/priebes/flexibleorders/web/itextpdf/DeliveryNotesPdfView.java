@@ -28,7 +28,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
                 + dateFormat.format(report.created);
         String packageNo = "Pakete: " + report.documentNumber;
         String customerNo = "Kundennummer: " + report.customerNumber;
-        Address adresse = report.shippedAddress;
+        Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;
 
         for (Paragraph p : ReportViewHelper.createAddress(adresse))
@@ -39,20 +39,12 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        if (report.customerDetails == null) {
+        if (report.customerSpecific_isFilled()) {
             document.add(ReportViewHelper.createInfoTable(
                     packageNo, customerNo, "", date));
         }
         else {
-            ExtInfoTableParameter param = new ExtInfoTableParameter();
-            ReportViewHelper.mapDocumentNumbersToParam(report.deliveryHistory, param);
-            param.customerDetails = report.customerDetails;
-            param.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
-                    report.expectedDelivery, report.deliveryHistory);
-            param.date = date;
-            param.customerNo = customerNo;
-            param.purchaseAgreement = report.purchaseAgreement;
-
+            ExtInfoTableParameter param = new ExtInfoTableParameter(report);
             document.add(ReportViewHelper.createExtInfoTable(param));
         }
 

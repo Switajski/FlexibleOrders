@@ -20,7 +20,7 @@ public class PurchaseAgreementService {
     
     @Transactional(readOnly = true)
     public PurchaseAgreement retrieveOne(Collection<ReportItem> reportItems){
-        Set<PurchaseAgreement> purchaseAgreements = getPurchaseAgreements(reportItems);
+        Set<PurchaseAgreement> purchaseAgreements = retrieve(reportItems);
         if (purchaseAgreements.isEmpty())
             throw new IllegalStateException("Konnte keine Kaufvertr"+Unicode.aUml+"ge finden");
         if (!hasEqualPurchaseAgreements(reportItems)){
@@ -31,7 +31,7 @@ public class PurchaseAgreementService {
     
     @Transactional(readOnly = true)
     public boolean hasEqualPurchaseAgreements(Collection<ReportItem> reportItems){
-        Set<PurchaseAgreement> ocs = getPurchaseAgreements(reportItems);
+        Set<PurchaseAgreement> ocs = retrieve(reportItems);
         
         if (ocs.size() > 1)
             return false;
@@ -40,7 +40,7 @@ public class PurchaseAgreementService {
     }
 
     @Transactional(readOnly = true)
-    public Set<PurchaseAgreement> getPurchaseAgreements(Collection<ReportItem> reportItems) {
+    public Set<PurchaseAgreement> retrieve(Collection<ReportItem> reportItems) {
         DeliveryHistory dh = new DeliveryHistory(reportItems);
         Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
         for (AgreementItem cis: dh.getItems(AgreementItem.class))

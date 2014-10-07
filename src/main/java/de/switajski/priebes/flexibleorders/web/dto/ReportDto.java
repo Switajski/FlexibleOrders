@@ -33,6 +33,8 @@ public class ReportDto {
 
 	public Double vatRate;
 
+	public String customerFirstName, customerLastName, customerEmail, customerPhone;
+	
 	public Set<String> related_orderNumbers, related_invoiceNumbers,
 			related_orderAgreementNumbers, related_deliveryNotesNumbers,
 			related_creditNoteNumbers = new HashSet<String>();
@@ -40,13 +42,6 @@ public class ReportDto {
 	public String customerSpecific_vendorNumber, customerSpecific_vatIdNo,
 			customerSpecific_saleRepresentative, customerSpecific_mark;
 	public ContactInformation customerSpecific_contactInformation;
-
-	public boolean customerSpecific_isFilled() {
-		return !(customerSpecific_vendorNumber == null
-				&& customerSpecific_vatIdNo == null
-				&& customerSpecific_saleRepresentative == null
-				&& customerSpecific_mark == null && customerSpecific_contactInformation == null);
-	}
 
 	// order agreement specific
 	public String orderConfirmationNumber;
@@ -61,7 +56,7 @@ public class ReportDto {
 	// invoice specific
 	public boolean invoiceSpecific_hasItemsWithDifferentCreationDates;
 	public String invoiceSpecific_billing, invoiceSpecific_paymentConditions;
-	public Address invoiceSpecific_invoiceAddress;
+	public Address headerAddress;
 
 	// order specific TODO: merge to ItemDto
 	public Set<OrderItem> orderItems;
@@ -122,4 +117,10 @@ public class ReportDto {
 		return ris;
 	}
 
+	public boolean isShowExtendedInformation() {
+		return !(customerSpecific_vendorNumber == null
+				&& customerSpecific_vatIdNo == null
+				&& customerSpecific_saleRepresentative == null
+				&& customerSpecific_mark == null && customerSpecific_contactInformation == null);
+	}
 }

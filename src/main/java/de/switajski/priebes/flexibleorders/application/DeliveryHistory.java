@@ -8,16 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
@@ -49,12 +45,22 @@ public class DeliveryHistory {
         return new DeliveryHistory(orderItem.getReportItems());
     }
     
-    public <T extends ReportItem> Set<T> getItems(Class<T> type) {
+    public <T extends ReportItem> Set<T> getReportItems(Class<T> type) {
         Set<T> riToReturn = new HashSet<T>();
         for (ReportItem ri : reportItems) {
-            if (type.isInstance(ri)) riToReturn.add(type.cast(ri));
+            if (type.isInstance(ri)) 
+            	riToReturn.add(type.cast(ri));
         }
         return riToReturn;
+    }
+    
+    public <T extends Report> Set<T> getReports(Class<T> clazz){
+    	Set<T> reports = new HashSet<T>();
+    	for (ReportItem ri : reportItems) {
+    		if (clazz.isInstance(ri.getReport()))
+    			reports.add(clazz.cast(ri.getReport()));
+    	}
+    	return reports;
     }
 
     public Set<ReportItem> getItems() {
@@ -77,7 +83,7 @@ public class DeliveryHistory {
     }
 
     public ShippingItem getShippingItemOf(InvoiceItem ii) {
-        Set<ShippingItem> sis = this.getItems(ShippingItem.class);
+        Set<ShippingItem> sis = this.getReportItems(ShippingItem.class);
         if (sis.size() > 1) throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
         else return sis.iterator().next();
     }
@@ -91,28 +97,28 @@ public class DeliveryHistory {
     }
     
     public Set<String> getConfirmationReportNumbers() {
-        return getNumbers(ConfirmationItem.class);
+        return getReportNumbers(ConfirmationItem.class);
     }
 
     public Set<String> getDeliveryNotesNumbers() {
-        return getNumbers(ShippingItem.class);
+        return getReportNumbers(ShippingItem.class);
     }
     
     public Set<String> getInvoiceNumbers() {
-        return getNumbers(InvoiceItem.class);
+        return getReportNumbers(InvoiceItem.class);
     }
     
     public Set<String> getOrderAgreementNumbers(){
-        return getNumbers(AgreementItem.class);
+        return getReportNumbers(AgreementItem.class);
     }
     
     public Set<String> getCreditNoteNumbers() {
-        return getNumbers(CreditNoteItem.class);
+        return getReportNumbers(CreditNoteItem.class);
     }
     
-    private <T extends ReportItem> Set<String> getNumbers(Class<? extends ReportItem> clazz) {
+    public <T extends ReportItem> Set<String> getReportNumbers(Class<? extends ReportItem> clazz) {
         Set<String> nos = new HashSet<String>();
-        for (ReportItem ci : getItems(clazz)) {
+        for (ReportItem ci : getReportItems(clazz)) {
             nos.add(ci.getReport().getDocumentNumber());
         }
         return nos;
@@ -133,7 +139,7 @@ public class DeliveryHistory {
         s.append("\n-------------------------------------");
         for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
             s.append("\n" + type.getSimpleName() + "s: ");
-            for (ReportItem item : getItems(type)) {
+            for (ReportItem item : getReportItems(type)) {
                 s.append("\n     " + item);
             }
         }

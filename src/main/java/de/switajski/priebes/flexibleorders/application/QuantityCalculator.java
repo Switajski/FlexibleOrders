@@ -27,23 +27,23 @@ public class QuantityCalculator {
     public static int calculateLeft(OrderItem orderItem) {
         DeliveryHistory deliveryHistory = DeliveryHistory.of(orderItem);
         if (deliveryHistory.isEmpty()) return orderItem.getOrderedQuantity();
-        return orderItem.getOrderedQuantity() - sumQty(deliveryHistory.getItems(WholesaleProcessSteps.reportItemSteps().get(0)));
+        return orderItem.getOrderedQuantity() - sumQty(deliveryHistory.getReportItems(WholesaleProcessSteps.reportItemSteps().get(0)));
     }
 
     public static Integer toBeAgreed(DeliveryHistory history, Class<? extends ReportItem> clazz) {
-        return sumQty(history.getItems(ConfirmationItem.class)) - sumQty(history.getItems(AgreementItem.class));
+        return sumQty(history.getReportItems(ConfirmationItem.class)) - sumQty(history.getReportItems(AgreementItem.class));
     }
 
     public static int toBeShipped(DeliveryHistory history) {
-        return sumQty(history.getItems(AgreementItem.class)) - sumQty(history.getItems(ShippingItem.class));
+        return sumQty(history.getReportItems(AgreementItem.class)) - sumQty(history.getReportItems(ShippingItem.class));
     }
 
     public static int toBeInvoiced(DeliveryHistory history) {
-        return sumQty(history.getItems(ShippingItem.class)) - sumQty(history.getItems(InvoiceItem.class));
+        return sumQty(history.getReportItems(ShippingItem.class)) - sumQty(history.getReportItems(InvoiceItem.class));
     }
 
     public static int toBePaid(DeliveryHistory history) {
-        return sumQty(history.getItems(InvoiceItem.class)) - sumQty(history.getItems(ReceiptItem.class));
+        return sumQty(history.getReportItems(InvoiceItem.class)) - sumQty(history.getReportItems(ReceiptItem.class));
     }
 
     private static Integer sumQty(Set<? extends ReportItem> reportItems) {

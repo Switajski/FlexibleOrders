@@ -15,7 +15,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
@@ -41,13 +40,13 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-        String rightTop = "";
+        String rightTop = report.customerFirstName + " " + report.customerLastName;
         String rightBottom = "Kundennummer: "
                 + report.customerNumber;
         String leftTop = "Bestellnummer: " + report.documentNumber.toString();
         String leftBottom = "Bestelldatum: "
                 + dateFormat.format(report.created);
-        Address adresse = report.invoiceSpecific_invoiceAddress;
+        Address adresse = report.headerAddress;
         String heading = "Bestellung";
 
         Amount netGoods = report.netGoods;
@@ -57,7 +56,6 @@ public class OrderPdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createAddress(adresse)) {
             document.add(p);
         }
-        ;
 
         for (Paragraph p : ReportViewHelper.createHeading(heading)) {
             document.add(p);

@@ -220,4 +220,13 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 		return this.getProduct().getProductType().equals(ProductType.SHIPPING);
 	}
 
+	/**
+	 * convenience method
+	 * @return
+	 */
+	@JsonIgnore
+	public Customer getCustomer() {
+		return this.getOrder().getCustomer();
+	}
+
 }

@@ -43,7 +43,7 @@ public class PurchaseAgreementService {
     public Set<PurchaseAgreement> retrieve(Collection<ReportItem> reportItems) {
         DeliveryHistory dh = new DeliveryHistory(reportItems);
         Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>(); 
-        for (AgreementItem cis: dh.getItems(AgreementItem.class))
+        for (AgreementItem cis: dh.getReportItems(AgreementItem.class))
             ocs.add(((OrderAgreement) cis.getReport()).getPurchaseAgreement());
         return ocs;
     }

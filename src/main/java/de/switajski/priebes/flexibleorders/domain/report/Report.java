@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -18,11 +19,11 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
@@ -113,6 +114,28 @@ public abstract class Report extends GenericEntity {
 
 	public double getVatRate() {
 		return Order.VAT_RATE;
+	}
+
+	/**
+	 * convenience method
+	 * @return
+	 */
+	@JsonIgnore
+	public Collection<Customer> getCustomers() {
+		Set<Customer> customers = new HashSet<Customer>(); 
+		for (ReportItem ri:getItems())
+			customers.add(ri.getCustomer());
+		return Collections.unmodifiableCollection(customers);
+	}
+	
+	@JsonIgnore
+	public Customer getCustomerSafely(){
+		Collection<Customer> customers = this.getCustomers();
+		if (customers.size() > 1)
+			throw new IllegalStateException("Mehr als einen Kunden f"+Unicode.uUml+"r gegebene Positionen gefunden");
+		else if (customers.size() == 1)
+			return customers.iterator().next();
+		throw new IllegalStateException("No customer found");
 	}
 	
 }

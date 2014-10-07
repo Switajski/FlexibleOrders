@@ -31,6 +31,7 @@ public class AgreementService {
         oa.setDocumentNumber(orderAgreementNo);
         oa.setAgreementDetails(oc.getPurchaseAgreement());
         oa.setCustomerDetails(oc.getCustomerDetails());
+        oa.setCustomerNumber(oc.getCustomerNumber());
         oa.setOrderConfirmationNumber(orderConfirmationNo);
         oa = takeOverConfirmationItems(oc, oa);
         

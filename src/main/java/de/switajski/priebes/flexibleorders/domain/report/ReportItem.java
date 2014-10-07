@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -149,5 +150,14 @@ public abstract class ReportItem extends GenericEntity implements
         return this.getClass().getSimpleName() + ": " + this.getReport().getDocumentNumber() + " " + getQuantity() + " x "
                 + getOrderItem().getProduct().getName();
     }
+
+    /**
+     * convenience method
+     * @return
+     */
+    @JsonIgnore
+	public Customer getCustomer() {
+		return this.getOrderItem().getCustomer();
+	}
 
 }

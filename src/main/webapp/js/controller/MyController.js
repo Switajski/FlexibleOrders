@@ -95,7 +95,6 @@ Ext.define('MyApp.controller.MyController', {
 
 
 		this.getStore('ItemDataStore').filter('status', 'ordered');
-		this.getStore('AgreementItemDataStore').filter('status', 'confirmed');
 		this.getStore('ShippingItemDataStore').filter('status', 'agreed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');

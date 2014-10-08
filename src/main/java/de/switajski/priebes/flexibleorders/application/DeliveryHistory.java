@@ -10,10 +10,10 @@ import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
@@ -36,31 +36,43 @@ public class DeliveryHistory {
         }
         return new DeliveryHistory(ris);
     }
-    
+
     public static DeliveryHistory of(ReportItem reportItem) {
         return new DeliveryHistory(reportItem.getOrderItem().getReportItems());
     }
-    
-    public static DeliveryHistory of(OrderItem orderItem){
+
+    public static DeliveryHistory of(OrderItem orderItem) {
         return new DeliveryHistory(orderItem.getReportItems());
     }
+
+    public Set<ConfirmationItem> getAgreedConfirmationItems() {
+        Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
+        for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
+            if (ci.isAgreed()) cis.add(ci);
+        return cis;
+    }
     
+    public Set<ConfirmationItem> getNonAgreedConfirmationItems() {
+        Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
+        for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
+            if (!ci.isAgreed()) cis.add(ci);
+        return cis;
+    }
+
     public <T extends ReportItem> Set<T> getReportItems(Class<T> type) {
         Set<T> riToReturn = new HashSet<T>();
         for (ReportItem ri : reportItems) {
-            if (type.isInstance(ri)) 
-            	riToReturn.add(type.cast(ri));
+            if (type.isInstance(ri)) riToReturn.add(type.cast(ri));
         }
         return riToReturn;
     }
-    
-    public <T extends Report> Set<T> getReports(Class<T> clazz){
-    	Set<T> reports = new HashSet<T>();
-    	for (ReportItem ri : reportItems) {
-    		if (clazz.isInstance(ri.getReport()))
-    			reports.add(clazz.cast(ri.getReport()));
-    	}
-    	return reports;
+
+    public <T extends Report> Set<T> getReports(Class<T> clazz) {
+        Set<T> reports = new HashSet<T>();
+        for (ReportItem ri : reportItems) {
+            if (clazz.isInstance(ri.getReport())) reports.add(clazz.cast(ri.getReport()));
+        }
+        return reports;
     }
 
     public Set<ReportItem> getItems() {
@@ -95,7 +107,7 @@ public class DeliveryHistory {
         return orders;
 
     }
-    
+
     public Set<String> getConfirmationReportNumbers() {
         return getReportNumbers(ConfirmationItem.class);
     }
@@ -103,19 +115,25 @@ public class DeliveryHistory {
     public Set<String> getDeliveryNotesNumbers() {
         return getReportNumbers(ShippingItem.class);
     }
-    
+
     public Set<String> getInvoiceNumbers() {
         return getReportNumbers(InvoiceItem.class);
     }
-    
-    public Set<String> getOrderAgreementNumbers(){
-        return getReportNumbers(AgreementItem.class);
+
+    public Set<String> getOrderAgreementNumbers() {
+        Set<String> nos = new HashSet<String>();
+        for (ReportItem ci : getReportItems(ConfirmationItem.class)) {
+            ConfirmationItem cis = (ConfirmationItem) ci;
+            OrderConfirmation oc = (OrderConfirmation) ci.getReport();
+            if (oc.isAgreed()) nos.add(oc.getOrderAgreementNumber());
+        }
+        return nos;
     }
-    
+
     public Set<String> getCreditNoteNumbers() {
         return getReportNumbers(CreditNoteItem.class);
     }
-    
+
     public <T extends ReportItem> Set<String> getReportNumbers(Class<? extends ReportItem> clazz) {
         Set<String> nos = new HashSet<String>();
         for (ReportItem ci : getReportItems(clazz)) {
@@ -140,6 +158,13 @@ public class DeliveryHistory {
         for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
             s.append("\n" + type.getSimpleName() + "s: ");
             for (ReportItem item : getReportItems(type)) {
+                if (item instanceof ConfirmationItem){
+                    if (((ConfirmationItem) item).isAgreed()){
+                        s.append(" - agreed - ");
+                    } else{
+                        s.append(" - not agreed - ");
+                    }
+                }
                 s.append("\n     " + item);
             }
         }

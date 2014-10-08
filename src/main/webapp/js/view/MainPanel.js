@@ -53,11 +53,6 @@ Ext.define('MyApp.view.MainPanel', {
 						}, {
 							xtype : 'splitter'
 						}, {
-							xtype : 'AgreementItemGrid',
-							store : 'AgreementItemDataStore'
-						}, {
-							xtype : 'splitter'
-						}, {
 							xtype : 'ShippingItemGrid',
 							store : 'ShippingItemDataStore'
 						},{

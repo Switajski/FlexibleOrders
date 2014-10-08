@@ -18,7 +18,6 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -158,7 +157,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse agree(
             @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
-        OrderAgreement orderAgreement = agreementService.agree(orderConfirmationNumber, orderAgreementNumber);
+        OrderConfirmation orderAgreement = agreementService.agree(orderConfirmationNumber, orderAgreementNumber);
         return ExtJsResponseCreator.createResponse(orderAgreement);
     }
 

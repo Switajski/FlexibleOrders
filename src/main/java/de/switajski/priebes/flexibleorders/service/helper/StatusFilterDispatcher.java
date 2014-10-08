@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.AgreementItemToBeShippedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
@@ -44,7 +44,7 @@ public class StatusFilterDispatcher {
                 return new ConfirmationItemToBeAgreedSpec();
 
             case AGREED:
-                return new AgreementItemToBeShippedSpec();
+                return new AgreedItemsToBeShippedSpec();
 
             case SHIPPED:
                 return new ShippingItemToBeInvoicedSpec();

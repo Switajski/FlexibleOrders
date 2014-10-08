@@ -10,7 +10,6 @@ import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculatorTe
 import de.switajski.priebes.flexibleorders.domain.ProductTest;
 import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
 import de.switajski.priebes.flexibleorders.service.QuantityCalculatorTest;
-import de.switajski.priebes.flexibleorders.service.ReportingServiceTest;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcherTest;
 import de.switajski.priebes.flexibleorders.service.process.DeliveryServiceTest;
 import de.switajski.priebes.flexibleorders.service.process.InvoicingServiceTest;
@@ -23,7 +22,6 @@ import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
 		JacksonDeserializationTest.class,
 		OrderServiceTest.class,
 		ProductTest.class,
-		ReportingServiceTest.class,
 		ShippingCostsCalculatorTest.class,
 		QuantityCalculatorTest.class,
 		PurchaseAgreementServiceTest.class,

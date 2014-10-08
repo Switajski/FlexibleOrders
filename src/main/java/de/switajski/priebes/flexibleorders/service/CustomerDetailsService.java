@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -24,9 +23,9 @@ public class CustomerDetailsService {
     private Set<CustomerDetails> retrieve(ReportItem reportItem) {
         Set<CustomerDetails> customerDetailss = new HashSet<CustomerDetails>();
         DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
-        for (AgreementItem ai : dh.getReportItems(AgreementItem.class)) {
+        for (ConfirmationItem ai : dh.getReportItems(ConfirmationItem.class)) {
             try {
-                CustomerDetails customerDetails = ((OrderAgreement) ai.getReport()).getCustomerDetails();
+                CustomerDetails customerDetails = ((OrderConfirmation) ai.getReport()).getCustomerDetails();
                 customerDetailss.add(customerDetails);
             }
             catch (ClassCastException e) {
@@ -43,8 +42,6 @@ public class CustomerDetailsService {
             Report r = ri.getReport();
             if (r instanceof OrderConfirmation)
                 customerDetails.add(((OrderConfirmation) r).getCustomerDetails());
-            else if (r instanceof OrderAgreement)
-                customerDetails.add
         }
             
         for (ReportItem ri:reportItems){

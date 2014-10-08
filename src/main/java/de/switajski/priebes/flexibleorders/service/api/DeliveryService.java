@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
-import static de.switajski.priebes.flexibleorders.service.helper.ProcessServiceHelper.validateQuantity;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,6 +19,7 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgree
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -34,6 +33,8 @@ public class DeliveryService {
     private ItemDtoConverterService convService;
     @Autowired
     private ShippingAddressService shippingAddressService;
+    @Autowired
+    private QuantityLeftCalculatorService qtyLeftCalcService;
 
     @Transactional
     public DeliveryNotes deliver(DeliverParameter deliverParameter) {
@@ -51,7 +52,7 @@ public class DeliveryService {
             int qty = riWithQty.getValue();
             OrderItem orderItemToBeDelivered = agreementItem.getOrderItem();
 
-            validateQuantity(qty, agreementItem);
+            qtyLeftCalcService.validateQuantity(qty, agreementItem);
 
             deliveryNotes.addItem(new ShippingItem(
                     deliveryNotes,

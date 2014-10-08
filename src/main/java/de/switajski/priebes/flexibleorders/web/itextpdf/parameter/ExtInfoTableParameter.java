@@ -42,7 +42,7 @@ public class ExtInfoTableParameter {
 		
         this.expectedDelivery = ExpectedDeliveryStringCreator.createDeliveryWeekString(
                 report.shippingSpecific_expectedDelivery, report.shippingSpecific_expectedDeliveryDateDeviates);
-        this.date = date.toString();
+        this.date = report.created.toString();
         this.customerNo = report.customerNumber.toString();
 	}
 }

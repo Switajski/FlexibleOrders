@@ -3,68 +3,27 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.reference.OriginSystem;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfFile;
 
-public class DeliveryNotesPdfFileTest extends AbstractSpringContextTest{
+public class DeliveryNotesPdfFileTest{
 
-	private static final String INVOICE_PDF_PATH = "src/test/resources/DeliveryNotesPdfFileTest.pdf";
+	private static final String PDF_PATH = "src/test/resources/DeliveryNotesPdfFileTest.pdf";
 
-	DeliveryNotes deliveryNotes;
-
-	private static final String I_NR = "13456";
-
-	@Before
-	public void initData() {
-		deliveryNotes = new DeliveryNotes(I_NR,
-				AddressBuilder.buildWithGeneratedAttributes(123), null);
-
-		OrderItem item1 = new OrderItemBuilder(
-				new Order(
-						"email@nowhere.com",
-						OriginSystem.FLEXIBLE_ORDERS,
-						I_NR),
-				CatalogProductBuilder
-						.buildWithGeneratedAttributes(98760)
-						.toProduct(),
-				0)
-				.generateAttributes(12)
-				.build();
-
-		for (int i = 0; i < 35; i++) {
-			item1.addReportItem(
-					new ShippingItemBuilder()
-							.setItem(item1)
-							.setQuantity(i+1)
-							.setReport(deliveryNotes)
-							.build());
-		}
-	}
-
-	@Transactional
 	@Test
 	public void shouldGenerateInvoice() throws Exception {
 
 		DeliveryNotesPdfFile bpf = new DeliveryNotesPdfFile();
-		bpf.setFilePathAndName(INVOICE_PDF_PATH);
+		bpf.setFilePathAndName(PDF_PATH);
 		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
 
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(DeliveryNotes.class.getSimpleName(), deliveryNotes);
+		ReportDto reportDto = ReportDtoTestFixture.givenReportDto();
+		model.put(reportDto.getClass().getSimpleName(), reportDto);
 
 		bpf.render(
 				model,

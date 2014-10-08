@@ -22,7 +22,6 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
@@ -151,11 +150,11 @@ public class TestDataCreator extends AbstractSpringContextTest {
 		createAB13(dt, b11, b13);
 		OrderConfirmation ab15 = createAB15(dt, b11, b15);
 
-		OrderAgreement au11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
-		OrderAgreement au15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
+		ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
+		ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
 
-		List<ItemDto> itemsFromAu11 = converterService.convertReport(au11);
-		List<ItemDto> itemsFromAu15 = converterService.convertReport(au15);
+		List<ItemDto> itemsFromAu11 = converterService.convertReport(ab11);
+		List<ItemDto> itemsFromAu15 = converterService.convertReport(ab15);
 
 		DeliveryNotes l11 = createL11(itemsFromAu11);
 		DeliveryNotes l12 = createL12(itemsFromAu11);

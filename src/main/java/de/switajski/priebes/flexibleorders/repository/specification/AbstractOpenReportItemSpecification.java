@@ -9,7 +9,6 @@ import javax.persistence.criteria.Subquery;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
@@ -19,14 +18,14 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
  * Quantity of a shipped item (ShippingItem) is 10. The same order item has only
  * an invoicing item with quantity 5 (InvoicingItem). Consequently 5 are not
  * invoiced yet. So they are open.</br> </br> <b>Usage:</b> In the case of given
- * example the method <code>getReportItemClassToRetrieve</code> should return
- * ShippingItem, <code>getReportItemClassToSubtract</code> should return
- * InvoiceItem
+ * example the method <code>reportItemClassToRetrieve</code> should be a
+ * ShippingItem.class, <code>reportItemClassToSubtract</code> should be a
+ * InvoiceItem.class
  * 
  * @author Marek Switajski
  * 
  */
-public abstract class AbstractOpenReportItemSpecification implements
+public class AbstractOpenReportItemSpecification implements
         Specification<ReportItem> {
 
     private static final String QTY = "quantity";
@@ -34,22 +33,36 @@ public abstract class AbstractOpenReportItemSpecification implements
     CriteriaBuilder cb;
     CriteriaQuery<?> query;
     Root<ReportItem> root;
+    private Class<? extends ReportItem> reportItemClassToSubtract;
+    private Class<? extends ReportItem> reportItemClassToRetrieve;
 
+    /**
+     * 
+     * @param reportItemClassToRetrieve 
+     * @param reportItemClassToSubtract
+     */
+    public AbstractOpenReportItemSpecification(
+            Class<? extends ReportItem> reportItemClassToRetrieve,
+            Class<? extends ReportItem> reportItemClassToSubtract) {
+        this.reportItemClassToRetrieve = reportItemClassToRetrieve;
+        this.reportItemClassToSubtract = reportItemClassToSubtract;
+    }
+    
     /**
      * 
      * Specification in JQL would look like this:
      * 
      * <pre>
-     * "select from ConfirmationItem ri where "
-     *       + "EXISTS "//inCondition
+     * select from ConfirmationItem ri where 
+     *       EXISTS //inCondition
      *       // subquery
-     *       + "(SELECT he from ReportItem he where he.orderItem = ri.orderItem and "
-     *           + "(SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent "
-     *           + "where confirmEvent.orderItem = ri.orderItem)"
-     *           + " > "//Subquery2
-     *           + "(SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent "
-     *           + "where shipEvent.orderItem = ri.orderItem) "
-     *       + ")";
+     *       (SELECT he from ReportItem he where he.orderItem = ri.orderItem and 
+     *           (SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent 
+     *           where confirmEvent.orderItem = ri.orderItem)
+     *            > "//Subquery2
+     *           (SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent 
+     *           where shipEvent.orderItem = ri.orderItem) 
+     *       );
      * </pre>
      * 
      * @see http://stackoverflow.com/questions/3997070/jpa-criteria-tutorial
@@ -66,12 +79,12 @@ public abstract class AbstractOpenReportItemSpecification implements
         subquery.where(cb.and(
                 cb.equal(root.<OrderItem> get(ORDER_ITEM), fromSubquery.get(ORDER_ITEM)),
                 cb.greaterThan(
-                        createQtySum(getReportItemClassToRetrieve()),
-                        createQtySum(getReportItemClassToSubtract())
+                        createQtySum(reportItemClassToRetrieve),
+                        createQtySum(reportItemClassToSubtract)
                         )));
         subquery.select(fromSubquery);
 
-        Predicate inCondition = cb.and(cb.exists(subquery), cb.equal(root.type(), getReportItemClassToRetrieve()));
+        Predicate inCondition = cb.and(cb.exists(subquery), cb.equal(root.type(), reportItemClassToRetrieve));
         return inCondition;
     }
 
@@ -86,9 +99,4 @@ public abstract class AbstractOpenReportItemSpecification implements
         return seSq;
     }
 
-    Class<? extends ReportItem> getReportItemClassToRetrieve() {
-        return WholesaleProcessSteps.getPreviousReportItemStep(getReportItemClassToSubtract());
-    }
-
-    abstract Class<? extends ReportItem> getReportItemClassToSubtract();
 }

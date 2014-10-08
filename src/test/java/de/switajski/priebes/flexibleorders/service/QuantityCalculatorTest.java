@@ -5,113 +5,105 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 
 public class QuantityCalculatorTest {
 
-	private static final int QTY_PROCESSED = 5;
-	private static final int QTY = 7;
-	private OrderItem orderItem;
-	private Address address = AddressBuilder.createDefault();
+    private static final int QTY_PROCESSED = 5;
+    private static final int QTY = 7;
+    private OrderItem orderItem;
+    private Address address = AddressBuilder.createDefault();
 
-	@Test
-	public void toBeConfirmed_qtyLeftShouldBeQtyMinusQtyProcessed() {
-		// GIVEN
-		orderItem = givenOrderItem(QTY);
-		orderItem.addReportItem(
-				givenConfirmationItem(QTY_PROCESSED));
+    private QuantityLeftCalculatorService calcService = new QuantityLeftCalculatorService();
 
-		// WHEN
-		Integer calculatedQuantity = QuantityCalculator
-				.calculateLeft(orderItem);
+    @Test
+    public void toBeConfirmed_qtyLeftShouldBeQtyMinusQtyProcessed() {
+        // GIVEN
+        orderItem = givenOrderItem(QTY);
+        orderItem.addReportItem(givenAgreedItem(QTY_PROCESSED));
 
-		// THEN
-		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
-	}
+        // WHEN
+        Integer calculatedQuantity = calcService.calculateLeft(orderItem);
 
-	@Test
-	public void toBeAgreed_qtyLeftShouldBeQtyMinusQtyProcessed() {
-		// GIVEN
-		orderItem = givenOrderItem(QTY);
-		orderItem.addReportItem(
-				givenConfirmationItem(QTY));
-		orderItem.addReportItem(
-				givenAgreementItem(QTY_PROCESSED));
+        // THEN
+        assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
+    }
 
-		// WHEN
-		Integer calculatedQuantity = QuantityCalculator
-				.calculateLeft(orderItem.getConfirmationItems().iterator().next());
+    @Test
+    public void toBeAgreed_qtyLeftShouldBeQtyMinusQtyProcessed() {
+        // GIVEN
+        orderItem = givenOrderItem(QTY);
+        orderItem.addReportItem(givenAgreedItem(QTY));
+        orderItem.addReportItem(givenDeliveryItem(QTY_PROCESSED));
 
-		// THEN
-		assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
-	}
+        // WHEN
+        Integer calculatedQuantity = calcService.calculateLeft(orderItem.getConfirmationItems().iterator().next());
 
-	
-	private ConfirmationItem givenConfirmationItem(int quantityProcessed) {
-		return new ConfirmationItemBuilder()
-				.setReport(
-						givenConfirmationReport())
-				.setQuantity(quantityProcessed)
-				.setItem(orderItem)
-				.build();
-	}
+        // THEN
+        assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
+    }
 
-	private ReportItem givenAgreementItem(int qtyProcessed) {
-		return new AgreementItemBuilder()
-				.setReport(givenOrderAgreement())
-				.setQuantity(qtyProcessed)
-				.setItem(orderItem)
-				.build();
-	}
+    private ConfirmationItem givenAgreedItem(int quantityProcessed) {
+        return new ConfirmationItemBuilder()
+                .setReport(givenConfirmationReport())
+                .setQuantity(quantityProcessed)
+                .setItem(orderItem)
+                .build();
+    }
 
-	private OrderAgreement givenOrderAgreement() {
-		return new OrderAgreementBuilder().setDocumentNumber("AU-123").build();
-	}
+    private ReportItem givenDeliveryItem(int qtyProcessed) {
+        return new ShippingItemBuilder()
+                .setReport(givenDeliveryNotes())
+                .setQuantity(qtyProcessed)
+                .setItem(orderItem)
+                .build();
+    }
 
-	private OrderItem givenOrderItem(int quantity) {
-		return new OrderItemBuilder(
-				givenOrder(),
-				givenProduct(),
-				quantity)
-				.build();
-	}
+    private Report givenDeliveryNotes() {
+        return new DeliveryNotesBuilder().setDocumentNumber("L-123").build();
+    }
 
-	private OrderConfirmation givenConfirmationReport() {
-		return new OrderConfirmation(
-				"AB-123",
-				address,
-				address);
-	}
+    private OrderItem givenOrderItem(int quantity) {
+        return new OrderItemBuilder(
+                givenOrder(),
+                givenProduct(),
+                quantity)
+                .build();
+    }
 
-	private Product givenProduct() {
-		return new CatalogProductBuilder(
-				"pro",
-				234L,
-				ProductType.PRODUCT)
-				.build().toProduct();
-	}
+    private OrderConfirmation givenConfirmationReport() {
+        OrderConfirmation orderConfirmation = new OrderConfirmation("AB-123", address, address);
+        orderConfirmation.setOrderAgreementNumber("AU-123");
+        return orderConfirmation;
+    }
 
-	private Order givenOrder() {
-		return new OrderBuilder()
-				.setCustomer(
-						CustomerBuilder.buildWithGeneratedAttributes(2))
-				.build();
-	}
+    private Product givenProduct() {
+        return new CatalogProductBuilder(
+                "pro",
+                234L,
+                ProductType.PRODUCT)
+                .build().toProduct();
+    }
+
+    private Order givenOrder() {
+        return new OrderBuilder()
+                .setCustomer(CustomerBuilder.buildWithGeneratedAttributes(2))
+                .build();
+    }
 }

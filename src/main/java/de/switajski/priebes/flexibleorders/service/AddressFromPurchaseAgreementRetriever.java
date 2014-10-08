@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
@@ -26,9 +25,9 @@ public abstract class AddressFromPurchaseAgreementRetriever {
         }
         else {
             DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
-            for (AgreementItem ai : dh.getReportItems(AgreementItem.class)) {
+            for (ConfirmationItem ai : dh.getReportItems(ConfirmationItem.class)) {
                 try {
-                    PurchaseAgreement purchaseAgreement = ((OrderAgreement) ai.getReport()).getPurchaseAgreement();
+                    PurchaseAgreement purchaseAgreement = ((OrderConfirmation) ai.getReport()).getPurchaseAgreement();
                     addresses.add(getAddress(purchaseAgreement));
                 }
                 catch (ClassCastException e) {

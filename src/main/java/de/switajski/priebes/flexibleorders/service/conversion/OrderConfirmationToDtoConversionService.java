@@ -22,6 +22,8 @@ public class OrderConfirmationToDtoConversionService {
 	@Transactional(readOnly = true)
 	public ReportDto toDto(OrderConfirmation orderConfirmation) {
 		ReportDto dto = reportToDtoConversionService.toDto(orderConfirmation);
+		if (orderConfirmation.isAgreed())
+		    dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
 		return dto;
 	}
 

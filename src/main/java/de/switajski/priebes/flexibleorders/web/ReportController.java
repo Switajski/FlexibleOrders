@@ -22,18 +22,17 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNote;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.OrderConfirmationRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.OrderAgreementToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderConfirmationToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
@@ -41,7 +40,6 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.OrderAgreementPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 
@@ -75,11 +73,11 @@ public class ReportController {
     @Autowired 
     DeliveryNotesToDtoConversionService deliveryNotesDtoConversionService;
     @Autowired 
-    OrderAgreementToDtoConversionService orderAgreementDtoConversionService;
-    @Autowired 
     OrderConfirmationToDtoConversionService orderConfirmationDtoConversionService;
 	@Autowired
     OrderToDtoConversionService orderDtoConversionService;
+	@Autowired
+	OrderConfirmationRepository orderConfirmationRepo;
     
 
     @RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
@@ -87,9 +85,10 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
-        
         if (report != null){
         	return createReportSpecificModelAndView(report);
+        } else if (orderConfirmationRepo.findByOrderAgreementNumber(id) != null){
+            return createReportSpecificModelAndView(orderConfirmationRepo.findByOrderAgreementNumber(id));
         } else {
         	Order order = orderRepo.findByOrderNumber(id);
         	if (order != null)
@@ -104,10 +103,6 @@ public class ReportController {
         if (report instanceof OrderConfirmation) {
             return new ModelAndView(OrderConfirmationPdfView.class.getSimpleName(),
                     model, orderConfirmationDtoConversionService.toDto((OrderConfirmation) report));
-        }
-        if (report instanceof OrderAgreement) {
-            return new ModelAndView(OrderAgreementPdfView.class.getSimpleName(),
-                    model, orderAgreementDtoConversionService.toDto((OrderAgreement) report));
         }
         if (report instanceof DeliveryNotes) {
             return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),

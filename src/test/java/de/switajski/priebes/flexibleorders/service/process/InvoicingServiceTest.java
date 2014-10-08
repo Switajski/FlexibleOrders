@@ -22,8 +22,8 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -38,9 +38,9 @@ public class InvoicingServiceTest {
     ItemDtoConverterService itemDtoConverterService;
     @Mock
     InvoicingAddressService invoicingAddressService;
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void shouldRejectInvoicingIfDifferentInvoicingAddressesExist(){
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldRejectInvoicingIfDifferentInvoicingAddressesExist() {
         // GIVEN
         MockitoAnnotations.initMocks(this);
         when(reportRepo.findByDocumentNumber(Matchers.anyString())).thenReturn(null);
@@ -48,10 +48,10 @@ public class InvoicingServiceTest {
         when(invoicingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(givenInvoicingAddresses());
         InvoicingParameter invoicingParameter = new InvoicingParameter();
         invoicingParameter.invoiceNumber = "L123";
-        
+
         // WHEN / THEN
         invoicingService.invoice(invoicingParameter);
-        
+
     }
 
     private Set<Address> givenInvoicingAddresses() {
@@ -66,9 +66,9 @@ public class InvoicingServiceTest {
         map.put(givenAgreementItemWith(null), 2);
         return map;
     }
-    
+
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
-        return new AgreementItemBuilder()
+        return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
                                 .setProduct(new ProductBuilder().build())
@@ -76,11 +76,10 @@ public class InvoicingServiceTest {
                                 .build())
                 .setQuantity(6)
                 .setReport(
-                        new OrderAgreementBuilder()
+                        new OrderConfirmationBuilder()
                                 .setAgreementDetails(purchaseAgreement)
                                 .build())
                 .build();
     }
-
 
 }

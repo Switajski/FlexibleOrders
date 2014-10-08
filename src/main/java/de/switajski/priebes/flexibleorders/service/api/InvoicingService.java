@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
-import static de.switajski.priebes.flexibleorders.service.helper.ProcessServiceHelper.validateQuantity;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
+import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 
 @Service
@@ -31,6 +30,8 @@ public class InvoicingService {
     private ItemDtoConverterService itemDtoConverterService;
     @Autowired
     private InvoicingAddressService invoicingAddressService;
+    @Autowired
+    private QuantityLeftCalculatorService qtyLeftCalcService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
@@ -44,7 +45,7 @@ public class InvoicingService {
             ReportItem shippingItem = entry.getKey();
             Integer qty = entry.getValue();
 
-            validateQuantity(qty, shippingItem);
+            qtyLeftCalcService.validateQuantity(qty, shippingItem);
             invoice.addItem(new InvoiceItem(
                     invoice,
                     shippingItem.getOrderItem(),

@@ -11,10 +11,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class CreditNote extends Report {
 
 	@JsonIgnore
-	public Set<AgreementItem> getAgreementItems(){
-		Set<AgreementItem> shippingItems = new HashSet<AgreementItem>();
+	public Set<ConfirmationItem> getAgreementItems(){
+		Set<ConfirmationItem> shippingItems = new HashSet<ConfirmationItem>();
 		for (ReportItem reportItem: this.items){
-			shippingItems.add((AgreementItem) reportItem);
+			shippingItems.add((ConfirmationItem) reportItem);
 		}
 		return shippingItems;
 	}

@@ -1,8 +1,11 @@
 package de.switajski.priebes.flexibleorders.service.process;
 
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +27,14 @@ import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -51,6 +55,8 @@ public class DeliveryServiceTest {
     ReportRepository reportRepo;
     @Mock
     ShippingAddressService shippingAddressService;
+    @Mock
+    QuantityLeftCalculatorService qtyLeftCalcService;
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
@@ -123,7 +129,7 @@ public class DeliveryServiceTest {
     }
 
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
-        return new AgreementItemBuilder()
+        return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
                                 .setProduct(new ProductBuilder().build())
@@ -131,14 +137,14 @@ public class DeliveryServiceTest {
                                 .build())
                 .setQuantity(6)
                 .setReport(
-                        new OrderAgreementBuilder()
+                        new OrderConfirmationBuilder()
                                 .setAgreementDetails(purchaseAgreement)
                                 .build())
                 .build();
     }
 
     private ReportItem givenAgreementItemOtherWith(PurchaseAgreement pa) {
-        return new AgreementItemBuilder()
+        return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
                                 .setProduct(new ProductBuilder().build())
@@ -146,7 +152,7 @@ public class DeliveryServiceTest {
                                 .build())
                 .setQuantity(9)
                 .setReport(
-                        new OrderAgreementBuilder()
+                        new OrderConfirmationBuilder()
                                 .setAgreementDetails(pa)
                                 .build())
                 .build();

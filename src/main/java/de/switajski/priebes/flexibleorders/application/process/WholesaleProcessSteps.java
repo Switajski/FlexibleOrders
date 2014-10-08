@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.switajski.priebes.flexibleorders.domain.report.AgreementItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
@@ -28,7 +26,6 @@ public class WholesaleProcessSteps {
 	public static List<Class<? extends ReportItem>> reportItemSteps() {
 		List<Class<? extends ReportItem>> reportItemOrder = new ArrayList<Class<? extends ReportItem>>();
 		reportItemOrder.add(ConfirmationItem.class);
-		reportItemOrder.add(AgreementItem.class);
 		reportItemOrder.add(ShippingItem.class);
 		reportItemOrder.add(InvoiceItem.class);
 		reportItemOrder.add(ReceiptItem.class);
@@ -38,7 +35,6 @@ public class WholesaleProcessSteps {
 	public static List<Class<? extends Report>> reportSteps() {
 		List<Class<? extends Report>> reportOrder = new ArrayList<Class<? extends Report>>();
 		reportOrder.add(OrderConfirmation.class);
-		reportOrder.add(OrderAgreement.class);
 		reportOrder.add(DeliveryNotes.class);
 		reportOrder.add(Invoice.class);
 		reportOrder.add(Receipt.class);

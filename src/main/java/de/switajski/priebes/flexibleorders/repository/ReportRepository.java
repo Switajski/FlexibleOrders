@@ -10,4 +10,5 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 public interface ReportRepository extends JpaRepository<Report, String>, JpaSpecificationExecutor<Report>{
 
 	Report findByDocumentNumber(String documentNumber);
+
 }

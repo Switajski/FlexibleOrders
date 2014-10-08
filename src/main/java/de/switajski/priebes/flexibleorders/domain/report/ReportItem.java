@@ -11,13 +11,9 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.application.QuantityCalculator;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
@@ -85,62 +81,6 @@ public abstract class ReportItem extends GenericEntity implements
     public int compareTo(ReportItem o) {
         // TODO Auto-generated method stub
         return 0;
-    }
-
-    /**
-     * Not quantity left is set!
-     * 
-     * @return
-     * @see OrderItem#toReportItems(ReportItemType)
-     */
-    @Deprecated
-    public ItemDto toItemDto() {
-        // TODO: enhance mapping by a mapping framework
-        ItemDto item = new ItemDto();
-        item.documentNumber = this.getReport().getDocumentNumber();
-        // TODO: instanceof: this is not subject of this class
-        if (this.getReport() instanceof OrderConfirmation) {
-            item.orderConfirmationNumber = this.getReport().getDocumentNumber();
-            // TODO: DRY
-            PurchaseAgreement pa = ((OrderConfirmation) this.getReport()).getPurchaseAgreement();
-            if (pa != null) item.expectedDelivery = pa.getExpectedDelivery();
-        }
-        if (this.getReport() instanceof OrderAgreement) {
-            item.orderAgreementNumber = this.getReport().getDocumentNumber();
-            // TODO: DRY
-            PurchaseAgreement pa = ((OrderAgreement) this.getReport()).getPurchaseAgreement();
-            if (pa != null) item.expectedDelivery = pa.getExpectedDelivery();
-        }
-        if (this.getReport() instanceof Invoice) {
-            Invoice invoice = (Invoice) this.getReport();
-            item.invoiceNumber = this.getReport().getDocumentNumber();
-            item.deliveryNotesNumber = this.getReport().getDocumentNumber();
-            item.paymentConditions = invoice.getPaymentConditions();
-        }
-        if (this.getReport() instanceof DeliveryNotes) {
-            DeliveryNotes deliveryNotes = (DeliveryNotes) this.getReport();
-            item.deliveryNotesNumber = this.getReport().getDocumentNumber();
-            item.trackNumber = deliveryNotes.getTrackNumber();
-            item.packageNumber = deliveryNotes.getPackageNumber();
-        }
-        if (this.getReport() instanceof Receipt) {
-            item.receiptNumber = this.getReport().getDocumentNumber();
-        }
-        item.created = this.getCreated();
-        Order order = this.getOrderItem().getOrder();
-        item.customer = order.getCustomer().getId();
-        item.customerNumber = order.getCustomer().getCustomerNumber();
-        item.customerName = order.getCustomer().getLastName();
-        item.documentNumber = this.getReport().getDocumentNumber();
-        item.id = this.getId();
-        item.orderNumber = order.getOrderNumber();
-        if (this.getOrderItem().getNegotiatedPriceNet() != null) item.priceNet = this.getOrderItem().getNegotiatedPriceNet().getValue();
-        item.product = this.getOrderItem().getProduct().getProductNumber();
-        item.productName = this.getOrderItem().getProduct().getName();
-        item.quantity = this.getQuantity();
-        item.status = this.provideStatus();
-        item.quantityLeft = QuantityCalculator.calculateLeft(this);
-        return item;
     }
 
     public abstract String provideStatus();

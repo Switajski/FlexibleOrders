@@ -1,10 +1,12 @@
 package de.switajski.priebes.flexibleorders.application;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -12,39 +14,45 @@ import org.junit.Test;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AgreementItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderAgreementBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 
 public class PurchaseAgreementServiceTest {
 
     private PurchaseAgreementService purchaseAgreementService = new PurchaseAgreementService();
-    
+
     @Test
-    public void contradictoryPurchaseAgreementsShouldBeDetected() {
-        //GIVEN
+    public void shouldRetrieveContradictoryPurchaseAgreementsFromSimilarItems() {
+        // GIVEN
         List<ReportItem> agreementItems = Arrays.asList(
                 givenAgreementItemWith(givenPurchaseAgreement()),
-                givenAgreementItemOtherWith(givenPurchaseAgreementOther()));
+                givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
+
+        // WHEN 
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieve(agreementItems);
         
-        // WHEN / THEN
-        assertThat(purchaseAgreementService.hasEqualPurchaseAgreements(agreementItems), is(false));
+        // THEN
+        assertThat(purchaseAgreements.size(), is(greaterThan(1)));
     }
     
     @Test
-    public void purchaseAgreementsWithDifferingTimeShouldBeEqual() {
-        //GIVEN
+    public void shouldLegalPurchaseAgreementsOnly() {
+        // GIVEN
         List<ReportItem> agreementItems = Arrays.asList(
                 givenAgreementItemWith(givenPurchaseAgreement()),
-                givenAgreementItemOtherWith(givenPurchaseAgreement()));
+                givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
+
+        // WHEN 
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegal(agreementItems);
         
-        // WHEN / THEN
-        assertThat(purchaseAgreementService.hasEqualPurchaseAgreements(agreementItems), is(true));
+        // THEN
+        assertThat(purchaseAgreements.size(), is(0));
     }
-    
+
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
-        return new AgreementItemBuilder()
+        return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
                                 .setProduct(new ProductBuilder().build())
@@ -52,32 +60,15 @@ public class PurchaseAgreementServiceTest {
                                 .build())
                 .setQuantity(6)
                 .setReport(
-                        new OrderAgreementBuilder()
+                        new OrderConfirmationBuilder()
                                 .setAgreementDetails(purchaseAgreement)
                                 .build())
                 .build();
     }
 
-    private PurchaseAgreement givenPurchaseAgreementOther() {
-        PurchaseAgreement ad = new PurchaseAgreement();
-        ad.setExpectedDelivery(new LocalDate().plusDays(10));
-        ad.setCustomerNumber(123L);
+    private PurchaseAgreement changeExpectedDeliveryDate(PurchaseAgreement ad) {
+        ad.setExpectedDelivery(ad.getExpectedDelivery().plusDays(10));
         return ad;
-    }
-
-    private ReportItem givenAgreementItemOtherWith(PurchaseAgreement pa) {
-        return new AgreementItemBuilder()
-                .setItem(
-                        new OrderItemBuilder()
-                                .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(25)
-                                .build())
-                .setQuantity(9)
-                .setReport(
-                        new OrderAgreementBuilder()
-                                .setAgreementDetails(pa)
-                                .build())
-                .build();
     }
 
     private PurchaseAgreement givenPurchaseAgreement() {
@@ -86,5 +77,5 @@ public class PurchaseAgreementServiceTest {
         pa.setCustomerNumber(123L);
         return pa;
     }
-    
+
 }

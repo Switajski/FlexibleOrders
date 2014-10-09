@@ -93,24 +93,26 @@ public class ReportViewHelper {
 
         String shipAddress = createString(p.shippingAddress);
 
-        Phrase firstCol = new PhraseBuilder().append(createString(p.orderNumbers, "B-Nr.")).build();
+        Phrase firstCol = new PhraseBuilder(createString(p.orderNumbers, "B-Nr.")).build();
         appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol, "AB-Nr.");
         appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, firstCol, "L-Nr.");
         appendDocNumbersIfNotEmpty(p.invoiceNumbers, firstCol, "R-Nr.");
-        appendDocNumbersIfNotEmpty(p.creditNoteNumbers, firstCol,
-                "Gutschirft-Nr.");
+        appendDocNumbersIfNotEmpty(p.creditNoteNumbers, firstCol, "Gutschirft-Nr.");
 
         firstCol.add(NEWLINE);
-        if (p.expectedDelivery != null) firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
+        if (p.expectedDelivery != null) {
+            firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
+        }
         firstCol.add(new PhraseBuilder()
                 .append(NEWLINE)
-                .append(NEWLINE)
                 .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
-                .append(StringUtils.isEmpty(p.saleRepresentative) ? "" :
+                .append(isEmpty(p.saleRepresentative) ? "" :
                         NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
 
-        String secondCol = new StringBuilder().append("Lieferadresse:")
-                .append(NEWLINE + shipAddress).append(NEWLINE).append(NEWLINE)
+        StringBuilder secondColB = new StringBuilder().append("Lieferadresse:")
+                .append(NEWLINE + shipAddress);
+        if (p.deliveryMethod != null)
+            secondColB.append(NEWLINE).append(NEWLINE)
                 .append(createString(p.deliveryMethod))
                 .toString();
 
@@ -123,7 +125,7 @@ public class ReportViewHelper {
         CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithThreeCols())
                 .addCell(cellb.withPhrase(firstCol).build())
-                .addCell(cellb.withPhrase(pb.withText(secondCol).build()).build())
+                .addCell(cellb.withPhrase(pb.withText(secondColB.toString()).build()).build())
                 .addCell(cellb.withPhrase(pb.withText(thirdCol).build()).build());
 
         PdfPTable infoTable = infoTableBuilder.build();
@@ -135,12 +137,13 @@ public class ReportViewHelper {
 
     private static void appendDocNumbersIfNotEmpty(Collection<String> p,
             Phrase firstCol, String docNoName) {
-        if (p != null && p.size() > 0) firstCol.add(new PhraseBuilder().append(
-                NEWLINE + createString(p, docNoName)).build());
+        if (p != null && !p.isEmpty()) {
+            firstCol.add(new PhraseBuilder().append(NEWLINE + createString(p, docNoName)).build());
+        }
     }
 
     private static String createString(DeliveryMethod deliveryMethod) {
-        if (deliveryMethod == null) return null;
+        if (deliveryMethod == null) return "";
         if (deliveryMethod.getDeliveryType() == DeliveryType.SPEDITION) {
             return new StringBuilder()
                     .append("Lieferart per Spedition:")

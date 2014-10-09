@@ -94,6 +94,7 @@ public class OrderService {
 		purchaseAgreement.setExpectedDelivery(orderParameter.expectedDelivery);
 		
 		for (ItemDto ri : orderParameter.reportItems) {
+		    validate(ri);
 			Product product = (ri.product.equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
 			OrderItem oi = new OrderItem(
 					order,
@@ -108,7 +109,12 @@ public class OrderService {
 		return orderRepo.save(order);
 	}
 	
-	@Transactional
+	private void validate(ItemDto ri) {
+	    if (ri.productName == null)
+	        throw new IllegalArgumentException("Produktnamen nicht angegeben");
+    }
+
+    @Transactional
 	public OrderConfirmation confirm(ConfirmParameter confirmParameter) {
 		Address invoiceAddress = confirmParameter.invoiceAddress;
 				Address shippingAddress = confirmParameter.shippingAddress;

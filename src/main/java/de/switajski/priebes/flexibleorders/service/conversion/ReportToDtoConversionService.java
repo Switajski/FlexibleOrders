@@ -57,6 +57,7 @@ public class ReportToDtoConversionService {
 		dto.related_invoiceNumbers = dh.getInvoiceNumbers();
 		dto.related_orderAgreementNumbers = dh.getOrderAgreementNumbers();
 		dto.related_orderNumbers = dh.getOrderNumbers();
+		dto.related_orderConfirmationNumbers = dh.getOrderConfirmationNumbers();
 
 		Collection<Customer> customers = report.getCustomers();
 		if (report.getCustomers().size() > 1){

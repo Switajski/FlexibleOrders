@@ -108,7 +108,7 @@ public class DeliveryHistory {
 
     }
 
-    public Set<String> getConfirmationReportNumbers() {
+    public Set<String> getOrderConfirmationNumbers() {
         return getReportNumbers(ConfirmationItem.class);
     }
 

@@ -1,14 +1,17 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ContactInformationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
@@ -24,9 +27,15 @@ public class ReportDtoTestFixture {
     private static final Customer customer = new CustomerBuilder().yvonne().build();
 
     public static ReportDto givenReportDto() {
+        DeliveryMethod deliveryMethod = new DeliveryMethod();
+        deliveryMethod.setAddress(AddressBuilder.createDefault());
+        deliveryMethod.setName("DEUTSCHE POST");
+        deliveryMethod.setPhone("+4940786876");
+
         ReportDto r = new ReportDto();
         r.headerAddress = customer.getInvoiceAddress();
         r.shippingSpecific_shippingAddress = customer.getShippingAddress();
+        r.shippingSpecific_deliveryMethod = deliveryMethod; 
 
         r.documentNumber = O_NR;
         r.created = new Date();
@@ -48,7 +57,9 @@ public class ReportDtoTestFixture {
         r.customerSpecific_saleRepresentative = "Herr Vertreter1";
         r.netGoods = new Amount(BigDecimal.valueOf(786d), Currency.EUR);
         r.vatRate = 0.4d;
-
+        
+        r.related_orderNumbers = new HashSet<String>(Arrays.asList("B12", "B13"));
+        
         r.items = new HashSet<ReportItem>();
         for (int i = 0; i < 35; i++) {
             new OrderItemBuilder();

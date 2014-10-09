@@ -93,7 +93,8 @@ Ext.define('MyApp.view.OrderWindow', {
 						createOrderStore = Ext.data.StoreMgr
 								.lookup('CreateOrderDataStore');
 						record = createOrderStore.getAt(rowPos);
-						record.set('priceNet', data.recommendedPriceNet.value);
+						if (data.recommendedPriceNet != null)
+							record.set('priceNet', data.recommendedPriceNet.value);
 						record.set('productName', data.name);
 
 					}

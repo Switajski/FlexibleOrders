@@ -13,7 +13,7 @@ Ext.define('MyApp.controller.DeliverController', {
 	},
 	
 	deliver : function(event, record) {
-		deliveryNotesNumber = record.data.documentNumber.replace(/AU/g, "L");
+		deliveryNotesNumber = record.data.documentNumber.replace(/AB/g, "L");
 
 		record.data.deliveryNotesNumber = record.data.documentNumber;
 		var createDeliveryNotesStore = MyApp.getApplication()

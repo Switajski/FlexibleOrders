@@ -23,7 +23,7 @@ public class MarkPaidService {
     @Transactional
     public Receipt markAsPayed(BillingParameter billingParameter) {
         if (reportRepo.findByDocumentNumber(billingParameter.receiptNumber) != null)
-            billingParameter.receiptNumber.concat("-2");
+            billingParameter.receiptNumber = billingParameter.receiptNumber.concat("-2");
 
         Invoice invoice = retrieveInvoiceSavely(billingParameter.invoiceNumber);
         Receipt receipt = new Receipt(billingParameter.receiptNumber, billingParameter.date);

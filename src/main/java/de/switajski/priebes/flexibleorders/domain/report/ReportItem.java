@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -99,5 +100,9 @@ public abstract class ReportItem extends GenericEntity implements
 	public Customer getCustomer() {
 		return this.getOrderItem().getCustomer();
 	}
+    
+    public DeliveryHistory createDeliveryHistory(){
+        return DeliveryHistory.of(this);
+    }
 
 }

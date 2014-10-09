@@ -24,6 +24,9 @@ Ext.define('MyApp.controller.DeliverController', {
 				}, {
 					property : "status",
 					value : "agreed"
+				}, {
+					property : "asdf",
+					value : "asdf"
 				}]);
 
 		var deliverWindow = Ext.create('MyApp.view.DeliverWindow', {
@@ -35,8 +38,8 @@ Ext.define('MyApp.controller.DeliverController', {
 								.deliver2("ok", kunde, createDeliveryNotesStore);
 					}
 				});
-		kunde = Ext.getStore('KundeDataStore').findRecord("id",
-				record.data.customer);
+		kunde = Ext.getStore('KundeDataStore').findRecord("customerNumber",
+				record.data.customerNumber);
 		kundeId = kunde.data.id;
 		email = kunde.data.email;
 

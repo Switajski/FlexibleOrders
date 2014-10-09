@@ -55,7 +55,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
                 ReportViewHelper.createExtInfoTable(new ExtInfoTableParameter(report)) :
                 ReportViewHelper.createInfoTable(
                         customerNo,
-                        report.customerFirstName + " " + report.customerLastName,
+                        removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
                         ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
                                 report.shippingSpecific_expectedDelivery),
                         "");
@@ -79,6 +79,12 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
                 /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
                         + FOOTER_MARGIN_BOTTOM,
                 writer.getDirectContent());
+    }
+
+    private String removeNull(String customerLastName) {
+        if (customerLastName == null)
+            return "";
+        return customerLastName;
     }
 
 }

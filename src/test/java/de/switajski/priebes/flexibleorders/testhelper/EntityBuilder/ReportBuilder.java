@@ -10,7 +10,6 @@ public abstract class ReportBuilder<BEAN extends Report, BUILDER extends Builder
 
 	protected String documentNumber;
 	protected Set<ReportItem> items = new HashSet<ReportItem>();
-	protected Long customerNumber;
 	
 	public ReportBuilder<BEAN, BUILDER> setDocumentNumber(String documentNumber) {
 		this.documentNumber = documentNumber;
@@ -20,16 +19,11 @@ public abstract class ReportBuilder<BEAN extends Report, BUILDER extends Builder
 		this.items = items;
 		return this;
 	}
-	public ReportBuilder<BEAN, BUILDER> setCustomerNumber(Long customerNumber) {
-		this.customerNumber = customerNumber;
-		return this;
-	}
 	public BEAN build(BEAN report){
 		report.setDocumentNumber(documentNumber);
 		for (ReportItem item:items){
 			report.addItem(item);
 		}
-		report.setCustomerNumber(customerNumber);
 		return report;
 	}
 }

@@ -40,7 +40,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-        String rightTop = report.customerFirstName + " " + report.customerLastName;
+        String rightTop = replaceNull(report.customerFirstName) + " " + replaceNull(report.customerLastName);
         String rightBottom = "Kundennummer: "
                 + report.customerNumber;
         String leftTop = "Bestellnummer: " + report.documentNumber.toString();
@@ -84,6 +84,12 @@ public class OrderPdfView extends PriebesIText5PdfView {
                     writer.getDirectContent());
         }
 
+    }
+
+    private String replaceNull(String customerFirstName) {
+        if (customerFirstName == null)
+            return "";
+        return customerFirstName;
     }
 
     private PdfPTable createTable(ReportDto order) throws DocumentException {

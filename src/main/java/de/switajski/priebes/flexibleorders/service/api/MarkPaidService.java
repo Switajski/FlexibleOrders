@@ -35,11 +35,6 @@ public class MarkPaidService {
             if (reportItem == null)
                 reportItem = ri;
         }
-        receipt.setCustomerNumber(reportItem
-                .getOrderItem()
-                .getOrder()
-                .getCustomer()
-                .getCustomerNumber());
         return reportRepo.save(receipt);
     }
     

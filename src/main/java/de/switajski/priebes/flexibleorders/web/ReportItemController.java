@@ -102,8 +102,21 @@ public class ReportItemController extends ExceptionController {
 
         Page<ItemDto> openItems = reportItemService.retrieve(
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
+        //TODO: replace this workaround with spec
+        if (containsFilter(filterMap, "asdf")){
+            removeAgreed(openItems);
+        }
         return ExtJsResponseCreator.createResponse(openItems);
 
+    }
+
+    private void removeAgreed(Page<ItemDto> openItems) {
+        for (Iterator<ItemDto> iterator = openItems.iterator(); iterator.hasNext();) {
+            ItemDto item = iterator.next();
+            if (!item.agreed) {
+                iterator.remove();
+            }
+        }
     }
 
     private Specification<ReportItem> combineSpecsToOne(Set<Specification<ReportItem>> specs) {

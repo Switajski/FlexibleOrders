@@ -47,7 +47,6 @@ public class ReportToDtoConversionService {
 	public ReportDto toDto(Report report){
 		ReportDto dto = new ReportDto();
 		dto.created = report.getCreated();
-		dto.customerNumber = report.getCustomerNumber();
 		dto.documentNumber = report.getDocumentNumber();
 		dto.items = report.getItems();
 		
@@ -68,6 +67,7 @@ public class ReportToDtoConversionService {
 			dto.customerLastName = customer.getLastName();
 			dto.customerEmail = customer.getEmail();
 			dto.customerPhone = customer.getPhone();
+			dto.customerNumber = customer.getCustomerNumber();
 		}
 		
 		dto.headerAddress = retrieveInvoicingAddress(report);

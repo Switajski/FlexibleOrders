@@ -34,9 +34,9 @@ Ext.define('MyApp.controller.InvoiceController', {
 								.invoice2("ok", kunde, createInvoiceStore);
 					}
 				});
-		kunde = Ext.getStore('KundeDataStore').findRecord("id",
-				record.data.customer);
-		kundeId = kunde.data.id;
+		kunde = Ext.getStore('KundeDataStore').findRecord("customerNumber",
+				record.data.customerNumber);
+		kundeId = kunde.data.customerNumber;
 		email = kunde.data.email;
 
 		invoiceWindow.show();

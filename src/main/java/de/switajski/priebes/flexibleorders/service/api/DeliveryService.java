@@ -70,8 +70,7 @@ public class DeliveryService {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
-        // TODO: could this be retrieved from DB?
-        deliveryNotes.setCustomerNumber(deliverParameter.customerNumber);
+        deliveryNotes.setShippingCosts(deliverParameter.shipment);
         return deliveryNotes;
     }
 

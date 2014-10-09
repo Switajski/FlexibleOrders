@@ -74,8 +74,6 @@ public class InvoicingService {
         Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, invoicingParameter.paymentConditions, null);
         invoice.setBilling(invoicingParameter.billing);
         invoice.setCreated((invoicingParameter.created == null) ? new Date() : invoicingParameter.created);
-        // TODO: could this be retrieved from DB?
-        invoice.setCustomerNumber(invoicingParameter.customerNumber);
         return invoice;
     }
 

@@ -29,113 +29,104 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 @Entity
 public abstract class Report extends GenericEntity {
 
-	@Transient
-	private static final double VAT_RATE = Order.VAT_RATE;
+    @Transient
+    private static final double VAT_RATE = Order.VAT_RATE;
 
-	/**
-	 * Natural id of a Report.
-	 */
-	@NotNull
-	@Column(unique = true)
-	private String documentNumber;
+    /**
+     * Natural id of a Report.
+     */
+    @NotNull
+    @Column(unique = true)
+    private String documentNumber;
 
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	protected Set<ReportItem> items = new HashSet<ReportItem>();
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    protected Set<ReportItem> items = new HashSet<ReportItem>();
 
-	private Long customerNumber;
+    protected Report() {}
 
-	protected Report() {
-	}
+    public Report(String documentNumber) {
+        this.documentNumber = documentNumber;
+    }
 
-	public Report(String documentNumber) {
-		this.documentNumber = documentNumber;
-	}
+    public String getDocumentNumber() {
+        return documentNumber;
+    }
 
-	public String getDocumentNumber() {
-		return documentNumber;
-	}
+    @JsonIgnore
+    public Set<ReportItem> getItems() {
+        return items;
+    }
 
-	@JsonIgnore
-	public Set<ReportItem> getItems() {
-		return items;
-	}
-	
-	@JsonIgnore
-	public List<ReportItem> getItemsOrdered() {
-		List<ReportItem> ris = new ArrayList<ReportItem>(getItems());
-		Collections.sort(ris, new Comparator<ReportItem>(){
+    @JsonIgnore
+    public List<ReportItem> getItemsOrdered() {
+        List<ReportItem> ris = new ArrayList<ReportItem>(getItems());
+        Collections.sort(ris, new Comparator<ReportItem>() {
 
-			@Override
-			public int compare(ReportItem r1, ReportItem r2) {
-				Product p1 = r1.getOrderItem().getProduct();
-				Product p2 = r2.getOrderItem().getProduct();
-				if (p1.hasProductNo() && p2.hasProductNo())
-					return p1.getProductNumber().compareTo(p2.getProductNumber());
-				else if (!p1.hasProductNo() && !p2.hasProductNo()){
-					return p1.getName().compareTo(p2.getName());
-				} else if (p1.hasProductNo()){
-					return 1;
-				}
-				else if (p2.hasProductNo()){
-					return -1;
-				}
-				
-				else return 0;
-				
-			}
-			
-		});
-		return ris;
-	}
+            @Override
+            public int compare(ReportItem r1, ReportItem r2) {
+                Product p1 = r1.getOrderItem().getProduct();
+                Product p2 = r2.getOrderItem().getProduct();
+                if (p1.hasProductNo() && p2.hasProductNo())
+                return p1.getProductNumber().compareTo(p2.getProductNumber());
+                else if (!p1.hasProductNo() && !p2.hasProductNo()) {
+                    return p1.getName().compareTo(p2.getName());
+                }
+                else if (p1.hasProductNo()) {
+                    return 1;
+                }
+                else if (p2.hasProductNo()) {
+                    return -1;
+                }
 
-	public void setDocumentNumber(String documentNumber) {
-		this.documentNumber = documentNumber;
-	}
+                else return 0;
 
-	public void addItem(ReportItem item) {
-		if (items.contains(item))
-			return;
-		items.add(item);
-		item.setReport(this);
-	}
+            }
 
-	public Long getCustomerNumber() {
-		return customerNumber;
-	}
+        });
+        return ris;
+    }
 
-	public void setCustomerNumber(Long customerNumber) {
-		this.customerNumber = customerNumber;
-	}
+    public void setDocumentNumber(String documentNumber) {
+        this.documentNumber = documentNumber;
+    }
 
-	public void removeItem(ReportItem item) {
-		this.items.remove(item);
-	}
+    public void addItem(ReportItem item) {
+        if (items.contains(item)) return;
+        items.add(item);
+        item.setReport(this);
+    }
 
-	public double getVatRate() {
-		return Order.VAT_RATE;
-	}
+    public void removeItem(ReportItem item) {
+        this.items.remove(item);
+    }
 
-	/**
-	 * convenience method
-	 * @return
-	 */
-	@JsonIgnore
-	public Collection<Customer> getCustomers() {
-		Set<Customer> customers = new HashSet<Customer>(); 
-		for (ReportItem ri:getItems())
-			customers.add(ri.getCustomer());
-		return Collections.unmodifiableCollection(customers);
-	}
-	
-	@JsonIgnore
-	public Customer getCustomerSafely(){
-		Collection<Customer> customers = this.getCustomers();
-		if (customers.size() > 1)
-			throw new IllegalStateException("Mehr als einen Kunden f"+Unicode.uUml+"r gegebene Positionen gefunden");
-		else if (customers.size() == 1)
-			return customers.iterator().next();
-		throw new IllegalStateException("No customer found");
-	}
-	
+    public double getVatRate() {
+        return Order.VAT_RATE;
+    }
+
+    /**
+     * convenience method
+     * 
+     * @return
+     */
+    @JsonIgnore
+    public Collection<Customer> getCustomers() {
+        if (!getItems().isEmpty()) {
+            Set<Customer> customers = new HashSet<Customer>();
+            for (ReportItem ri : getItems())
+                customers.add(ri.getCustomer());
+            return Collections.unmodifiableCollection(customers);
+        }
+        else return Collections.emptySet();
+    }
+
+    @JsonIgnore
+    public Customer getCustomerSafely() {
+        Collection<Customer> customers = this.getCustomers();
+        if (customers.size() > 1) throw new IllegalStateException("Mehr als einen Kunden f" + Unicode.uUml + "r gegebene Positionen gefunden");
+        else if (customers.size() == 1) return customers.iterator().next();
+        throw new IllegalStateException("No customer found");
+    }
+
 }

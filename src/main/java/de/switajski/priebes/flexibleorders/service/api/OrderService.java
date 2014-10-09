@@ -140,7 +140,6 @@ public class OrderService {
 		OrderConfirmation cr = new OrderConfirmation();
 		cr.setDocumentNumber(confirmParameter.confirmNumber);
 		cr.setPurchaseAgreement(pAgree);
-		cr.setCustomerNumber(cust.getCustomerNumber());
 		cr.setCustomerDetails(confirmParameter.customerDetails);
 
 		for (ItemDto entry : confirmParameter.orderItems) {

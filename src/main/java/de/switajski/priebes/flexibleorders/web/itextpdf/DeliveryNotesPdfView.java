@@ -40,12 +40,12 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
             document.add(p);
 
         if (report.isShowExtendedInformation()) {
-            document.add(ReportViewHelper.createInfoTable(
-                    packageNo, customerNo, "", ""));
-        }
-        else {
             ExtInfoTableParameter param = new ExtInfoTableParameter(report);
             document.add(ReportViewHelper.createExtInfoTable(param));
+        }
+        else {
+            document.add(ReportViewHelper.createInfoTable(
+                    packageNo, customerNo, "", ""));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

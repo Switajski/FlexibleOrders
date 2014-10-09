@@ -31,7 +31,8 @@ public class StatusFilterDispatcher {
     }
 
     private void validate(HashMap<String, String> filterMap) {
-        if (filterMap.get(STATUS_STRING) == null) throw new IllegalArgumentException("Keinen Statusfilter angegeben");
+        if (filterMap.get(STATUS_STRING) == null) 
+            throw new IllegalArgumentException("Keinen Statusfilter angegeben");
     }
 
     public Specification<ReportItem> dispatchStatus(String status) {

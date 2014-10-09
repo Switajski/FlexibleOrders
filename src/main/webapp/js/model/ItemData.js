@@ -49,6 +49,8 @@ Ext.define('MyApp.model.ItemData', {
 						name : 'packageNumber'
 					}, {
 						name : 'shareHistory'
+					}, {
+						name : 'agreed'
 					}
 			]
 		});

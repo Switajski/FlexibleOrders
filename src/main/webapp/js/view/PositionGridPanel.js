@@ -37,7 +37,11 @@ Ext.define('MyApp.view.PositionGridPanel', {
 			viewConfig : {
 				stripeRows : false,
 				getRowClass : function(record) {
-					return record.get('shareHistory') === true ? 'emphasized-row' : 'normal-row';
+					if (record.get('agreed') === false)
+						return 'warning-row';
+					if (record.get('shareHistory') === true)
+						return 'emphasized-row' 
+					else return 'normal-row';
 				}
 			},
 			features : [grouping],

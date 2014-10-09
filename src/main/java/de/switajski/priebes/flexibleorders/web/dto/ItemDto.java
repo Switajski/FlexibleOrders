@@ -62,6 +62,8 @@ public class ItemDto {
     @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
     public LocalDate expectedDelivery;
 
+    public boolean agreed = true;
+
     @Override
     public int hashCode() {
         final int prime = 31;

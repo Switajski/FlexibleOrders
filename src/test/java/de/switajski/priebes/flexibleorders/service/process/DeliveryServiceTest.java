@@ -62,6 +62,8 @@ public class DeliveryServiceTest {
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
         // GIVEN
         givenMocks();
+        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
+                .thenReturn(givenAgreementItemMap());
         DeliverParameter deliverParam = new DeliverParameter();
         deliverParam.deliveryNotesNumber = DN_NO;
         givenTwoContradictingAddresses();
@@ -78,6 +80,8 @@ public class DeliveryServiceTest {
     @Test
     public void shouldDeliverIfContradictoryExpectedDeliveryDatesExistAndIgnoreFlagIsSet() {
         givenMocks();
+        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
+                .thenReturn(givenAgreementItemMap());
         DeliverParameter deliverParameter = new DeliverParameter();
         deliverParameter.deliveryNotesNumber = DN_NO;
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
@@ -93,6 +97,8 @@ public class DeliveryServiceTest {
     @Test
     public void shouldDeliverIfNoExpectedDeliveryDateIsSet() {
         givenMocks();
+        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
+                .thenReturn(givenAgreementItemMap());
         DeliverParameter deliverParameter = new DeliverParameter();
         deliverParameter.deliveryNotesNumber = DN_NO;
         givenOneShippingAddress();
@@ -117,8 +123,6 @@ public class DeliveryServiceTest {
     private void givenMocks() {
         MockitoAnnotations.initMocks(this);
         when(reportRepo.findByDocumentNumber(DN_NO)).thenReturn(null);
-        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(givenAgreementItemMap());
     }
 
     private Map<ReportItem, Integer> givenAgreementItemMap() {

@@ -378,3 +378,7 @@ tr .normal-row {
 tr .emphasized-row{
 	background-color: #E3FFE5;
 }
+
+tr .warning-row{
+	background-color: #FDFFEA;
+}

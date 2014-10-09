@@ -24,6 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
+import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -32,6 +33,9 @@ public class ItemDtoConverterService {
 
     @Autowired
     QuantityLeftCalculatorService quantityLeftCalculatorService;
+    
+    @Autowired
+    ExpectedDeliveryService edService; 
 
     @Autowired
     private ReportItemRepository reportItemRepo;
@@ -123,7 +127,10 @@ public class ItemDtoConverterService {
         // TODO: instanceof: this is not subject of this class
         if (ri.getReport() instanceof OrderConfirmation) {
             item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
-            PurchaseAgreement pa = ((OrderConfirmation) ri.getReport()).getPurchaseAgreement();
+            //TODO: should be done by a service
+            OrderConfirmation orderConfirmation = (OrderConfirmation) ri.getReport();
+            item.agreed = orderConfirmation.isAgreed();
+            PurchaseAgreement pa = orderConfirmation.getPurchaseAgreement();
             if (pa != null) {
                 item.expectedDelivery = pa.getExpectedDelivery();
             }

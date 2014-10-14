@@ -1,11 +1,8 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +26,6 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgree
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
-import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
@@ -61,29 +57,32 @@ public class DeliveryServiceTest {
     @Test(expected = ContradictoryPurchaseAgreementException.class)
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
         // GIVEN
-        givenMocks();
-        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(givenAgreementItemMap());
-        DeliverParameter deliverParam = new DeliverParameter();
-        deliverParam.deliveryNotesNumber = DN_NO;
-        givenTwoContradictingAddresses();
+        mockValidation();
+        givenReportItems();
+        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class)))
+                .thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1, ADDRESS_2)));
 
         // WHEN / THEN
-        deliveryService.deliver(deliverParam);
+        deliveryService.deliver(givenDeliverParameter());
 
     }
 
-    private void givenTwoContradictingAddresses() {
-        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1, ADDRESS_2)));
+    private void givenReportItems() {
+        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
+                .thenReturn(givenItemMap());
+    }
+
+    private DeliverParameter givenDeliverParameter() {
+        DeliverParameter deliverParam = new DeliverParameter();
+        deliverParam.deliveryNotesNumber = DN_NO;
+        return deliverParam;
     }
 
     @Test
     public void shouldDeliverIfContradictoryExpectedDeliveryDatesExistAndIgnoreFlagIsSet() {
-        givenMocks();
-        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(givenAgreementItemMap());
-        DeliverParameter deliverParameter = new DeliverParameter();
-        deliverParameter.deliveryNotesNumber = DN_NO;
+        mockValidation();
+        givenReportItems();
+        DeliverParameter deliverParameter = givenDeliverParameter();
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
         givenOneShippingAddress();
 
@@ -96,15 +95,12 @@ public class DeliveryServiceTest {
 
     @Test
     public void shouldDeliverIfNoExpectedDeliveryDateIsSet() {
-        givenMocks();
-        when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(givenAgreementItemMap());
-        DeliverParameter deliverParameter = new DeliverParameter();
-        deliverParameter.deliveryNotesNumber = DN_NO;
+        mockValidation();
+        givenReportItems();
         givenOneShippingAddress();
 
         // WHEN
-        deliveryService.deliver(deliverParameter);
+        deliveryService.deliver(givenDeliverParameter());
 
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
@@ -120,19 +116,19 @@ public class DeliveryServiceTest {
         assertThat(argument.getValue().getItems().size(), is(equalTo(2)));
     }
 
-    private void givenMocks() {
+    private void mockValidation() {
         MockitoAnnotations.initMocks(this);
         when(reportRepo.findByDocumentNumber(DN_NO)).thenReturn(null);
     }
 
-    private Map<ReportItem, Integer> givenAgreementItemMap() {
+    private Map<ReportItem, Integer> givenItemMap() {
         Map<ReportItem, Integer> map = new HashMap<ReportItem, Integer>();
-        map.put(givenAgreementItemWith(null), 2);
-        map.put(givenAgreementItemOtherWith(null), 5);
+        map.put(givenItemWith(null), 2);
+        map.put(givenItemOtherWith(null), 5);
         return map;
     }
 
-    private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
+    private ReportItem givenItemWith(PurchaseAgreement purchaseAgreement) {
         return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
@@ -147,7 +143,7 @@ public class DeliveryServiceTest {
                 .build();
     }
 
-    private ReportItem givenAgreementItemOtherWith(PurchaseAgreement pa) {
+    private ReportItem givenItemOtherWith(PurchaseAgreement pa) {
         return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()

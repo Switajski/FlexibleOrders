@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,131 +20,34 @@ import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration(value = "src/main/webapp/WEB-INF/spring")
-@ContextConfiguration(locations = { "classpath*:/META-INF/spring/applicationContext*.xml"})
-@Ignore("Tests were never successful. Propably due to missing Controllers")
+@WebAppConfiguration(value = "src/main/webapp")
+@ContextConfiguration(locations = { "classpath*:org/flexible/order/application-context*.xml" })
 public class LinksAvailableTest {
 
-	@Autowired
-	private WebApplicationContext wac;
-	
-	@Autowired
-    private FilterChainProxy springSecurityFilter;
-	
-	@Autowired
-	private ReportItemServiceImpl ris;
-	
-	@Autowired
-	private OrderService asdf;
-	
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() {
-//		this.mockMvc = webAppContextSetup(this.wac).addFilter(springSecurityFilter).build();
-		this.mockMvc = webAppContextSetup(this.wac).build();
-	}
-	
-	@Test
-	public void getFoo() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/FlexibleOrders/ordered").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-				// .andExpect(content().mimeType())
-//				.andExpect(jsonPath("$.name").value("Lee"));
-	}
-	
-	@Test
-	public void getFoo2() throws Exception {
-		this.mockMvc
-				.perform(
-						get("FlexibleOrders/ordered").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFoo3() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/ordered").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFoo4() throws Exception {
-		this.mockMvc
-				.perform(
-						get("ordered").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFoo5() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/test/test").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFo6() throws Exception {
-		this.mockMvc
-				.perform(
-						get("test/test").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFo8() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/FlexibleOrder/test/test").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Test
-	public void getFo9() throws Exception {
-		this.mockMvc
-				.perform(
-						get("FlexibleOrder/test/test").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFo10() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFo120() throws Exception {
-		this.mockMvc
-				.perform(
-						get("/FlexibleOrders").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void getFo1220() throws Exception {
-		this.mockMvc
-				.perform(
-						get("FlexibleOrders").accept(
-								MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-	}
+    @Autowired
+    private FilterChainProxy springSecurityFilter;
+
+    @Autowired
+    private ReportItemServiceImpl ris;
+
+    @Autowired
+    private OrderService asdf;
+
+    private MockMvc mockMvc;
+
+    @Before
+    public void setup() {
+        this.mockMvc = webAppContextSetup(this.wac).addFilter(springSecurityFilter).build();
+    }
+
+    @Test
+    public void getFoo() throws Exception {
+        this.mockMvc
+                .perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
 }

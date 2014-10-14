@@ -2,9 +2,9 @@ package de.switajski.priebes.flexibleorders.web.itextpdf.parameter;
 
 import java.util.Collection;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.ExpectedDeliveryStringCreator;
 

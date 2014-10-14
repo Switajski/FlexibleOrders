@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonFilter;
 import de.switajski.priebes.flexibleorders.json.JsonQueryFilter;
 import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;

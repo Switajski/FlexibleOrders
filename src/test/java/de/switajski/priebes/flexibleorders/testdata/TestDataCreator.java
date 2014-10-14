@@ -15,17 +15,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.service.api.AgreementService;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
@@ -69,7 +70,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 	private InvoicingService invoicingService;
 
 	@Autowired
-	private DeliveryMethodRepository deliveryMethodRepo;
+	private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
 	@Autowired
     private AgreementService agreementService;
@@ -87,8 +88,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 	}
 
 	private void createDeliveryMethods() {
-		deliveryMethodRepo.save(TestData.UPS);
-		deliveryMethodRepo.save(TestData.DHL);
+		deliveryMethodRepo.save(new CatalogDeliveryMethod(TestData.UPS));
+		deliveryMethodRepo.save(new CatalogDeliveryMethod(TestData.DHL));
 		deliveryMethodRepo.flush();
 	}
 

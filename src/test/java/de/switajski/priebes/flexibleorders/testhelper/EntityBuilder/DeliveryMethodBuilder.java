@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 

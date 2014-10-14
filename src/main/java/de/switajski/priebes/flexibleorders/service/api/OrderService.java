@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
+import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
@@ -50,7 +50,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class OrderService {
 
 	@Autowired
-	private DeliveryMethodRepository deliveryMethodRepo;
+	private CatalogDeliveryMethodRepository deliveryMethodRepo;
 	@Autowired
 	private ReportRepository reportRepo;
 	@Autowired
@@ -135,7 +135,7 @@ public class OrderService {
 		pAgree.setExpectedDelivery(confirmParameter.expectedDelivery);
 		pAgree.setCustomerNumber(confirmParameter.customerNumber);
 		if (confirmParameter.deliveryMethodNo != null)
-		    pAgree.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo));
+		    pAgree.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo).getDeliveryMethod());
 
 		OrderConfirmation cr = new OrderConfirmation();
 		cr.setDocumentNumber(confirmParameter.confirmNumber);

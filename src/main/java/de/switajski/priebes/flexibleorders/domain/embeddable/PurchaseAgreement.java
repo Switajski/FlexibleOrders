@@ -4,7 +4,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
+import javax.persistence.Embedded;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -15,7 +15,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
 
@@ -42,7 +41,7 @@ public class PurchaseAgreement {
     })
     private Address shippingAddress;
 
-    @ManyToOne
+    @Embedded
     private DeliveryMethod deliveryMethod;
 
     @DateTimeFormat(style = "M-")

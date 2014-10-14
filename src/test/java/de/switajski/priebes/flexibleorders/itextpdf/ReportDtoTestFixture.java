@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;

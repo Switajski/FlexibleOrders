@@ -1,12 +1,16 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.DeliveryMethodRepository;
+import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.DeliveryMethodDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.DeliveryMethodDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
@@ -27,7 +32,7 @@ import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 public class DeliveryMethodController extends ExceptionController {
 
 	@Autowired
-	private DeliveryMethodRepository deliveryMethodRepo;
+	private CatalogDeliveryMethodRepository deliveryMethodRepo;
 	
 	@Autowired
 	private DeliveryMethodDtoConverterService deliveryMethodDtoConverterService;
@@ -38,9 +43,8 @@ public class DeliveryMethodController extends ExceptionController {
 			@RequestParam(value = "start", required = false) Integer start,
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts) {
-		Page<DeliveryMethod> dMethods = deliveryMethodRepo.findAll(new PageRequest(
-				page - 1,
-				limit));
+		PageRequest pageRequest = createPageRequest(page, limit);
+        Page<DeliveryMethod> dMethods = convertToDeliveryMethod(deliveryMethodRepo.findAll(pageRequest), pageRequest);
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
 				JsonSerializationHelper.convertToJsonDeliveryMethodDtos(dMethods
 						.getContent()));
@@ -48,12 +52,23 @@ public class DeliveryMethodController extends ExceptionController {
 		return response;
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST)
+    public static PageRequest createPageRequest(Integer page, Integer limit) {
+        return new PageRequest(page - 1, limit);
+    }
+
+	private Page<DeliveryMethod> convertToDeliveryMethod(Page<CatalogDeliveryMethod> catalogDeliveryMethods, Pageable pageable) {
+	    List<DeliveryMethod> dmSet = new ArrayList<DeliveryMethod>();
+	    for (CatalogDeliveryMethod dm : catalogDeliveryMethods)
+	        dmSet.add(dm.getDeliveryMethod());
+        return new PageImpl<DeliveryMethod>(dmSet, pageable, catalogDeliveryMethods.getTotalElements());
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse create(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
-		DeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
+		CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
 				cDto,
-				new DeliveryMethod());
+				new CatalogDeliveryMethod());
 		deliveryMethodRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}
@@ -61,7 +76,7 @@ public class DeliveryMethodController extends ExceptionController {
 	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
 	public @ResponseBody JsonObjectResponse udpate(@RequestBody DeliveryMethodDto cDto)
 			throws JsonParseException, JsonMappingException, IOException {
-		DeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
+		CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
 				cDto,
 				deliveryMethodRepo.findOne(cDto.getId()));
 		deliveryMethodRepo.save(c);

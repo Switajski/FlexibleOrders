@@ -1,10 +1,10 @@
-package de.switajski.priebes.flexibleorders.domain;
+package de.switajski.priebes.flexibleorders.domain.embeddable;
 
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 
 /**
@@ -12,7 +12,7 @@ import de.switajski.priebes.flexibleorders.reference.DeliveryType;
  * @author Marek Switajski
  *
  */
-@Entity
+@Embeddable
 public class DeliveryMethod extends GenericEntity{
 	
 	@NotNull

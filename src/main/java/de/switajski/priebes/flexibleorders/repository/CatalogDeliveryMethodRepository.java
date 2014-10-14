@@ -3,9 +3,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import de.switajski.priebes.flexibleorders.domain.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 
 @Repository
-public interface DeliveryMethodRepository extends JpaSpecificationExecutor<DeliveryMethod>, JpaRepository<DeliveryMethod, Long> {
+public interface CatalogDeliveryMethodRepository extends JpaSpecificationExecutor<CatalogDeliveryMethod>, JpaRepository<CatalogDeliveryMethod, Long> {
 	
 }

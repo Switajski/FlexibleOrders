@@ -12,7 +12,7 @@ public class ShippingCostsItem extends ReportItem {
     @Embedded
     private Amount costs;
     
-    
+    @Embedded
     private DeliveryMethod deliveryMethod;
 
     public Amount getCosts() {

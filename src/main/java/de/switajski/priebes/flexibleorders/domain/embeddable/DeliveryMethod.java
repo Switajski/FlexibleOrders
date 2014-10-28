@@ -4,7 +4,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
-import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 
 /**
@@ -13,9 +12,11 @@ import de.switajski.priebes.flexibleorders.reference.DeliveryType;
  *
  */
 @Embeddable
-public class DeliveryMethod extends GenericEntity{
+public class DeliveryMethod{
 	
-	@NotNull
+    private Long externalId;
+    
+    @NotNull
 	@Enumerated
 	private DeliveryType deliveryType;
 	
@@ -26,6 +27,14 @@ public class DeliveryMethod extends GenericEntity{
 	public DeliveryMethod() {
 		this.deliveryType = DeliveryType.SPEDITION;
 	}
+	
+	public Long getId() {
+        return externalId;
+    }
+
+    public void setId(Long id) {
+        this.externalId = id;
+    }
 	
 	public String getPhone() {
 		return phone;

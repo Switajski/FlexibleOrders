@@ -166,15 +166,14 @@ public class ReportViewHelper {
     private static String createString(Address a) {
         StringBuilder cib = new StringBuilder();
         if (a != null) {
-            if (!isEmpty(a.getName1())) cib.append(a.getName1());
-            if (!isEmpty(a.getName2())) cib.append(a.getName2());
+            if (!isEmpty(a.getName1())) cib.append(a.getName1()).append(NEWLINE);
+            if (!isEmpty(a.getName2())) cib.append(a.getName2()).append(NEWLINE);
+            if (!isEmpty(a.getStreet())) cib.append(a.getStreet()).append(NEWLINE);
 
-            if (!isEmpty(a.getStreet())) cib.append(NEWLINE + a.getStreet());
+            cib.append(a.getPostalCode().toString() + " ");
+            cib.append(a.getCity()).append(NEWLINE);
 
-            cib.append(NEWLINE + a.getPostalCode().toString() + " ");
-            cib.append(a.getCity());
-
-            if (!isEmpty(a.getCountry().toString())) cib.append(NEWLINE).append(a.getCountry());
+            if (!isEmpty(a.getCountry().toString())) cib.append(a.getCountry());
         }
         return cib.toString();
     }

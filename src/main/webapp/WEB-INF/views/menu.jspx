@@ -12,5 +12,8 @@
         <menu:category id="c_creditnotes" z="Wa+bVSiDyYo/wX1nGU1B/z+OKhE=">
             <menu:item id="i_creditnotes_createissue" messageCode="global_menu_createissue" url="/creditnotes/createissue"/>
         </menu:category>
+        <menu:category id="c_products" z="Wa+bVSiDyYo/wX1nGU1B/z+OKhE=">
+            <menu:item id="i_catalogproducts" messageCode="menu_item_catalogproducts_label" url="/products/list"/>
+        </menu:category>
     </menu:menu>
 </div>

@@ -2,13 +2,10 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:oauth="http://www.springframework.org/schema/security/oauth"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
                                 http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                                 http://www.springframework.org/schema/security 
-                                http://www.springframework.org/schema/security/spring-security-3.1.xsd
-                                http://www.springframework.org/schema/security/oauth 
-                           		http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
+                                http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 	<http auto-config="true" use-expressions="true">
 		<form-login login-processing-url="/resources/j_spring_security_check"
@@ -37,17 +34,4 @@
 		</authentication-provider>
 	</authentication-manager>
 
-	<oauth:consumer resource-details-service-ref="resourceDetails"
-		oauth-failure-page="/oauthFailure">
-		<oauth:url pattern="/magentoProducts/**" resources="magentoProducts" />
-		<oauth:url pattern="/login/**" resources="none" />
-	</oauth:consumer>
-
-	<oauth:resource-details-service id="resourceDetails">
-		<oauth:resource id="magentoProducts" key="f8922813b7f72e4c5aa274265c354d6"
-			secret="6d8d815edb711186e68a48ee1ddb8cb4" request-token-url="http://www.switajski.de/initiate"
-			user-authorization-url="http://www.switajski.de/admin/oauth_authorize"
-			access-token-url="http://www.switajski.de/oauth/token" />
-	</oauth:resource-details-service>
-	
 </beans:beans>

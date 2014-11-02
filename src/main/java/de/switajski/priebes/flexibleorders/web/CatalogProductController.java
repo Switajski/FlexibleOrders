@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +26,8 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 @Controller
 public class CatalogProductController extends ExceptionController{
 
+    @Autowired
 	private CatalogProductRepository cProductRepo;
-	
-	@Autowired
-	public CatalogProductController (CatalogProductRepository catalogProductRepo){
-		this.cProductRepo = catalogProductRepo;
-	}
 	
 	@RequestMapping(value = "/json", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAll(@RequestParam(value = "page", required = true) Integer page,
@@ -55,5 +53,11 @@ public class CatalogProductController extends ExceptionController{
 		Amount recommendedPriceNet = cProduct.getRecommendedPriceNet();
 		return ExtJsResponseCreator.createResponse(recommendedPriceNet);
 	}
+	
+	@RequestMapping(value = "/listInJson", method=RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse listInJson(){
+        List<CatalogProduct> cProduct = cProductRepo.findAll();
+        return ExtJsResponseCreator.createResponse(cProduct);
+    }
 	
 }

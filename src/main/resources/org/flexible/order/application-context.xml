@@ -90,13 +90,4 @@
     <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender">
         <property name="host" value="${email.host}"/>
     </bean>
-    
-    <bean id="magentoService" class="de.switajski.priebes.flexibleorders.service.magento.MagentoService">
-		<property name="magentoRestTemplate">
-			<bean class="org.springframework.security.oauth.consumer.client.OAuthRestTemplate">
-				<constructor-arg ref="magentoProducts" />
-			</bean>
-		</property>
-
-	</bean>
 </beans>

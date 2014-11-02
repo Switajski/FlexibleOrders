@@ -49,5 +49,12 @@ public class LinksAvailableTest {
                 .perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+    
+    @Test
+    public void productListShouldBeAvailable() throws Exception {
+        this.mockMvc
+                .perform(get("/FlexibleOrders/products/list").accept(MediaType.ALL))
+                .andExpect(status().isOk());
+    }
 
 }

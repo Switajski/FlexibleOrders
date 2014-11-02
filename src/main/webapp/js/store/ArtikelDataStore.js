@@ -12,10 +12,10 @@ Ext.define('MyApp.store.ArtikelDataStore', {
             autoLoad: true,
             model: 'MyApp.model.ArtikelData',
             storeId: 'ArtikelDataStore',
-            pageSize: 1000,
+            pageSize: 100,
             proxy: {
                 type: 'ajax',
-                url: '/FlexibleOrders/products/json',
+                url: '/FlexibleOrders/products/listFromMagento',
                 headers: {
                     accept: 'application/json'
                 },

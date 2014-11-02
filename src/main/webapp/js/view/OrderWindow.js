@@ -75,7 +75,8 @@ Ext.define('MyApp.view.OrderWindow', {
 				enableRegEx : true,
 				allowBlank : false,
 				forceSelection : true,
-				queryMode : 'local',
+				loadingText: 'Sende Anfrage an Magento...',
+				queryMode : 'remote',
 				store : 'ArtikelDataStore',
 				tpl : Ext
 						.create(

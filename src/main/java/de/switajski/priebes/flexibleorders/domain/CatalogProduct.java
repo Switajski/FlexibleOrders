@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
@@ -49,6 +51,7 @@ public class CatalogProduct extends GenericEntity {
 		this.productNumber = productNumber;
 	}
 
+	@JsonIgnore
 	public ProductType getProductType() {
 		return productType;
 	}
@@ -73,6 +76,7 @@ public class CatalogProduct extends GenericEntity {
 		this.recommendedPriceNet = recommendedPriceNet;
 	}
 
+	@JsonIgnore
 	public boolean isActive() {
 		return active;
 	}
@@ -81,6 +85,7 @@ public class CatalogProduct extends GenericEntity {
 		this.active = active;
 	}
 
+	@JsonIgnore
 	public String getImageGalery() {
 		return imageGalery;
 	}
@@ -88,7 +93,8 @@ public class CatalogProduct extends GenericEntity {
 	public void setImageGalery(String imageGalery) {
 		this.imageGalery = imageGalery;
 	}
-
+	
+	@JsonIgnore
 	public Long getSortOrder() {
 		return sortOrder;
 	}
@@ -97,6 +103,7 @@ public class CatalogProduct extends GenericEntity {
 		this.sortOrder = sortOrder;
 	}
 
+	@JsonIgnore
 	public Category getCategory() {
 		return category;
 	}
@@ -105,6 +112,7 @@ public class CatalogProduct extends GenericEntity {
 		this.category = category;
 	}
 
+	@JsonIgnore
 	public Product toProduct() {
 		Product product = new Product();
 		product.setName(name);

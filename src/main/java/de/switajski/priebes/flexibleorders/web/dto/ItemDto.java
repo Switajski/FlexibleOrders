@@ -30,7 +30,8 @@ public class ItemDto {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     public Date created;
-    public Long product, 
+    public String product;
+    public Long  
         customer, 
         customerNumber;
     

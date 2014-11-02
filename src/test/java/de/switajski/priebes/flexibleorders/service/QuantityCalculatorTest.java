@@ -96,7 +96,7 @@ public class QuantityCalculatorTest {
     private Product givenProduct() {
         return new CatalogProductBuilder(
                 "pro",
-                234L,
+                "234",
                 ProductType.PRODUCT)
                 .build().toProduct();
     }

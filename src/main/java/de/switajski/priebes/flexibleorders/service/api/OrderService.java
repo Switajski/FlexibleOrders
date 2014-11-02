@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.service.api;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import de.switajski.priebes.flexibleorders.service.CatalogProductServiceImpl;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
+import de.switajski.priebes.flexibleorders.web.ExceptionController;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -49,6 +51,8 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  */
 @Service
 public class OrderService {
+    
+    private static Logger log = Logger.getLogger(OrderService.class);
 
 	@Autowired
 	private CatalogDeliveryMethodRepository deliveryMethodRepo;
@@ -56,8 +60,6 @@ public class OrderService {
 	private ReportRepository reportRepo;
 	@Autowired
 	private OrderItemRepository orderItemRepo;
-	@Autowired
-	private CatalogProductRepository cProductRepo;
 	@Autowired
 	private ReportItemRepository reportItemRepo;
 	@Autowired
@@ -178,18 +180,30 @@ public class OrderService {
 
 	private Product createProductFromCatalog(ItemDto ri) {
 		Product product;
-		CatalogProduct cProduct = cProductService.findByProductNumber(ri.product);
-		if (cProduct == null)
-			throw new IllegalArgumentException("Artikelnr nicht gefunden");
-		product = cProduct.toProduct();
-		return product;
+		
+		try {
+            CatalogProduct cProduct = cProductService.findByProductNumber(ri.product);
+            if (cProduct == null)
+            	throw new IllegalArgumentException("Artikelnr nicht gefunden");
+            product = cProduct.toProduct();
+            return product;
+        }
+        catch (Exception e) {
+            log.warn("Could not find ProductNumber " + ri.product + " in Catalog");
+            
+            Product p = new Product();
+            p.setName((ri.productName));
+            p.setProductType(ProductType.PRODUCT);
+            p.setProductNumber(ri.product);
+            return p;
+        }
 	}
 
 	private Product createCustomProduct(ItemDto ri) {
 		Product p = new Product();
 		p.setName(ri.productName);
 		p.setProductType(ProductType.CUSTOM);
-		p.setProductNumber(0L);
+		p.setProductNumber("0");
 		return p;
 	}
 

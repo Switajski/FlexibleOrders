@@ -22,7 +22,7 @@ public class CatalogProduct extends GenericEntity {
 
 	@Column(unique = true)
 	@NotNull
-	private Long productNumber;
+	private String productNumber;
 
 	@NotNull
 	@Enumerated
@@ -43,11 +43,11 @@ public class CatalogProduct extends GenericEntity {
 	@ManyToOne
 	private Category category;
 
-	public Long getProductNumber() {
+	public String getProductNumber() {
 		return productNumber;
 	}
 
-	public void setProductNumber(Long productNumber) {
+	public void setProductNumber(String productNumber) {
 		this.productNumber = productNumber;
 	}
 

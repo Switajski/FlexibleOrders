@@ -111,7 +111,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
 				List<String> list = new ArrayList<String>();
 				// Art.Nr.:
-				Long pNo = he.getOrderItem().getProduct().getProductNumber();
+				String pNo = he.getOrderItem().getProduct().getProductNumber();
 				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
 				// Artikel
 				list.add(he.getOrderItem().getProduct().getName());
@@ -144,7 +144,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
 				List<String> list = new ArrayList<String>();
 				// Art.Nr.:
-				Long pNo = ii.getOrderItem().getProduct().getProductNumber();
+				String pNo = ii.getOrderItem().getProduct().getProductNumber();
 				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
 				// Artikel
 				list.add(ii.getOrderItem().getProduct().getName());

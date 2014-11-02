@@ -16,7 +16,7 @@ public class Product {
 	 * natural id
 	 */
 	@NotNull
-	private Long no;
+	private String no;
 
 	@NotNull
 	@Enumerated
@@ -36,11 +36,11 @@ public class Product {
 	}
 
 	//TODO: Naming Convention: product.getProductNumber?! -> product.getNo()!
-	public Long getProductNumber() {
+	public String getProductNumber() {
 		return this.no;
 	}
 
-	public void setProductNumber(Long productNumber) {
+	public void setProductNumber(String productNumber) {
 		this.no = productNumber;
 	}
 

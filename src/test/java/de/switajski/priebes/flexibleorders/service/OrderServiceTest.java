@@ -36,7 +36,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class OrderServiceTest {
 
     private static final Integer ORDERED_QUANTITY = 3;
-    private static final Long PRODUCT_NO = 3l;
+    private static final String PRODUCT_NO = "3";
     private static final Long CUSTOMER_ID = 2l;
     private static final BigDecimal PRICE_NET = new BigDecimal(5.55);
 
@@ -54,6 +54,8 @@ public class OrderServiceTest {
     private OrderRepository orderRepoMock;
     @Mock
     private ItemDtoConverterService itemDtoConverterService;
+    @Mock
+    private CatalogProductServiceImpl catalogProductService;
     @InjectMocks
     private OrderService orderService = new OrderService();
 
@@ -63,8 +65,8 @@ public class OrderServiceTest {
 
         Mockito.when(customerRepoMock.findByCustomerNumber(CUSTOMER_ID))
                 .thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
-        Mockito.when(cProductRepoMock.findByProductNumber(PRODUCT_NO))
-                .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(PRODUCT_NO.intValue()));
+        Mockito.when(catalogProductService.findByProductNumber(PRODUCT_NO))
+                .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NO)));
 
     }
 

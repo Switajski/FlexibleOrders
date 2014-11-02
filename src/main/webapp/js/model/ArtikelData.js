@@ -5,7 +5,7 @@ Ext.define('MyApp.model.ArtikelData', {
 
     fields: [
         {
-            name: 'productNumber'
+            name: 'productNumber', type: 'string'
         },
         {
             name: 'name'

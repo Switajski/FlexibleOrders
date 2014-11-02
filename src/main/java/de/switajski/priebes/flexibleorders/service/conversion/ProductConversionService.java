@@ -22,7 +22,7 @@ public class ProductConversionService {
             CatalogProduct product = new CatalogProduct();
             product.setName(mProduct.name);
             //TODO: setProductNumber to string
-            product.setProductNumber(Long.valueOf(mProduct.sku));
+            product.setProductNumber(mProduct.sku);
             product.setProductType(ProductType.PRODUCT);
             product.setRecommendedPriceNet(new Amount(new BigDecimal(mProduct.regular_price_without_tax), Currency.EUR));
             product.setId(Long.valueOf(mProduct.entity_id));

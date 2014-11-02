@@ -18,7 +18,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	private Long id;
-	private Long productNumber;
+	private String productNumber;
 	private ProductType productType;
 	private String name;
 	private Amount recommendedPriceNet;
@@ -28,7 +28,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	public CatalogProductBuilder(
 			String name,
-			Long productNumber,
+			String productNumber,
 			ProductType productType) {
 		this.productNumber = productNumber;
 		this.productType = productType;
@@ -41,14 +41,14 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 	public static CatalogProduct buildWithGeneratedAttributes(Integer i) {
 		return new CatalogProductBuilder(
 				"name".concat(i.toString()),
-				i.longValue(),
+				i.toString(),
 				ProductType.PRODUCT)
 				.generateAttributes(i).build();
 	}
 
 	public CatalogProductBuilder miladka() {
 		this.setName("Miladka athra stars lime")
-				.setProductNumber(28189L)
+				.setProductNumber("28189")
 				.setProductType(ProductType.PRODUCT)
 				.setRecommendedPriceNet(new Amount(new BigDecimal("28.99")));
 		return this;
@@ -56,7 +56,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	public CatalogProductBuilder amy() {
 		this.setName("Amy Fleece")
-			.setProductNumber(75195L)
+			.setProductNumber("75195")
 			.setProductType(ProductType.PRODUCT)
 			.setRecommendedPriceNet(new Amount(new BigDecimal("12.99")));
 		return this;
@@ -64,7 +64,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	public CatalogProductBuilder paul() {
 		this.setName("Paul anthra dots")
-			.setProductNumber(43092L)
+			.setProductNumber("43092")
 			.setProductType(ProductType.PRODUCT)
 			.setRecommendedPriceNet(new Amount(new BigDecimal("43.99")));
 		return this;
@@ -72,7 +72,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	public CatalogProductBuilder salome() {
 		this.setName("Salome stars lime")
-			.setProductNumber(33025L)
+			.setProductNumber("33025")
 			.setProductType(ProductType.PRODUCT)
 			.setRecommendedPriceNet(new Amount(new BigDecimal("33.99")));
 		return this;
@@ -80,7 +80,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	public CatalogProductBuilder jurek() {
 		this.setName("Jurek destroyer")
-			.setProductNumber(56026L)
+			.setProductNumber("56026")
 			.setProductType(ProductType.PRODUCT)
 			.setRecommendedPriceNet(new Amount(new BigDecimal("56.99")));
 		return this;
@@ -90,7 +90,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 		productType = ProductType.PRODUCT;
 		name = "product";
 		recommendedPriceNet = new Amount(new BigDecimal(i), Currency.EUR);
-		productNumber = i.longValue();
+		productNumber = i.toString();
 		name = name.concat(i.toString());
 		return this;
 	}
@@ -114,7 +114,7 @@ public class CatalogProductBuilder implements Builder<CatalogProduct> {
 
 	}
 
-	public CatalogProductBuilder setProductNumber(Long productNumber) {
+	public CatalogProductBuilder setProductNumber(String productNumber) {
 		this.productNumber = productNumber;
 		return this;
 	}

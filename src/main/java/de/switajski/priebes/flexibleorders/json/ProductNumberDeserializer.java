@@ -24,7 +24,7 @@ public class ProductNumberDeserializer extends JsonDeserializer<Product> {
 		Product product = new Product();
 		ObjectCodec oc = jp.getCodec();
 		JsonNode node = oc.readTree(jp);
-		product.setProductNumber(node.getLongValue());
+		product.setProductNumber(node.getTextValue());
 		return product;
 
 	}

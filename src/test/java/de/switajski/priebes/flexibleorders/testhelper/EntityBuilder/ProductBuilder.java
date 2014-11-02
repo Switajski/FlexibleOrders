@@ -10,7 +10,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
  */
 public class ProductBuilder implements Builder<Product>{
 
-	private Long productNumber;
+	private String productNumber;
 
 	private ProductType productType;
 
@@ -25,7 +25,7 @@ public class ProductBuilder implements Builder<Product>{
 		return product;
 	}
 
-	public ProductBuilder setProductNumber(Long productNumber) {
+	public ProductBuilder setProductNumber(String productNumber) {
 		this.productNumber = productNumber;
 		return this;
 	}

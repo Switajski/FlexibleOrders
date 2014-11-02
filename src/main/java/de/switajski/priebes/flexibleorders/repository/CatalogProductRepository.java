@@ -8,7 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 @Repository
 public interface CatalogProductRepository extends JpaSpecificationExecutor<CatalogProduct>, JpaRepository<CatalogProduct, Long> {
 	
-	CatalogProduct findByProductNumber(Long productNumber);
+	CatalogProduct findByProductNumber(String productNumber);
 	
 	CatalogProduct findByName(String name);
 	

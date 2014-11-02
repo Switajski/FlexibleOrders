@@ -205,7 +205,7 @@ public class ReportViewHelper {
         for (ReportItem he : report.getItemsOrdered()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
-            Long pNo = he.getOrderItem().getProduct().getProductNumber();
+            String pNo = he.getOrderItem().getProduct().getProductNumber();
             list.add(pNo.equals(0L) ? "n.a." : pNo.toString());
             // Artikel
             list.add(he.getOrderItem().getProduct().getName());
@@ -232,7 +232,7 @@ public class ReportViewHelper {
         for (ReportItem he : report.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
-            Long pNo = he.getOrderItem().getProduct().getProductNumber();
+            String pNo = he.getOrderItem().getProduct().getProductNumber();
             list.add(pNo.equals(0L) ? "n.a." : pNo.toString());
             // Artikel
             list.add(he.getOrderItem().getProduct().getName());
@@ -262,7 +262,7 @@ public class ReportViewHelper {
                 // Anzahl
                 row.add(String.valueOf(he.getQuantity()) + " x ");
                 // Art.Nr.:
-                Long pNo = he.getOrderItem().getProduct().getProductNumber();
+                String pNo = he.getOrderItem().getProduct().getProductNumber();
                 row.add(pNo.equals(0L) ? "n.a." : pNo.toString());
                 // Artikel
                 row.add(he.getOrderItem().getProduct().getName());

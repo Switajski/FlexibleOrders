@@ -97,7 +97,6 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
         // THEN
         assertAllItemsAreAgreed(retrievedRis);
-        assertConfirmationItemHaveNoJurek(retrievedRis);
     }
 
     @Transactional

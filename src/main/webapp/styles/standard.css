@@ -382,3 +382,17 @@ tr .emphasized-row{
 tr .warning-row{
 	background-color: #FDFFEA;
 }
+#OrderItemGrid-1011_header{
+	background-image:none;
+	background-color:#CBF3CC;
+}
+#ShippingItemGrid_header{
+	background-image:none;
+	background-color:#FFF1B8;
+}
+#DeliveryNotesItemGrid_header_hd {
+}
+#InvoiceItemGrid_header {
+	background-image:none;
+	background-color:#FFD0D0;
+}

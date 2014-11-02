@@ -25,13 +25,14 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.CatalogProductServiceImpl;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
@@ -65,6 +66,8 @@ public class OrderService {
 	private OrderRepository orderRepo;
 	@Autowired
 	private ItemDtoConverterService itemDtoConverterService;
+	@Autowired
+    private CatalogProductServiceImpl cProductService;
 
 	/**
 	 * Creates initially an order with its order items
@@ -175,8 +178,7 @@ public class OrderService {
 
 	private Product createProductFromCatalog(ItemDto ri) {
 		Product product;
-		CatalogProduct cProduct = cProductRepo.findByProductNumber(
-				ri.product);
+		CatalogProduct cProduct = cProductService.findByProductNumber(ri.product);
 		if (cProduct == null)
 			throw new IllegalArgumentException("Artikelnr nicht gefunden");
 		product = cProduct.toProduct();

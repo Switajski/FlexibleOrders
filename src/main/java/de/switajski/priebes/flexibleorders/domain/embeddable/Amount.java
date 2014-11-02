@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import de.switajski.priebes.flexibleorders.reference.Currency;
 
 @Embeddable
@@ -110,6 +112,7 @@ public class Amount {
 		return new Amount(this.value.divide(new BigDecimal(divisor)), this.currency);
 	}
 	
+	@JsonIgnore
 	public boolean isGreaterZero(){
 		if (this.getValue() == null)
 			return false;

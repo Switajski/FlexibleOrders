@@ -21,25 +21,24 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'Daten',
 									flex : 1,
+									defaults: {
+					                    anchor: '100%'
+					                },
 									items : [{
 												xtype : 'numberfield',
-												anchor : '100%',
 												name : 'customerNumber',
 												fieldLabel : 'Kundennr'
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'email',
 												fieldLabel : 'E-Mail',
 												vtype: 'email'
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'firstName',
 												fieldLabel : 'Vorname'
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'lastName',
 												fieldLabel : 'Nachname'
 											}]
@@ -47,33 +46,31 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'Rechnungsadresse',
 									flex : 1,
+									defaults: {
+					                    anchor: '100%'
+					                },
 									items : [{
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'name1',
 												fieldLabel : 'Firma',
 												allowBlank : true
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'name2',
 												fieldLabel : 'Name',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'street',
 												fieldLabel : 'Strasse',
 												allowBlank : false
 											}, {
 												xtype : 'numberfield',
-												anchor : '100%',
 												name : 'postalCode',
 												fieldLabel : 'PLZ',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'city',
 												fieldLabel : 'Stadt',
 												allowBlank : false
@@ -88,33 +85,31 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'Lieferadresse',
 									flex : 1,
+									defaults: {
+					                    anchor: '100%'
+					                },
 									items : [{
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'dname1',
 												fieldLabel : 'Firma',
 												allowBlank : true
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'dname2',
 												fieldLabel : 'Name',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'dstreet',
 												fieldLabel : 'Strasse',
 												allowBlank : false
 											}, {
 												xtype : 'numberfield',
-												anchor : '100%',
 												name : 'dpostalCode',
 												fieldLabel : 'PLZ',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'dcity',
 												fieldLabel : 'Stadt',
 												allowBlank : false
@@ -129,44 +124,39 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
 									flex : 1,
+									defaults: {
+					                    anchor: '100%'
+					                },
 									items : [{
 												xtype : 'textfield',
 												name : 'paymentConditions',
-												anchor : '100%',
 												fieldLabel : 'Zahlungskondn.'
 											},{
 												xtype : 'textfield',
 												name : 'vatIdNo',
-												anchor : '100%',
 												fieldLabel : 'Umsatzst. Id'
 											},{
 												xtype : 'textfield',
 												name : 'vendorNumber',
-												anchor : '100%',
 												fieldLabel : 'Lieferantennr.'
 											},{
 												xtype : 'textfield',
 												name : 'saleRepresentative',
-												anchor : '100%',
 												fieldLabel : 'Vertreter'
 											},{
 												xtype : 'textfield',
 												name : 'mark',
-												anchor : '100%',
 												fieldLabel : 'Ihr Zeichen'
 											},{
 												xtype : 'textfield',
 												name : 'contact1',
-												anchor : '100%',
 												fieldLabel : 'Kontakt 1'
 											},{
 												xtype : 'textfield',
 												name : 'contact2',
-												anchor : '100%',
 												fieldLabel : 'Kontakt 2'
 											},{
 												xtype : 'textfield',
-												anchor : '100%',
 												name : 'contact3',
 												fieldLabel : 'Kontakt 3'
 											}]

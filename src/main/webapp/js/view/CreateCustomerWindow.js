@@ -4,75 +4,165 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 	itemid : 'CreateCustomerWindow',
 	alias : 'widget.CreateCustomerWindow',
 	customerNumberEditable : true,
-	layout : 'fit',
 	defaultInvoiceNumber : 0,
-	record : Ext.create('MyApp.model.KundeData', {
-				}),
+	record : Ext.create('MyApp.model.KundeData', {}),
 	initComponent : function() {
 		var me = this;
 
 		Ext.applyIf(me, {
-			layout : 'anchor',
+			width: 550,
+            fieldDefaults: {
+                labelAlign: 'right',
+                labelWidth: 90,
+                msgTarget: 'qtip'
+            },
 			items : [{
 						xtype : 'form',
 						id : 'CustomerForm',
 						bodyPadding : 10,
 						items : [{
 									xtype : 'fieldset',
-									title : 'Daten',
-									flex : 1,
+									title : 'Kontaktinformation',
+									layout: 'anchor',
 									defaults: {
 					                    anchor: '100%'
 					                },
-									items : [{
-												xtype : 'numberfield',
-												name : 'customerNumber',
-												fieldLabel : 'Kundennr'
-											}, {
-												xtype : 'textfield',
-												name : 'email',
-												fieldLabel : 'E-Mail',
-												vtype: 'email'
-											}, {
-												xtype : 'textfield',
-												name : 'firstName',
-												fieldLabel : 'Vorname'
-											}, {
-												xtype : 'textfield',
-												name : 'lastName',
-												fieldLabel : 'Nachname'
-											}]
+					                items: [{
+					                    xtype: 'fieldcontainer',
+					                    layout: 'hbox',
+					                    combineErrors: true,
+					                    defaultType: 'textfield',
+										items : [{
+													xtype : 'numberfield',
+													name : 'customerNumber',
+													flex: 1,
+													fieldLabel : 'Kundennr'
+												}, {
+													xtype : 'textfield',
+													name : 'email',
+													flex: 2,
+													fieldLabel : 'E-Mail',
+													labelWidth: 60,
+													vtype: 'email'
+												}]
+					                }, {
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	fieldLabel: 'Name',
+					                	defaults: {
+					                         hideLabel: 'true'
+					                    },
+					                	items: [{
+													xtype : 'textfield',
+													flex: 1,
+													name : 'firstName',
+													emptyText : 'Vorname'
+												}, {
+													xtype : 'textfield',
+													flex: 2,
+													margins: '0 0 0 6',
+													name : 'lastName',
+													emptyText : 'Nachname'
+												}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	fieldLabel : 'Telefon',
+					                	items: [{
+													xtype : 'textfield',
+													flex: 1,
+													name : 'telephoneNumber1',
+													emptyText : 'Festnetz',
+													hideLabel : 'true'
+												}, {
+													xtype : 'textfield',
+													flex: 1,
+													labelWidth: 70,
+													margins: '0 0 0 6',
+													name : 'telephoneNumber2',
+													emptyText : 'Mobil',
+													hideLabel : 'true'
+												}]
+					                }]
 								}, {
 									xtype : 'fieldset',
 									title : 'Rechnungsadresse',
-									flex : 1,
 									defaults: {
 					                    anchor: '100%'
 					                },
-									items : [{
-												xtype : 'textfield',
+					                items: [{
+					                    xtype: 'fieldcontainer',
+					                    layout: 'hbox',
+					                    fieldLabel: 'Empf&auml;nger',
+					                    combineErrors: true,
+					                    defaultType: 'textfield',
+					                    items: [{
 												name : 'name1',
-												fieldLabel : 'Firma',
+												flex: 1,
+												hideLabel : true,
+												emptyText : 'erste Zeile',
+												listeners: {
+							                        scope: this,
+							                        change: this.onMailingAddrFieldChange
+							                    },
+							                    billingFieldName: 'dname1',
 												allowBlank : true
+												
 											}, {
-												xtype : 'textfield',
 												name : 'name2',
-												fieldLabel : 'Name',
+												hideLabel : true,
+												flex: 1,
+												margins: '0 0 0 6',
+												emptyText : 'zweite Zeile',
+												listeners: {
+							                        scope: this,
+							                        change: this.onMailingAddrFieldChange
+							                    },
+							                    billingFieldName: 'dname2',
 												allowBlank : false
-											}, {
-												xtype : 'textfield',
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												name : 'street',
+												flex: 1,
 												fieldLabel : 'Strasse',
+												listeners: {
+							                        scope: this,
+							                        change: this.onMailingAddrFieldChange
+							                    },
+							                    billingFieldName: 'dstreet',
 												allowBlank : false
-											}, {
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												xtype : 'numberfield',
+												flex: 1,
 												name : 'postalCode',
 												fieldLabel : 'PLZ',
+												listeners: {
+							                        scope: this,
+							                        change: this.onMailingAddrFieldChange
+							                    },
+							                    billingFieldName: 'dpostalCode',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
 												name : 'city',
+												flex: 1,
 												fieldLabel : 'Stadt',
+												labelWidth: 60,
+												margins: '0 0 0 6',
+												listeners: {
+							                        scope: this,
+							                        change: this.onMailingAddrFieldChange
+							                    },
+							                    billingFieldName: 'dcity',
 												allowBlank : false
 											}/*, {
 												xtype : 'textfield',
@@ -81,37 +171,69 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												fieldLabel : 'Land',
 												allowBlank : false
 											}*/]
+					                }]
 								},{
 									xtype : 'fieldset',
-									title : 'Lieferadresse',
-									flex : 1,
+									title : 'LieferAdresse',
 									defaults: {
 					                    anchor: '100%'
 					                },
-									items : [{
-												xtype : 'textfield',
+					                items: [{
+					                    xtype: 'checkbox',
+					                    name: 'shippingSameAsInvoicingAddress',
+					                    fieldLabel: 'Gleiche Lieferadresse?',
+					                    labelWidth : 150,
+					                    checked: false,
+					                    margin: '0 0 10 0',
+					                    scope: this,
+					                    handler: this.onSameAddressChange
+					                },{
+					                    xtype: 'fieldcontainer',
+					                    layout: 'hbox',
+					                    combineErrors: true,
+					                    defaultType: 'textfield',
+					                    items: [{
+					                    		fieldLabel: 'Empf&auml;nger',
 												name : 'dname1',
-												fieldLabel : 'Firma',
+												flex: 1,
+												emptyText : 'erste Zeile',
 												allowBlank : true
+												
 											}, {
-												xtype : 'textfield',
 												name : 'dname2',
-												fieldLabel : 'Name',
+												hideLabel : true,
+												flex: 1,
+												margins: '0 0 0 6',
+												emptyText : 'zweite Zeile',
 												allowBlank : false
-											}, {
-												xtype : 'textfield',
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												name : 'dstreet',
+												flex: 1,
 												fieldLabel : 'Strasse',
 												allowBlank : false
-											}, {
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												xtype : 'numberfield',
+												flex: 1,
 												name : 'dpostalCode',
 												fieldLabel : 'PLZ',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
 												name : 'dcity',
+												flex: 1,
 												fieldLabel : 'Stadt',
+												labelWidth: 60,
+												margins: '0 0 0 6',
 												allowBlank : false
 											}/*, {
 												xtype : 'textfield',
@@ -120,10 +242,10 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												fieldLabel : 'Land',
 												allowBlank : false
 											}*/]
+					                }]
 								}, {
 									xtype : 'fieldset',
 									title : 'zus&auml;tzliche Informationen',
-									flex : 1,
 									defaults: {
 					                    anchor: '100%'
 					                },
@@ -238,6 +360,38 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					contact3 : this.record.data.contact3
 				});
 		return record;
-	}
+	},
+	
+	onMailingAddrFieldChange: function(field){
+        var copyToBilling = this.down('[name=shippingSameAsInvoicingAddress]').getValue(),
+            copyField = this.down('[name=' + field.billingFieldName + ']');
+
+        if (copyToBilling) {
+            copyField.setValue(field.getValue());
+        } else {
+            copyField.clearInvalid();
+        }
+    },
+	
+	/**
+     * Enables or disables the billing address fields according to whether the checkbox is checked.
+     * In addition to disabling the fields, they are animated to a low opacity so they don't take
+     * up visual attention.
+     */
+    onSameAddressChange: function(box, checked){
+        var fieldset = box.ownerCt;
+        Ext.Array.forEach(fieldset.previousSibling().query('textfield'), this.onMailingAddrFieldChange, this);
+        Ext.Array.forEach(fieldset.query('textfield'), function(field) {
+            field.setDisabled(checked);
+            // Animate the opacity on each field. Would be more efficient to wrap them in a container
+            // and animate the opacity on just the single container element, but IE has a bug where
+            // the alpha filter does not get applied on position:relative children.
+            // This must only be applied when it is not IE6, as it has issues with opacity when cleartype
+            // is enabled
+            if (!Ext.isIE6) {
+                field.el.animate({opacity: checked ? 0.3 : 1});
+            }
+        });
+    }
 
 });

@@ -80,6 +80,7 @@ Ext.define('MyApp.controller.CustomerController', {
 										this.down('form').getForm().getRecord());
 			}
 		});
+		createCustomerWindow.down('field[name=customerNumber]').setDisabled('true');
 		createCustomerWindow.down('form').getForm().loadRecord(customer);
 		createCustomerWindow.show();
 	},

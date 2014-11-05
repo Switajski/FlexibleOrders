@@ -14,7 +14,15 @@ Ext.define('MyApp.controller.CustomerController', {
 					},
 					'#UpdateCustomerButton' : {
 						click : this.onUpdateCustomer
-					}
+					},
+					'[id=CustomerForm] field': {
+			            change: function() {
+							var window = Ext.getCmp("CreateCustomerWindow");
+							if (window != null)
+								window.down('form').getForm()
+									.updateRecord(window.record);
+			            }
+			        }
 				});
 	},
 	
@@ -29,6 +37,7 @@ Ext.define('MyApp.controller.CustomerController', {
 			}
 		});
 		
+		createCustomerWindow.down('[form]').getForm().reset()
 		createCustomerWindow.show();
 	},
 	
@@ -42,7 +51,8 @@ Ext.define('MyApp.controller.CustomerController', {
 		
 		if (form.isValid()) {
 			form.updateRecord(active);
-			store.add(form.getForm().getRecord());
+			console.log(active);
+			store.add(active);
 			store.sync({
 				success : function (){
 					form.getForm().reset();

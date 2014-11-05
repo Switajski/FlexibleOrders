@@ -80,10 +80,12 @@ public class CustomerDtoConverterServiceImpl {
                 jc.vendorNumber = details.getVendorNumber();
                 jc.vatIdNo = details.getVatIdNo();
                 jc.paymentConditions = details.getPaymentConditions();
-                jc.contact1 = details.getContactInformation().getContact1();
-                jc.contact2 = details.getContactInformation().getContact2();
-                jc.contact3 = details.getContactInformation().getContact3();
-                jc.contact4 = details.getContactInformation().getContact4();
+                if (details.getContactInformation() != null) {
+                    jc.contact1 = details.getContactInformation().getContact1();
+                    jc.contact2 = details.getContactInformation().getContact2();
+                    jc.contact3 = details.getContactInformation().getContact3();
+                    jc.contact4 = details.getContactInformation().getContact4();
+                }
                 jc.mark = details.getMark();
                 jc.saleRepresentative = details.getSaleRepresentative();
             }

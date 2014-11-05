@@ -13,6 +13,9 @@ Ext.define('MyApp.store.KundeDataStore', {
             model: 'MyApp.model.KundeData',
             storeId: 'KundeDataStore',
             pageSize: 1000,
+            onWrite : function(){
+            	console.log(this);
+            },
             proxy: {
                 type: 'ajax',
                 url: '/FlexibleOrders/customers/json',

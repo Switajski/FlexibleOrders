@@ -100,7 +100,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												name : 'name1',
 												flex: 1,
 												hideLabel : true,
-												emptyText : 'erste Zeile',
+												emptyText : '1. Zeile',
 												listeners: {
 							                        scope: this,
 							                        change: this.onMailingAddrFieldChange
@@ -113,7 +113,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												hideLabel : true,
 												flex: 1,
 												margins: '0 0 0 6',
-												emptyText : 'zweite Zeile',
+												emptyText : '2. Zeile',
 												listeners: {
 							                        scope: this,
 							                        change: this.onMailingAddrFieldChange
@@ -174,15 +174,15 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                }]
 								},{
 									xtype : 'fieldset',
-									title : 'LieferAdresse',
+									title : 'Lieferadresse',
 									defaults: {
 					                    anchor: '100%'
 					                },
 					                items: [{
 					                    xtype: 'checkbox',
 					                    name: 'shippingSameAsInvoicingAddress',
-					                    fieldLabel: 'Gleiche Lieferadresse?',
-					                    labelWidth : 150,
+					                    fieldLabel: 'Lieferadresse gleich Rechnungsadresse?',
+					                    labelWidth : 245,
 					                    checked: false,
 					                    margin: '0 0 10 0',
 					                    scope: this,
@@ -196,7 +196,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    		fieldLabel: 'Empf&auml;nger',
 												name : 'dname1',
 												flex: 1,
-												emptyText : 'erste Zeile',
+												emptyText : '1. Zeile',
 												allowBlank : true
 												
 											}, {
@@ -204,7 +204,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												hideLabel : true,
 												flex: 1,
 												margins: '0 0 0 6',
-												emptyText : 'zweite Zeile',
+												emptyText : '2. Zeile',
 												allowBlank : false
 											}]
 					                },{
@@ -249,39 +249,73 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									defaults: {
 					                    anchor: '100%'
 					                },
-									items : [{
-												xtype : 'textfield',
+					                items: [{
+					                    xtype: 'fieldcontainer',
+					                    layout: 'hbox',
+					                    combineErrors: true,
+					                    defaultType: 'textfield',
+					                    items: [{
+												xtype : 'textarea',
 												name : 'paymentConditions',
-												fieldLabel : 'Zahlungskondn.'
-											},{
+												flex: 1,
+												margins: '0 3 0 0',
+												fieldLabel : 'Zahlungskonditionen',
+												labelWidth : 145
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												xtype : 'textfield',
 												name : 'vatIdNo',
+												flex: 1,
 												fieldLabel : 'Umsatzst. Id'
 											},{
 												xtype : 'textfield',
 												name : 'vendorNumber',
+												flex: 1,
 												fieldLabel : 'Lieferantennr.'
-											},{
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'textfield',
+					                	items: [{
 												xtype : 'textfield',
 												name : 'saleRepresentative',
+												flex: 1,
 												fieldLabel : 'Vertreter'
 											},{
 												xtype : 'textfield',
 												name : 'mark',
+												flex: 1,
 												fieldLabel : 'Ihr Zeichen'
-											},{
+											}]
+					                },{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	fieldLabel : 'Kontakt',
+					                	defaultType: 'textfield',
+					                	items: [{
 												xtype : 'textfield',
 												name : 'contact1',
-												fieldLabel : 'Kontakt 1'
+												flex: 1,
+												emptyText : '1. Zeile'
 											},{
 												xtype : 'textfield',
 												name : 'contact2',
-												fieldLabel : 'Kontakt 2'
+												flex: 1,
+												margins: '0 0 0 6',
+												emptyText : '2. Zeile'
 											},{
 												xtype : 'textfield',
 												name : 'contact3',
-												fieldLabel : 'Kontakt 3'
+												flex: 1,
+												margins: '0 0 0 6',
+												emptyText : '3. Zeile'
 											}]
+					                }]
 								}],
 
 						dockedItems : [{
@@ -306,21 +340,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 			console.error('no record set!');
 		
 		var kunde = this.createCustomerRecord();
-
 		this.down('form').getForm().loadRecord(kunde);
-		
-		// set the listeners to update record onChange
-		this.down('form').items.each(function(item) {
-			item.items.each(function(ii) {
-				ii.on({
-					change : function() {
-						var window = Ext.getCmp("CreateCustomerWindow");
-						window.down('form').getForm()
-								.updateRecord(window.record);
-					}
-				});
-			});
-		});
 	},
 
 	onSave : function() {
@@ -368,6 +388,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 
         if (copyToBilling) {
             copyField.setValue(field.getValue());
+            form = this.down('form').getForm();
+            form.updateRecord();
         } else {
             copyField.clearInvalid();
         }

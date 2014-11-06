@@ -22,6 +22,9 @@ Ext.define('MyApp.controller.CustomerController', {
 								window.down('form').getForm()
 									.updateRecord(window.record);
 			            }
+			        },
+			        '#CreateCustomerWindow' : {
+			        	close : this.onClose
 			        }
 				});
 	},
@@ -74,10 +77,12 @@ Ext.define('MyApp.controller.CustomerController', {
 			customerNumberEditable : false,
 			createCustomerRecord : function() {return customer},
 			onSave : function(){
+				form2 = this.down('form').getForm();
+				form2.updateRecord();
 				MyApp.getApplication().getController('CustomerController')
 								.updateCustomer(
 										Ext.data.StoreMgr.lookup('KundeDataStore'),
-										this.down('form').getForm().getRecord());
+										customer);
 			}
 		});
 		createCustomerWindow.down('field[name=customerNumber]').setDisabled('true');
@@ -85,42 +90,23 @@ Ext.define('MyApp.controller.CustomerController', {
 		createCustomerWindow.show();
 	},
 	
-	updateCustomer : function(store, record){
-		updatedRecord = Ext.getCmp("CreateCustomerWindow").record; //changed record
-		var record = store.findRecord('customerNumber', Ext.getCmp("CreateCustomerWindow").record.data.customerNumber);
-		//FIXME: Next code lines are just a workaround until real record gets updated by form listeners of CreateCustomerWindow 
-		record.set('email', updatedRecord.data.email);
-		record.set('firstName', updatedRecord.data.firstName);
-		record.set('lastName', updatedRecord.data.lastName);
-		record.set('name1', updatedRecord.data.name1);
-		record.set('name2', updatedRecord.data.name2);
-		record.set('street', updatedRecord.data.street);
-		record.set('postalCode', updatedRecord.data.postalCode)
-		record.set('city', updatedRecord.data.city);
+	updateCustomer : function(store, customer){
+		cIndex = store.findExact('customerNumber', customerNo);
+		recToUpdate = store.getAt(cIndex);
 		
-		record.set('dname1', updatedRecord.data.dname1);
-		record.set('dname2', updatedRecord.data.dname2);
-		record.set('dstreet', updatedRecord.data.dstreet);
-		record.set('dpostalCode', updatedRecord.data.dpostalCode)
-		record.set('dcity', updatedRecord.data.dcity);
-		
-		record.set('country', updatedRecord.data.country);
-		record.set('vendorNumber', updatedRecord.data.vendorNumber);
-		record.set('vatIdNo', updatedRecord.data.vatIdNo);
-		record.set('paymentConditions', updatedRecord.data.paymentConditions);
-		
-		record.set('saleRepresentative', updatedRecord.data.saleRepresentative);
-		record.set('mark', updatedRecord.data.mark);
-		record.set('contact1', updatedRecord.data.contact1);
-		record.set('contact2', updatedRecord.data.contact2);
-		record.set('contact3', updatedRecord.data.contact3);
-		
+		recToUpdate.set(customer);
 		store.sync({
 				success : function (){
 					Ext.getCmp('CustomerForm').getForm().reset();
 					Ext.getCmp("CreateCustomerWindow").close();
 				}
 			});
+	},
+	
+	onClose : function(){
+		form = Ext.getCmp("CreateCustomerWindow").down('form').getForm();
+		form.getRecord().reject();
+		form.reset();
 	}
 
 });

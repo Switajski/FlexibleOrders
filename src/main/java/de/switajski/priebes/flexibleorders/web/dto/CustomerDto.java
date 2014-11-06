@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
@@ -11,9 +12,10 @@ import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializ
  *
  */
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerDto {
 
-	public Long id, customerNumber;
+	public Long customerNumber;
 
 	@JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     public String email, password, phone, firstName, lastName;

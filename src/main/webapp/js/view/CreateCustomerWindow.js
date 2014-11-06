@@ -5,6 +5,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 	alias : 'widget.CreateCustomerWindow',
 	customerNumberEditable : true,
 	defaultInvoiceNumber : 0,
+	closeAction : 'destroy',
 	record : Ext.create('MyApp.model.KundeData', {}),
 	initComponent : function() {
 		var me = this;

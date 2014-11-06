@@ -52,7 +52,6 @@ public class CustomerDtoConverterServiceImpl {
         List<CustomerDto> jsonCustomers = new ArrayList<CustomerDto>();
         for (Customer c : customers){
             CustomerDto jc = new CustomerDto();
-            jc.id = c.getCustomerNumber();
             jc.customerNumber = c.getCustomerNumber();
             jc.lastName = c.getLastName();
             jc.firstName = c.getFirstName();

@@ -129,8 +129,8 @@ Ext.define('MyApp.controller.MyController', {
 	},
 
 	retrieveChosenCustomerSavely : function() {
-		var customerId = Ext.getCmp('mainCustomerComboBox').getValue();
-		if (customerId == 0 || customerId == "" || customerId == null) {
+		customerNo = Ext.getCmp('mainCustomerComboBox').getValue();
+		if (customerNo == 0 || customerNo == "" || customerNo == null) {
 			Ext.MessageBox.show({
 						title : 'Kundenfeld leer',
 						msg : 'Bitte Kunden ausw&auml;hlen',
@@ -140,8 +140,9 @@ Ext.define('MyApp.controller.MyController', {
 			return;
 		}
 
-		var customer = MyApp.getApplication().getStore('KundeDataStore')
-				.getById(customerId);
+		store = MyApp.getApplication().getStore('KundeDataStore');
+		cIndex = store.findExact('customerNumber', customerNo);
+		customer = store.getAt(cIndex);
 
 		return customer;
 	},

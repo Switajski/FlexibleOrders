@@ -1,8 +1,6 @@
 Ext.define('MyApp.model.KundeData', {
 			extend : 'Ext.data.Model',
 
-			idProperty : 'id',
-
 			fields : [{
 						name : 'customerNumber'
 					}, {

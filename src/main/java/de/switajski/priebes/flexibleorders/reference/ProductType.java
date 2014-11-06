@@ -1,5 +1,21 @@
 package de.switajski.priebes.flexibleorders.reference;
 
+
 public enum ProductType {
-	SHIPPING, CUSTOM, PRODUCT
+	SHIPPING("SHIPPING"), CUSTOM("CUSTOM"), PRODUCT("PRODUCT");
+	
+	public final String mappedString;
+    
+    private ProductType(String value) {
+        this.mappedString = value;
+    }
+	
+	public static ProductType mapFromString(String abbr){
+        for (ProductType v : values()){
+            if( v.mappedString.equals(abbr)){
+                return v;
+            }
+        }
+        throw new IllegalArgumentException("No matching processStep for given String found");
+    }
 }

@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.helper;
 
-public enum ProcessStep {
+public enum ProductionState {
     CONFIRMED("confirmed"),
     AGREED("agreed"),
     SHIPPED("shipped"),
@@ -11,12 +11,12 @@ public enum ProcessStep {
     
     public final String mappedString;
     
-    private ProcessStep(String value) {
+    private ProductionState(String value) {
         this.mappedString = value;
     }
     
-    public static ProcessStep mapFromString(String abbr){
-        for(ProcessStep v : values()){
+    public static ProductionState mapFromString(String abbr){
+        for(ProductionState v : values()){
             if( v.mappedString.equals(abbr)){
                 return v;
             }

@@ -10,16 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.BeanUtil;
-import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculator;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.reference.Currency;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class InvoicingService {
@@ -54,10 +57,14 @@ public class InvoicingService {
 
         }
 
-        invoice.setShippingCosts(new ShippingCostsCalculator()
-                .calculate(itemDtoConverterService
-                        .convertToShippingItems(invoicingParameter.shippingItemDtos)));
-
+        //TODO Currency Handling
+        Amount shippingCosts = Amount.ZERO_EURO;
+        for (ItemDto item : invoicingParameter.shippingItemDtos){
+            if (item.productType == ProductType.SHIPPING)
+                shippingCosts = shippingCosts.add(new Amount(item.priceNet, Currency.EUR));
+        }
+        invoice.setShippingCosts(shippingCosts);
+        
         return reportRepo.save(invoice);
     }
 

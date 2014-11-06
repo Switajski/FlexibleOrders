@@ -24,6 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
@@ -170,10 +171,15 @@ public class TestDataCreator extends AbstractSpringContextTest {
 	}
 
     private void createR11(List<ItemDto> l11AndL12) {
+        ItemDto shippingCosts = new ItemDto();
+        shippingCosts.priceNet = BigDecimal.valueOf(11d);
+        shippingCosts.productType = ProductType.SHIPPING;
         invoicingService.invoice(
 				new InvoicingParameter("R11", "5 % Skonto, wenn innerhalb 5 Tagen", new Date(), Arrays.asList(
 						extract(l11AndL12, TestData.AMY.getProductNumber(), 5),
-						extract(l11AndL12, TestData.MILADKA.getProductNumber(), 5)), "billing"));
+						extract(l11AndL12, TestData.MILADKA.getProductNumber(), 5),
+						shippingCosts), 
+						"billing"));
     }
 
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {

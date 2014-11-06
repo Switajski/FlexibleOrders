@@ -35,6 +35,8 @@ Ext.define('MyApp.model.ItemData', {
 					}, {
 						name : 'priceNet'
 					}, {
+						name : 'productType'
+					},{
 						name : 'status'
 					}, {
 						name : 'expectedDelivery',

@@ -46,6 +46,8 @@ public class DeliveryService {
 
         Address shippingAddress = retrieveInvoicingAddress(ris, deliverParameter.ignoreContradictoryExpectedDeliveryDates);
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
+        deliveryNotes.setShippingCosts(deliverParameter.shipment);
+        deliveryNotes.setDeliveryMethod(deliverParameter.deliveryMethod);
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
             ReportItem agreementItem = riWithQty.getKey();
@@ -70,17 +72,15 @@ public class DeliveryService {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
-        deliveryNotes.setShippingCosts(deliverParameter.shipment);
         return deliveryNotes;
     }
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems, boolean ignoreContradictoryExpectedDeliveryDates) {
         Set<Address> ias = shippingAddressService.retrieve(reportItems);
-        if (ias.size() > 1 && !ignoreContradictoryExpectedDeliveryDates) 
-            throw new ContradictoryPurchaseAgreementException("Verschiedene Lieferadressen in Auftr"+ Unicode.aUml + "gen gefunden: "
-                + BeanUtil.createStringOfDifferingAttributes(ias));
-        else if (ias.size() == 0) 
-            throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
+        if (ias.size() > 1 && !ignoreContradictoryExpectedDeliveryDates) throw new ContradictoryPurchaseAgreementException(
+                "Verschiedene Lieferadressen in Auftr" + Unicode.aUml + "gen gefunden: "
+                        + BeanUtil.createStringOfDifferingAttributes(ias));
+        else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;
     }

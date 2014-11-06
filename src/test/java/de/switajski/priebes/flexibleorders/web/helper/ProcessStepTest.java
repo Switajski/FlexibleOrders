@@ -9,17 +9,17 @@ public class ProcessStepTest {
 
     @Test
     public void shouldMapEnumToString(){
-        assertThat(ProcessStep.INVOICED.mappedString, isA(String.class));
+        assertThat(ProductionState.INVOICED.mappedString, isA(String.class));
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void shouldFailWhenMappingNonExistentStringToEnum(){
-        ProcessStep.mapFromString("non existing");
+        ProductionState.mapFromString("non existing");
     }
     
     @Test
     public void shouldMapStringToEnum(){
-        for (ProcessStep step : ProcessStep.values())
-            assertThat(ProcessStep.mapFromString(step.mappedString), isA(ProcessStep.class));
+        for (ProductionState step : ProductionState.values())
+            assertThat(ProductionState.mapFromString(step.mappedString), isA(ProductionState.class));
     }
 }

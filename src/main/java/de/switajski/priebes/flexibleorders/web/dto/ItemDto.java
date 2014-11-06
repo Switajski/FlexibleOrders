@@ -14,6 +14,8 @@ import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
+import de.switajski.priebes.flexibleorders.json.ProductTypeDeserializer;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 /**
  * Data Transfer Object for ExtJs GUI </br> Build on
@@ -51,6 +53,9 @@ public class ItemDto {
 
     public Integer quantity,
         quantityLeft;
+    
+    @JsonDeserialize(using = ProductTypeDeserializer.class)
+    public ProductType productType;
     
     @JsonDeserialize(using = BigDecimalDeserializer.class)
     public BigDecimal priceNet;

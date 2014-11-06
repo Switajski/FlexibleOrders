@@ -3,18 +3,18 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
@@ -46,6 +46,28 @@ public class ItemDtoConverterService {
             items.add(convert(oi));
         return items;
     }
+    
+    public ItemDto convert(DeliveryNotes deliveryNotes){
+        ItemDto item = new ItemDto();
+        item.created = deliveryNotes.getCreated();
+        item.documentNumber = deliveryNotes.getDocumentNumber();
+        item.deliveryNotesNumber = deliveryNotes.getDocumentNumber();
+        item.priceNet = deliveryNotes.getShippingCosts().getValue();
+        item.quantity = 1;
+        item.quantityLeft = 1;
+        
+        DeliveryMethod deliveryMethod = deliveryNotes.getDeliveryMethod();
+        if (deliveryMethod != null && deliveryMethod.getName() != null)
+            item.productName = deliveryMethod.getName();
+        else
+            item.productName = "Versandkosten";
+        Customer customer = deliveryNotes.getCustomerSafely();
+        item.customerNumber = customer.getCustomerNumber();
+        item.customerName = customer.getLastName();
+        item.productType = ProductType.SHIPPING;
+        
+        return item;
+    }
 
     public ItemDto convert(OrderItem orderItem) {
         ItemDto item = new ItemDto();
@@ -63,6 +85,7 @@ public class ItemDtoConverterService {
         if (orderItem.getNegotiatedPriceNet() != null) item.priceNet = orderItem.getNegotiatedPriceNet().getValue();
         item.product = orderItem.getProduct().getProductNumber();
         item.productName = orderItem.getProduct().getName();
+        item.productType = orderItem.getProduct().getProductType();
         item.status = DeliveryHistory.of(orderItem).provideStatus();
         item.quantity = orderItem.getOrderedQuantity();
         item.quantityLeft = quantityLeftCalculatorService.calculateLeft(orderItem);
@@ -70,19 +93,11 @@ public class ItemDtoConverterService {
     }
 
     @Transactional(readOnly = true)
-    public Set<ReportItem> convert(List<ItemDto> itemDtos) {
-        Set<ReportItem> ris = new HashSet<ReportItem>();
-        for (ItemDto entry : itemDtos) {
-            ReportItem ri = reportItemRepo.findOne(entry.id);
-            if (ri != null) ris.add(ri);
-        }
-        return ris;
-    }
-
-    @Transactional(readOnly = true)
     public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
         Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
         for (ItemDto agreementItemDto : itemDtos) {
+            if (agreementItemDto.productType == ProductType.SHIPPING)
+                continue;
             ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
             if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
             risWithQty.put(
@@ -93,24 +108,6 @@ public class ItemDtoConverterService {
                                                     // parameter
         }
         return risWithQty;
-    }
-
-    public Set<ShippingItem> convertToShippingItems(
-            List<ItemDto> shippingItemDtos) {
-        Set<ShippingItem> sis = new HashSet<ShippingItem>();
-        Set<ReportItem> ris = convert(shippingItemDtos);
-        for (ReportItem ri : ris)
-            if (ri instanceof ShippingItem) sis.add((ShippingItem) ri);
-            else throw new IllegalArgumentException("Given ItemDto is not a shipping item");
-        return sis;
-    }
-
-    public List<ItemDto> convert(Collection<Report> reports) {
-        List<ItemDto> ris = new ArrayList<ItemDto>();
-        for (Report report : reports) {
-            ris.addAll(convertReport(report));
-        }
-        return ris;
     }
 
     public List<ItemDto> convertReport(Report report) {
@@ -138,7 +135,6 @@ public class ItemDtoConverterService {
         if (ri.getReport() instanceof Invoice) {
             Invoice invoice = (Invoice) ri.getReport();
             item.invoiceNumber = ri.getReport().getDocumentNumber();
-            item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
             item.paymentConditions = invoice.getPaymentConditions();
             item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
         }
@@ -165,6 +161,7 @@ public class ItemDtoConverterService {
             item.priceNet = ri.getOrderItem().getNegotiatedPriceNet().getValue();
         }
         item.product = ri.getOrderItem().getProduct().getProductNumber();
+        item.productType = ri.getOrderItem().getProduct().getProductType();
         item.productName = ri.getOrderItem().getProduct().getName();
         item.quantity = ri.getQuantity();
         item.status = ri.provideStatus();

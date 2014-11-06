@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
+import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 
 @Service
 public class StatisticsService {
@@ -28,7 +29,7 @@ public class StatisticsService {
 		Amount summed = Amount.ZERO_EURO;
 
 		List<ReportItem> ris = reportItemRepo
-				.findAll(dispatcher.dispatchStatus(state));
+				.findAll(dispatcher.dispatchStatus(ProductionState.mapFromString(state)));
 
 		for (ReportItem ri : ris) {
 			if (calculated.add(ri.getOrderItem())){

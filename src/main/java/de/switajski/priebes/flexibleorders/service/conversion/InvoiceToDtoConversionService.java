@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
-import de.switajski.priebes.flexibleorders.service.ShippingCostsService;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 @Service
@@ -22,13 +21,10 @@ public class InvoiceToDtoConversionService {
 	@Autowired
 	CustomerDetailsService customerDetailsService;
 
-	@Autowired
-    ShippingCostsService shippingCostsService;
-
 	@Transactional(readOnly = true)
 	public ReportDto toDto(Invoice report) {
 		ReportDto dto = reportToDtoConversionService.toDto(report);
-		dto.shippingSpecific_shippingCosts = shippingCostsService.calculate(report);
+		dto.shippingSpecific_shippingCosts = report.getShippingCosts();
 		return dto;
 	}
 

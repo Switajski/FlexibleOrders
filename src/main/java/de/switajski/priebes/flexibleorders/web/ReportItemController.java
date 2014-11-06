@@ -2,13 +2,16 @@ package de.switajski.priebes.flexibleorders.web;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
@@ -20,15 +23,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoPageConverterService;
+import de.switajski.priebes.flexibleorders.service.helper.ItemDtoFilterHelper;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
+import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 
 @RequestMapping("/reportitems")
 @Controller
@@ -41,6 +51,8 @@ public class ReportItemController extends ExceptionController {
 
     private static final String CUSTOMER_FILTER = "customerNumber";
 
+    public static final String STATUS_STRING = "status";
+
     @Autowired
     private ReportItemServiceImpl reportItemService;
     // TODO: on Controller layer only Services are allowed
@@ -48,10 +60,13 @@ public class ReportItemController extends ExceptionController {
     private CustomerRepository customerRepo;
     @Autowired
     private StatusFilterDispatcher filterDispatcher;
+    @Autowired
+    private ReportRepository reportRepository;
+    @Autowired
+    private ItemDtoConverterService itemDtoConverterService;
 
     @RequestMapping(value = "/ordered", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listAllToBeConfirmed(
+    public @ResponseBody JsonObjectResponse listAllToBeConfirmed(
             @RequestParam(value = "page", required = true) Integer page,
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
@@ -81,8 +96,7 @@ public class ReportItemController extends ExceptionController {
     }
 
     @RequestMapping(value = "/listAllToBeProcessed", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listAllToBeProcessed(
+    public @ResponseBody JsonObjectResponse listAllToBeProcessed(
             @RequestParam(value = "page", required = true) Integer page,
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
@@ -90,24 +104,49 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "filter", required = false) String filters)
             throws Exception {
 
+        PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
                 .deserializeFiltersJson(filters);
+        ProductionState step = mapFilterToProcessStep(filterMap);
 
         Set<Specification<ReportItem>> specs = new HashSet<Specification<ReportItem>>();
-        
-        specs.add(filterDispatcher.dispatchToSpecification(filterMap));
+        specs.add(filterDispatcher.dispatchStatus(step));
 
-        if (containsFilter(filterMap, CUSTOMER_FILTER)) 
+        if (containsFilter(filterMap, CUSTOMER_FILTER)) {
             specs.add(new HasCustomerSpec(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
+        }
 
         Page<ItemDto> openItems = reportItemService.retrieve(
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
-        //TODO: replace this workaround with spec
-        if (containsFilter(filterMap, "asdf")){
+
+        if (step == ProductionState.SHIPPED) {
+            HashSet<String> documentNumbers = new HashSet<String>();
+            for (ItemDto item : openItems) {
+                documentNumbers.add(item.deliveryNotesNumber);
+            }
+            for (String documentNumber : documentNumbers) {
+                Report report = reportRepository.findByDocumentNumber(documentNumber);
+                DeliveryNotes dn = (DeliveryNotes) report;
+                List<ItemDto> sCosts = new ArrayList<ItemDto>();
+                if (dn.hasShippingCosts()){
+                    sCosts.add(itemDtoConverterService.convert(dn));
+                }
+                List<ItemDto> temp = sCosts;
+                sCosts.addAll(openItems.getContent());
+                openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
+            }
+        }
+
+        // TODO: replace this workaround with spec
+        if (containsFilter(filterMap, "asdf")) {
             removeAgreed(openItems);
         }
         return ExtJsResponseCreator.createResponse(openItems);
 
+    }
+    
+    private ProductionState mapFilterToProcessStep(HashMap<String, String> filterMap) {
+        return ProductionState.mapFromString(filterMap.get(STATUS_STRING));
     }
 
     private void removeAgreed(Page<ItemDto> openItems) {
@@ -122,14 +161,13 @@ public class ReportItemController extends ExceptionController {
     private Specification<ReportItem> combineSpecsToOne(Set<Specification<ReportItem>> specs) {
         Iterator<Specification<ReportItem>> itr = specs.iterator();
         Specifications<ReportItem> combinedSpecifications = where(itr.next());
-        while(itr.hasNext())
+        while (itr.hasNext())
             combinedSpecifications = combinedSpecifications.and(itr.next());
         return combinedSpecifications;
     }
 
     @RequestMapping(value = "/listInvoiceNumbers", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listInvoiceNumbers(
+    public @ResponseBody JsonObjectResponse listInvoiceNumbers(
             @RequestParam(value = "page", required = true) Integer page,
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,

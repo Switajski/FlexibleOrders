@@ -13,15 +13,11 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class ConfirmationItemToBeAgreedSpec implements Specification<ReportItem> {
 
-    private Root<ReportItem> root;
     private CriteriaQuery<?> query;
-    private CriteriaBuilder cb;
 
     @Override
     public Predicate toPredicate(Root<ReportItem> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        this.root = root;
         this.query = query;
-        this.cb = cb;
         
         Subquery<ConfirmationItem> subquery = createCiSubquery();
         return cb.in(root).value(subquery);

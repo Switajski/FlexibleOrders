@@ -72,18 +72,18 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaults: {
-					                         labelWidth: 70
+					                         labelWidth: 70,
+					                         flex : 1,
 					                    },
 					                	items: [{
 													xtype : 'textfield',
-													flex: 1,
 													name : 'phone',
 													fieldLabel : 'Telefon'
 												}, {
 													xtype : 'textfield',
-													flex: 1,
 													margins: '0 0 0 6',
 													name : 'fax',
+													labelWidth : 30,
 													fieldLabel : 'Fax'
 												}]
 					                }]
@@ -101,11 +101,11 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    combineErrors: true,
 					                    defaultType: 'textfield',
 					                    defaults: {
+					                    	flex: 1,
 						                    labelWidth : 70
 						                },
 					                    items: [{
 												name : 'name1',
-												flex: 1,
 												hideLabel : true,
 												emptyText : '1. Zeile',
 												listeners: {
@@ -118,7 +118,6 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 											}, {
 												name : 'name2',
 												hideLabel : true,
-												flex: 1,
 												margins: '0 0 0 6',
 												emptyText : '2. Zeile',
 												listeners: {
@@ -151,11 +150,11 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
 					                	defaults: {
-						                    labelWidth : 70
+						                    labelWidth : 70,
+						                    flex : 1
 						                },
 					                	items: [{
 												xtype : 'numberfield',
-												flex: 1,
 												name : 'postalCode',
 												fieldLabel : 'PLZ',
 												listeners: {
@@ -167,9 +166,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 											}, {
 												xtype : 'textfield',
 												name : 'city',
-												flex: 1,
 												fieldLabel : 'Stadt',
-												labelWidth: 60,
+												labelWidth: 35,
 												margins: '0 0 0 6',
 												listeners: {
 							                        scope: this,
@@ -177,13 +175,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 							                    },
 							                    billingFieldName: 'dcity',
 												allowBlank : false
-											}/*, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'country',
-												fieldLabel : 'Land',
-												allowBlank : false
-											}*/]
+											}]
 					                }]
 								},{
 									xtype : 'fieldset',
@@ -207,19 +199,17 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    combineErrors: true,
 					                    defaultType: 'textfield',
 					                    defaults: {
-						                    labelWidth : 70
+						                    labelWidth : 70,
+						                    flex: 1
 						                },
 					                    items: [{
 					                    		fieldLabel: 'Empf&auml;nger',
 												name : 'dname1',
-												flex: 1,
 												emptyText : '1. Zeile',
 												allowBlank : true
-												
 											}, {
 												name : 'dname2',
 												hideLabel : true,
-												flex: 1,
 												margins: '0 0 0 6',
 												emptyText : '2. Zeile',
 												allowBlank : false
@@ -227,8 +217,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                },{
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
-					                	defaultType: 'textfield',
 					                    defaults: {
+					                    	xtype : 'textfield',
 						                    labelWidth : 70
 						                },
 					                	items: [{
@@ -240,31 +230,23 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                },{
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
-					                	defaultType: 'textfield',
 					                    defaults: {
-						                    labelWidth : 70
+						                    labelWidth : 70,
+						                    flex: 1,
 						                },
 					                	items: [{
 												xtype : 'numberfield',
-												flex: 1,
 												name : 'dpostalCode',
 												fieldLabel : 'PLZ',
 												allowBlank : false
 											}, {
 												xtype : 'textfield',
 												name : 'dcity',
-												flex: 1,
 												fieldLabel : 'Stadt',
-												labelWidth: 60,
+												labelWidth: 35,
 												margins: '0 0 0 6',
 												allowBlank : false
-											}/*, {
-												xtype : 'textfield',
-												anchor : '100%',
-												name : 'country',
-												fieldLabel : 'Land',
-												allowBlank : false
-											}*/]
+											}]
 					                }]
 								}, {
 									xtype : 'fieldset',

@@ -8,6 +8,10 @@ Ext.define('MyApp.view.TransitionWindow', {
 	width : 378,
 	record : null,
 	closeAction : 'destroy',
+	requires: [
+	           'MyApp.view.AddressFieldset',
+	           'MyApp.view.ShippingAddressFieldset'
+	       ],
 	bottomGrid : {
 		xtype : 'PositionGrid',
 		dock : 'bottom',
@@ -115,88 +119,12 @@ Ext.define('MyApp.view.TransitionWindow', {
 				}]
 	},
 	addressForm : {
-		xtype : 'fieldset',
+		xtype : 'addressFieldset',
 		title : 'Rechnungsadresse',
-		flex : 1,
-		items : [{
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'name1',
-					fieldLabel : 'Firma',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'name2',
-					fieldLabel : 'Name',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'street',
-					fieldLabel : 'Strasse',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'postalCode',
-					fieldLabel : 'PLZ',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'city',
-					fieldLabel : 'Stadt',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'country',
-					fieldLabel : 'Land',
-					allowBlank : false
-				}]
 	},
 	deliveryAddressForm : {
-		xtype : 'fieldset',
+		xtype : 'shippingAddressFieldset',
 		title : 'Lieferadresse',
-		flex : 1,
-		items : [{
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dname1',
-					fieldLabel : 'Firma',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dname2',
-					fieldLabel : 'Name',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dstreet',
-					fieldLabel : 'Strasse',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dpostalCode',
-					fieldLabel : 'PLZ',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dcity',
-					fieldLabel : 'Stadt',
-					allowBlank : false
-				}, {
-					xtype : 'textfield',
-					anchor : '100%',
-					name : 'dcountry',
-					fieldLabel : 'Land',
-					allowBlank : false
-				}]
 	},
 	initComponent : function() {
 		var me = this;

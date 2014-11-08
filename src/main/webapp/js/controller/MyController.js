@@ -56,9 +56,8 @@ Ext.define('MyApp.controller.MyController', {
 	activeBestellnr : 0,
 	activeBestellpositionId : 0,
 	bestellungDataStore : null,
-
 	activeCustomer : 0,
-
+	
 	init : function(application) {
 		this.control({
 					'#mainCustomerComboBox' : {
@@ -108,6 +107,7 @@ Ext.define('MyApp.controller.MyController', {
 		if (selections.length == 0)
 			return;
 	},
+	
 	getButtons : function() {
 		var buttons = {
 			createCustomer : Ext.getCmp('CreateCustomerButton'),

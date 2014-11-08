@@ -54,5 +54,11 @@ Ext.define('MyApp.model.KundeData', {
 						name : 'contact2'
 					}, {
 						name : 'contact3'
+					},{
+						name : 'notes'
+					},{
+						name : 'telephone'
+					},{
+						name : 'fax'
 					}]
 		});

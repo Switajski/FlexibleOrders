@@ -88,6 +88,37 @@ Ext.define('MyApp.controller.CustomerController', {
 		createCustomerWindow.down('field[name=customerNumber]').setDisabled('true');
 		createCustomerWindow.down('form').getForm().loadRecord(customer);
 		createCustomerWindow.show();
+		
+		this.displayAmounts(createCustomerWindow);
+	},
+	
+	displayAmounts : function(window){
+		amountRequests = [{
+			state : 'confirmed',
+			fieldQuery : 'field[name=openOrderConfirmation]'
+		}, {
+			state : 'shipped',
+			fieldQuery : 'field[name=openDeliveryNotes]'
+		}, {
+			state : 'invoiced',
+			fieldQuery : 'field[name=openInvoices]'
+		}];
+
+		amountRequests.forEach(function(amountRequest) {
+			Ext.Ajax.request({
+				url : '/FlexibleOrders/statistics/openAmount',
+				method : 'GET',
+				params : {
+					state : amountRequest.state
+				},
+				success : function(response) {
+					var text = response.responseText;
+					shippedAmount = Ext.JSON.decode(text).data;
+					window.down(amountRequest.fieldQuery)
+							.setValue(shippedAmount.value + '€');
+				}
+			});
+		});
 	},
 	
 	updateCustomer : function(store, customer){

@@ -26,7 +26,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									title : 'Kontaktinformation',
 									layout: 'anchor',
 									defaults: {
-					                    anchor: '100%'
+					                    anchor: '100%',
+					                    labelWidth : 70
 					                },
 					                items: [{
 					                    xtype: 'fieldcontainer',
@@ -37,13 +38,14 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 													xtype : 'numberfield',
 													name : 'customerNumber',
 													flex: 1,
+													labelWidth : 70,
 													fieldLabel : 'Kundennr'
 												}, {
 													xtype : 'textfield',
 													name : 'email',
 													flex: 2,
 													fieldLabel : 'E-Mail',
-													labelWidth: 60,
+													labelWidth: 50,
 													vtype: 'email'
 												}]
 					                }, {
@@ -51,7 +53,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	layout: 'hbox',
 					                	fieldLabel: 'Name',
 					                	defaults: {
-					                         hideLabel: 'true'
+					                         hideLabel: 'true',
+					                         labelWidth : 70
 					                    },
 					                	items: [{
 													xtype : 'textfield',
@@ -68,28 +71,28 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                },{
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
-					                	fieldLabel : 'Telefon',
+					                	defaults: {
+					                         labelWidth: 70
+					                    },
 					                	items: [{
 													xtype : 'textfield',
 													flex: 1,
-													name : 'telephoneNumber1',
-													emptyText : 'Festnetz',
-													hideLabel : 'true'
+													name : 'telephone',
+													fieldLabel : 'Telefon'
 												}, {
 													xtype : 'textfield',
 													flex: 1,
-													labelWidth: 70,
 													margins: '0 0 0 6',
-													name : 'telephoneNumber2',
-													emptyText : 'Fax',
-													hideLabel : 'true'
+													name : 'fax',
+													fieldLabel : 'Fax'
 												}]
 					                }]
 								}, {
 									xtype : 'fieldset',
 									title : 'Rechnungsadresse',
 									defaults: {
-					                    anchor: '100%'
+					                    anchor: '100%',
+					                    labelWidth : 70
 					                },
 					                items: [{
 					                    xtype: 'fieldcontainer',
@@ -97,6 +100,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    fieldLabel: 'Empf&auml;nger',
 					                    combineErrors: true,
 					                    defaultType: 'textfield',
+					                    defaults: {
+						                    labelWidth : 70
+						                },
 					                    items: [{
 												name : 'name1',
 												flex: 1,
@@ -126,6 +132,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                	defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												name : 'street',
 												flex: 1,
@@ -141,6 +150,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                	defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												xtype : 'numberfield',
 												flex: 1,
@@ -177,7 +189,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'Lieferadresse',
 									defaults: {
-					                    anchor: '100%'
+					                    anchor: '100%',
+					                    labelWidth : 70
 					                },
 					                items: [{
 					                    xtype: 'checkbox',
@@ -193,6 +206,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    layout: 'hbox',
 					                    combineErrors: true,
 					                    defaultType: 'textfield',
+					                    defaults: {
+						                    labelWidth : 70
+						                },
 					                    items: [{
 					                    		fieldLabel: 'Empf&auml;nger',
 												name : 'dname1',
@@ -212,6 +228,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                    defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												name : 'dstreet',
 												flex: 1,
@@ -222,6 +241,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                    defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												xtype : 'numberfield',
 												flex: 1,
@@ -248,7 +270,8 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									xtype : 'fieldset',
 									title : 'Zus&auml;tzliche Informationen',
 									defaults: {
-					                    anchor: '100%'
+					                    anchor: '100%',
+					                    labelWidth : 70
 					                },
 					                items: [{
 					                    xtype: 'fieldcontainer',
@@ -259,17 +282,20 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												name : 'paymentConditions',
 												flex: 1,
 												fieldLabel : 'Zahlungskonditionen',
-												labelWidth : 145
+												labelWidth : 125
 											}]
 					                },{
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                    defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												xtype : 'textfield',
 												name : 'vatIdNo',
 												flex: 1,
-												fieldLabel : 'Umsatzst. Id'
+												fieldLabel : 'Umsatzst.Id'
 											},{
 												xtype : 'textfield',
 												name : 'vendorNumber',
@@ -280,6 +306,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
 					                	defaultType: 'textfield',
+					                	defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												xtype : 'textfield',
 												name : 'saleRepresentative',
@@ -296,6 +325,9 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                	layout: 'hbox',
 					                	fieldLabel : 'Kontakt',
 					                	defaultType: 'textfield',
+					                	defaults: {
+						                    labelWidth : 70
+						                },
 					                	items: [{
 												xtype : 'textfield',
 												name : 'contact1',
@@ -319,15 +351,45 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 								{
 									xtype : 'fieldset',
 									title : 'Eigene Informationen - werden auf Dokumenten nicht angezeigt',
+									name : 'notesSet',
 									defaults: {
-					                    anchor: '100%'
+					                    anchor: '100%',
+					                    labelWidth : 70
 					                },
 					                items : [{
 										xtype : 'textarea',
 										name : 'notes',
 										flex: 1,
 										fieldLabel : 'Notizen'
-									}]
+									},{
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
+					                	defaultType: 'displayfield',
+					                	hideLabels : 'true',
+					                	fieldLabel : 'Offen',
+					                	labelWidth : 40,
+					                	defaults: {
+						                    labelWidth : 75,
+						                    margins: '0 3 0 0',
+						                    labelSeparator : "&nbsp;&nbsp;",
+						                    style : "text-weight: bold"
+						                },
+					                	items: [{
+					                		fieldLabel : 'Auftr&aumlge',
+					                		flex : 1,
+					                		labelWidth : 50,
+					                		name : 'openOrderConfirmation'
+					                	},{
+					                		fieldLabel : 'Lieferscheine',
+					                		flex : 1,
+					                		name : 'openDeliveryNotes'
+					                	},{
+					                		fieldLabel : 'Rechnungen',
+					                		flex : 1,
+					                		name : 'openInvoices'
+					                	}]
+									}
+									]
 								}],
 
 						dockedItems : [{

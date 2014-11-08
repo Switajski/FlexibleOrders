@@ -16,6 +16,6 @@ public enum ProductType {
                 return v;
             }
         }
-        throw new IllegalArgumentException("No matching processStep for given String found");
+        throw new IllegalArgumentException("No matching productType for given String: \""+ abbr +"\" found");
     }
 }

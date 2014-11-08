@@ -21,7 +21,7 @@ public enum ProductionState {
                 return v;
             }
         }
-        throw new IllegalArgumentException("No matching processStep for given String found");
+        throw new IllegalArgumentException("No matching productionState for given String : \""+ abbr +"\" found");
     }
     
 }

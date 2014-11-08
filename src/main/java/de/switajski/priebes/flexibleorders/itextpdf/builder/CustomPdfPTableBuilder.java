@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
 import java.util.ArrayList;
 
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Rectangle;
@@ -53,16 +54,18 @@ public class CustomPdfPTableBuilder {
     public static CustomPdfPTableBuilder createFooterBuilder(Amount net,
             Amount vat, Amount shipping, Amount gross, String paymentConditions) {
         PhraseBuilder bold = new PhraseBuilder("Betrag").withFont(FontFactory
-                .getFont(
-                        PriebesIText5PdfView.FONT,
+                .getFont(PriebesIText5PdfView.FONT,
                         PriebesIText5PdfView.FONT_SIZE,
                         Font.BOLD));
         PdfPCellBuilder leftAlign = new PdfPCellBuilder(bold.build());
         PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build())
                 .withRightHorizontalAlignment();
 
-        CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithTwoCols())
+        ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+        rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 30));
+        rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 70));
+        
+        CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(rowProperties)
                 .addCell(leftAlign
                         .withPhrase(bold.withText("Betrag").build())
                         .build())
@@ -70,15 +73,14 @@ public class CustomPdfPTableBuilder {
                         bold.withText(net.toString()).build()).build());
 
         if (shipping != null) footerBuilder
-                .addCell(leftAlign.withPhrase(
-                        bold.withText("Versand").build()).build())
-                .addCell(rightAlign.withPhrase(
-                        bold.withText(shipping.toString())
-                                .build())
+                .addCell(leftAlign
+                        .withPhrase(bold.withText("Versand").build()).build())
+                .addCell(rightAlign
+                        .withPhrase(bold.withText(shipping.toString()).build())
                         .build());
 
-        footerBuilder.addCell(
-                leftAlign
+        footerBuilder
+                .addCell(leftAlign
                         .withPhrase(bold.withText("zzgl. 19% MwSt.").build())
                         .build())
                 .addCell(rightAlign.withPhrase(
@@ -94,14 +96,11 @@ public class CustomPdfPTableBuilder {
                         .withBorder(Rectangle.TOP)
                         .build());
 
-        if (paymentConditions != null) footerBuilder.addCell(
-                leftAlign.withPhrase(
-                        new PhraseBuilder(paymentConditions).build())
+        if (paymentConditions != null) footerBuilder
+                .addCell(leftAlign
+                        .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: "+ paymentConditions).build())
                         .withBorder(Rectangle.NO_BORDER)
-                        .build())
-                .addCell(rightAlign
-                        .withPhrase(bold.withText("").build())
-                        .withBorder(Rectangle.NO_BORDER)
+                        .withColSpan(2)
                         .build());
 
         return footerBuilder;

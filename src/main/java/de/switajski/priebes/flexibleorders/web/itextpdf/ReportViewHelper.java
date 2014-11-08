@@ -91,8 +91,6 @@ public class ReportViewHelper {
         PhraseBuilder pb = new PhraseBuilder("");
         PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
-        String shipAddress = createString(p.shippingAddress);
-
         Phrase firstCol = new PhraseBuilder(createString(p.orderNumbers, "B-Nr.")).build();
         appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol, "AB-Nr.");
         appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, firstCol, "L-Nr.");
@@ -109,12 +107,15 @@ public class ReportViewHelper {
                 .append(isEmpty(p.saleRepresentative) ? "" :
                         NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
 
-        StringBuilder secondColB = new StringBuilder().append("Lieferadresse:")
-                .append(NEWLINE + shipAddress);
-        if (p.deliveryMethod != null)
-            secondColB.append(NEWLINE).append(NEWLINE)
-                .append(createString(p.deliveryMethod))
-                .toString();
+        StringBuilder secondColB = new StringBuilder();
+        if (p.shippingAddress != null){
+            secondColB = new StringBuilder().append("Lieferadresse:")
+                    .append(NEWLINE + createString(p.shippingAddress));
+            if (p.deliveryMethod != null)
+                secondColB.append(NEWLINE).append(NEWLINE)
+                    .append(createString(p.deliveryMethod))
+                    .toString();
+        }
 
         String thirdCol = new StringBuilder()
                 .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "

@@ -15,6 +15,7 @@ public class PdfPCellBuilder {
 	private int border = Rectangle.NO_BORDER;
 	private int colspan;
 	private int horizontalAlignment;
+	private int colSpan;
 
 	public PdfPCellBuilder(Phrase phrase) {
 		this.phrase = phrase;
@@ -26,6 +27,7 @@ public class PdfPCellBuilder {
 		cell.setBorderWidth(PriebesIText5PdfView.BORDER_WIDTH);
 		cell.setColspan(colspan);
 		cell.setHorizontalAlignment(horizontalAlignment);
+		cell.setColspan(colSpan);
 		return cell;
 	}
 
@@ -74,4 +76,9 @@ public class PdfPCellBuilder {
 		this.border = rectangle;
 		return this;
 	}
+
+    public PdfPCellBuilder withColSpan(int colSpan) {
+        this.colSpan = colSpan;
+        return this;
+    }
 }

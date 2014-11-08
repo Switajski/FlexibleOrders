@@ -35,7 +35,8 @@ public class ReportDtoTestFixture {
         ReportDto r = new ReportDto();
         r.headerAddress = customer.getInvoiceAddress();
         r.shippingSpecific_shippingAddress = customer.getShippingAddress();
-        r.shippingSpecific_deliveryMethod = deliveryMethod; 
+        r.shippingSpecific_deliveryMethod = deliveryMethod;
+        r.shippingSpecific_shippingCosts = new Amount(BigDecimal.valueOf(15.5d), Currency.EUR);
 
         r.documentNumber = O_NR;
         r.created = new Date();

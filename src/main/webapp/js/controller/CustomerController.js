@@ -75,7 +75,6 @@ Ext.define('MyApp.controller.CustomerController', {
 			id : "CreateCustomerWindow",
 			title : 'Kunden bearbeiten',
 			customerNumberEditable : false,
-			createCustomerRecord : function() {return customer},
 			onSave : function(){
 				form2 = this.down('form').getForm();
 				form2.updateRecord();

@@ -18,7 +18,7 @@ public class CustomerDto {
 	public Long customerNumber;
 
 	@JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    public String email, password, phone, firstName, lastName;
+    public String email, password, firstName, lastName, phone, fax, notes;
 
     //*********************
     // invoice address attributes

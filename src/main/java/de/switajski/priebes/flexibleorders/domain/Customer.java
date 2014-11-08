@@ -56,6 +56,10 @@ public class Customer extends GenericEntity{
      */
     @JsonIgnore
     private int paymentGracePeriod;
+
+    private String notes;
+
+    private String fax;
     
     public Customer(){}
     
@@ -143,5 +147,21 @@ public class Customer extends GenericEntity{
 	public Address getInvoiceAddress() {
 		return invoiceAddress;
 	}
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public String getFax() {
+        return fax;
+    }
 
 }

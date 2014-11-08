@@ -57,7 +57,7 @@ Ext.define('MyApp.model.KundeData', {
 					},{
 						name : 'notes'
 					},{
-						name : 'telephone'
+						name : 'phone'
 					},{
 						name : 'fax'
 					}]

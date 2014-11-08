@@ -44,6 +44,8 @@ public class CustomerDtoConverterServiceImpl {
 		customer.setLastName(dto.lastName);
 		customer.setEmail(dto.email);
 		customer.setPhone(dto.phone);
+		customer.setFax(dto.fax);
+		customer.setNotes(dto.notes);
 		return customer;
 	}
 	
@@ -57,6 +59,8 @@ public class CustomerDtoConverterServiceImpl {
             jc.firstName = c.getFirstName();
             jc.email = c.getEmail();
             jc.phone = c.getPhone();
+            jc.fax = c.getFax();
+            jc.notes = c.getNotes();
             
             jc.name1 = c.getInvoiceAddress().getName1();
             jc.name2 = c.getInvoiceAddress().getName2();

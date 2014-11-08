@@ -298,18 +298,6 @@ fieldset textfield {
 	background: #e0e7d3;
 }
 
-fieldset textarea {
-	margin: 3px;
-	height: 165px;
-	background: #e0e7d3;
-}
-
-/*fieldset input {
-	margin: 3px;
-	height: 20px;
-	background: #e0e7d3;
-}*/
-
 fieldset table {
 	width: 100%;
 }

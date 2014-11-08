@@ -246,20 +246,18 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                }]
 								}, {
 									xtype : 'fieldset',
-									title : 'zus&auml;tzliche Informationen',
+									title : 'Zus&auml;tzliche Informationen',
 									defaults: {
 					                    anchor: '100%'
 					                },
 					                items: [{
 					                    xtype: 'fieldcontainer',
 					                    layout: 'hbox',
-					                    combineErrors: true,
 					                    defaultType: 'textfield',
 					                    items: [{
 												xtype : 'textarea',
 												name : 'paymentConditions',
 												flex: 1,
-												margins: '0 3 0 0',
 												fieldLabel : 'Zahlungskonditionen',
 												labelWidth : 145
 											}]
@@ -317,6 +315,19 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												emptyText : '3. Zeile'
 											}]
 					                }]
+								},
+								{
+									xtype : 'fieldset',
+									title : 'Eigene Informationen - werden auf Dokumenten nicht angezeigt',
+									defaults: {
+					                    anchor: '100%'
+					                },
+					                items : [{
+										xtype : 'textarea',
+										name : 'notes',
+										flex: 1,
+										fieldLabel : 'Notizen'
+									}]
 								}],
 
 						dockedItems : [{

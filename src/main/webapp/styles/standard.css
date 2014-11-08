@@ -285,27 +285,6 @@ fieldset.dojo {
 	width: 560px;
 }
 
-fieldset label {
-	width: 70px;
-	float: left;
-	margin-top: 1.7em;
-	margin-left: 20px;
-}
-
-fieldset textfield {
-	margin: 3px;
-	height: 20px;
-	background: #e0e7d3;
-}
-
-fieldset table {
-	width: 100%;
-}
-
-fieldset th {
-	padding-left: 25px;
-}
-
 .table-buttons {
 	background-color:#fff;
 	border:none;

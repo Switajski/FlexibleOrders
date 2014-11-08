@@ -81,7 +81,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 													labelWidth: 70,
 													margins: '0 0 0 6',
 													name : 'telephoneNumber2',
-													emptyText : 'Mobil',
+													emptyText : 'Fax',
 													hideLabel : 'true'
 												}]
 					                }]

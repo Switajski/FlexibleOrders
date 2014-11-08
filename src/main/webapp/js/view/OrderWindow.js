@@ -5,7 +5,7 @@ Ext.define('MyApp.view.OrderWindow', {
 	id : 'OrderWindow',
 	headerForm : {
 		xtype : 'fieldset',
-		title : 'Kunde',
+		title : 'Bestellung',
 		flex : 1,
 		items : [{
 		    xtype: 'fieldcontainer',

@@ -38,7 +38,7 @@ Ext
 								{
 									xtype : 'gridcolumn',
 									dataIndex : 'productName',
-									width : 300,
+									flex : 1,
 									text : 'Artikel Name'
 								},
 								{
@@ -110,8 +110,7 @@ Ext
 												xtype : 'textfield',
 												fieldLabel : 'ABnr',
 												name : 'orderConfirmationNumber'
-											},
-											{
+											}, {
 												xtype : 'datefield',
 												format : 'd/m/Y',
 												allowBlank : true,

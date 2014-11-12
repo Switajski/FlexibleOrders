@@ -76,7 +76,7 @@ Ext.define('MyApp.controller.InvoiceController', {
 							city : form.getValues().city,
 							country : form.getValues().country,
 							invoiceNumber : form.getValues().invoiceNumber,
-							paymentConditions : form.getValues().paymentConditons,
+							paymentConditions : form.getValues().paymentConditions,
 							items : Ext.pluck(createInvoiceStore.data.items,
 									'data')
 						},

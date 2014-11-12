@@ -56,7 +56,7 @@ Ext.define('MyApp.view.PositionGridPanel', {
 					}, {
 						xtype : 'gridcolumn',
 						dataIndex : 'productName',
-						width : 150,
+						flex : 1,
 						text : 'Artikel Name'
 					}, {
 						xtype : 'gridcolumn',

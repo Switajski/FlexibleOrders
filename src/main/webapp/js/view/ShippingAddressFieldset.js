@@ -22,14 +22,14 @@ Ext.define('MyApp.view.ShippingAddressFieldset', {
 				name : 'dname1',
 				hideLabel : true,
 				emptyText : '1. Zeile',
-				allowBlank : true
+				allowBlank : false
 				
 			}, {
 				name : 'dname2',
 				hideLabel : true,
 				margins: '0 0 0 6',
 				emptyText : '2. Zeile',
-				allowBlank : false
+				allowBlank : true
 			}]
     },{
     	xtype: 'fieldcontainer',

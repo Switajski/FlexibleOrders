@@ -23,7 +23,7 @@ Ext.define('MyApp.view.AddressFieldset', {
 				hideLabel : true,
 				emptyText : '1. Zeile',
                 billingFieldName: 'dname1',
-				allowBlank : true
+				allowBlank : false
 				
 			}, {
 				name : 'name2',
@@ -31,7 +31,7 @@ Ext.define('MyApp.view.AddressFieldset', {
 				margins: '0 0 0 6',
 				emptyText : '2. Zeile',
                 billingFieldName: 'dname2',
-				allowBlank : false
+				allowBlank : true
 			}]
     },{
     	xtype: 'fieldcontainer',

@@ -169,7 +169,6 @@ Ext.define('MyApp.view.PositionGridPanel', {
 		this.onDeliveryHistoryClick(null, null, null, null, null, record);
 	},
 	onRemoveClick : function(view, a, b, column, event, record, f) {
-		console.log('deliveryNotesItemGrid - customtransitionfunction');
 		MyApp.getApplication().getController('MyController')
 				.deleteReport(record.data.documentNumber);
 	},

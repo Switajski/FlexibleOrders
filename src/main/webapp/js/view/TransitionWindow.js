@@ -182,7 +182,6 @@ Ext.define('MyApp.view.TransitionWindow', {
 		if (record != null) {
 			var combobox = Ext.ComponentQuery.query('invoicenumbercombobox')[0];
 			this.record.data.invoiceNumber = combobox.getValue();
-			console.log('new value' + combobox.getValue());
 		}
 	}
 

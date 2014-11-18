@@ -89,7 +89,6 @@ Ext.define('MyApp.view.OrderWindow', {
 			width : 250,
 			renderer : function(value, metaData, record, row, col, store,
 					gridView) {
-				console.log(value);
 				return (value + ' - ' + record.data.productName);
 			},
 			editor : {

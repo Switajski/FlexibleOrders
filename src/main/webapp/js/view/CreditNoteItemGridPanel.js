@@ -5,7 +5,6 @@ Ext.define('MyApp.view.CreditNoteItemGridPanel', {
 	id : 'CreditNoteItemGrid',
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
-				console.log('CreditNoteItemGrid - customtransitionfunction');
 				var anr = record.data.creditNoteNumber;
 				
 				MyApp.getApplication().getController('IssueController').onIssue(
@@ -13,7 +12,6 @@ Ext.define('MyApp.view.CreditNoteItemGridPanel', {
 
 			},
 	onRemoveClick: function(view, a, b, column, event, record, f) {
-				console.log('CreditNoteItemGrid - customtransitionfunction');
 				MyApp.getApplication().getController('MyController').deleteReport(
 						record.data.CreditNoteNumber);
 

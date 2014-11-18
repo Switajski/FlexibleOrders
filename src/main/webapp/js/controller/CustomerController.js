@@ -30,7 +30,6 @@ Ext.define('MyApp.controller.CustomerController', {
 	},
 	
 	onCreateCustomer : function(button, event, options) {
-		console.log('onCreateCustomer');
 		var createCustomerWindow = Ext.create('MyApp.view.CreateCustomerWindow', {
 			id : "CreateCustomerWindow",
 			onSave : function(){
@@ -54,7 +53,6 @@ Ext.define('MyApp.controller.CustomerController', {
 		
 		if (form.isValid()) {
 			form.updateRecord(active);
-			console.log(active);
 			store.add(active);
 			store.sync({
 				success : function (){

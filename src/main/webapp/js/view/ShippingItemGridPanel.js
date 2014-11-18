@@ -4,7 +4,6 @@ Ext.define('MyApp.view.ShippingItemGridPanel', {
 			title : "Auftragsbest&auml;tigungen / Auftr&auml;ge",
 			id : 'ShippingItemGrid',
 			onActionClick : function(view, a, b, column, event, record, f) {
-				console.log('ShippingItemGrid - customtransitionfunction');
 				if (record.get('agreed') === false)
 					MyApp.getApplication().getController('AgreementController').onAgree("ok", record);
 				else 

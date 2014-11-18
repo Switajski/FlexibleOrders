@@ -4,7 +4,6 @@ Ext.define('MyApp.view.ArchiveItemGridPanel', {
 			title : "Belege",
 			customicon : '',
 			onActionClick : function(view, a, b, column, event, record, f) {
-				console.log('ArchiveItemGrid - customtransitionfunction');
 				MyApp.getApplication().getController('MarkPaidController').markPaid(
 						"ok", record);
 

@@ -152,7 +152,6 @@ Ext.define('MyApp.view.BestellpositionGridPanel', {
 	onAddClick : function() {
 		var bestellnr = this.getOrderNumber(); 
 		customer = Ext.getCmp('mainCustomerComboBox').getValue();
-		console.log('hierher!');
 		if (bestellnr == null || bestellnr == 0 || bestellnr == "") {
 			Ext.MessageBox.show({
 						title : 'Bestellnummer leer',

@@ -4,7 +4,6 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 	title : "Bestellungen",
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
-		console.log('orderItemGrid - customtransitionfunction');
 		var ocnr = record.data.orderNumber;
 		MyApp.getApplication().getController('ConfirmController')
 				.onConfirm(record);
@@ -19,7 +18,6 @@ Ext.define('MyApp.view.OrderItemGridPanel', {
 		Ext.MessageBox.alert('Lieferhisorie leer', 'Die Lieferhistorie dieser Bestellung ist leer');
 	},
 	onRemoveClick : function(view, a, b, column, event, record, f) {
-		console.log('deliveryNotesItemGrid - customtransitionfunction');
 		MyApp.getApplication().getController('OrderController').deleteOrder(
 				record.data.orderNumber);
 	}

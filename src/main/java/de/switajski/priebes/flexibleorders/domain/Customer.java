@@ -45,11 +45,7 @@ public class Customer extends GenericEntity{
     @Embedded
     private CustomerDetails details;
     
-    private String phone;
-    
-    private String firstName;
-    
-    private String lastName;
+    private String companyName, firstName, lastName;
     
     /**
      * number of days to add to due date
@@ -57,9 +53,9 @@ public class Customer extends GenericEntity{
     @JsonIgnore
     private int paymentGracePeriod;
 
-    private String notes;
+    private String phone, fax;
 
-    private String fax;
+    private String notes;
     
     public Customer(){}
     
@@ -162,6 +158,14 @@ public class Customer extends GenericEntity{
 
     public String getFax() {
         return fax;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
 }

@@ -54,6 +54,18 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                }, {
 					                	xtype: 'fieldcontainer',
 					                	layout: 'hbox',
+					                	defaults: {
+					                         labelWidth : 70
+					                    },
+					                	items: [{
+													xtype : 'textfield',
+													flex: 1,
+													name : 'companyName',
+													fieldLabel : 'Firma'
+												}]
+					                }, {
+					                	xtype: 'fieldcontainer',
+					                	layout: 'hbox',
 					                	fieldLabel: 'Name',
 					                	defaults: {
 					                         hideLabel: 'true',

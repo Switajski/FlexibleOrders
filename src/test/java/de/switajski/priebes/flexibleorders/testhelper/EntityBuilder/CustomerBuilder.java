@@ -15,6 +15,7 @@ public class CustomerBuilder implements Builder<Customer> {
     private String phone;
     private String firstName;
     private String lastName;
+    private String companyName;
     private int paymentGracePeriod;
 
     @Override
@@ -53,10 +54,11 @@ public class CustomerBuilder implements Builder<Customer> {
 		phone = "0049".concat(i.toString());
 		return this;
 	}
-
+	
 	public CustomerBuilder yvonne() {
 		this.setCustomerNumber(11L)
 			.setEmail("massa.Suspendisse@consequat.edu")
+			.setCompanyName("Baby Toys")
 			.setFirstName("Yvonne")
 			.setLastName("Donaldson")
 			.setShippingAddress(
@@ -190,6 +192,11 @@ public class CustomerBuilder implements Builder<Customer> {
 	public CustomerBuilder setDetails(CustomerDetails details) {
 		this.details = details;
 		return this;
+	}
+	
+	public CustomerBuilder setCompanyName(String companyName){
+	    this.companyName = companyName;
+	    return this;
 	}
 
 	public CustomerBuilder setFirstName(String firstName) {

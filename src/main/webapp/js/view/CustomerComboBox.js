@@ -17,9 +17,9 @@ Ext.define('MyApp.view.CustomerComboBox', {
 			.create(
 					'Ext.XTemplate',
 					'<tpl for=".">',
-					'<div class="x-boundlist-item">{customerNumber} - {firstName} {lastName}</div>',
+					'<div class="x-boundlist-item">{customerNumber} - {companyName} {lastName}</div>',
 					'</tpl>'),
 	displayTpl : Ext.create('Ext.XTemplate', '<tpl for=".">',
-			'{customerNumber} - {firstName} {lastName}', '</tpl>')
+			'{customerNumber} - {companyName} {lastName}', '</tpl>')
 
 });

@@ -41,6 +41,7 @@ public class CustomerDtoConverterServiceImpl {
 		customer.setCustomerNumber(dto.customerNumber);
 		customer.setEmail(dto.email);
 		customer.setFirstName(dto.firstName);
+		customer.setCompanyName(dto.companyName);
 		customer.setLastName(dto.lastName);
 		customer.setEmail(dto.email);
 		customer.setPhone(dto.phone);
@@ -55,6 +56,7 @@ public class CustomerDtoConverterServiceImpl {
         for (Customer c : customers){
             CustomerDto jc = new CustomerDto();
             jc.customerNumber = c.getCustomerNumber();
+            jc.companyName = c.getCompanyName();
             jc.lastName = c.getLastName();
             jc.firstName = c.getFirstName();
             jc.email = c.getEmail();

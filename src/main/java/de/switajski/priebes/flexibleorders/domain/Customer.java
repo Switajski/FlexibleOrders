@@ -55,6 +55,7 @@ public class Customer extends GenericEntity{
 
     private String phone, fax;
 
+    @Column(columnDefinition="TEXT")
     private String notes;
     
     public Customer(){}

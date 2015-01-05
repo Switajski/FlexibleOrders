@@ -66,6 +66,13 @@ Ext.define('MyApp.controller.OrderController', {
 				});
 		orderWindow.show();
 		orderWindow.focus();
+		
+		var request = Ext.Ajax.request({
+			url : '/FlexibleOrders/order/generateOrderNumber',
+			success : function(response) {
+				Ext.getCmp('OrderWindow').down('ordernumbercombobox').setValue(Ext.decode(response.responseText).data);
+			}
+		});
 	},
 	
 	deleteOrder : function(orderNumber){

@@ -42,9 +42,6 @@ Ext.define('MyApp.store.CreateOrderDataStore', {
                     type: 'json',
                     root: 'data',
                     writeAllFields: false
-                },
-                afterRequest:function(request,success){
-                    console.log(request);	                    
                 }
             }
         }, cfg)]);

@@ -32,8 +32,6 @@ import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoPageConverterService;
-import de.switajski.priebes.flexibleorders.service.helper.ItemDtoFilterHelper;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;

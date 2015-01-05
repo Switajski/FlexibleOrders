@@ -12,6 +12,7 @@ import de.switajski.priebes.flexibleorders.service.OrderServiceTest;
 import de.switajski.priebes.flexibleorders.service.QuantityCalculatorTest;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryServiceTest;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingServiceTest;
+import de.switajski.priebes.flexibleorders.service.api.OrderNumberGeneratorServiceTest;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcherTest;
 import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
 import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
@@ -28,7 +29,8 @@ import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
 		InvoicingServiceTest.class,
 		DeliveryServiceTest.class,
 		ProcessStepTest.class,
-		StatusFilterDispatcherTest.class
+		StatusFilterDispatcherTest.class,
+		OrderNumberGeneratorServiceTest.class
 })
 public class UnitTestSuite {
 

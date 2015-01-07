@@ -2,7 +2,7 @@ FlexibleOrders [![Build Status](http://93.180.154.157:8080/buildStatus/icon?job=
 ==============
 
 FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  
-The intention of this application is to ease the work of start-up companies by very simple GUI and a high user fault tolerance. 
+The intention of this application is to ease the work of start-up companies by a simple user interface and easy integration with e-commerce systems.  
 Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is depicted with POJOs.
 
 Getting started

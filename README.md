@@ -1,28 +1,11 @@
-FlexibleOrders
+FlexibleOrders 
 ==============
 
-FlexibleOrders is a java web application for maintaining and printing orders, invoices, shipping info, etc.
-The intention of this application is the basic mapping of one process in java using (latest) state-of-the-art techniques.
-Used technologies are Spring, Hibernate and ExtJs as GUI. Core Elements are Spring-Data's "Repositories" and "Services".
-The domain model is depicted with POJOs.
+FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  
+The intention of this application is to ease the work of start-up companies by very simple GUI and a high user failure tolerance. 
+Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is depicted with POJOs.
 
-
-Domain model - the purchasing process
--------------------------------------
-An `Order` consists of `OrderItems`. Flexible Order assigns `ReportItem`s to those `OrderItems`. 
-Report Items can be:
-
-- `ConfirmationItem` as part of a `Confirmation Report`
-- `ShippingItem` as part of `DeliveryNotes`
-- `InvoiceItem` as part of a `Invoice`
-- `ReceiptItem` as part of a `Receipt`
-
-    *One feature of this application is to provide the process easy modifiable to any (IT)-users so they can be free to modify this application for their own needs.*
-
-Process depicted
-----------------
-Each report item represents a state of a purchasing process.  
-This report generation enables piecemeal delivering and flexibility in changing reports.
+[![Build Status](http://93.180.154.157:8080/buildStatus/icon?job=FlexibleOrders)](http://93.180.154.157:8080/job/FlexibleOrders/)
 
 Getting started
 ---------------
@@ -40,7 +23,7 @@ and start the application server with a running DB. Postgres is preconfigured.
 
 Contribute
 ----------
-Just send me an email to marek@switajski.de
+Just send me an email: marek@switajski.de
 
 License
 -------

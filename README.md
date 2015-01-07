@@ -7,7 +7,7 @@ Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is de
 
 Getting started
 ---------------
-FlexibleOrders is developed with Eclipse with Spring Tool Suite (STS). In order to program it run from command line: 
+FlexibleOrders is developed with Eclipse with Spring Tool Suite (STS). In order to get to the code stuff run from command line: 
 
 `git clone git@github.com:Switajski/FlexibleOrders.git`
 
@@ -17,7 +17,7 @@ and import the just created git repository as "existing project" to eclipse. The
 `<property name="hibernate.hbm2ddl.auto" value="update"/>`
 to 
 `<property name="hibernate.hbm2ddl.auto" value="create"/>`
-and start the application server with a running DB. Postgres is preconfigured.
+and start the application server with a running DB. PostgreSQL is preconfigured.
 
 Contribute
 ----------

@@ -1,11 +1,9 @@
-FlexibleOrders 
+FlexibleOrders [![Build Status](http://93.180.154.157:8080/buildStatus/icon?job=FlexibleOrders)](http://93.180.154.157:8080/job/FlexibleOrders/) 
 ==============
 
 FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  
 The intention of this application is to ease the work of start-up companies by very simple GUI and a high user failure tolerance. 
 Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is depicted with POJOs.
-
-[![Build Status](http://93.180.154.157:8080/buildStatus/icon?job=FlexibleOrders)](http://93.180.154.157:8080/job/FlexibleOrders/)
 
 Getting started
 ---------------

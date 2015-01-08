@@ -237,7 +237,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         OrderConfirmation confirmationReport = orderService.confirm(
                 new ConfirmParameter(
                         b11.getOrderNumber(),
-                        "AB11",
+                        "AB176",
                         new LocalDate(),
                         null,
                         AddressBuilder.createDefault(),

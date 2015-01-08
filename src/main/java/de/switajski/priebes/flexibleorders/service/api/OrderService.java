@@ -27,7 +27,6 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
-import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
@@ -37,7 +36,6 @@ import de.switajski.priebes.flexibleorders.service.CatalogProductServiceImpl;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
-import de.switajski.priebes.flexibleorders.web.ExceptionController;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**

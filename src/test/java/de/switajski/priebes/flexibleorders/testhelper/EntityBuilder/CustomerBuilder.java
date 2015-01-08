@@ -30,6 +30,7 @@ public class CustomerBuilder implements Builder<Customer> {
 		c.setFirstName(firstName);
 		c.setLastName(lastName);
 		c.setPaymentGracePeriod(paymentGracePeriod);
+		c.setCompanyName(companyName);
 		return c;
 	}
     

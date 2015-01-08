@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;

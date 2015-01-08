@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -9,14 +8,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 @Entity
 public class Invoice extends Report {

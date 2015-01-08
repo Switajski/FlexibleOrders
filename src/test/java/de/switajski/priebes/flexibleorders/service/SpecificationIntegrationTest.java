@@ -12,7 +12,6 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -88,7 +87,6 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Transactional
     @Test
-    @Rollback
     public void findAll_OpenShippingItemSpecShouldRetrieveSpecifiedReportItems() {
         // GIVEN test data from Open Office calculation sheet "Test Data.ods"
         OrderConfirmation agreement = givenOrderAgreement();
@@ -104,7 +102,6 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Transactional
     @Test
-    @Rollback
     public void findAll_AgreedItemsToBeShipped() {
         // GIVEN test data from Open Office calculation sheet "Test Data.ods"
         OrderConfirmation agreement = givenOrderAgreement();

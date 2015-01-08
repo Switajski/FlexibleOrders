@@ -36,6 +36,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProdu
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
+@Transactional
 public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Autowired

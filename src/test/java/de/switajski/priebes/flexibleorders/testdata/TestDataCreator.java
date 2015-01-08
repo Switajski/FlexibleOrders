@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
@@ -50,6 +50,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * @author Marek Switajski
  * 
  */
+@Transactional 
 public class TestDataCreator extends AbstractSpringContextTest {
 
 	@Autowired

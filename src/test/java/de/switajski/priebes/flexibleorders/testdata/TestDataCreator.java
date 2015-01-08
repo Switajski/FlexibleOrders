@@ -77,7 +77,6 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private AgreementService agreementService;
 
 	// @Ignore("This test is to initialize test data for GUI testing")
-	@Rollback(false)
 	@Test
 	public void createTestData() {
 		createProducts();

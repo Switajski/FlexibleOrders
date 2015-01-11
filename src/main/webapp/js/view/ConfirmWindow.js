@@ -1,7 +1,4 @@
-Ext
-		.define(
-				'MyApp.view.ConfirmWindow',
-				{
+Ext.define('MyApp.view.ConfirmWindow', {
 					extend : 'MyApp.view.TransitionWindow',
 					title : 'Auftrag best&auml;tigen',
 					width : 500,
@@ -110,7 +107,8 @@ Ext
 												xtype : 'textfield',
 												fieldLabel : 'ABnr',
 												name : 'orderConfirmationNumber'
-											}, {
+											},
+											{
 												xtype : 'datefield',
 												format : 'd/m/Y',
 												allowBlank : true,

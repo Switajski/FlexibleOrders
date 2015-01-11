@@ -1,6 +1,3 @@
-/**
- * 
- */
 Ext.define('MyApp.view.DetailsFieldset', {
 	extend : 'Ext.form.FieldSet',
 	alias : 'widget.detailsFieldset',

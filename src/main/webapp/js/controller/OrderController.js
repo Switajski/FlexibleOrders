@@ -3,16 +3,16 @@ Ext.define('MyApp.controller.OrderController', {
 	extend : 'Ext.app.Controller',
 
 	id : 'OrderController',
-	models : ['ItemData'],
-	stores : ['CreateOrderDataStore'],
-	views : ['OrderWindow'],
+	models : [ 'ItemData' ],
+	stores : [ 'CreateOrderDataStore' ],
+	views : [ 'OrderWindow' ],
 
 	init : function(application) {
 		this.control({
-					'#ErstelleBestellungButton' : {
-						click : this.onOrder
-					}
-				});
+			'#ErstelleBestellungButton' : {
+				click : this.onOrder
+			}
+		});
 	},
 
 	order : function(button, event, option) {
@@ -41,7 +41,8 @@ Ext.define('MyApp.controller.OrderController', {
 			success : function(response) {
 				var text = response.responseText;
 				// Sync
-				controller = MyApp.getApplication().getController('MyController');
+				controller = MyApp.getApplication().getController(
+						'MyController');
 				controller.sleep(500);
 				controller.syncAll();
 				Ext.getCmp('CreateOrderGrid').getStore().removeAll();
@@ -58,36 +59,38 @@ Ext.define('MyApp.controller.OrderController', {
 			return;
 
 		var orderWindow = Ext.create('MyApp.view.OrderWindow', {
-					id : "OrderWindow",
-					record : customer,
-					onShow : function() {
-						this.down('form').getForm().loadRecord(customer);
-					}
-				});
+			id : "OrderWindow",
+			record : customer,
+			onShow : function() {
+				this.down('form').getForm().loadRecord(customer);
+			}
+		});
 		orderWindow.show();
 		orderWindow.focus();
-		
+
 		var request = Ext.Ajax.request({
 			url : '/FlexibleOrders/order/generateOrderNumber',
 			success : function(response) {
-				Ext.getCmp('OrderWindow').down('ordernumbercombobox').setValue(Ext.decode(response.responseText).data);
+				Ext.getCmp('OrderWindow').down('ordernumbercombobox').setValue(
+						Ext.decode(response.responseText).data);
 			}
 		});
 	},
-	
-	deleteOrder : function(orderNumber){
+
+	deleteOrder : function(orderNumber) {
 		var request = Ext.Ajax.request({
 			url : '/FlexibleOrders/transitions/deleteOrder',
 			params : {
 				orderNumber : orderNumber
 			},
 			success : function(response) {
-				controller = MyApp.getApplication().getController('MyController');
+				controller = MyApp.getApplication().getController(
+						'MyController');
 				controller.sleep(500);
 				controller.syncAll();
 			}
 		});
-		
+
 	}
 
 });

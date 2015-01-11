@@ -5,16 +5,16 @@ Ext.define('MyApp.view.InvoiceItemGridPanel', {
 	id : 'InvoiceItemGrid',
 	customicon : '/FlexibleOrders/images/new_ab.png',
 	onActionClick : function(view, a, b, column, event, record, f) {
-				var anr = record.data.invoiceNumber;
-				
-				MyApp.getApplication().getController('MarkPaidController').markPaid(
-						"ok", anr, record);
+		var anr = record.data.invoiceNumber;
 
-			},
-	onRemoveClick: function(view, a, b, column, event, record, f) {
-				MyApp.getApplication().getController('MyController').deleteReport(
-						record.data.invoiceNumber);
+		MyApp.getApplication().getController('MarkPaidController').markPaid(
+				"ok", anr, record);
 
-			}
+	},
+	onRemoveClick : function(view, a, b, column, event, record, f) {
+		MyApp.getApplication().getController('MyController').deleteReport(
+				record.data.invoiceNumber);
+
+	}
 
 });

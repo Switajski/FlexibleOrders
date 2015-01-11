@@ -1,6 +1,3 @@
-/**
- * 
- */
 Ext.define('MyApp.view.ShippingAddressFieldset', {
 	extend : 'Ext.form.FieldSet',
 	alias : 'widget.shippingAddressFieldset',

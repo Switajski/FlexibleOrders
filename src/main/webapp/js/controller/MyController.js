@@ -50,8 +50,6 @@ Ext.define('MyApp.controller.MyController', {
 			'DeliverWindow', 'AgreementWindow', 'OrderNumberComboBox',
 			'InvoiceNumberComboBox', 'OrderWindow', 'InvoiceWindow',
 			'DeliveryNotesItemGridPanel', 'DeliveryMethodComboBox'],
-	// TODO: Registrieren und Initialisiseren von Views an einer Stelle
-	// implementieren
 
 	activeBestellnr : 0,
 	activeBestellpositionId : 0,

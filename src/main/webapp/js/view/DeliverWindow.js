@@ -1,5 +1,4 @@
-Ext
-		.define(
+Ext.define(
 				'MyApp.view.DeliverWindow',
 				{
 					extend : 'MyApp.view.TransitionWindow',
@@ -84,90 +83,93 @@ Ext
 						xtype : 'fieldset',
 						title : 'Lieferschein',
 						flex : 1,
-						items : [ {
-							xtype : 'fieldcontainer',
-							layout : 'hbox',
-							defaults : {
-							},
-							items : [ {
-								xtype : 'displayfield',
-								anchor : '100%',
-								name : 'customerNumber',
-								fieldLabel : 'Kundennummer'
-							}, {
-								xtype : 'displayfield',
-								anchor : '100%',
-								name : 'firstName',
-								margins : '0 0 0 10',
-								fieldLabel : 'Name',
-								labelWidth : 35
-							}, {
-								xtype : 'displayfield',
-								anchor : '100%',
-								name : 'lastName',
-								margins : '0 0 0 6',
-								hideLabel : 'true'
-							} ]
-						}, {
-							xtype : 'fieldcontainer',
-							layout : 'hbox',
-							defaults : {
-								flex : 1
-							},
-							items : [ {
-								xtype : 'datefield',
-								format : 'd/m/Y',
-								allowBlank : true,
-								fieldLabel : 'Lieferdatum',
-								name : 'created'
-							}, {
-								xtype : 'checkbox',
-								fieldLabel : 'ignoriere abweich. Liefertermine',
-								labelWidth : 185,
-								margins : '0 0 0 6',
-								checked : false
-							} ]
-						}, {
-							xtype : 'fieldcontainer',
-							layout : 'hbox',
-							defaults : {
-								flex : 1
-							},
-							items : [ {
-								xtype : 'textfield',
-								fieldLabel : 'Lieferscheinnr.',
-								name : 'deliveryNotesNumber',
-								id : 'deliveryNotesNumber',
-								allowBlank : false
-							}, {
-								xtype : 'numberfield',
-								fieldLabel : 'Versandkosten',
-								name : 'shipment',
-								allowBlank : true,
-								allowDecimals : true,
-								margins : '0 0 0 6',
-								minValue : 0
+						items : [
+								{
+									xtype : 'fieldcontainer',
+									layout : 'hbox',
+									defaults : {},
+									items : [ {
+										xtype : 'displayfield',
+										anchor : '100%',
+										name : 'customerNumber',
+										fieldLabel : 'Kundennummer'
+									}, {
+										xtype : 'displayfield',
+										anchor : '100%',
+										name : 'firstName',
+										margins : '0 0 0 10',
+										fieldLabel : 'Name',
+										labelWidth : 35
+									}, {
+										xtype : 'displayfield',
+										anchor : '100%',
+										name : 'lastName',
+										margins : '0 0 0 6',
+										hideLabel : 'true'
+									} ]
+								},
+								{
+									xtype : 'fieldcontainer',
+									layout : 'hbox',
+									defaults : {
+										flex : 1
+									},
+									items : [
+											{
+												xtype : 'datefield',
+												format : 'd/m/Y',
+												allowBlank : true,
+												fieldLabel : 'Lieferdatum',
+												name : 'created'
+											},
+											{
+												xtype : 'checkbox',
+												fieldLabel : 'ignoriere abweich. Liefertermine',
+												labelWidth : 185,
+												margins : '0 0 0 6',
+												checked : false
+											} ]
+								}, {
+									xtype : 'fieldcontainer',
+									layout : 'hbox',
+									defaults : {
+										flex : 1
+									},
+									items : [ {
+										xtype : 'textfield',
+										fieldLabel : 'Lieferscheinnr.',
+										name : 'deliveryNotesNumber',
+										id : 'deliveryNotesNumber',
+										allowBlank : false
+									}, {
+										xtype : 'numberfield',
+										fieldLabel : 'Versandkosten',
+										name : 'shipment',
+										allowBlank : true,
+										allowDecimals : true,
+										margins : '0 0 0 6',
+										minValue : 0
 
-							} ]
-						}, {
-							xtype : 'fieldcontainer',
-							layout : 'hbox',
-							defaults : {
-								flex : 1
-							},
-							items : [ {
-								xtype : 'textfield',
-								fieldLabel : 'Paketnummer',
-								name : 'packageNumber',
-								allowBlank : true
-							}, {
-								xtype : 'textfield',
-								fieldLabel : 'Sendungsnr.',
-								name : 'trackNumber',
-								margins : '0 0 0 6',
-								allowBlank : true
-							} ]
-						} ]
+									} ]
+								}, {
+									xtype : 'fieldcontainer',
+									layout : 'hbox',
+									defaults : {
+										flex : 1
+									},
+									items : [ {
+										xtype : 'textfield',
+										fieldLabel : 'Paketnummer',
+										name : 'packageNumber',
+										allowBlank : true
+									}, {
+										xtype : 'textfield',
+										fieldLabel : 'Sendungsnr.',
+										name : 'trackNumber',
+										margins : '0 0 0 6',
+										allowBlank : true
+									} ]
+								} ]
 					},
 
 					initComponent : function() {

@@ -5,7 +5,6 @@ Ext.define('MyApp.view.InvoiceWindow', {
 	alias : 'widget.InvoiceWindow',
 	headerForm : {
 		xtype : 'fieldset',
-		// title : 'Kunde',
 		flex : 1,
 		items : [{
 					xtype : 'displayfield',

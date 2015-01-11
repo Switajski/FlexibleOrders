@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -69,6 +70,7 @@ public class ItemDtoConverterService {
         return item;
     }
 
+    @Transactional(readOnly=true)
     public ItemDto convert(OrderItem orderItem) {
         ItemDto item = new ItemDto();
         Order order = orderItem.getOrder();
@@ -169,6 +171,7 @@ public class ItemDtoConverterService {
         return item;
     }
 
+    @Transactional(readOnly=true)
     public List<ItemDto> convert(Order order) {
         List<ItemDto> ois = new ArrayList<ItemDto>();
         for (OrderItem orderItem : order.getItems()) {

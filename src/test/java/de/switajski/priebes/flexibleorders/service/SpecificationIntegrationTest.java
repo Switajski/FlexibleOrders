@@ -88,9 +88,8 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     @Transactional
     @Test
     public void findAll_OpenShippingItemSpecShouldRetrieveSpecifiedReportItems() {
-        // GIVEN test data from Open Office calculation sheet "Test Data.ods"
-        OrderConfirmation agreement = givenOrderAgreement();
-        givenDeliveryReports(agreement);
+        // GIVEN
+        givenDefinedTestData();
 
         // WHEN
         List<ReportItem> retrievedRis = reportItemRepository
@@ -100,12 +99,20 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         assertAllItemsAreAgreed(retrievedRis);
     }
 
+    /**
+     * test data from Open Office calculation sheet "Test Data.ods"
+     */
+    private void givenDefinedTestData() {
+        if (orderRepo.findByOrderNumber("A11") != null) {
+            OrderConfirmation agreement = givenOrderAgreement();
+            givenDeliveryReports(agreement);
+        }
+    }
+
     @Transactional
     @Test
     public void findAll_AgreedItemsToBeShipped() {
-        // GIVEN test data from Open Office calculation sheet "Test Data.ods"
-        OrderConfirmation agreement = givenOrderAgreement();
-        givenDeliveryReports(agreement);
+        givenDefinedTestData();
 
         // WHEN
         List<ReportItem> retrievedRis = reportItemRepository
@@ -237,7 +244,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         OrderConfirmation confirmationReport = orderService.confirm(
                 new ConfirmParameter(
                         b11.getOrderNumber(),
-                        "AB176",
+                        "AB11",
                         new LocalDate(),
                         null,
                         AddressBuilder.createDefault(),

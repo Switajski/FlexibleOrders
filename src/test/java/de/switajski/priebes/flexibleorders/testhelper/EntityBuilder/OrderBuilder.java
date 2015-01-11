@@ -33,14 +33,13 @@ public class OrderBuilder {
 	}
 
 	public OrderBuilder withB11() {
-		Customer yvonne = new CustomerBuilder().yvonne().build();
 		this.setOrderNumber("B11")
-		.setCustomer(yvonne)
+		.setCustomer(new CustomerBuilder().yvonne().build())
 		.setItems(new HashSet<OrderItem>(Arrays.asList(
 					OrderItemBuilder.build(new CatalogProductBuilder().amy().build(), 10),
 					OrderItemBuilder.build(new CatalogProductBuilder().miladka().build(), 15),
 					OrderItemBuilder.build(new CatalogProductBuilder().paul().build(), 30))))
-		.setCustomerEmail(yvonne.getEmail())
+		.setCustomerEmail(customer.getEmail())
 		.setOriginSystem(OriginSystem.FLEXIBLE_ORDERS);
 		return this;
 	}

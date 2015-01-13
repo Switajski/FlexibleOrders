@@ -87,7 +87,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Transactional
     @Test
-    public void findAll_OpenShippingItemSpecShouldRetrieveSpecifiedReportItems() {
+    public void confirmationItemToBeAgreedSpecificationShouldReturnAgreedItemsOnly() {
         // GIVEN
         givenDefinedTestData();
 
@@ -111,7 +111,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Transactional
     @Test
-    public void findAll_AgreedItemsToBeShipped() {
+    public void agreedItemsToBeShippedSpecShouldReturnAgreedItemsOnly() {
         givenDefinedTestData();
 
         // WHEN

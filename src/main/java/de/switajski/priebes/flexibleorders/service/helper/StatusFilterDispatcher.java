@@ -1,12 +1,10 @@
 package de.switajski.priebes.flexibleorders.service.helper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
-import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
@@ -17,9 +15,6 @@ import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 
 @Service
 public class StatusFilterDispatcher {
-
-    @Autowired
-    private CustomerRepository customerRepo;
 
     public Specification<ReportItem> dispatchStatus(ProductionState processStep) {
         if (processStep == null) throw new IllegalArgumentException("Status nicht angegeben");

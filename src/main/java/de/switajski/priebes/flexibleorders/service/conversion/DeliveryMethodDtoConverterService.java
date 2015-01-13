@@ -22,7 +22,7 @@ public class DeliveryMethodDtoConverterService {
 					dto.getCity(),
 					Country.DEUTSCHLAND);
 			dm.setAddress(address);
-			dm.setId(dto.getId());
+			dm.setExternalId(dto.getId());
 			dm.setName(dto.getName());
 			return catalogDeliveryMethod;
 	}

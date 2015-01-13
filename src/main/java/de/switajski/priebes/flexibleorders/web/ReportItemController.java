@@ -105,10 +105,10 @@ public class ReportItemController extends ExceptionController {
         PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
                 .deserializeFiltersJson(filters);
-        ProductionState step = mapFilterToProcessStep(filterMap);
+        ProductionState state = mapFilterToProcessStep(filterMap);
 
         Set<Specification<ReportItem>> specs = new HashSet<Specification<ReportItem>>();
-        specs.add(filterDispatcher.dispatchStatus(step));
+        specs.add(filterDispatcher.dispatchStatus(state));
 
         if (containsFilter(filterMap, CUSTOMER_FILTER)) {
             specs.add(new HasCustomerSpec(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
@@ -117,20 +117,17 @@ public class ReportItemController extends ExceptionController {
         Page<ItemDto> openItems = reportItemService.retrieve(
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
 
-        if (step == ProductionState.SHIPPED) {
-            HashSet<String> documentNumbers = new HashSet<String>();
-            for (ItemDto item : openItems) {
-                documentNumbers.add(item.deliveryNotesNumber);
-            }
+        if (state == ProductionState.SHIPPED) {
+            HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
             for (String documentNumber : documentNumbers) {
                 Report report = reportRepository.findByDocumentNumber(documentNumber);
                 DeliveryNotes dn = (DeliveryNotes) report;
-                List<ItemDto> sCosts = new ArrayList<ItemDto>();
+                List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
                 if (dn.hasShippingCosts()){
-                    sCosts.add(itemDtoConverterService.convert(dn));
+                    shippingCosts.add(itemDtoConverterService.convert(dn));
                 }
-                List<ItemDto> temp = sCosts;
-                sCosts.addAll(openItems.getContent());
+                List<ItemDto> temp = shippingCosts;
+                shippingCosts.addAll(openItems.getContent());
                 openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
             }
         }
@@ -141,6 +138,14 @@ public class ReportItemController extends ExceptionController {
         }
         return ExtJsResponseCreator.createResponse(openItems);
 
+    }
+
+    private HashSet<String> getDocumentNumbersOf(Page<ItemDto> openItems) {
+        HashSet<String> documentNumbers = new HashSet<String>();
+        for (ItemDto item : openItems) {
+            documentNumbers.add(item.deliveryNotesNumber);
+        }
+        return documentNumbers;
     }
     
     private ProductionState mapFilterToProcessStep(HashMap<String, String> filterMap) {

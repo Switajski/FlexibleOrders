@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
@@ -137,8 +138,10 @@ public class OrderService {
 		pAgree.setInvoiceAddress(invoiceAddress);
 		pAgree.setExpectedDelivery(confirmParameter.expectedDelivery);
 		pAgree.setCustomerNumber(confirmParameter.customerNumber);
-		if (confirmParameter.deliveryMethodNo != null)
-		    pAgree.setDeliveryMethod(deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo).getDeliveryMethod());
+		if (confirmParameter.deliveryMethodNo != null){
+		    CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo);
+            pAgree.setDeliveryMethod(catalogDeliveryMethod.getDeliveryMethod());
+		}
 
 		OrderConfirmation cr = new OrderConfirmation();
 		cr.setDocumentNumber(confirmParameter.confirmNumber);

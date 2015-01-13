@@ -93,8 +93,8 @@ public class JsonSerializationHelper {
 		List<DeliveryMethodDto> jsonCustomers = new ArrayList<DeliveryMethodDto>();
 		for (DeliveryMethod c : deliveryMethods){
 			DeliveryMethodDto dto = new DeliveryMethodDto();
-			dto.setId(c.getId());
-			dto.setDeliveryMethodNo(c.getId());
+			dto.setId(c.getExternalId());
+			dto.setDeliveryMethodNo(c.getExternalId());
 			dto.setName(c.getName());
 			dto.setName1(c.getAddress().getName1());
 			dto.setName2(c.getAddress().getName2());

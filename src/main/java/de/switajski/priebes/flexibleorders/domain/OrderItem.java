@@ -51,7 +51,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 	@ManyToOne()
 	private Order customerOrder;
 
-	protected OrderItem() {
+	public OrderItem() {
 	}
 
 	/**

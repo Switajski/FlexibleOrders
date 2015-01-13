@@ -9,7 +9,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 
 	private String name, phone;
 
-	private Long id;
+	private Long externalId;
 
 	private Address address;
 	
@@ -20,7 +20,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 		DeliveryMethod c = new DeliveryMethod();
 		c.setName(name);
 		c.setPhone(phone);
-		c.setId(id);
+		c.setExternalId(externalId);
 		c.setAddress(address);
 		c.setDeliveryType(deliveryType);
 		return c;
@@ -36,8 +36,8 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 		return this;
 	}
 
-	public DeliveryMethodBuilder setId(Long id) {
-		this.id = id;
+	public DeliveryMethodBuilder setExternalId(Long externalId) {
+		this.externalId = externalId;
 		return this;
 	}
 
@@ -52,7 +52,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 	}
 
 	public DeliveryMethodBuilder ups() {
-		setId(1L)
+		setExternalId(1L)
 		.setAddress(new Address(
 				"United Parcel Service Detschland Inc. & Co. OHG",
 				null,
@@ -67,7 +67,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 	}
 	
 	public DeliveryMethodBuilder dhl() {
-		setId(2L)
+		setExternalId(2L)
 		.setAddress(new Address(
 				"Deutsche Post AG",
 				null,

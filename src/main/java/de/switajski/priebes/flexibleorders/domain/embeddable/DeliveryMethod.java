@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.embeddable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
@@ -28,11 +29,11 @@ public class DeliveryMethod{
 		this.deliveryType = DeliveryType.SPEDITION;
 	}
 	
-	public Long getId() {
+	public Long getExternalId() {
         return externalId;
     }
 
-    public void setId(Long id) {
+    public void setExternalId(Long id) {
         this.externalId = id;
     }
 	

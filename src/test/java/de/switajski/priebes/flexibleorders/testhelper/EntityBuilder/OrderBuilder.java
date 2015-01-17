@@ -31,7 +31,7 @@ public class OrderBuilder {
 	public static Order B11(){
 		return new OrderBuilder().withB11().build();
 	}
-
+	
 	public OrderBuilder withB11() {
 		this.setOrderNumber("B11")
 		.setCustomer(new CustomerBuilder().yvonne().build())

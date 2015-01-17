@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.domain.embeddable;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;

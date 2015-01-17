@@ -33,10 +33,14 @@ public abstract class ReportItem extends GenericEntity implements
 
     protected ReportItem() {}
 
-    // TODO: refactor to no constructor - use factory instead
+    /**
+     * @deprecated use {@link #ReportItem(OrderItem, Integer, Date)} instead.
+     *             The API is meant to create a ConfirmationItem first and then
+     *             add to a ConfirmationReport
+     */
     public ReportItem(Report report, OrderItem item,
             Integer quantity, Date created) {
-        if (report == null || item == null || quantity == null) throw new IllegalArgumentException();
+        if (item == null || quantity == null) throw new IllegalArgumentException();
         this.report = report;
         this.orderItem = item;
         this.quantity = quantity;
@@ -45,6 +49,21 @@ public abstract class ReportItem extends GenericEntity implements
         if (!orderItem.getReportItems().contains(this)) orderItem.addReportItem(this);
         if (report.getItems().contains(this)) return;
         report.addItem(this);
+    }
+
+    public ReportItem(OrderItem item, Integer quantity, Date created) {
+        if (item == null || quantity == null) {
+            throw new IllegalArgumentException();
+        }
+        this.orderItem = item;
+        this.quantity = quantity;
+        setCreated(created);
+
+        if (!orderItem.getReportItems().contains(this)) orderItem.addReportItem(this);
+        if (report != null) {
+            if (report.getItems().contains(this)) return;
+            report.addItem(this);
+        }
     }
 
     public int getQuantity() {
@@ -60,8 +79,8 @@ public abstract class ReportItem extends GenericEntity implements
     }
 
     public void setReport(Report report) {
-        if (report.getItems().contains(this)) return;
         this.report = report;
+        if (report.getItems().contains(this)) return;
         report.addItem(this);
     }
 
@@ -88,20 +107,21 @@ public abstract class ReportItem extends GenericEntity implements
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + ": " + this.getReport().getDocumentNumber() + " " + getQuantity() + " x "
-                + getOrderItem().getProduct().getName();
+        return new StringBuilder(this.getClass().getSimpleName())
+                .append(": ").append(" " + getQuantity()).toString();
     }
 
     /**
      * convenience method
+     * 
      * @return
      */
     @JsonIgnore
-	public Customer getCustomer() {
-		return this.getOrderItem().getCustomer();
-	}
-    
-    public DeliveryHistory createDeliveryHistory(){
+    public Customer getCustomer() {
+        return this.getOrderItem().getCustomer();
+    }
+
+    public DeliveryHistory createDeliveryHistory() {
         return DeliveryHistory.of(this);
     }
 

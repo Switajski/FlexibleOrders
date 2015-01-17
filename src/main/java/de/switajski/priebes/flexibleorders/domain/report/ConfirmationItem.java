@@ -22,9 +22,8 @@ public class ConfirmationItem extends ReportItem {
 	    return (OrderConfirmation) getReport();
 	}
 
-	public ConfirmationItem(OrderConfirmation cr, 
-			OrderItem oi, Integer quantityLeft, Date date) {
-		super(cr, oi, quantityLeft, date);
+	public ConfirmationItem(OrderItem oi, Integer quantityLeft) {
+		super(oi, quantityLeft, new Date());
 	}
 
 	@Override

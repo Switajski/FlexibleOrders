@@ -1,5 +1,8 @@
 package de.switajski.priebes.flexibleorders.testdata;
 
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB11;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB13;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB15;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AMY;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B11;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B12;
@@ -20,7 +23,6 @@ import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.WYOMI
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,7 +56,6 @@ import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -112,8 +113,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 	private void createNaidasOrders() {
 		DateTime dt = new DateTime();
 
-		createB21(dt);
-		Order b22 = createB22(dt);
+		orderService.order(B21);
+		Order b22 = orderService.order(B22);
 		OrderConfirmation ab22 = createAB22(dt, b22);
 
 		orderService.cancelReport(ab22.getDocumentNumber());
@@ -132,40 +133,16 @@ public class TestDataCreator extends AbstractSpringContextTest {
         return ab22;
     }
 
-    private Order createB22(DateTime dt) {
-        Order b22 = orderService.order(new OrderParameter(
-		        NAIDA.getCustomerNumber(),
-		        "B22",
-		        dt.toDate(), 
-		        converterService.convertOrderItems(
-		                B22.createOrderItems())));
-        return b22;
-    }
-
-    private void createB21(DateTime dt) {
-        orderService.order(new OrderParameter(
-		        NAIDA.getCustomerNumber(),
-		        "B21",
-		        dt.toDate(),
-		        converterService.convertOrderItems(B21.createOrderItems())));
-    }
-
 	private void createYvonnesOrders() {
-		DateTime dt = new DateTime();
 		
-		Order b11 = createB11(dt);
-		Order b12 = createB12(dt);
-		Order b13 = createB13(dt);
-		Order b15 = createB15(dt);
+		orderService.order(B11);
+		orderService.order(B12);
+		orderService.order(B13);
+		orderService.order(B15);
 
-		List<ItemDto> b11Andb12 = new ArrayList<ItemDto>();
-		b11Andb12.addAll(converterService.convert(b11));
-		b11Andb12.addAll(converterService.convert(b12));
-
-		OrderConfirmation ab11 = createAB11(dt, b11, b11Andb12);
-
-		createAB13(dt, b11, b13);
-		OrderConfirmation ab15 = createAB15(dt, b11, b15);
+		OrderConfirmation ab11 = orderService.confirm(AB11);
+		orderService.confirm(AB13);
+		OrderConfirmation ab15 = orderService.confirm(AB15);
 
 		ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
 		ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
@@ -256,89 +233,6 @@ public class TestDataCreator extends AbstractSpringContextTest {
 								extract(itemsFromAu11, AMY.getProductNumber(), 2),
 								extract(itemsFromAu11, MILADKA.getProductNumber(), 2))));
         return l11;
-    }
-
-    private OrderConfirmation createAB15(DateTime dt, Order b11, Order b15) {
-        ConfirmParameter cpAB15 = new ConfirmParameter();
-        cpAB15.orderNumber = b11.getOrderNumber();
-        cpAB15.confirmNumber = "AB15";
-        cpAB15.expectedDelivery = dt.plusDays(10).toLocalDate();
-        cpAB15.deliveryMethodNo = DHL.getExternalId();
-        cpAB15.shippingAddress = YVONNE.getShippingAddress();
-        cpAB15.invoiceAddress = YVONNE.getInvoiceAddress();
-        cpAB15.orderItems = converterService.convert(b15);
-        cpAB15.customerDetails = YVONNE.getDetails();
-        return orderService.confirm(cpAB15);
-    }
-
-    private void createAB13(DateTime dt, Order b11, Order b13) {
-        ConfirmParameter cpAB13 = new ConfirmParameter();
-		cpAB13.orderNumber = b11.getOrderNumber();
-		cpAB13.confirmNumber = "AB13";
-		cpAB13.expectedDelivery = dt.plusDays(2).toLocalDate();
-		cpAB13.deliveryMethodNo = DHL.getExternalId();
-		cpAB13.shippingAddress = YVONNE.getShippingAddress();
-		cpAB13.invoiceAddress = YVONNE.getInvoiceAddress();
-		cpAB13.orderItems = converterService.convert(b13);
-		cpAB13.customerDetails = YVONNE.getDetails();
-		orderService.confirm(cpAB13);
-    }
-
-    private OrderConfirmation createAB11(DateTime dt, Order b11, List<ItemDto> b11Andb12) {
-        ConfirmParameter cpAB11 = new ConfirmParameter();
-		cpAB11.orderNumber = b11.getOrderNumber();
-		cpAB11.confirmNumber = "AB11";
-		cpAB11.expectedDelivery = dt.plusDays(10).toLocalDate();
-		cpAB11.deliveryMethodNo = DHL.getExternalId();
-		cpAB11.shippingAddress = YVONNE.getShippingAddress();
-		cpAB11.invoiceAddress = YVONNE.getInvoiceAddress();
-		cpAB11.orderItems = b11Andb12;
-		cpAB11.customerDetails = YVONNE.getDetails();
-		OrderConfirmation ab11 = orderService.confirm(cpAB11);
-        return ab11;
-    }
-
-    private Order createB15(DateTime dt) {
-        OrderParameter opB15 = new OrderParameter();
-        opB15.customerNumber = YVONNE.getCustomerNumber();
-        opB15.orderNumber = "B15";
-        opB15.reportItems = converterService.convertOrderItems(
-                        B15.createOrderItems());
-        opB15.expectedDelivery = dt.plusDays(2).toLocalDate();
-        Order b15 = orderService.order(opB15);
-        return b15;
-    }
-
-    private Order createB13(DateTime dt) {
-        OrderParameter opB13 = new OrderParameter();
-		opB13.customerNumber = YVONNE.getCustomerNumber();
-		opB13.orderNumber = "B13";
-		opB13.reportItems = converterService.convertOrderItems(
-						B13.createOrderItems());
-		opB13.expectedDelivery = dt.plusDays(2).toLocalDate();
-		Order b13 = orderService.order(opB13);
-        return b13;
-    }
-
-    private Order createB12(DateTime dt) {
-        OrderParameter opB12 = new OrderParameter();
-		opB12.customerNumber = YVONNE.getCustomerNumber();
-		opB12.orderNumber= "B12";
-		opB12.reportItems = converterService.convertOrderItems(
-				B12.createOrderItems());
-		opB12.expectedDelivery = dt.plusDays(2).toLocalDate();
-		Order b12 = orderService.order(opB12);
-        return b12;
-    }
-
-    private Order createB11(DateTime dt) {
-        OrderParameter opB11 = new OrderParameter();
-		opB11.customerNumber = YVONNE.getCustomerNumber();
-		opB11.orderNumber = "B11";
-		opB11.reportItems = converterService.convertOrderItems(B11.createOrderItems());
-		opB11.expectedDelivery = dt.plusDays(2).toLocalDate();
-		Order b11 = orderService.order(opB11);
-        return b11;
     }
 
 	private ItemDto extract(List<ItemDto> itemDtos, String productNumber, int i) {

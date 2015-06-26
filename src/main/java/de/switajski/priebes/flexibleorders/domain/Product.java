@@ -12,10 +12,6 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 @Embeddable
 public class Product {
 
-	/**
-	 * natural id
-	 */
-	@NotNull
 	private String no;
 
 	@NotNull
@@ -57,7 +53,7 @@ public class Product {
 	}
 	
 	public boolean hasProductNo(){
-		if (getProductNumber() == null || getProductNumber().equals(0L))
+		if (this.no == null)
 			return false;
 		return true;
 	}

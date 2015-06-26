@@ -102,7 +102,7 @@ public class OrderService {
 
         for (ItemDto ri : orderParameter.reportItems) {
             validate(ri);
-            Product product = (ri.product.equals(0L)) ? createCustomProduct(ri) : createProductFromCatalog(ri);
+            Product product = (ri.product.equals("0")) ? createCustomProduct(ri) : createProductFromCatalog(ri);
             OrderItem oi = new OrderItem(
                     order,
                     product,
@@ -219,7 +219,6 @@ public class OrderService {
         Product p = new Product();
         p.setName(ri.productName);
         p.setProductType(ProductType.CUSTOM);
-        p.setProductNumber("0");
         return p;
     }
 

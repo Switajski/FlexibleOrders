@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.web.dto.MagentoProductDto;
 @Service
 public class CatalogProductServiceImpl {
 
-    private static final String URL = "http://switajski.de/api/rest/products";
+    private static final String URL = "http://priebes.eu/catalog/api/rest/products";
     
     @Autowired
     private ProductConversionService productConversionService;
@@ -42,6 +42,7 @@ public class CatalogProductServiceImpl {
     }
 
     public CatalogProduct findByProductNumber(String productNumber) {
+        
         StringBuilder urlBuilder = new StringBuilder(URL);
         urlBuilder.append("?filter[1][attribute]=sku&filter[1][like]=%").append(productNumber);
 

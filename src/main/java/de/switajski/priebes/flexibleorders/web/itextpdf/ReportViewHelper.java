@@ -17,6 +17,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
@@ -230,10 +231,10 @@ public class ReportViewHelper {
         for (ReportItem he : report.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
-            String pNo = he.getOrderItem().getProduct().getProductNumber();
-            list.add(pNo.equals(0L) ? "n.a." : pNo.toString());
+            Product product = he.getOrderItem().getProduct();
+            list.add(product.hasProductNo() ? product.getProductNumber() : "n.a.");
             // Artikel
-            list.add(he.getOrderItem().getProduct().getName());
+            list.add(product.getName());
             // Anzahl
             list.add(String.valueOf(he.getQuantity()));
             // EK per Stueck

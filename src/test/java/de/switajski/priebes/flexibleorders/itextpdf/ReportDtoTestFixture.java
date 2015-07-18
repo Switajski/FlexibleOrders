@@ -9,6 +9,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
@@ -52,7 +53,7 @@ public class ReportDtoTestFixture {
                 .setContact4("Email: info@priebe.eu")
                 .build();
         r.customerSpecific_mark = "Filiale";
-        r.invoiceSpecific_paymentConditions = "So schnell wie möglich, ohne Prozente sonst Inkasso Moskau";
+        r.invoiceSpecific_paymentConditions = "So schnell wie m"+ Unicode.O_UML + "glich, ohne Prozente sonst Inkasso Moskau";
         r.customerSpecific_vatIdNo = "ATU-No.111234515";
         r.customerSpecific_vendorNumber = "PRIEBES-1";
         r.customerSpecific_saleRepresentative = "Herr Vertreter1";

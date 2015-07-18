@@ -60,7 +60,7 @@ public class ReportToDtoConversionService {
 
 		Collection<Customer> customers = report.getCustomers();
 		if (report.getCustomers().size() > 1){
-			throw new IllegalStateException("Mehr als einen Kunden f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new IllegalStateException("Mehr als einen Kunden f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		} else if (report.getCustomers().size() == 1){
 			Customer customer = customers.iterator().next();
 			dto.customerFirstName = customer.getFirstName();
@@ -88,7 +88,7 @@ public class ReportToDtoConversionService {
         DeliveryMethod dm = null;
 		Set<DeliveryMethod> deliveryMethods = deliveryMethodService.retrieve(report.getItems());
 		if (deliveryMethods.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		else if (deliveryMethods.size() == 1){
 			dm = deliveryMethods.iterator().next();
 		}
@@ -99,7 +99,7 @@ public class ReportToDtoConversionService {
         Set<LocalDate> eDates = expectedDeliveryService.retrieve(report.getItems());
 		LocalDate expectedDelivery = null;
 		if (eDates.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als ein Lieferdatum f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new ContradictoryPurchaseAgreementException("Mehr als ein Lieferdatum f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		else if (eDates.size() == 1)
 			expectedDelivery = eDates.iterator().next();
         return expectedDelivery;
@@ -109,7 +109,7 @@ public class ReportToDtoConversionService {
         CustomerDetails customerDetails = null;
 		Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
 		if (customerDetailss.size() > 1)
-			throw new IllegalStateException("Widerspr"+Unicode.uUml+"chliche Kundenstammdaten f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new IllegalStateException("Widerspr"+Unicode.U_UML+"chliche Kundenstammdaten f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		else if (customerDetailss.size() == 1){
 		    customerDetails = customerDetailss.iterator().next();
 		}
@@ -130,7 +130,7 @@ public class ReportToDtoConversionService {
         Address shippingAddress = null;
 		Set<Address> shippingAddresses = shippingAddressService.retrieve(report.getItems());
 		if (shippingAddresses.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		else if (shippingAddresses.size() == 1)
 			shippingAddress = shippingAddresses.iterator().next();
         return shippingAddress;
@@ -139,7 +139,7 @@ public class ReportToDtoConversionService {
     private Address retrieveInvoicingAddress(Report report) {
         Set<Address> invoicingAddresses = invoicingAddressService.retrieve(report.getItems());
 		if (invoicingAddresses.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f"+Unicode.uUml+"r gegebene Positionen gefunden");
+			throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f"+Unicode.U_UML+"r gegebene Positionen gefunden");
 		else if (invoicingAddresses.size() == 1){
 			return invoicingAddresses.iterator().next();
 		} 

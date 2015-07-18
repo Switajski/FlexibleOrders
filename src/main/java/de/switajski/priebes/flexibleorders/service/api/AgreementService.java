@@ -18,7 +18,7 @@ public class AgreementService {
     public OrderConfirmation agree(String orderConfirmationNo, String orderAgreementNo) {
         OrderConfirmation oc = reportRepo.findByDocumentNumber(orderConfirmationNo);
         if (oc == null) {
-            throw new IllegalArgumentException("Auftragsbest" + Unicode.aUml + "tigung mit angegebener Nummer nicht gefunden");
+            throw new IllegalArgumentException("Auftragsbest" + Unicode.A_UML + "tigung mit angegebener Nummer nicht gefunden");
         }
         oc.setOrderAgreementNumber(orderAgreementNo);
         return reportRepo.save(oc);

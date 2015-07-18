@@ -124,7 +124,7 @@ public abstract class Report extends GenericEntity {
     @JsonIgnore
     public Customer getCustomerSafely() {
         Collection<Customer> customers = this.getCustomers();
-        if (customers.size() > 1) throw new IllegalStateException("Mehr als einen Kunden f" + Unicode.uUml + "r gegebene Positionen gefunden");
+        if (customers.size() > 1) throw new IllegalStateException("Mehr als einen Kunden f" + Unicode.U_UML + "r gegebene Positionen gefunden");
         else if (customers.size() == 1) return customers.iterator().next();
         throw new IllegalStateException("No customer found");
     }

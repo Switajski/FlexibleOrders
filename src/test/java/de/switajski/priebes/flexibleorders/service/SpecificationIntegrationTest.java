@@ -103,7 +103,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * test data from Open Office calculation sheet "Test Data.ods"
      */
     private void givenDefinedTestData() {
-        if (orderRepo.findByOrderNumber("A11") != null) {
+        if (orderRepo.findByOrderNumber("B11") != null) {
             OrderConfirmation agreement = givenOrderAgreement();
             givenDeliveryReports(agreement);
         }

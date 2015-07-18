@@ -70,9 +70,9 @@ public class InvoicingService {
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
         Set<Address> ias = invoicingAddressService.retrieve(reportItems);
-        if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.aUml + "gen gefunden: "
+        if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
                 + BeanUtil.createStringOfDifferingAttributes(ias));
-        else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
+        else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;
     }

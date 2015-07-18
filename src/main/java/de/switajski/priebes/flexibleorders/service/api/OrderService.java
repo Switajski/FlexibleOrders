@@ -84,7 +84,7 @@ public class OrderService {
     @Transactional
     public Order order(OrderParameter orderParameter) {
         if (orderParameter.customerNumber == null || orderParameter.orderNumber == null || orderParameter.reportItems.isEmpty()) throw new IllegalArgumentException(
-                "Parameter sind nicht vollst" + Unicode.aUml + "ndig");
+                "Parameter sind nicht vollst" + Unicode.A_UML + "ndig");
         if (orderRepo.findByOrderNumber(orderParameter.orderNumber) != null) throw new IllegalArgumentException("Bestellnr existiert bereits");
         // TODO: Customer entity has nothing to do here!
         Customer customer = customerRepo.findByCustomerNumber(orderParameter.customerNumber);
@@ -238,7 +238,7 @@ public class OrderService {
     public boolean deleteOrder(String orderNumber) {
         Order order = orderRepo.findByOrderNumber(orderNumber);
         if (order == null) throw new IllegalArgumentException(
-                "Bestellnr. zum l" + Unicode.oUml + "schen nicht gefunden");
+                "Bestellnr. zum l" + Unicode.O_UML + "schen nicht gefunden");
         orderRepo.delete(order);
         return true;
     }
@@ -268,7 +268,7 @@ public class OrderService {
     public boolean deleteReport(String reportNumber) {
         Report r = reportRepo.findByDocumentNumber(reportNumber);
         if (r == null) throw new IllegalArgumentException(
-                "Bericht zum l" + Unicode.oUml + "schen nicht gefunden");
+                "Bericht zum l" + Unicode.O_UML + "schen nicht gefunden");
         reportRepo.delete(r);
         return true;
     }

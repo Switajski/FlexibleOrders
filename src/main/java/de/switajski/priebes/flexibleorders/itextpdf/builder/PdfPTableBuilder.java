@@ -60,7 +60,7 @@ public class PdfPTableBuilder {
 		rowProperties
 				.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
 		rowProperties.add(new TableProperties(
-				"EK per St"+Unicode.uUml+"ck",
+				"EK per St"+Unicode.U_UML+"ck",
 				Element.ALIGN_LEFT,
 				15));
 		rowProperties.add(new TableProperties(
@@ -83,7 +83,7 @@ public class PdfPTableBuilder {
 		rowProperties
 				.add(new TableProperties("Anzahl", Element.ALIGN_RIGHT, 7));
 		rowProperties.add(new TableProperties(
-				"EK per St"+Unicode.uUml+"ck",
+				"EK per St"+Unicode.U_UML+"ck",
 				Element.ALIGN_RIGHT,
 				12));
 		rowProperties.add(new TableProperties(

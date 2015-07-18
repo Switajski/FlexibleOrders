@@ -52,7 +52,7 @@ public class OrderConfirmation extends Report {
     }
 
     public boolean isAgreed() {
-        return getOrderAgreementNumber() != null;
+        return orderAgreementNumber != null;
     }
 
     public void setCustomerDetails(CustomerDetails customerDetails) {

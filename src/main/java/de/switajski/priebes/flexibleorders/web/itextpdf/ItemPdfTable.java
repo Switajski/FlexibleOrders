@@ -14,7 +14,10 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
+
+//TODO: what the hell is this dependency doing here?!
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 public abstract class ItemPdfTable {
 
@@ -116,7 +119,7 @@ public abstract class ItemPdfTable {
 									.getOrderItem()
 									.getNegotiatedPriceNet()
 									.getValue())
-							+ " €"
+							+ " " + Unicode.EURO
 					));
 			preis.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cells.add(preis);
@@ -128,7 +131,7 @@ public abstract class ItemPdfTable {
 					.multiply(new BigDecimal(bp.getQuantity()));
 			PdfPCell betrag = new PdfPCell(new Phrase(
 					DECIMAL_FORMAT.format(betragValue)
-							+ " €"
+							+ " " + Unicode.EURO
 					));
 			betrag.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cells.add(betrag);

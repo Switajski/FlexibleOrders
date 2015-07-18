@@ -32,9 +32,9 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         ReportDto report = (ReportDto) model
                 .get(ReportDto.class.getSimpleName());
 
-        String heading = "Auftragsbest" + Unicode.aUml + "tigung " + report.documentNumber.toString();
+        String heading = "Auftragsbest" + Unicode.A_UML + "tigung " + report.documentNumber.toString();
         if (report.orderConfirmationNumber != null)
-            heading += " - best"+Unicode.aUml+"tigt mit "+report.orderConfirmationNumber;
+            heading += " - best"+Unicode.A_UML+"tigt mit "+report.orderConfirmationNumber;
 
         String date = "AB-Datum: " + dateFormat.format(report.created);
         String customerNo = "Kundennummer: " + report.customerNumber;

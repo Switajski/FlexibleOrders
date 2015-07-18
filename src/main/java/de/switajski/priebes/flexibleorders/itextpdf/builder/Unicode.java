@@ -6,9 +6,11 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
  */
 public class Unicode {
 
-	public static final String uUml = "\u00fc";
-	public static final String AUml = "\u00c4";
-	public static final String aUml = "\u00e4";
-	public static final String oUml = "\u00f6";
+	public static final String U_UML = "\u00fc";
+	public static final String BIG_A_UML = "\u00c4";
+	public static final String A_UML = "\u00e4";
+	public static final String O_UML = "\u00f6";
+	public static final String S_SCHARF = "\u00DF";
+	public static final String EURO = "\u20ac";
 
 }

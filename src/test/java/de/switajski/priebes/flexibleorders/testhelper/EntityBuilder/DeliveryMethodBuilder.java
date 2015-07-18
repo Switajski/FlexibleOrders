@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 
@@ -56,7 +57,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 		.setAddress(new Address(
 				"United Parcel Service Detschland Inc. & Co. OHG",
 				null,
-				"Görlitzer Straße 1",
+				"G"+Unicode.O_UML+"rlitzer Stra"+Unicode.S_SCHARF+"e 1",
 				41460,
 				"Neuss",
 				Country.DEUTSCHLAND))

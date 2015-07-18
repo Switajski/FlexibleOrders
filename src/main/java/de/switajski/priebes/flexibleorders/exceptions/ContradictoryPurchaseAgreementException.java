@@ -27,7 +27,7 @@ public class ContradictoryPurchaseAgreementException extends IllegalArgumentExce
     }
 
     public ContradictoryPurchaseAgreementException(Collection<PurchaseAgreement> contradictingPurchaseAgreements) {
-        super("Folgende Attribute der Kaufvertr" + Unicode.aUml + "ge sind widersprechend\n"
+        super("Folgende Attribute der Kaufvertr" + Unicode.A_UML + "ge sind widersprechend\n"
                 + BeanUtil.createStringOfDifferingAttributes(contradictingPurchaseAgreements));
     }
 

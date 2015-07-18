@@ -78,9 +78,9 @@ public class DeliveryService {
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems, boolean ignoreContradictoryExpectedDeliveryDates) {
         Set<Address> ias = shippingAddressService.retrieve(reportItems);
         if (ias.size() > 1 && !ignoreContradictoryExpectedDeliveryDates) throw new ContradictoryPurchaseAgreementException(
-                "Verschiedene Lieferadressen in Auftr" + Unicode.aUml + "gen gefunden: "
+                "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
                         + BeanUtil.createStringOfDifferingAttributes(ias));
-        else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.aUml + "gen gefunden");
+        else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;
     }

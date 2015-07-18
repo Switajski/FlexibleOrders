@@ -2,7 +2,7 @@ package de.switajski.priebes.flexibleorders.web.dto;
 
 import java.util.HashMap;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MagentoApiProductResponseObject extends HashMap<Long, MagentoProductDto>{

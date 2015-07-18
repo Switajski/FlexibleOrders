@@ -1,7 +1,6 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,6 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 
 @Controller

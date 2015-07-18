@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.dto;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * TODO this object is disposable by good serialization

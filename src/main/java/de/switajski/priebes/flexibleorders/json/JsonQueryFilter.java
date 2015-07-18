@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.json;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * Helper Class for ExtJs Json Query Filter Deserialization - Json for adding a

@@ -11,16 +11,56 @@ import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
 
 /**
- * Specifies "open" ReportItems: </br> A concrete ReportItem is open, when its
- * quantity differs from an other ReportItem. </br> </br><b>Example:</b>
- * Quantity of a shipped item (ShippingItem) is 10. The same order item has only
- * an invoicing item with quantity 5 (InvoicingItem). Consequently 5 are not
- * invoiced yet. So they are open.</br> </br> <b>Usage:</b> In the case of given
- * example the method <code>reportItemClassToRetrieve</code> should be a
- * ShippingItem.class, <code>reportItemClassToSubtract</code> should be a
- * InvoiceItem.class
+ * Specifies "open" ReportItems: <br/>
+ * A concrete ReportItem is open, when its quantity differs from an other
+ * ReportItem. <br/>
+ * <br/>
+ * <b>Example:</b> Quantity of a shipped item (ShippingItem) is 10. The same
+ * order item has only an invoicing item with quantity 5 (InvoicingItem).
+ * Consequently 5 are not invoiced yet. So they are open.<br/>
+ * <br/>
+ * <b>Usage:</b> In the case of given example the method
+ * <code>reportItemClassToRetrieve</code> should be a ShippingItem.class,
+ * <code>reportItemClassToSubtract</code> should be a InvoiceItem.class <br/>
+ * <br/>
+ * <b>Concept of <a
+ * href="http://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>
+ * (with quantities): </b> Not the states (how much are delivered, invoiced,
+ * ...) of an order item is saved in database, but the events e.g. how much has
+ * been delivered. An event is called {@link ReportItem}. Thus the table of
+ * report items joined with order items are a history - See following SQL after
+ * having started {@link TestDataCreator#createTestData}:
+ * 
+ * <pre>
+ * select oi.id, oi.name, oi.ordered_quantity, ri.id, ri.dtype, ri.quantity 
+ * from order_item oi
+ * join report_item ri on oi.id = ri.order_item
+ * order by oi.id, ri.id
+ * </pre>
+ * 
+ * Querying order items, that are confirmed, but not shipped would be:
+ * 
+ * <pre>
+ * select 
+ * oi.id, oi.name, oi.ordered_quantity 
+ * from order_item oi
+ * where (
+ *     select sum(quantity)
+ *     from report_item ri 
+ *     where ri.order_item=oi.id
+ *     and dtype = 'ConfirmationItem'
+ *     group by dtype
+ * ) > (
+ *     select sum(quantity)
+ *     from report_item ri
+ *     where ri.order_item=oi.id
+ *     and dtype = 'ShippingItem'
+ *     group by dtype
+ * )
+ * </pre>
  * 
  * @author Marek Switajski
  * 
@@ -38,7 +78,7 @@ public class AbstractOpenReportItemSpecification implements
 
     /**
      * 
-     * @param reportItemClassToRetrieve 
+     * @param reportItemClassToRetrieve
      * @param reportItemClassToSubtract
      */
     public AbstractOpenReportItemSpecification(
@@ -47,7 +87,7 @@ public class AbstractOpenReportItemSpecification implements
         this.reportItemClassToRetrieve = reportItemClassToRetrieve;
         this.reportItemClassToSubtract = reportItemClassToSubtract;
     }
-    
+
     /**
      * 
      * Specification in JQL would look like this:
@@ -63,6 +103,29 @@ public class AbstractOpenReportItemSpecification implements
      *           (SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent 
      *           where shipEvent.orderItem = ri.orderItem) 
      *       );
+     * </pre>
+     * 
+     * <br />
+     * Besides of selecting order items instead of report items, the spec could
+     * be in SQL:
+     * 
+     * <pre>
+     *   select *
+     *   from order_item oi
+     *   where (
+     *       select sum(quantity)
+     *       from report_item ri 
+     *       where ri.order_item=oi.id
+     *       and dtype = 'ConfirmationItem'
+     *       group by dtype
+     *   ) > (
+     *       select sum(quantity)
+     *       from report_item ri
+     *       where ri.order_item=oi.id
+     *       and dtype = 'ShippingItem'
+     *       group by dtype
+     *   )
+     *
      * </pre>
      * 
      * @see http://stackoverflow.com/questions/3997070/jpa-criteria-tutorial

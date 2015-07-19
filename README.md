@@ -1,4 +1,4 @@
-FlexibleOrders [![Build Status](http://93.180.154.157:8080/buildStatus/icon?job=FlexibleOrders)](http://93.180.154.157:8080/job/FlexibleOrders/) 
+FlexibleOrders [![Build Status](https://travis-ci.org/Switajski/FlexibleOrders.svg) 
 ==============
 
 FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  

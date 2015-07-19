@@ -1,4 +1,4 @@
-FlexibleOrders [![Build Status](https://travis-ci.org/Switajski/FlexibleOrders.svg) 
+FlexibleOrders ![Build Status](https://travis-ci.org/Switajski/FlexibleOrders.svg) 
 ==============
 
 FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  

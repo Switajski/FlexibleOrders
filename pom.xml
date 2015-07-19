@@ -14,6 +14,7 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<camel.version>2.15.2</camel.version>
 		<spring.version>4.1.7.RELEASE</spring.version>
+		<hibernate.version>4.3.10.Final</hibernate.version>
 		<spring-security.version>4.0.1.RELEASE</spring-security.version>
 	</properties>
 	<repositories>
@@ -156,7 +157,7 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc41</version>
+			<version>9.1-901-1.jdbc4</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -166,12 +167,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.2.2.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.2.2.Final</version>
+			<version>${hibernate.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>cglib</groupId>
@@ -196,7 +197,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.1.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>

@@ -3,3 +3,5 @@ jdk:
   - oraclejdk8
 before_script:
   - psql -c 'create database flexibleorders;' -U postgres
+after_failure:
+  - cat target/surefire-reports/*.txt

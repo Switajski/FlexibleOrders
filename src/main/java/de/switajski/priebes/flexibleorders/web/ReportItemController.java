@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -178,7 +177,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "filter", required = false) String filters)
             throws Exception {
 
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented yet");
     }
 
     private Customer retrieveCustomerSafely(String customerNo) {

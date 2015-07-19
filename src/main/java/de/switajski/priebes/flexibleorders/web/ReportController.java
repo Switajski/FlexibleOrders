@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNote;
@@ -128,7 +127,7 @@ public class ReportController {
 
         log.debug("listOrderNumbers request:" + orderNumberObject);
         // TODO unify docNumbers
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented yet");
     }
 
     public class invoiceNumber {

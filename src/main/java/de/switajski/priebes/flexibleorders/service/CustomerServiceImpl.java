@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 
@@ -27,15 +26,8 @@ public class CustomerServiceImpl {
 	
 	public List<Customer> findAll() {
 		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		throw new RuntimeException("Not implemented yet");
 	}
-	
-//	@Transactional
-//	public Customer update(JsonCustomer customerDto){
-//		Customer customer = retrieveCustomerSavely(customerDto.getCustomerNumber());
-//		
-//		
-//	}
 
 	@Transactional
 	public void delete(Long customerNumber) {

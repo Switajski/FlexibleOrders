@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
@@ -23,13 +21,6 @@ public class ExceptionController {
     @ResponseBody
     public String handleException(Exception ex) {
         return handleExceptionAsError(ex);
-    }
-
-    @ExceptionHandler(NotImplementedException.class)
-    @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
-    @ResponseBody
-    public String receiveException(NotImplementedException ex) {
-        return handleExceptionAsNotification(ex, "Funktion noch nicht implementiert");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

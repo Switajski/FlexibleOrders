@@ -11,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
 
 /**
  * Specifies "open" ReportItems: <br/>
@@ -32,7 +31,7 @@ import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
  * ...) of an order item is saved in database, but the events e.g. how much has
  * been delivered. An event is called {@link ReportItem}. Thus the table of
  * report items joined with order items are a history - See following SQL after
- * having started {@link TestDataCreator#createTestData}:
+ * having started TestDataCreator#createTestData:
  * 
  * <pre>
  * select oi.id, oi.name, oi.ordered_quantity, ri.id, ri.dtype, ri.quantity 

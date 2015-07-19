@@ -5,3 +5,9 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 after_failure:
   - cat target/surefire-reports/*.txt
+notifications:
+	email:
+		recipients:
+			- marek@switajski.de
+		on_failure: always
+		on_success: always

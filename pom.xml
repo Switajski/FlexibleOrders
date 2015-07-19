@@ -8,7 +8,7 @@
 	<version>0.1.0.BUILD-SNAPSHOT</version>
 	<name>FlexibleOrders</name>
 	<properties>
-		<aspectj.version>1.8.1</aspectj.version>
+		<aspectj.version>1.8.2</aspectj.version>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.5</slf4j.version>

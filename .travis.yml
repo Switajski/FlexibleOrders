@@ -2,6 +2,6 @@ language: java
 jdk:
   - oraclejdk8
 before_script:
-  - psql -c 'create database flexibleorders;' -U postgres
+  - psql -c 'create database travis_ci_test;' -U postgres
 after_failure:
   - cat target/surefire-reports/*.txt

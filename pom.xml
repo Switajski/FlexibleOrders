@@ -15,7 +15,8 @@
 		<camel.version>2.15.2</camel.version>
 		<spring.version>4.1.7.RELEASE</spring.version>
 		<hibernate.version>4.2.2.Final</hibernate.version>
-		<spring-security.version>4.0.1.RELEASE</spring-security.version>
+		<spring-security.version>3.1.0.RELEASE</spring-security.version>
+		<camel-version>2.15.0</camel-version>
 	</properties>
 	<repositories>
 		<repository>
@@ -216,11 +217,6 @@
 			<version>5.4.2</version>
 			<type>jar</type>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency> -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -376,6 +372,17 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test</artifactId>
+			<version>${camel-version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -403,21 +410,21 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-			    <artifactId>aspectj-maven-plugin</artifactId>
-			    <version>1.7</version> <!-- AspectJ weaver plugin 7 is for java 8 (version 1.6 is for java 7) -->
-			          <configuration>
-			              <complianceLevel>1.8</complianceLevel>
-			              <source>1.8</source>
-			              <target>1.8</target>
-			          </configuration>
-			    <executions>
-			        <execution>
-			            <goals>
-			                <goal>compile</goal>
-			                <goal>test-compile</goal>
-			            </goals>
-			        </execution>
-			    </executions>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.7</version> <!-- AspectJ weaver plugin 7 is for java 8 (version 1.6 is for java 7) -->
+				<configuration>
+					<complianceLevel>1.8</complianceLevel>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

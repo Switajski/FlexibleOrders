@@ -19,7 +19,7 @@ public class DeliveryNotesPdfFileTest{
 
 		DeliveryNotesPdfFile bpf = new DeliveryNotesPdfFile();
 		bpf.setFilePathAndName(PDF_PATH);
-		bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
+		bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		ReportDto reportDto = ReportDtoTestFixture.givenReportDto();

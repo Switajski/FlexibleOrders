@@ -21,7 +21,7 @@ public class OrderConfirmationPdfFileTest {
 
         OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
         bpf.setFilePathAndName(OC_PDF_FILE);
-        bpf.setLogoPath("C:/workspaces/gitRepos/FlexibleOrders/src/main/webapp/images/LogoGross.jpg");
+        bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(ReportDto.class.getSimpleName(), ReportDtoTestFixture.givenReportDto());

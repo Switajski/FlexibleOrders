@@ -10,18 +10,11 @@
 	                       http://www.springframework.org/schema/mvc 
 	                       http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
-	<bean id="OrderPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView">
-	</bean>
-	<bean id="OrderConfirmationPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView">
-	</bean>
-	<bean id="DeliveryNotesPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView">
-	</bean>
-	<bean id="InvoicePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView">
-	</bean>
-	<bean id="CreditNotePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView">
-	</bean>
-	<bean id="ArchivePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.ArchivePdfView">
-	</bean>
-	<!-- //TODO: Testen: Steht dies hinter dem Security Context? -->
+	<bean id="OrderPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView" />
+	<bean id="OrderConfirmationPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView" />
+	<bean id="DeliveryNotesPdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView" />
+	<bean id="InvoicePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView" />
+	<bean id="CreditNotePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView" />
+	<bean id="ArchivePdfView" class="de.switajski.priebes.flexibleorders.web.itextpdf.ArchivePdfView" />
 
 </beans>

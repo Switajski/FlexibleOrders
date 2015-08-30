@@ -67,7 +67,7 @@ public class CustomPdfPTableBuilder {
         
         CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(rowProperties)
                 .addCell(leftAlign
-                        .withPhrase(bold.withText("Betrag").build())
+                        .withPhrase(bold.withText("Betrag netto").build())
                         .build())
                 .addCell(rightAlign.withPhrase(
                         bold.withText(net.toString()).build()).build());

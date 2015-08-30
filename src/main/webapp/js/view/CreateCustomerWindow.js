@@ -128,7 +128,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 							                        change: this.onMailingAddrFieldChange
 							                    },
 							                    billingFieldName: 'dname1',
-												allowBlank : true
+												allowBlank : false
 												
 											}, {
 												name : 'name2',
@@ -140,7 +140,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 							                        change: this.onMailingAddrFieldChange
 							                    },
 							                    billingFieldName: 'dname2',
-												allowBlank : false
+												allowBlank : true
 											}]
 					                },{
 					                	xtype: 'fieldcontainer',
@@ -221,13 +221,13 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 					                    		fieldLabel: 'Empf&auml;nger',
 												name : 'dname1',
 												emptyText : '1. Zeile',
-												allowBlank : true
+												allowBlank : false
 											}, {
 												name : 'dname2',
 												hideLabel : true,
 												margins: '0 0 0 6',
 												emptyText : '2. Zeile',
-												allowBlank : false
+												allowBlank : true
 											}]
 					                },{
 					                	xtype: 'fieldcontainer',

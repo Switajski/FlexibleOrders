@@ -8,7 +8,8 @@ Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is de
 Intention
 ---------
 FlexibleOrders does not have the claim to manage customers relationships or product information. No product catalog and no customer database is used. It's intention is get customers and products from already existing systems and fit into a distribution / e-commerce system landscape like a microservice. It's defined "bounded context" is strictly defined to the order process and document creation with a clear API.
-The usage of "Event Sourcing" as a core idea makes the order process tracebale, enables the possibility to reflect B2B processes as well as B2C and make them interchangeble in time of processing.
+
+The usage of "Event Sourcing" as a core idea makes the order process tracebale, reflects B2B processes as well as B2C without complex logic and makes them interchangeble in time of processing.
 
 Getting started
 ---------------

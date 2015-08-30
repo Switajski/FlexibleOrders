@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +38,12 @@ public class CustomerController extends ExceptionController {
 			@RequestParam(value = "start", required = false) Integer start,
 			@RequestParam(value = "limit", required = true) Integer limit,
 			@RequestParam(value = "sort", required = false) String sorts) {
-		Page<Customer> customers = customerRepo.findAll(new PageRequest(
-				page - 1,
-				limit));
+		PageRequest pageable = new PageRequest(
+                		page - 1,
+                		limit, 
+                		Direction.ASC, 
+                		"companyName", "lastName", "firstName");
+        Page<Customer> customers = customerRepo.findAll(pageable);
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
 				CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
 						.getContent()));

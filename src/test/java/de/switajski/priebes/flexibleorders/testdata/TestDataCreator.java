@@ -65,206 +65,211 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * @author Marek Switajski
  * 
  */
-@Transactional 
+@Transactional
 public class TestDataCreator extends AbstractSpringContextTest {
 
-	@Autowired
-	private CatalogProductRepository cpRepo;
+    @Autowired
+    private CatalogProductRepository cpRepo;
 
-	@Autowired
-	private CustomerRepository cRepo;
+    @Autowired
+    private CustomerRepository cRepo;
 
-	@Autowired
-	private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
-	@Autowired
-	private ItemDtoConverterService converterService;
+    @Autowired
+    private ItemDtoConverterService converterService;
 
-	@Autowired
-	private DeliveryService deliveryService;
+    @Autowired
+    private DeliveryService deliveryService;
 
-	@Autowired
-	private InvoicingService invoicingService;
+    @Autowired
+    private InvoicingService invoicingService;
 
-	@Autowired
-	private CatalogDeliveryMethodRepository deliveryMethodRepo;
+    @Autowired
+    private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
-	@Autowired
+    @Autowired
     private AgreementService agreementService;
 
-	// @Ignore("This test is to initialize test data for GUI testing")
-	@Test
-	@Rollback(false)
-	public void createTestData() {
-		createProducts();
-		createCustomers();
-		createDeliveryMethods();
+    // @Ignore("This test is to initialize test data for GUI testing")
+    @Test
+    @Rollback(false)
+    public void createTestData() {
+        createProducts();
+        createCustomers();
+        createDeliveryMethods();
 
-		createYvonnesOrders();
-		createNaidasOrders();
-	}
+        createYvonnesOrders();
+        createNaidasOrders();
+    }
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public void createDeliveryMethods() {
-		deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
-		deliveryMethodRepo.save(new CatalogDeliveryMethod(DHL));
-	}
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void createDeliveryMethods() {
+        deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
+        deliveryMethodRepo.save(new CatalogDeliveryMethod(DHL));
+    }
 
-	private void createNaidasOrders() {
-		DateTime dt = new DateTime();
+    private void createNaidasOrders() {
+        DateTime dt = new DateTime();
 
-		orderService.order(B21);
-		Order b22 = orderService.order(B22);
-		OrderConfirmation ab22 = createAB22(dt, b22);
+        orderService.order(B21);
+        Order b22 = orderService.order(B22);
+        OrderConfirmation ab22 = createAB22(dt, b22);
 
-		orderService.cancelReport(ab22.getDocumentNumber());
+        orderService.cancelReport(ab22.getDocumentNumber());
 
-	}
+    }
 
     private OrderConfirmation createAB22(DateTime dt, Order b22) {
         OrderConfirmation ab22 = orderService.confirm(new ConfirmParameter(
-		        b22.getOrderNumber(),
-		        "AB22",
-		        dt.plusDays(5).toLocalDate(),
-		        DHL.getExternalId(),
-		        YVONNE.getShippingAddress(),
-		        YVONNE.getInvoiceAddress(),
-		        converterService.convert(b22)));
+                b22.getOrderNumber(),
+                "AB22",
+                dt.plusDays(5).toLocalDate(),
+                DHL.getExternalId(),
+                YVONNE.getShippingAddress(),
+                YVONNE.getInvoiceAddress(),
+                converterService.convert(b22)));
         return ab22;
     }
 
-	private void createYvonnesOrders() {
-		
-		orderService.order(B11);
-		orderService.order(B12);
-		orderService.order(B13);
-		orderService.order(B15);
+    private void createYvonnesOrders() {
 
-		OrderConfirmation ab11 = orderService.confirm(AB11);
-		orderService.confirm(AB13);
-		OrderConfirmation ab15 = orderService.confirm(AB15);
+        orderService.order(B11);
+        orderService.order(B12);
+        orderService.order(B13);
+        orderService.order(B15);
 
-		ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
-		ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
+        OrderConfirmation ab11 = orderService.confirm(AB11);
+        orderService.confirm(AB13);
+        OrderConfirmation ab15 = orderService.confirm(AB15);
 
-		List<ItemDto> itemsFromAu11 = converterService.convertReport(ab11);
-		List<ItemDto> itemsFromAu15 = converterService.convertReport(ab15);
+        ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
+        ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
 
-		DeliveryNotes l11 = createL11(itemsFromAu11);
-		DeliveryNotes l12 = createL12(itemsFromAu11);
-		createL13(itemsFromAu11);
-		createL14(itemsFromAu11);
-		createL15(itemsFromAu11, itemsFromAu15);
+        List<ItemDto> itemsFromAu11 = converterService.convertReport(ab11);
+        List<ItemDto> itemsFromAu15 = converterService.convertReport(ab15);
 
-		List<ItemDto> l11AndL12 = converterService.convertReport(l11);
-		l11AndL12.addAll(converterService.convertReport(l12));
+        DeliveryNotes l11 = createL11(itemsFromAu11);
+        DeliveryNotes l12 = createL12(itemsFromAu11);
+        createL13(itemsFromAu11);
+        createL14(itemsFromAu11);
+        createL15(itemsFromAu11, itemsFromAu15);
 
-		createR11(l11AndL12);
-	}
+        List<ItemDto> l11AndL12 = converterService.convertReport(l11);
+        l11AndL12.addAll(converterService.convertReport(l12));
+
+        createR11(l11AndL12);
+    }
 
     private void createR11(List<ItemDto> l11AndL12) {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.priceNet = BigDecimal.valueOf(11d);
         shippingCosts.productType = ProductType.SHIPPING;
         invoicingService.invoice(
-				new InvoicingParameter("R11", "5 % Skonto, wenn innerhalb 5 Tagen", new Date(), Arrays.asList(
-						extract(l11AndL12, AMY.getProductNumber(), 5),
-						extract(l11AndL12, MILADKA.getProductNumber(), 5),
-						shippingCosts), 
-						"billing"));
+                new InvoicingParameter("R11", "5 % Skonto, wenn innerhalb 5 Tagen", new Date(), Arrays.asList(
+                        extract(l11AndL12, AMY.getProductNumber(), 5),
+                        extract(l11AndL12, MILADKA.getProductNumber(), 5),
+                        shippingCosts),
+                        "billing"));
     }
 
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {
         deliveryService.deliver(new DeliverParameter(
-		        "L15",
-		        "trackNumber15",
-		        "packageNumber15",
-		        new Amount(BigDecimal.ZERO),
-		        new Date(),
-		        Arrays.asList(
-		                extract(itemsFromAu11, PAUL.getProductNumber(), 15), 
-		                extract(itemsFromAu15, PAUL.getProductNumber(), 8))));
+                "L15",
+                "trackNumber15",
+                "packageNumber15",
+                new Amount(BigDecimal.ZERO),
+                new Date(),
+                Arrays.asList(
+                        extract(itemsFromAu11, PAUL.getProductNumber(), 15),
+                        extract(itemsFromAu15, PAUL.getProductNumber(), 8)),
+                false));
     }
 
     private void createL14(List<ItemDto> itemsFromAu11) {
         deliveryService.deliver(new DeliverParameter(
-		        "L14",
-		        "trackNumber14",
-		        "packageNumber14",
-		        new Amount(BigDecimal.ZERO),
-		        new Date(),
-		        Arrays.asList(extract(itemsFromAu11, PAUL.getProductNumber(), 5))));
+                "L14",
+                "trackNumber14",
+                "packageNumber14",
+                new Amount(BigDecimal.ZERO),
+                new Date(),
+                Arrays.asList(extract(itemsFromAu11, PAUL.getProductNumber(), 5)),
+                false));
     }
 
     private void createL13(List<ItemDto> itemsFromAu11) {
         deliveryService.deliver(new DeliverParameter(
-		        "L13",
-		        "trackNumber13",
-		        "packageNumber13",
-		        new Amount(BigDecimal.ONE),
-		        new Date(),
-		        Arrays.asList(
-		                extract(itemsFromAu11, SALOME.getProductNumber(), 1),
-		                extract(itemsFromAu11, JUREK.getProductNumber(), 5))));
+                "L13",
+                "trackNumber13",
+                "packageNumber13",
+                new Amount(BigDecimal.ONE),
+                new Date(),
+                Arrays.asList(
+                        extract(itemsFromAu11, SALOME.getProductNumber(), 1),
+                        extract(itemsFromAu11, JUREK.getProductNumber(), 5)),
+                false));
     }
 
     private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) {
         DeliveryNotes l12 = deliveryService.deliver(new DeliverParameter(
-		        "L12",
-		        "trackNumber12",
-		        "packageNumber12",
-		        new Amount(BigDecimal.ONE),
-		        new Date(),
-		        Arrays.asList(
-		                extract(itemsFromAu11, AMY.getProductNumber(), 3),
-		                extract(itemsFromAu11, MILADKA.getProductNumber(), 3))));
+                "L12",
+                "trackNumber12",
+                "packageNumber12",
+                new Amount(BigDecimal.ONE),
+                new Date(),
+                Arrays.asList(
+                        extract(itemsFromAu11, AMY.getProductNumber(), 3),
+                        extract(itemsFromAu11, MILADKA.getProductNumber(), 3)),
+                false));
         return l12;
     }
 
     private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) {
         DeliveryNotes l11 = deliveryService.deliver(
-				new DeliverParameter(
-						"L11",
-						"trackNumber",
-						"packageNumber",
-						new Amount(BigDecimal.TEN),
-						new Date(),
-						Arrays.asList(
-								extract(itemsFromAu11, AMY.getProductNumber(), 2),
-								extract(itemsFromAu11, MILADKA.getProductNumber(), 2))));
+                new DeliverParameter(
+                        "L11",
+                        "trackNumber",
+                        "packageNumber",
+                        new Amount(BigDecimal.TEN),
+                        new Date(),
+                        Arrays.asList(
+                                extract(itemsFromAu11, AMY.getProductNumber(), 2),
+                                extract(itemsFromAu11, MILADKA.getProductNumber(), 2)),
+                        false));
         return l11;
     }
 
-	private ItemDto extract(List<ItemDto> itemDtos, String productNumber, int i) {
-		for (ItemDto item : itemDtos) {
-			if (item.product.equals(productNumber)) {
-				item.quantityLeft = i;
-				return item;
-			}
-		}
-		return null;
-	}
+    private ItemDto extract(List<ItemDto> itemDtos, String productNumber, int i) {
+        for (ItemDto item : itemDtos) {
+            if (item.product.equals(productNumber)) {
+                item.quantityLeft = i;
+                return item;
+            }
+        }
+        return null;
+    }
 
-	private List<CatalogProduct> createProducts() {
-		Set<CatalogProduct> products = new HashSet<CatalogProduct>();
-		products.add(AMY);
-		products.add(JUREK);
-		products.add(MILADKA);
-		products.add(PAUL);
-		products.add(SALOME);
-		return cpRepo.save(products);
-	}
+    private List<CatalogProduct> createProducts() {
+        Set<CatalogProduct> products = new HashSet<CatalogProduct>();
+        products.add(AMY);
+        products.add(JUREK);
+        products.add(MILADKA);
+        products.add(PAUL);
+        products.add(SALOME);
+        return cpRepo.save(products);
+    }
 
-	@Before
-	public void createCustomers() {
-		Set<Customer> customers = new HashSet<Customer>();
-		customers.add(EDWARD);
-		customers.add(JEROME);
-		customers.add(NAIDA);
-		customers.add(WYOMING);
-		customers.add(YVONNE);
-		cRepo.save(customers);
-		cRepo.flush();
-	}
+    @Before
+    public void createCustomers() {
+        Set<Customer> customers = new HashSet<Customer>();
+        customers.add(EDWARD);
+        customers.add(JEROME);
+        customers.add(NAIDA);
+        customers.add(WYOMING);
+        customers.add(YVONNE);
+        cRepo.save(customers);
+        cRepo.flush();
+    }
 
 }

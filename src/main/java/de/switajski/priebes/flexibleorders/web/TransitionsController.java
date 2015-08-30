@@ -145,7 +145,8 @@ public class TransitionsController extends ExceptionController {
                 deliverRequest.packageNumber,
                 new Amount(deliverRequest.shipment, Currency.EUR),
                 deliverRequest.created,
-                deliverRequest.items);
+                deliverRequest.items,
+                deliverRequest.showPricesInDeliveryNotes);
         deliverParameter.customerNumber = deliverRequest.customerId;
         DeliveryNotes dn = deliveryService.deliver(
                 deliverParameter);

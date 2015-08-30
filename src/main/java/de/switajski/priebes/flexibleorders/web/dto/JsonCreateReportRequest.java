@@ -93,6 +93,8 @@ public class JsonCreateReportRequest {
     public String saleRepresentative, 
         valueAddedTaxIdNo, 
         vendorNumber;
+    
+    public boolean showPricesInDeliveryNotes;
 
 		
 	public Address createInvoiceAddress(){

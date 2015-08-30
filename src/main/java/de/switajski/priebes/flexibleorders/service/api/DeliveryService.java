@@ -46,8 +46,6 @@ public class DeliveryService {
 
         Address shippingAddress = retrieveInvoicingAddress(ris, deliverParameter.ignoreContradictoryExpectedDeliveryDates);
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
-        deliveryNotes.setShippingCosts(deliverParameter.shipment);
-        deliveryNotes.setDeliveryMethod(deliverParameter.deliveryMethod);
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
             ReportItem agreementItem = riWithQty.getKey();
@@ -72,6 +70,9 @@ public class DeliveryService {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
+        deliveryNotes.setShippingCosts(deliverParameter.shipment);
+        deliveryNotes.setDeliveryMethod(deliverParameter.deliveryMethod);
+        deliveryNotes.setShowPrices(deliverParameter.showPricesInDeliveryNotes);
         return deliveryNotes;
     }
 

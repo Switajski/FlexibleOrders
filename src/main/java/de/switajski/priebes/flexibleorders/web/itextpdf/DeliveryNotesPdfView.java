@@ -50,7 +50,11 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         document.add(ParagraphBuilder.createEmptyLine());
         // insert main table
-        document.add(ReportViewHelper.createExtendedTable(report));
+        if (report.showPricesInDeliveryNotes){
+            document.add(ReportViewHelper.createExtendedTable(report));
+        } else {
+            document.add(ReportViewHelper.createTableWithoutPrices(report));
+        }
 
     }
 

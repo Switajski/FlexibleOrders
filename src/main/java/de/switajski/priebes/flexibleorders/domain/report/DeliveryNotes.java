@@ -36,6 +36,8 @@ public class DeliveryNotes extends Report {
 
     @Embedded
     private DeliveryMethod deliveryMethod;
+    
+    private Boolean showPrices;
 
     public Amount getNetAmount() {
         Amount summed = new Amount();
@@ -97,6 +99,14 @@ public class DeliveryNotes extends Report {
             shippingItems.add((ShippingItem) reportItem);
         }
         return shippingItems;
+    }
+
+    public boolean isShowPrices() {
+        return showPrices;
+    }
+
+    public void setShowPrices(Boolean showPrices) {
+        this.showPrices = showPrices;
     }
 
 }

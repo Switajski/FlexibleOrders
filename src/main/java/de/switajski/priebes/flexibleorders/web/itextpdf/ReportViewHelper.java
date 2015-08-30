@@ -229,6 +229,7 @@ public class ReportViewHelper {
             throws DocumentException {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithSixCols());
+        // Refactor - see #71
         for (ReportItem he : report.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
@@ -252,18 +253,19 @@ public class ReportViewHelper {
         return builder.withFooter(false).build();
     }
 
-    public static PdfPTable createTableWithoutPrices(Report cReport)
+    public static PdfPTable createTableWithoutPrices(ReportDto cReport)
             throws DocumentException {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithFourCols());
-        for (ReportItem he : cReport.getItemsOrdered()) {
+        // Refactor - see #71
+        for (ReportItem he : cReport.getItemsByOrder()) {
             if (!he.getOrderItem().isShippingCosts()) {
                 List<String> row = new ArrayList<String>();
                 // Anzahl
                 row.add(String.valueOf(he.getQuantity()) + " x ");
                 // Art.Nr.:
                 String pNo = he.getOrderItem().getProduct().getProductNumber();
-                row.add(pNo.equals(0L) ? "n.a." : pNo.toString());
+                row.add(pNo.equals("0") ? "n.a." : pNo.toString());
                 // Artikel
                 row.add(he.getOrderItem().getProduct().getName());
                 // Bestellnr

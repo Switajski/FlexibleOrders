@@ -47,7 +47,7 @@ public class ReportDtoTestFixture {
         r.customerNumber = customer.getCustomerNumber();
         r.customerPhone = customer.getPhone();
         r.customerSpecific_contactInformation = new ContactInformationBuilder()
-                .setContact1("Ihr Ansprechpartner: Hr. Priebe")
+                .setContact1("Hr. Priebe")
                 .setContact2("Mobil: 0175 / 124312541")
                 .setContact3("Fax: 0175 / 12431241")
                 .setContact4("Email: info@priebe.eu")

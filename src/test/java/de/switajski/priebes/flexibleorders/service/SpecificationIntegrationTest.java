@@ -164,21 +164,25 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliveryService.deliver(
                 new DeliverParameter("L11", "trackNumber", "packNo", null, new Date(), Arrays.asList(
                         createItemDto(2, AMY, orderAgreement),
-                        createItemDto(2, MILADKA, orderAgreement))));
+                        createItemDto(2, MILADKA, orderAgreement)),
+                        false));
 
         deliveryService.deliver(
                 new DeliverParameter("L12", "trackNumber", "packNo", null, new Date(), Arrays.asList(
                         createItemDto(3, AMY, orderAgreement),
-                        createItemDto(3, MILADKA, orderAgreement))));
+                        createItemDto(3, MILADKA, orderAgreement)),
+                        false));
 
         deliveryService.deliver(
                 new DeliverParameter("L13", "trackNumber", "packNo", null, new Date(), Arrays.asList(
                         createItemDto(1, SALOME, orderAgreement),
-                        createItemDto(JUREK_QTY, JUREK, orderAgreement))));
+                        createItemDto(JUREK_QTY, JUREK, orderAgreement)),
+                        false));
 
         deliveryService.deliver(
                 new DeliverParameter("L14", "trackNumber", "packNo", null, new Date(), Arrays.asList(
-                        createItemDto(5, PAUL, orderAgreement))));
+                        createItemDto(5, PAUL, orderAgreement)),
+                        false));
     }
 
     private ItemDto createItemDto(int qty, Product product,

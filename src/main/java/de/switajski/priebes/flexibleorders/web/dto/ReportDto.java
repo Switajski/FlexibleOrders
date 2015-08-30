@@ -61,6 +61,8 @@ public class ReportDto {
     // order specific TODO: merge to ItemDto
     public Set<OrderItem> orderItems;
 
+    public boolean showPricesInDeliveryNotes;
+
     public Collection<ReportItem> getItemsByOrder() {
         List<ReportItem> ris = new ArrayList<ReportItem>(items);
         Collections.sort(ris, new Comparator<ReportItem>() {

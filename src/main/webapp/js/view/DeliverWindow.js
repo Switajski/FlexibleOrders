@@ -1,4 +1,5 @@
-Ext.define(
+Ext
+		.define(
 				'MyApp.view.DeliverWindow',
 				{
 					extend : 'MyApp.view.TransitionWindow',
@@ -169,6 +170,14 @@ Ext.define(
 										margins : '0 0 0 6',
 										allowBlank : true
 									} ]
+								}, {
+									xtype : 'checkbox',
+									fieldLabel : 'Preise auf AB anzeigen',
+									name : 'showPricesInDeliveryNotes',
+									labelWidth : 185,
+									margins : '0 0 0 6',
+									checked : false,
+									inputValue : 'true'
 								} ]
 					},
 

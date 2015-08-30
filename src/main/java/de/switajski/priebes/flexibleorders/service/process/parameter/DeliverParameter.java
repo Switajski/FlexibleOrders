@@ -18,16 +18,18 @@ public class DeliverParameter {
 	public List<ItemDto> agreementItemDtos;
     public boolean ignoreContradictoryExpectedDeliveryDates;
     public DeliveryMethod deliveryMethod;
+    public boolean showPricesInDeliveryNotes;
 
 	public DeliverParameter(String deliveryNotesNumber, String trackNumber,
 			String packageNumber, Amount shipment, Date created,
-			List<ItemDto> agreementItemDtos) {
+			List<ItemDto> agreementItemDtos, boolean showPricesInDeliveryNotes) {
 		this.deliveryNotesNumber = deliveryNotesNumber;
 		this.trackNumber = trackNumber;
 		this.shipment = shipment;
 		this.packageNumber = packageNumber;
 		this.created = created;
 		this.agreementItemDtos = agreementItemDtos;
+		this.showPricesInDeliveryNotes = showPricesInDeliveryNotes;
 	}
 
     public DeliverParameter() {

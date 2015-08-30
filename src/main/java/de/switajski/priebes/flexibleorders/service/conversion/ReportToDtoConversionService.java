@@ -14,6 +14,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -80,6 +81,9 @@ public class ReportToDtoConversionService {
 		
 		dto.netGoods = AmountCalculator.sum(AmountCalculator
 				.getAmountsTimesQuantity(report.getItems()));
+		
+		if (report instanceof DeliveryNotes)
+		    dto.showPricesInDeliveryNotes = ((DeliveryNotes) report).isShowPrices();
 
 		return dto;
 	}

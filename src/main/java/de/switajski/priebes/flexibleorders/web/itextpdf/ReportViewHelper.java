@@ -117,6 +117,7 @@ public class ReportViewHelper {
         }
 
         String thirdCol = new StringBuilder()
+                .append("Kundennr.: " + p.customerNo + NEWLINE)
                 .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
                         + p.vendorNumber + NEWLINE + NEWLINE)
                 .append(createString(p.contactInformation))

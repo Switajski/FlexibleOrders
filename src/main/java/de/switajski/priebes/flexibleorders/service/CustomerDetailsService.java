@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +15,6 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 @Service
 public class CustomerDetailsService {
-
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
 
     private Set<CustomerDetails> retrieve(ReportItem reportItem) {
         Set<CustomerDetails> customerDetailss = new HashSet<CustomerDetails>();

@@ -15,6 +15,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -71,7 +72,7 @@ public class ReportToDtoConversionService {
 			dto.customerNumber = customer.getCustomerNumber();
 		}
 		
-		dto.headerAddress = retrieveInvoicingAddress(report);
+		dto.invoiceSpecific_headerAddress = retrieveInvoicingAddress(report);
 		dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
 		mapCustomerDetails(dto, retrieveCustomerDetails(report));
 		dto.shippingSpecific_expectedDelivery = retrieveExpectedDelivery(report);
@@ -84,6 +85,11 @@ public class ReportToDtoConversionService {
 		
 		if (report instanceof DeliveryNotes)
 		    dto.showPricesInDeliveryNotes = ((DeliveryNotes) report).isShowPrices();
+		if (report instanceof Invoice){
+		    Invoice invoice = (Invoice) report;
+		    dto.invoiceSpecific_discountText = invoice.getDiscountText();
+		    dto.invoiceSpecific_discountRate = invoice.getDiscountRate();
+		}
 
 		return dto;
 	}

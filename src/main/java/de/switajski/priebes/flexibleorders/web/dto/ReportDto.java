@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +57,9 @@ public class ReportDto {
     // invoice specific
     public boolean invoiceSpecific_hasItemsWithDifferentCreationDates;
     public String invoiceSpecific_billing, invoiceSpecific_paymentConditions;
-    public Address headerAddress;
+    public Address invoiceSpecific_headerAddress;
+    public BigDecimal invoiceSpecific_discountRate;
+    public String invoiceSpecific_discountText;
 
     // order specific TODO: merge to ItemDto
     public Set<OrderItem> orderItems;

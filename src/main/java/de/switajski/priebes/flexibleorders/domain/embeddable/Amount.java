@@ -101,6 +101,10 @@ public class Amount {
 		return new Amount(value.multiply(new BigDecimal(multiplicand)), currency);
 	}
 	
+	public Amount multiply(BigDecimal multiplicand){
+	    return new Amount(value.multiply(multiplicand));
+	}
+	
 	public Amount multiply(Amount multiplicand) {
 		if (this.currency != multiplicand.currency)
 			throw new IllegalArgumentException("Different currencies");

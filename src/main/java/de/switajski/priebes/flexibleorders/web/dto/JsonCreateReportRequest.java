@@ -89,12 +89,18 @@ public class JsonCreateReportRequest {
 	public LocalDate expectedDelivery;
 
 	public Long deliveryMethodNo;
-
+	
     public String saleRepresentative, 
         valueAddedTaxIdNo, 
         vendorNumber;
     
     public boolean showPricesInDeliveryNotes;
+    
+    @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
+    public String discountText;
+    
+    @JsonDeserialize(using = BigDecimalDeserializer.class)
+    public BigDecimal discountRate;
 
 		
 	public Address createInvoiceAddress(){

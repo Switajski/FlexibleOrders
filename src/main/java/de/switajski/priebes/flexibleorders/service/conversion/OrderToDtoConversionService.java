@@ -23,7 +23,7 @@ public class OrderToDtoConversionService {
 		dto.customerLastName = customer.getLastName();
 		dto.customerEmail = customer.getEmail();
 		dto.customerPhone = customer.getPhone();
-		dto.headerAddress = BusinessConstants.MY_ADDRESS;
+		dto.invoiceSpecific_headerAddress = BusinessConstants.MY_ADDRESS;
 		dto.shippingSpecific_shippingAddress = customer.getShippingAddress();
 		dto.orderItems = order.getItems(); 
 		dto.netGoods = AmountCalculator.sum(AmountCalculator

@@ -46,7 +46,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         String leftTop = "Bestellnummer: " + report.documentNumber.toString();
         String leftBottom = "Bestelldatum: "
                 + dateFormat.format(report.created);
-        Address adresse = report.headerAddress;
+        Address adresse = report.invoiceSpecific_headerAddress;
         String heading = "Bestellung";
 
         Amount netGoods = report.netGoods;
@@ -72,7 +72,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         if (hasRecommendedPrices(report) && hasVat(report)) {
             CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
                     .createFooterBuilder(
-                            netGoods, vat, null, gross, null)
+                            netGoods, vat, null, gross, null, null, null)
                     .withTotalWidth(PriebesIText5PdfView.WIDTH);
 
             PdfPTable footer = footerBuilder.build();

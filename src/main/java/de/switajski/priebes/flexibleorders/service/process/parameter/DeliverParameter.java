@@ -20,16 +20,17 @@ public class DeliverParameter {
     public DeliveryMethod deliveryMethod;
     public boolean showPricesInDeliveryNotes;
 
-	public DeliverParameter(String deliveryNotesNumber, String trackNumber,
-			String packageNumber, Amount shipment, Date created,
-			List<ItemDto> agreementItemDtos, boolean showPricesInDeliveryNotes) {
+    /**
+     * Constructor with mandatory fields
+     * @param deliveryNotesNumber
+     * @param created
+     * @param agreementItemDtos
+     */
+	public DeliverParameter(String deliveryNotesNumber, Date created,
+			List<ItemDto> agreementItemDtos) {
 		this.deliveryNotesNumber = deliveryNotesNumber;
-		this.trackNumber = trackNumber;
-		this.shipment = shipment;
-		this.packageNumber = packageNumber;
 		this.created = created;
 		this.agreementItemDtos = agreementItemDtos;
-		this.showPricesInDeliveryNotes = showPricesInDeliveryNotes;
 	}
 
     public DeliverParameter() {

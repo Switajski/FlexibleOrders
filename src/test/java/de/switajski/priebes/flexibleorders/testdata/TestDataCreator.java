@@ -166,77 +166,78 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.priceNet = BigDecimal.valueOf(11d);
         shippingCosts.productType = ProductType.SHIPPING;
+        InvoicingParameter invoicingParameter = new InvoicingParameter("R11", new Date(), Arrays.asList(
+                extract(l11AndL12, AMY.getProductNumber(), 5),
+                extract(l11AndL12, MILADKA.getProductNumber(), 5),
+                shippingCosts));
+        invoicingParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
         invoicingService.invoice(
-                new InvoicingParameter("R11", "5 % Skonto, wenn innerhalb 5 Tagen", new Date(), Arrays.asList(
-                        extract(l11AndL12, AMY.getProductNumber(), 5),
-                        extract(l11AndL12, MILADKA.getProductNumber(), 5),
-                        shippingCosts),
-                        "billing"));
+                invoicingParameter);
     }
 
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {
-        deliveryService.deliver(new DeliverParameter(
+        DeliverParameter deliverParameter = new DeliverParameter(
                 "L15",
-                "trackNumber15",
-                "packageNumber15",
-                new Amount(BigDecimal.ZERO),
                 new Date(),
                 Arrays.asList(
                         extract(itemsFromAu11, PAUL.getProductNumber(), 15),
-                        extract(itemsFromAu15, PAUL.getProductNumber(), 8)),
-                false));
+                        extract(itemsFromAu15, PAUL.getProductNumber(), 8)));
+        deliverParameter.trackNumber = "trackNumber15";
+        deliverParameter.packageNumber = "packageNumber15"; 
+        deliverParameter.shipment = new Amount(BigDecimal.ZERO);
+        deliveryService.deliver(deliverParameter);
     }
 
     private void createL14(List<ItemDto> itemsFromAu11) {
-        deliveryService.deliver(new DeliverParameter(
+        DeliverParameter deliverParameter = new DeliverParameter(
                 "L14",
-                "trackNumber14",
-                "packageNumber14",
-                new Amount(BigDecimal.ZERO),
                 new Date(),
-                Arrays.asList(extract(itemsFromAu11, PAUL.getProductNumber(), 5)),
-                false));
+                Arrays.asList(extract(itemsFromAu11, PAUL.getProductNumber(), 5)));
+        deliverParameter.trackNumber = "trackNumber14";
+        deliverParameter.packageNumber = "packageNumber14";
+        deliverParameter.shipment = new Amount(BigDecimal.ZERO);
+        deliveryService.deliver(deliverParameter);
     }
 
     private void createL13(List<ItemDto> itemsFromAu11) {
-        deliveryService.deliver(new DeliverParameter(
+        DeliverParameter deliverParameter = new DeliverParameter(
                 "L13",
-                "trackNumber13",
-                "packageNumber13",
-                new Amount(BigDecimal.ONE),
                 new Date(),
                 Arrays.asList(
                         extract(itemsFromAu11, SALOME.getProductNumber(), 1),
-                        extract(itemsFromAu11, JUREK.getProductNumber(), 5)),
-                false));
+                        extract(itemsFromAu11, JUREK.getProductNumber(), 5)));
+        deliverParameter.trackNumber = "trackNumber13";
+        deliverParameter.packageNumber = "packageNumber13";
+        deliverParameter.shipment = new Amount(BigDecimal.ONE);
+        deliveryService.deliver(deliverParameter);
     }
 
     private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) {
-        DeliveryNotes l12 = deliveryService.deliver(new DeliverParameter(
+        DeliverParameter deliverParameter = new DeliverParameter(
                 "L12",
-                "trackNumber12",
-                "packageNumber12",
-                new Amount(BigDecimal.ONE),
                 new Date(),
                 Arrays.asList(
                         extract(itemsFromAu11, AMY.getProductNumber(), 3),
-                        extract(itemsFromAu11, MILADKA.getProductNumber(), 3)),
-                false));
+                        extract(itemsFromAu11, MILADKA.getProductNumber(), 3)));
+        deliverParameter.trackNumber = "trackNumber12";
+        deliverParameter.packageNumber = "packageNumber12";
+        deliverParameter.shipment = new Amount(BigDecimal.ONE); 
+        DeliveryNotes l12 = deliveryService.deliver(deliverParameter);
         return l12;
     }
 
     private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) {
+        DeliverParameter deliverParameter = new DeliverParameter(
+                "L11",
+                new Date(),
+                Arrays.asList(
+                        extract(itemsFromAu11, AMY.getProductNumber(), 2),
+                        extract(itemsFromAu11, MILADKA.getProductNumber(), 2)));
+        deliverParameter.trackNumber = "trackNumber";
+        deliverParameter.packageNumber = "packageNumber";
+        deliverParameter.shipment = new Amount(BigDecimal.TEN);
         DeliveryNotes l11 = deliveryService.deliver(
-                new DeliverParameter(
-                        "L11",
-                        "trackNumber",
-                        "packageNumber",
-                        new Amount(BigDecimal.TEN),
-                        new Date(),
-                        Arrays.asList(
-                                extract(itemsFromAu11, AMY.getProductNumber(), 2),
-                                extract(itemsFromAu11, MILADKA.getProductNumber(), 2)),
-                        false));
+                deliverParameter);
         return l11;
     }
 

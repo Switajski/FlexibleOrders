@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.itextpdf.text.Element;
@@ -49,14 +50,23 @@ public class CustomPdfPTableBuilder {
      * 
      * @param net
      * @param vat
+     * @param discountAmount
+     *            TODO
+     * @param discountText
+     *            TODO
      * @return
      */
     public static CustomPdfPTableBuilder createFooterBuilder(Amount net,
-            Amount vat, Amount shipping, Amount gross, String paymentConditions) {
-        PhraseBuilder bold = new PhraseBuilder("Betrag").withFont(FontFactory
+            Amount vat, Amount shipping, Amount gross, String paymentConditions,
+            Amount discountAmount, String discountText) {
+        PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
                 .getFont(PriebesIText5PdfView.FONT,
                         PriebesIText5PdfView.FONT_SIZE,
                         Font.BOLD));
+        PhraseBuilder normal = new PhraseBuilder("").withFont(FontFactory
+                .getFont(PriebesIText5PdfView.FONT,
+                        PriebesIText5PdfView.FONT_SIZE,
+                        Font.NORMAL));
         PdfPCellBuilder leftAlign = new PdfPCellBuilder(bold.build());
         PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build())
                 .withRightHorizontalAlignment();
@@ -64,11 +74,26 @@ public class CustomPdfPTableBuilder {
         ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
         rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 30));
         rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 70));
-        
-        CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(rowProperties)
-                .addCell(leftAlign
-                        .withPhrase(bold.withText("Betrag netto").build())
-                        .build())
+
+        CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(rowProperties);
+        if (discountAmount != null && discountText != null){
+            
+            footerBuilder.addCell(leftAlign
+                    .withPhrase(normal.withText("Zwischensumme: ").build())
+                    .build())
+                    .addCell(rightAlign.withPhrase(
+                            normal.withText(net.add(discountAmount).toString()).build()).build());
+            
+            footerBuilder.addCell(leftAlign
+                    .withPhrase(normal.withText(discountText).build())
+                    .build())
+                    .addCell(rightAlign.withPhrase(
+                            normal.withText(discountAmount.toString()).build()).build());
+        }
+
+        footerBuilder.addCell(leftAlign
+                .withPhrase(bold.withText("Betrag netto").build())
+                .build())
                 .addCell(rightAlign.withPhrase(
                         bold.withText(net.toString()).build()).build());
 
@@ -98,7 +123,7 @@ public class CustomPdfPTableBuilder {
 
         if (paymentConditions != null) footerBuilder
                 .addCell(leftAlign
-                        .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: "+ paymentConditions).build())
+                        .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
                         .withBorder(Rectangle.NO_BORDER)
                         .withColSpan(2)
                         .build());

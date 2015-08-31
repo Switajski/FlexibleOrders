@@ -43,7 +43,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Paragraph p : ReportViewHelper.createAddress(report.headerAddress))
+        for (Paragraph p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -69,7 +69,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
                 .createFooterBuilder(
-                        netGoods, vat, null, gross, null)
+                        netGoods, vat, null, gross, null, null, null)
                 .withTotalWidth(PriebesIText5PdfView.WIDTH);
 
         PdfPTable footer = footerBuilder.build();

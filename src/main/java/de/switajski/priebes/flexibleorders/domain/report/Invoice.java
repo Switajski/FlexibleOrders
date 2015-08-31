@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Embedded;
@@ -17,7 +18,9 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 @Entity
 public class Invoice extends Report {
 
-	private String paymentConditions;
+	private String paymentConditions, discountText;
+	
+	private BigDecimal discountRate;
 
 	@NotNull
 	private Address invoiceAddress;
@@ -94,5 +97,21 @@ public class Invoice extends Report {
 	public void setBilling(String billing) {
 		this.billing = billing;
 	}
+
+    public String getDiscountText() {
+        return discountText;
+    }
+
+    public void setDiscountText(String discountText) {
+        this.discountText = discountText;
+    }
+
+    public BigDecimal getDiscountRate() {
+        return discountRate;
+    }
+
+    public void setDiscountRate(BigDecimal discountRate) {
+        this.discountRate = discountRate;
+    }
 
 }

@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +33,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTablePa
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
-
+    
 	@Override
 	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -45,13 +47,13 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		Amount shippingCosts = Amount.ZERO_EURO;
 		if (report.shippingSpecific_shippingCosts != null)
 			shippingCosts = report.shippingSpecific_shippingCosts;
-
+		
 		Amount netGoods = report.netGoods;
 		Amount vat = (netGoods.add(shippingCosts))
 				.multiply(report.vatRate);
 		Amount gross = netGoods.add(vat).add(shippingCosts);
-
-		for (Paragraph p: ReportViewHelper.createAddress(report.headerAddress))
+		
+		for (Paragraph p: ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress))
 			document.add(p);
 
 		document.add(ReportViewHelper.createDate(date));
@@ -84,15 +86,30 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 			document.add(createTableWithDeliveryNotes(report.items));
 		else
 			document.add(createTable(report));
-
+		
 		// insert footer table
-		CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
+		String discountText = null;
+		Amount discountAmount = null;
+        BigDecimal discountRate = report.invoiceSpecific_discountRate.divide(new BigDecimal(100d));
+        if (report.invoiceSpecific_discountText != null && discountRate != null){
+		    BigDecimal oneMinusDiscountRate = BigDecimal.ONE.subtract(discountRate);
+            vat = vat.multiply(oneMinusDiscountRate);
+		    netGoods = netGoods.multiply(oneMinusDiscountRate);
+		    discountAmount = netGoods.multiply(discountRate);
+		    gross = netGoods.add(vat).add(shippingCosts);
+
+		    discountText = "Rabatt: " + report.invoiceSpecific_discountText;
+		}
+		
+        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
 				.createFooterBuilder(
 						netGoods,
 						vat,
 						shippingCosts,
 						gross,
-						report.invoiceSpecific_paymentConditions)
+						report.invoiceSpecific_paymentConditions,
+						discountAmount, 
+						discountText)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 
 		PdfPTable footer = footerBuilder.build();
@@ -168,6 +185,14 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		}
 
 		return builder.withFooter(false).build();
+	}
+	
+	private String createFormatForRate(BigDecimal rate){
+	    DecimalFormat df = new DecimalFormat();
+	    df.setMaximumFractionDigits(2);
+	    df.setMinimumFractionDigits(0);
+	    df.setGroupingUsed(false);
+	    return df.format(rate);
 	}
 
 }

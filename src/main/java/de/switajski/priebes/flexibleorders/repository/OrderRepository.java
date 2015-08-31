@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
 	List<Order> findByCustomer(Customer customer);
 	
-	//TODO: replace by "ReportItemEmptySpecification"
+	//TODO: replace by "ReportItemEmptySpecification" #7
 	static String fromOrderWhereReportItemsIsEmpty = "from Order o join o.items oi where oi.reportItems is empty ";
 	
 	static String groupBy = " group by o";

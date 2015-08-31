@@ -161,28 +161,38 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * @param orderAgreement
      */
     private void givenDeliveryReports(OrderConfirmation orderAgreement) {
+        DeliverParameter deliverParameterL11 = new DeliverParameter("L11", new Date(), Arrays.asList(
+                createItemDto(2, AMY, orderAgreement),
+                createItemDto(2, MILADKA, orderAgreement)));
+        deliverParameterL11.trackNumber = "trackNumber";
+        deliverParameterL11.packageNumber = "packNo";
+        deliverParameterL11.showPricesInDeliveryNotes = false;
         deliveryService.deliver(
-                new DeliverParameter("L11", "trackNumber", "packNo", null, new Date(), Arrays.asList(
-                        createItemDto(2, AMY, orderAgreement),
-                        createItemDto(2, MILADKA, orderAgreement)),
-                        false));
+                deliverParameterL11);
 
+        DeliverParameter deliverParameterL12 = new DeliverParameter("L12", new Date(), Arrays.asList(
+                createItemDto(3, AMY, orderAgreement),
+                createItemDto(3, MILADKA, orderAgreement)));
+        deliverParameterL12.trackNumber = "trackNumber";
+        deliverParameterL12.packageNumber = "packNo";
+        deliverParameterL12.showPricesInDeliveryNotes = false;
         deliveryService.deliver(
-                new DeliverParameter("L12", "trackNumber", "packNo", null, new Date(), Arrays.asList(
-                        createItemDto(3, AMY, orderAgreement),
-                        createItemDto(3, MILADKA, orderAgreement)),
-                        false));
+                deliverParameterL12);
 
-        deliveryService.deliver(
-                new DeliverParameter("L13", "trackNumber", "packNo", null, new Date(), Arrays.asList(
-                        createItemDto(1, SALOME, orderAgreement),
-                        createItemDto(JUREK_QTY, JUREK, orderAgreement)),
-                        false));
+        DeliverParameter deliverParameterL13 = new DeliverParameter("L13", new Date(), Arrays.asList(
+                createItemDto(1, SALOME, orderAgreement),
+                createItemDto(JUREK_QTY, JUREK, orderAgreement)));
+        deliverParameterL13.trackNumber = "trackNumber";
+        deliverParameterL13.packageNumber = "packNo";
+        deliverParameterL13.showPricesInDeliveryNotes = false;
+        deliveryService.deliver(deliverParameterL13);
 
-        deliveryService.deliver(
-                new DeliverParameter("L14", "trackNumber", "packNo", null, new Date(), Arrays.asList(
-                        createItemDto(5, PAUL, orderAgreement)),
-                        false));
+        DeliverParameter deliverParameter14 = new DeliverParameter("L14", new Date(), Arrays.asList(
+                createItemDto(5, PAUL, orderAgreement)));
+        deliverParameter14.trackNumber = "trackNumber";
+        deliverParameter14.packageNumber = "packNo";
+        deliverParameter14.showPricesInDeliveryNotes = false;
+        deliveryService.deliver(deliverParameter14);
     }
 
     private ItemDto createItemDto(int qty, Product product,

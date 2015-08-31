@@ -42,6 +42,19 @@ Ext.define('MyApp.view.InvoiceWindow', {
 					fieldLabel : 'Zahlungsbd.',
 					name : 'paymentConditions',
 					anchor : '100%'
+				},{
+					xtype : 'textfield',
+					fieldLabel : 'Rabatttext',
+					name : 'discountText',
+					id : 'discountText',
+					anchor : '100%'
+				},{
+					xtype : 'numberfield',
+					fieldLabel : 'Rabatt %',
+					name : 'discountRate',
+					allowDecimals : true,
+					margins : '0 0 0 6',
+					minValue : 0
 				}]
 	},
 	addressForm : null,

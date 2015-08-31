@@ -122,10 +122,12 @@ public class TransitionsController extends ExceptionController {
 
         InvoicingParameter invoicingParameter = new InvoicingParameter(
                 invoicingRequest.invoiceNumber,
-                invoicingRequest.paymentConditions,
                 invoicingRequest.created,
-                invoicingRequest.items,
-                invoicingRequest.billing);
+                invoicingRequest.items);
+        invoicingParameter.paymentConditions = invoicingRequest.paymentConditions;
+        invoicingParameter.billing = invoicingRequest.billing;
+        invoicingParameter.discountRate = invoicingRequest.discountRate;
+        invoicingParameter.discountText = invoicingRequest.discountText;
         invoicingParameter.customerNumber = invoicingRequest.customerId;
         Invoice invoice = invoicingService.invoice(
                 invoicingParameter);
@@ -141,12 +143,13 @@ public class TransitionsController extends ExceptionController {
 
         DeliverParameter deliverParameter = new DeliverParameter(
                 deliverRequest.deliveryNotesNumber,
-                deliverRequest.trackNumber,
-                deliverRequest.packageNumber,
-                new Amount(deliverRequest.shipment, Currency.EUR),
                 deliverRequest.created,
-                deliverRequest.items,
-                deliverRequest.showPricesInDeliveryNotes);
+                deliverRequest.items);
+        deliverParameter.trackNumber = deliverRequest.trackNumber;
+        deliverParameter.packageNumber = deliverRequest.packageNumber;
+        deliverParameter.showPricesInDeliveryNotes = deliverRequest.showPricesInDeliveryNotes;
+        deliverParameter.shipment = new Amount(deliverRequest.shipment, Currency.EUR);
+        
         deliverParameter.customerNumber = deliverRequest.customerId;
         DeliveryNotes dn = deliveryService.deliver(
                 deliverParameter);

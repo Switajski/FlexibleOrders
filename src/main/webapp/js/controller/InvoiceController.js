@@ -53,7 +53,7 @@ Ext.define('MyApp.controller.InvoiceController', {
 			postalCode : kunde.data.postalCode,
 			customerNumber : kunde.data.customerNumber,
 			street : kunde.data.street,
-			paymentConditions : "Rechnungsbetrag ist zahlbar innerhalb von 30 Tagen. 3% Skonto bei Zahlung innerhalb von 8 Tagen."
+			paymentConditions : kunde.data.paymentConditions
 		});
 		// somehow the id is deleted onShow
 		Ext.getCmp('invoiceNumber').setValue(deliveryNotesNumber);

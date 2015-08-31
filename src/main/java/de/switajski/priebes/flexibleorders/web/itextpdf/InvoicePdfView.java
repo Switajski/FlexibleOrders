@@ -90,8 +90,9 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		// insert footer table
 		String discountText = null;
 		Amount discountAmount = null;
-        BigDecimal discountRate = report.invoiceSpecific_discountRate.divide(new BigDecimal(100d));
-        if (report.invoiceSpecific_discountText != null && discountRate != null){
+		BigDecimal discountPercentage = report.invoiceSpecific_discountRate;
+        if (report.invoiceSpecific_discountText != null && discountPercentage != null){
+            BigDecimal discountRate = discountPercentage.divide(new BigDecimal(100d));
 		    BigDecimal oneMinusDiscountRate = BigDecimal.ONE.subtract(discountRate);
             vat = vat.multiply(oneMinusDiscountRate);
 		    netGoods = netGoods.multiply(oneMinusDiscountRate);

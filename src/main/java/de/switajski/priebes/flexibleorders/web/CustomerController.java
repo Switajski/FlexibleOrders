@@ -62,6 +62,10 @@ public class CustomerController extends ExceptionController {
 		Customer c = CustomerDtoConverterServiceImpl.toCustomer(
 				cDto,
 				new Customer());
+		if (c.getEmail() == null)
+		    throw new IllegalArgumentException("Keine Email angegeben");
+		if (c.getCustomerNumber() == null)
+		    throw new IllegalArgumentException("Keine Kundennummer angegeben");
 		customerRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}

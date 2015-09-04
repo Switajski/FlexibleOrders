@@ -58,11 +58,11 @@ public class ReportItemToItemDtoPageConverterService {
 	private List<ReportItem> complementMissing(
 			List<ReportItem> reportItems) {
 
-		List<ReportItem> allReportItems = new ArrayList<ReportItem>();
-		for (Report report : getReportsByReportItems(reportItems))
-			allReportItems.addAll(report.getItems());
+//		List<ReportItem> allReportItems = new ArrayList<ReportItem>();
+//		for (Report report : getReportsByReportItems(reportItems))
+//			allReportItems.addAll(report.getItems());
 
-		return allReportItems;
+		return reportItems;
 	}
 
 	private Set<Report> getReportsByReportItems(List<ReportItem> reportItems) {

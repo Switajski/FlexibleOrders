@@ -68,7 +68,11 @@ public class Amount {
 			return new Amount(negotiatedPriceNet.getValue().add(this.getValue()), this.currency);
 		else throw new IllegalArgumentException("tried to add amounts with different currencies");
 	}
-
+	
+	public Amount negate(){
+	    return new Amount(this.getValue().negate(), this.getCurrency());
+	}
+	
 	public boolean sameCurrency(Amount negotiatedPriceNet) {
 		return negotiatedPriceNet.getCurrency().equals(this.currency);
 	}

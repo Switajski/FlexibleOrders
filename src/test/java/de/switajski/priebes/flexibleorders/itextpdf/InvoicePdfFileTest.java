@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class InvoicePdfFileTest {
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		ReportDto reportDto = ReportDtoTestFixture.givenReportDto();
+		reportDto.invoiceSpecific_discountRate = BigDecimal.ONE;
+		reportDto.invoiceSpecific_discountText = "Discount 0.5 + 0.5 %";
 		model.put(reportDto.getClass().getSimpleName(), reportDto);
 
 		bpf.render(

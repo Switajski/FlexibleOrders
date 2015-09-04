@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.itextpdf.text.Element;
@@ -10,7 +9,6 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 
 //TODO make this default builder and let PdfPTableBuilder extend this 
@@ -47,18 +45,36 @@ public class CustomPdfPTableBuilder {
 
     /**
      * Create a pre-configured table builder for footer
+     * @param calculation TODO
      * 
-     * @param net
-     * @param vat
-     * @param discountAmount
-     *            TODO
-     * @param discountText
-     *            TODO
      * @return
      */
-    public static CustomPdfPTableBuilder createFooterBuilder(Amount net,
-            Amount vat, Amount shipping, Amount gross, String paymentConditions,
-            Amount discountAmount, String discountText) {
+    public static CustomPdfPTableBuilder createFooterBuilder(InvoiceCalculation calculation) {
+        String discountAmount = calculation.getDiscountAmount() == null ? null : calculation.getDiscountAmount().toString();
+        String shipping = calculation.getShipping() == null ? null : calculation.getShipping().toString();
+        String discountText = calculation.getDiscountText();
+        String netGoods = calculation.getNetGoods().toString();
+        String net = calculation.getNet().toString();
+        String vat = calculation.getVat().toString();
+        String paymentConditions = calculation.getPaymentConditions();
+        String gross = calculation.getGross().toString();
+        
+        return createFooterBuilder(discountAmount, shipping, discountText, netGoods, net, vat, paymentConditions, gross);
+    }
+    
+    public static CustomPdfPTableBuilder createFooterBuilder(String netGoods, String vat, String gross){
+        return createFooterBuilder(null, null, null, null, netGoods, vat, null, gross);
+    }
+
+    private static CustomPdfPTableBuilder createFooterBuilder(
+            String discountAmount,
+            String shipping,
+            String discountText,
+            String net,
+            String netGoods,
+            String vat,
+            String paymentConditions,
+            String gross) {
         PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
                 .getFont(PriebesIText5PdfView.FONT,
                         PriebesIText5PdfView.FONT_SIZE,
@@ -82,34 +98,34 @@ public class CustomPdfPTableBuilder {
                     .withPhrase(normal.withText("Zwischensumme: ").build())
                     .build())
                     .addCell(rightAlign.withPhrase(
-                            normal.withText(net.add(discountAmount).toString()).build()).build());
+                            normal.withText(net).build()).build());
             
             footerBuilder.addCell(leftAlign
-                    .withPhrase(normal.withText(discountText).build())
+                    .withPhrase(normal.withText("- Rabatt: " + discountText).build())
                     .build())
                     .addCell(rightAlign.withPhrase(
                             normal.withText(discountAmount.toString()).build()).build());
         }
+        
+        if (shipping != null) footerBuilder
+        .addCell(leftAlign
+                .withPhrase(normal.withText("Versand").build()).build())
+        .addCell(rightAlign
+                .withPhrase(normal.withText(shipping).build())
+                .build());
 
         footerBuilder.addCell(leftAlign
                 .withPhrase(bold.withText("Betrag netto").build())
                 .build())
                 .addCell(rightAlign.withPhrase(
-                        bold.withText(net.toString()).build()).build());
-
-        if (shipping != null) footerBuilder
-                .addCell(leftAlign
-                        .withPhrase(bold.withText("Versand").build()).build())
-                .addCell(rightAlign
-                        .withPhrase(bold.withText(shipping.toString()).build())
-                        .build());
+                        bold.withText(netGoods).build()).build());
 
         footerBuilder
                 .addCell(leftAlign
                         .withPhrase(bold.withText("zzgl. 19% MwSt.").build())
                         .build())
                 .addCell(rightAlign.withPhrase(
-                        bold.withText(vat.toString()).build()).build());
+                        bold.withText(vat).build()).build());
 
         footerBuilder
                 .addCell(leftAlign.withPhrase(
@@ -117,7 +133,7 @@ public class CustomPdfPTableBuilder {
                         .withBorder(Rectangle.TOP)
                         .build())
                 .addCell(rightAlign.withPhrase(
-                        bold.withText(gross.toString()).build())
+                        bold.withText(gross).build())
                         .withBorder(Rectangle.TOP)
                         .build());
 

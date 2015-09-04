@@ -20,6 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
@@ -71,8 +72,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         // insert footer table
         if (hasRecommendedPrices(report) && hasVat(report)) {
             CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-                    .createFooterBuilder(
-                            netGoods, vat, null, gross, null, null, null)
+                    .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
                     .withTotalWidth(PriebesIText5PdfView.WIDTH);
 
             PdfPTable footer = footerBuilder.build();

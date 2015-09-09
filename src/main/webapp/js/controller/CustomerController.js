@@ -54,11 +54,16 @@ Ext.define('MyApp.controller.CustomerController', {
 
 		if (form.isValid()) {
 			form.updateRecord(active);
+			Ext.getCmp("customerSaveButton").disable();
 			store.add(active);
 			store.sync({
 				success : function() {
 					form.getForm().reset();
+					Ext.getCmp("customerSaveButton").enable();
 					Ext.getCmp("CreateCustomerWindow").close();
+				},
+				callback : function() {
+					Ext.getCmp("customerSaveButton").enable();
 				}
 			});
 		}
@@ -124,12 +129,15 @@ Ext.define('MyApp.controller.CustomerController', {
 	updateCustomer : function(store, customer) {
 		cIndex = store.findExact('customerNumber', customerNo);
 		recToUpdate = store.getAt(cIndex);
-
 		recToUpdate.set(customer);
+		Ext.getCmp("customerSaveButton").disable();
 		store.sync({
 			success : function() {
 				Ext.getCmp('CustomerForm').getForm().reset();
 				Ext.getCmp("CreateCustomerWindow").close();
+			},
+			callback : function() {
+				Ext.getCmp("customerSaveButton").enable();
 			}
 		});
 	},

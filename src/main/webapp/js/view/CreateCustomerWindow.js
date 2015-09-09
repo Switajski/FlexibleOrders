@@ -315,6 +315,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 									dock : 'bottom',
 									ui : 'footer',
 									items : ['->', {
+												id : 'customerSaveButton',
 												iconCls : 'icon-save',
 												itemId : 'save',
 												text : 'Speichern',

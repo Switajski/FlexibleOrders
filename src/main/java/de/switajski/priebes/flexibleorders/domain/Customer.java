@@ -39,7 +39,6 @@ public class Customer extends GenericEntity{
     @Embedded
     private Address shippingAddress;
 
-    @NotNull
     @Column(unique=true)
     private String email;
     

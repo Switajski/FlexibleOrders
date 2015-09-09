@@ -49,8 +49,7 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 													flex: 2,
 													fieldLabel : 'E-Mail',
 													labelWidth: 50,
-													vtype: 'email',
-													allowBlank: false
+													vtype: 'email'
 												}]
 					                }, {
 					                	xtype: 'fieldcontainer',

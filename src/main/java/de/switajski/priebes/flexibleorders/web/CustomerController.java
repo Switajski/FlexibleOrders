@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,13 +37,19 @@ public class CustomerController extends ExceptionController {
 			@RequestParam(value = "page", required = true) Integer page,
 			@RequestParam(value = "start", required = false) Integer start,
 			@RequestParam(value = "limit", required = true) Integer limit,
-			@RequestParam(value = "sort", required = false) String sorts) {
+			@RequestParam(value = "sort", required = false) String sorts,
+			@RequestParam(value = "query", required = false) String query) {
 		PageRequest pageable = new PageRequest(
                 		page - 1,
                 		limit, 
                 		Direction.ASC, 
                 		"companyName", "lastName", "firstName");
-        Page<Customer> customers = customerRepo.findAll(pageable);
+		Page<Customer> customers;
+		if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))){
+		    customers = customerRepo.search(pageable, query);
+		}
+		else 
+		    customers = customerRepo.findAll(pageable);
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
 				CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
 						.getContent()));
@@ -50,7 +57,6 @@ public class CustomerController extends ExceptionController {
 		return response;
 	}
 
-	// TODO: move to ReportController
 	@RequestMapping(value = "listitems", produces = "text/html")
 	public String confirm(Model uiModel) {
 		return "customers/listitems";
@@ -62,8 +68,6 @@ public class CustomerController extends ExceptionController {
 		Customer c = CustomerDtoConverterServiceImpl.toCustomer(
 				cDto,
 				new Customer());
-		if (c.getEmail() == null)
-		    throw new IllegalArgumentException("Keine Email angegeben");
 		if (c.getCustomerNumber() == null)
 		    throw new IllegalArgumentException("Keine Kundennummer angegeben");
 		customerRepo.save(c);

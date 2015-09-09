@@ -70,6 +70,9 @@ public class CustomerController extends ExceptionController {
 				new Customer());
 		if (c.getCustomerNumber() == null)
 		    throw new IllegalArgumentException("Keine Kundennummer angegeben");
+		if (customerRepo.findByCustomerNumber(c.getCustomerNumber()) != null){
+		    throw new IllegalArgumentException("Kundennummer besteht bereits");
+		}
 		customerRepo.save(c);
 		return ExtJsResponseCreator.createResponse(c);
 	}

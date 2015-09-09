@@ -45,10 +45,10 @@ public class CustomerController extends ExceptionController {
                 		Direction.ASC, 
                 		"companyName", "lastName", "firstName");
 		Page<Customer> customers;
-		if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))){
-		    customers = customerRepo.search(pageable, query);
-		}
-		else 
+//		if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))){
+//		    customers = customerRepo.search(pageable, query);
+//		}
+//		else 
 		    customers = customerRepo.findAll(pageable);
 		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
 				CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers

@@ -25,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -183,7 +184,7 @@ public class ReportItemController extends ExceptionController {
     private Customer retrieveCustomerSafely(String customerNo) {
         Customer customer = customerRepo.findByCustomerNumber(
                 Long.parseLong(customerNo));
-        if (customer == null) throw new IllegalArgumentException(
+        if (customer == null) throw new NotFoundException(
                 "Kunde mit gegebener Id nicht gefunden");
         return customer;
     }

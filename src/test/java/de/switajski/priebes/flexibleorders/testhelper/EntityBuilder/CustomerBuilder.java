@@ -138,6 +138,9 @@ public class CustomerBuilder implements Builder<Customer> {
 					Country.UNITED_KINGDOM);
 		this.setCustomerNumber(44L)
 			.setEmail("Phasellus.in.felis@purusaccumsaninterdum.co.uk")
+			.setFirstName("Edward")
+			.setLastName("Turner")
+			.setCompanyName("Going Mad inc.")
 			.setInvoiceAddress(address)
 			.setShippingAddress(address);
 		return this;

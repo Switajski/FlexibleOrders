@@ -8,7 +8,8 @@ Ext.define('MyApp.view.CustomerComboBox', {
 	valueField : 'customerNumber',
 	width : 350,
 	enableRegEx : true,
-	queryMode : 'local',
+	queryMode : 'remote',
+	allowBlank : false,
 	store : 'KundeDataStore',
 	tpl : Ext.create(
 					'Ext.XTemplate',

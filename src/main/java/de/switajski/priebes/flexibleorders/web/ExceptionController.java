@@ -31,7 +31,7 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
     public String handleNotFoundException(NotFoundException ex) {
         return handleExceptionAsNotification(ex, "Nicht gefunden");

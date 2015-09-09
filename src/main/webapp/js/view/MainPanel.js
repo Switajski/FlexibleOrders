@@ -45,7 +45,8 @@ Ext.define('MyApp.view.MainPanel', {
 				items : [ {
 					xtype : 'customercombobox',
 					id : 'mainCustomerComboBox',
-					fieldLabel : 'Kunde'
+					fieldLabel : 'Kunde',
+					enableKeyEvents:true
 				}, {
 					xtype : 'OrderItemGrid',
 					store : 'ItemDataStore',

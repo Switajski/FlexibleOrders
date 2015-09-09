@@ -59,7 +59,8 @@ Ext.define('MyApp.controller.MyController', {
 	init : function(application) {
 		this.control({
 					'#mainCustomerComboBox' : {
-						change : this.onCustomerChange
+						blur : this.onCustomerBlur,
+						keypress : this.onCustomerKeypress
 					},
 					'#DeleteBestellungButton' : {
 						click : this.deleteBestellungDialog
@@ -197,28 +198,42 @@ Ext.define('MyApp.controller.MyController', {
 					grid.getStore().load();
 				});
 	},
+	
+	onCustomerKeypress : function(customerComboBox, keyEvent) {
+		if (keyEvent.keyCode == 13){ // = Enter
+			MyApp.getApplication().getController('MyController').changeCustomer(customerComboBox.lastValue);
+		}
+	},
 
-	onCustomerChange : function(field, newValue, oldValue, eOpts) {
-		var stores = new Array();
-		stores[0] = Ext.data.StoreManager.lookup('ItemDataStore');
-		stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
-		stores[2] = Ext.data.StoreManager.lookup('AgreementItemDataStore');
-		stores[3] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
-		stores[4] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
-
-		stores.forEach(function(store) {
-			found = false;
-			store.filters.items.forEach(function(filter) {
-						if (filter.property == MyApp.constants.FILTER_ON_CUSTOMER) {
-							filter.value = newValue;
-							found = true;
-							store.load();
-						}
-					});
-			if (!found) {
-				store.filter(MyApp.constants.FILTER_ON_CUSTOMER, newValue);
-			}
-		});
+	onCustomerBlur : function(field) {
+		MyApp.getApplication().getController('MyController').changeCustomer(field.lastValue);
+	},
+	
+	changeCustomer : function(customerNumber){
+		var kundeStore = Ext.data.StoreManager.lookup('KundeDataStore');
+        if (kundeStore.findRecord("customerNumber", customerNumber, null, null, false, true) != null){
+    		
+			var stores = new Array();
+			stores[0] = Ext.data.StoreManager.lookup('ItemDataStore');
+			stores[1] = Ext.data.StoreManager.lookup('ShippingItemDataStore');
+			stores[2] = Ext.data.StoreManager.lookup('AgreementItemDataStore');
+			stores[3] = Ext.data.StoreManager.lookup('DeliveryNotesItemDataStore');
+			stores[4] = Ext.data.StoreManager.lookup('InvoiceItemDataStore');
+	
+			stores.forEach(function(store) {
+				found = false;
+				store.filters.items.forEach(function(filter) {
+							if (filter.property == MyApp.constants.FILTER_ON_CUSTOMER) {
+								filter.value = customerNumber;
+								found = true;
+								store.load();
+							}
+						});
+				if (!found) {
+					store.filter(MyApp.constants.FILTER_ON_CUSTOMER, customerNumber);
+				}
+			});
+        }
 	},
 
 	deleteReport : function(varDocumentNumber) {

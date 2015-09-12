@@ -60,7 +60,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 				"G"+Unicode.O_UML+"rlitzer Stra"+Unicode.S_SCHARF+"e 1",
 				41460,
 				"Neuss",
-				Country.DEUTSCHLAND))
+				Country.DE))
 		.setDeliveryType(DeliveryType.SPEDITION)
 		.setPhone("01806 882 663")
 		.setName("United Pacel Service");
@@ -75,7 +75,7 @@ public class DeliveryMethodBuilder implements Builder<DeliveryMethod> {
 				"Charles-de-Gaulle-Str. 20",
 				53113,
 				"Bonn",
-				Country.DEUTSCHLAND))
+				Country.DE))
 		.setDeliveryType(DeliveryType.SPEDITION)
 		.setPhone("+49 (0)228 182-0")
 		.setName("Deutsche Post AG");

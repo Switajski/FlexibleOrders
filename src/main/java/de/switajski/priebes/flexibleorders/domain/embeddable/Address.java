@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.embeddable;
 
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
@@ -29,8 +30,8 @@ public class Address {
     private String city;
 
     @NotNull
-    @Enumerated
-    private Country country = Country.DEUTSCHLAND;
+    @Enumerated(EnumType.STRING)
+    private Country country = Country.DE;
 
     public Address() {};
 

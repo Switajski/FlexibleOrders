@@ -69,7 +69,7 @@ public class CustomerBuilder implements Builder<Customer> {
 						"7800 Eu, Av.",
 						954,
 						"San Isidro",
-						Country.DEUTSCHLAND))
+						Country.DE))
 			.setInvoiceAddress(
 					new Address(
 						"Donaldson Ent.",
@@ -77,7 +77,7 @@ public class CustomerBuilder implements Builder<Customer> {
 						"7800 Eu, Av.",
 						954,
 						"San Isidro",
-						Country.DEUTSCHLAND))
+						Country.DE))
 			.setDetails(
 					new CustomerDetailsBuilder()
 					.setContactInformation(
@@ -103,7 +103,7 @@ public class CustomerBuilder implements Builder<Customer> {
 				"6340 Sed Avenue",
 				1721,
 				"Sens",
-				Country.DEUTSCHLAND);
+				Country.DE);
 		this.setCustomerNumber(33L)
 			.setFirstName("Wyoming")
 			.setEmail("ullamcorper.Duis.cursus@dolorNullasemper.edu")
@@ -119,7 +119,7 @@ public class CustomerBuilder implements Builder<Customer> {
 					"Ap #678-5842 Mauris Street",
 					439,
 					"De Haan",
-					Country.DEUTSCHLAND);
+					Country.DE);
 		this.setCustomerNumber(55L)
 			.setLastName("Greer")
 			.setEmail("lacus@luctusut.net")
@@ -135,7 +135,7 @@ public class CustomerBuilder implements Builder<Customer> {
 					"P.O. Box 194, 6686 Non, St.",
 					97066,
 					"Savona",
-					Country.UNITED_KINGDOM);
+					Country.UK);
 		this.setCustomerNumber(44L)
 			.setEmail("Phasellus.in.felis@purusaccumsaninterdum.co.uk")
 			.setFirstName("Edward")
@@ -153,7 +153,7 @@ public class CustomerBuilder implements Builder<Customer> {
 					"3000 Vitae Road",
 					2292,
 					"Zelzate",
-					Country.IRELAND);
+					Country.IE);
 		this.setCustomerNumber(22L)
 			.setEmail("vel@laciniaSed.org")
 			.setShippingAddress(address)

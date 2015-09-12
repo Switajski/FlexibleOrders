@@ -101,7 +101,7 @@ public class JsonSerializationHelper {
 			dto.setStreet(c.getAddress().getStreet());
 			dto.setPostalCode(c.getAddress().getPostalCode());
 			dto.setCity(c.getAddress().getCity());
-			dto.setCountry(c.getAddress().getCountry().toString());
+			dto.setCountry(c.getAddress().getCountry().getName());
 			
 			jsonCustomers.add(dto);
 		}

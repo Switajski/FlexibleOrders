@@ -190,6 +190,12 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 							                    },
 							                    billingFieldName: 'dcity',
 												allowBlank : false
+											}, {
+												xtype : 'countrycombobox',
+												name : 'country',
+												valueField : 'id',
+												fieldLabel : 'Land',
+												labelWidth: 35
 											}]
 					                }]
 								},{
@@ -261,6 +267,13 @@ Ext.define('MyApp.view.CreateCustomerWindow', {
 												labelWidth: 35,
 												margins: '0 0 0 6',
 												allowBlank : false
+											}, {
+												xtype : 'countrycombobox',
+												valueField : 'id',
+												name : 'dcountry',
+												displayField : 'name',
+												fieldLabel : 'Land',
+												labelWidth: 35
 											}]
 					                }]
 								}, {

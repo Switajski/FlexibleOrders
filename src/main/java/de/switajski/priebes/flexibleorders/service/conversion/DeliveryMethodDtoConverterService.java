@@ -20,7 +20,7 @@ public class DeliveryMethodDtoConverterService {
 					dto.getStreet(),
 					dto.getPostalCode(),
 					dto.getCity(),
-					Country.DEUTSCHLAND);
+					Country.DE);
 			dm.setAddress(address);
 			dm.setExternalId(dto.getId());
 			dm.setName(dto.getName());

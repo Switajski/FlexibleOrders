@@ -63,7 +63,9 @@ Ext.define('MyApp.controller.CustomerController', {
 					Ext.getCmp("CreateCustomerWindow").close();
 				},
 				callback : function() {
-					Ext.getCmp("customerSaveButton").enable();
+					var saveButton = Ext.getCmp("customerSaveButton");
+					if (saveButton != null)
+						Ext.getCmp("customerSaveButton").enable();
 				}
 			});
 		}

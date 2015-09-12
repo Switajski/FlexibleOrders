@@ -105,12 +105,12 @@ public class JsonCreateReportRequest {
 		
 	public Address createInvoiceAddress(){
 		return new Address(name1, name2, street, postalCode, city,
-				Country.DEUTSCHLAND);
+				Country.DE);
 	}
 	
 	public Address createDeliveryAddress(){
 		return new Address(dname1, dname2, dstreet, dpostalCode, dcity,
-				Country.DEUTSCHLAND);
+				Country.DE);
 	}
 
 	public void validate(){

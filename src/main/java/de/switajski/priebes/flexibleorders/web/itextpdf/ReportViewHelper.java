@@ -57,7 +57,7 @@ public class ReportViewHelper {
                     .addTextLine(adresse.getStreet())
                     .addTextLine(
                             adresse.getPostalCode() + " " + adresse.getCity())
-                    .addTextLine(adresse.getCountry().toString()).build());
+                    .addTextLine(adresse.getCountry().getName()).build());
         }
         paragraphs.add(ParagraphBuilder.createEmptyLine());
         return paragraphs;
@@ -174,7 +174,7 @@ public class ReportViewHelper {
             cib.append(a.getPostalCode().toString() + " ");
             cib.append(a.getCity()).append(NEWLINE);
 
-            if (!isEmpty(a.getCountry().toString())) cib.append(a.getCountry());
+            if (!isEmpty(a.getCountry().getName())) cib.append(a.getCountry());
         }
         return cib.toString();
     }

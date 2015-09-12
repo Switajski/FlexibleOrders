@@ -30,7 +30,10 @@ Ext.define('MyApp.store.KundeDataStore', {
 				writer : {
 					type : 'json',
 					allowSingle : true,
-					root : 'data'
+					root : 'data',
+					onProxyWrite : ( function () {
+						error("asdf"); 
+					})
 				}
 			}
 		}, cfg) ]);

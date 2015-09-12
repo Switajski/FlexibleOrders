@@ -17,10 +17,18 @@ public class CustomerDtoConverterServiceImpl {
 	public static Customer toCustomer(CustomerDto dto, Customer customer) {
 		if (dto.name1 == null) dto.name1 = dto.firstName;
 		if (dto.name2 == null) dto.name2 = dto.lastName;
+		
+		Country country = Country.DE;
+		Country dCountry = Country.DE;
+		if (dto.country != null)
+		    country = Country.valueOf(dto.country);
+		if (dto.dcountry != null)
+		    dCountry = Country.valueOf(dto.dcountry);
+		
 		Address invoiceAddress = new Address(dto.name1, dto.name2, dto.street, dto.postalCode, 
-				dto.city, Country.DEUTSCHLAND);
+				dto.city, country);
 		Address deliveryAddress = new Address(dto.dname1, dto.dname2, dto.dstreet, dto.dpostalCode, 
-				dto.dcity, Country.DEUTSCHLAND);
+				dto.dcity, dCountry);
 		ContactInformation info = new ContactInformation();
 		info.setContact1(dto.contact1);
 		info.setContact2(dto.contact2);

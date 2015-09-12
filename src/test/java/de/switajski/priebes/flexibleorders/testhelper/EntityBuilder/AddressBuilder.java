@@ -15,7 +15,7 @@ public class AddressBuilder implements Builder<Address> {
 
 	private String city;
 
-	private Country country = Country.DEUTSCHLAND;
+	private Country country = Country.DE;
 
 	@Override
 	public Address build() {
@@ -70,7 +70,7 @@ public class AddressBuilder implements Builder<Address> {
 	public static Address createDefault() {
 		return new AddressBuilder()
 				.setCity("Hamburg")
-				.setCountry(Country.DEUTSCHLAND)
+				.setCountry(Country.DE)
 				.setName1("Marek")
 				.setName2("Switajski")
 				.setPostalCode(20255)

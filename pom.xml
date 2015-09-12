@@ -12,11 +12,9 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.5</slf4j.version>
-		<camel.version>2.15.2</camel.version>
 		<spring.version>4.1.7.RELEASE</spring.version>
 		<hibernate.version>4.2.2.Final</hibernate.version>
 		<spring-security.version>4.0.1.RELEASE</spring-security.version>
-		<camel-version>2.15.0</camel-version>
 	</properties>
 	<repositories>
 		<repository>
@@ -99,17 +97,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-spring</artifactId>
-			<version>${camel.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-test-spring</artifactId>
-			<version>${camel.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- Spring dependencies -->
 		<dependency>
@@ -371,17 +358,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-core</artifactId>
-			<version>${camel-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-test</artifactId>
-			<version>${camel-version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

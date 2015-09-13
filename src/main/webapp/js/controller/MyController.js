@@ -3,6 +3,8 @@ Ext.Ajax.on('requestexception', function(conn, response, options) {
 			if (response.status === 400) {
 				Ext.MessageBox.alert(response.status + ' Eingabefehler',
 						response.responseText);
+			} else if (response.status === 403) {
+				// TODO: add handling on session expiration
 			} else if (response.status === 404) {
 				Ext.MessageBox.alert(response.status + ' '
 								+ response.statusText, options.url);
@@ -50,13 +52,17 @@ Ext.define('MyApp.controller.MyController', {
 			'DeliverWindow', 'AgreementWindow', 'OrderNumberComboBox',
 			'InvoiceNumberComboBox', 'OrderWindow', 'InvoiceWindow',
 			'DeliveryNotesItemGridPanel', 'DeliveryMethodComboBox', 'CountryComboBox'],
-
 	activeBestellnr : 0,
 	activeBestellpositionId : 0,
 	bestellungDataStore : null,
 	activeCustomer : 0,
 	
 	init : function(application) {
+		this.listen({ 			
+            global: {
+            	aftersuccessfulauthetification: this.initStores
+            }
+        });
 		this.control({
 					'#mainCustomerComboBox' : {
 						blur : this.onCustomerBlur,
@@ -91,13 +97,16 @@ Ext.define('MyApp.controller.MyController', {
 					}
 				});
 
-
+	},
+	
+	initStores : function(){
 		this.getStore('ItemDataStore').filter('status', 'ordered');
 		this.getStore('AgreementItemDataStore').filter('status', 'confirmed');
 		this.getStore('ShippingItemDataStore').filter('status', 'agreed');
 		this.getStore('DeliveryNotesItemDataStore').filter('status', 'shipped');
 		this.getStore('InvoiceItemDataStore').filter('status', 'invoiced');
-
+		
+		this.getStore('CountryDataStore').load();
 	},
 
 	onSelectionchange : function(view, selections, options) {
@@ -191,7 +200,7 @@ Ext.define('MyApp.controller.MyController', {
 			}
 		}
 	},
-
+	
 	syncAll : function() {
 		var allGrids = Ext.ComponentQuery.query('PositionGrid');
 		allGrids.forEach(function(grid) {

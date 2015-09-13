@@ -7,7 +7,6 @@ Ext.define('MyApp.store.ArtikelDataStore', {
 		var me = this;
 		cfg = cfg || {};
 		me.callParent([ Ext.apply({
-			autoLoad : true,
 			model : 'MyApp.model.ArtikelData',
 			storeId : 'ArtikelDataStore',
 			pageSize : 100,

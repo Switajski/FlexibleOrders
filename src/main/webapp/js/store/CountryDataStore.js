@@ -1,14 +1,11 @@
 Ext.define('MyApp.store.CountryDataStore', {
 	extend : 'Ext.data.Store',
-	customurl : '/FlexibleOrders/country',
 	requires : [ 'MyApp.model.CountryData' ],
-	autoLoad : true,
 
 	constructor : function(cfg) {
 		var me = this;
 		cfg = cfg || {};
 		me.callParent([ Ext.apply({
-			autoLoad : true,
 			model : 'MyApp.model.CountryData',
 			storeId : 'CountryDataStore',
 			pageSize : 1000,
@@ -23,7 +20,7 @@ Ext.define('MyApp.store.CountryDataStore', {
 					root : 'data'
 				},
 				api : {
-					read : this.customurl
+					read : '/FlexibleOrders/country'
 				},
 				writer : {
 					type : 'json',

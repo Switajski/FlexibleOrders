@@ -8,6 +8,13 @@ Ext.define('MyApp.controller.CustomerController', {
 	views : [ 'CreateCustomerWindow' ],
 
 	init : function(application) {
+		
+		this.listen({ 			
+            global: {
+            	aftersuccessfulauthetification: this.initStore
+            }
+        });
+		
 		this.control({
 			'#CreateCustomerButton' : {
 				click : this.onCreateCustomer
@@ -27,6 +34,10 @@ Ext.define('MyApp.controller.CustomerController', {
 				close : this.onClose
 			}
 		});
+	},
+	
+	initStore : function(){
+		this.getStore('KundeDataStore').load();
 	},
 
 	onCreateCustomer : function(button, event, options) {

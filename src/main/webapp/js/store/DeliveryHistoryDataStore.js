@@ -1,5 +1,6 @@
 Ext.define('MyApp.store.DeliveryHistoryDataStore', {
 	extend : "Ext.data.TreeStore",
+	autoload : false,
 	proxy : {
 		type : 'ajax',
 		url : '/FlexibleOrders/deliveryHistory/byReportItemId/0',
@@ -11,6 +12,5 @@ Ext.define('MyApp.store.DeliveryHistoryDataStore', {
 	root : {
 		expanded : true,
 		text : "My Root"
-	},
-	autoLoad : true
+	}
 });

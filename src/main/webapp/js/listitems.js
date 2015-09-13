@@ -19,15 +19,17 @@ Ext.application({
 			'IssueController', // FIXME: removing that useless line of code
 			// makes the extjs application not starting
 			'ConfirmController', 'DeliverController', 'InvoiceController',
-			'MarkPaidController', 'OrderController'],
+			'MarkPaidController', 'OrderController', 'SecurityController'],
 	name : 'MyApp',
-	// autoCreateViewport:true,
 	launch : function() {
 		Ext.create('MyApp.view.MainPanel', {
-					layout : 'fit',
-					renderTo : Ext.get('extjs_listitems')
-				});
-		MyApp.constants = {};
+			id:'MainPanel',
+			layout : 'fit',
+			renderTo : Ext.get('extjs_listitems')
+		});
+		MyApp.constants = {
+			appUrl : '/FlexibleOrders'
+		};
 
 		Ext.apply(MyApp.constants, {
 					FILTER_ON_CUSTOMER : 'customerNumber',

@@ -12,7 +12,6 @@ Ext.define('MyApp.store.CreateOrderDataStore', {
 		me.callParent([ Ext.apply({
 			model : this.custommodel,
 			storeId : this.customstoreid,
-			autoLoad : false,
 			proxy : {
 				type : 'ajax',
 				actionMethods : {

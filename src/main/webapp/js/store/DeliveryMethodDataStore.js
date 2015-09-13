@@ -2,13 +2,11 @@ Ext.define('MyApp.store.DeliveryMethodDataStore', {
 	extend : 'Ext.data.Store',
 	customurl : '/FlexibleOrders/deliverymethods/json',
 	requires : [ 'MyApp.model.DeliveryMethodData' ],
-	autoLoad : true,
 
 	constructor : function(cfg) {
 		var me = this;
 		cfg = cfg || {};
 		me.callParent([ Ext.apply({
-			autoLoad : true,
 			model : 'MyApp.model.DeliveryMethodData',
 			storeId : 'DeliveryMethodDataStore',
 			pageSize : 1000,

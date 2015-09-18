@@ -17,6 +17,14 @@
 		<spring-security.version>4.0.1.RELEASE</spring-security.version>
 	</properties>
 	<repositories>
+    <repository>
+        <id>FlexibleOrdersName-mvn-repo</id>
+        <url>https://raw.github.com/Switajski/FlexibleOrdersGui/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
 		<repository>
 			<id>spring-maven-release</id>
 			<name>Spring Maven Release Repository</name>
@@ -41,6 +49,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+		<dependency>
+			<groupId>de.switajski</groupId>
+			<artifactId>FlexibleOrdersGui</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
 		<!-- General dependencies for standard applications -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -374,6 +388,26 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>unpack-javascript-files</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeTypes>zip</includeTypes>
+							<outputDirectory>
+								${project.build.directory}/${project.build.finalName}/resources
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>

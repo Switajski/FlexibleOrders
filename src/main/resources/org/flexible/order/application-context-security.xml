@@ -13,12 +13,9 @@
 			login-page="/login" authentication-failure-url="/login?login_error=t" />
 		<logout logout-url="/resources/j_spring_security_logout" />
 
-		<!-- is this still needed, after @CrossDomain annotation? test it! -->
+		<!-- even if @CrossDomain is activated, it is still needed -->
 		<intercept-url pattern="/**" method="OPTIONS" access="permitAll" />
-		<intercept-url pattern="/isAlive" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
-		<intercept-url pattern="/html/**" access="permitAll" />
-		<intercept-url pattern="/index.html" access="permitAll" />
 		<intercept-url pattern="/login/**" access="permitAll" />
 		<intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />  
 		<!-- <intercept-url pattern="/**" access="permitAll" />  -->

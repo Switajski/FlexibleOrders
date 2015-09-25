@@ -43,7 +43,7 @@ public class LinksAvailableTest {
     public void shouldBeForbidden() throws Exception {
         mvcWithSecurity
                 .perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
     
     @Test

@@ -9,18 +9,18 @@
 	                       http://www.springframework.org/schema/context 
 	                       http://www.springframework.org/schema/context/spring-context-3.1.xsd                 
 	                       http://www.springframework.org/schema/mvc 
-	                       http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+	                       http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
 	<!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
 	<context:component-scan base-package="de.switajski.priebes.flexibleorders" use-default-filters="false">
 		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation" />
 	</context:component-scan>
-
+	
 	<!-- Turns on support for mapping requests to Spring MVC @Controller methods  Also registers default Formatters and Validators for use across all @Controllers -->
 	<mvc:annotation-driven conversion-service="applicationConversionService" />
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-	<mvc:resources mapping="/resources/**" location="/, /js/, /js/lib/ext-4.2.1.883/" />
+	<mvc:resources mapping="/resources/**" location="/, /resources/" />
 
 	<!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
 	<mvc:default-servlet-handler />

@@ -7,18 +7,21 @@
                                 http://www.springframework.org/schema/security 
                                 http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<http auto-config="true" use-expressions="true" entry-point-ref="Http403">
+	<http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint">
 		<csrf disabled="true"/>
 		<form-login login-processing-url="/resources/j_spring_security_check"
 			login-page="/login" authentication-failure-url="/login?login_error=t" />
 		<logout logout-url="/resources/j_spring_security_logout" />
-		
+
+		<!-- is this still needed, after @CrossDomain annotation? test it! -->
+		<intercept-url pattern="/**" method="OPTIONS" access="permitAll" />
+		<intercept-url pattern="/isAlive" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
-		<intercept-url pattern="/images/**" access="permitAll" />
-		<intercept-url pattern="/js/**" access="permitAll" />
 		<intercept-url pattern="/html/**" access="permitAll" />
+		<intercept-url pattern="/index.html" access="permitAll" />
 		<intercept-url pattern="/login/**" access="permitAll" />
-		<intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />  
+		<!-- <intercept-url pattern="/**" access="permitAll" />  -->
 	</http>
 	
 	<authentication-manager alias="authenticationManager">
@@ -37,8 +40,10 @@
 		</authentication-provider>
 	</authentication-manager>
 	
-	<beans:bean id="Http403" 
-		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+	<beans:bean id="authenticationEntryPoint" 
+		class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="login" />
+	</beans:bean>
 		
 	<beans:bean name="bcryptEncoder"
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>

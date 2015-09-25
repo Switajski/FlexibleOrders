@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -12,8 +13,9 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.web.dto.CountryDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
+@CrossOrigin
 @Controller
-public class CountryController {
+public class CountryController extends ExceptionController {
 
     @RequestMapping("/country")
     public @ResponseBody JsonObjectResponse listAll(){

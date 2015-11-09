@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,6 +49,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
  * @author Marek Switajski
  * 
  */
+@CrossOrigin
 @Controller
 @RequestMapping("/reports")
 public class ReportController {

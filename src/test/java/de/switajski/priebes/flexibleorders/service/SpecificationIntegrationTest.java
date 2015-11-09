@@ -43,7 +43,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private CustomerServiceImpl customerService;
 
     @Autowired
-    private CatalogProductServiceImpl productService;
+    private CatalogProductServiceByMagento productService;
 
     @Autowired
     private OrderService orderService;

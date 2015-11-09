@@ -21,14 +21,6 @@ import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
 @Service
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
-	@Override
-	protected void installFormatters(FormatterRegistry registry) {
-		super.installFormatters(registry);
-		// Register application converters and formatters
-//		registry.addConverter(getJSONCollectionToListConverter());
-		//TODO: centralized JSON-Converter
-	}
-	
     @Autowired
     CustomerServiceImpl customerService;
     

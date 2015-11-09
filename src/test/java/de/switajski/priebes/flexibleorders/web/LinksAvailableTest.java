@@ -1,7 +1,9 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,25 +29,33 @@ public class LinksAvailableTest {
     @Autowired
     private FilterChainProxy springSecurityFilter;
 
-    private MockMvc mockMvc;
-
+    private MockMvc mvcWithSecurity;
+    
+    private MockMvc mvc;
+    
     @Before
-    public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(springSecurityFilter, "/*").build();
+    public void setup(){
+        mvcWithSecurity = MockMvcBuilders.webAppContextSetup(wac).addFilter(springSecurityFilter, "/*").build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
-    public void getFoo() throws Exception {
-        this.mockMvc
+    public void shouldBeForbidden() throws Exception {
+        mvcWithSecurity
                 .perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isUnauthorized());
     }
     
     @Test
-    public void productListShouldBeAvailable() throws Exception {
-        this.mockMvc
-                .perform(get("/FlexibleOrders/products/list").accept(MediaType.ALL))
-                .andExpect(status().is3xxRedirection());
+    public void urlShouldBeAvailable() throws Exception {
+        mvc.perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
     }
-
+    
+    @Test
+    public void shouldLogin() throws Exception {
+        mvcWithSecurity.perform(get("/admin").with(user("admin").password("pass").roles("USER","ADMIN")))
+            .andExpect(status().is2xxSuccessful());
+    }
+    
 }

@@ -7,21 +7,20 @@
                                 http://www.springframework.org/schema/security 
                                 http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<http auto-config="true" use-expressions="true">
+	<http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint">
 		<csrf disabled="true"/>
 		<form-login login-processing-url="/resources/j_spring_security_check"
 			login-page="/login" authentication-failure-url="/login?login_error=t" />
 		<logout logout-url="/resources/j_spring_security_logout" />
-		<intercept-url pattern="/choices/**" access="hasRole('ROLE_ADMIN')" />
-		<intercept-url pattern="/member/**" access="isAuthenticated()" />
+
+		<!-- even if @CrossDomain is activated, it is still needed -->
+		<intercept-url pattern="/**" method="OPTIONS" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
 		<intercept-url pattern="/login/**" access="permitAll" />
-		<intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />  
+		<!-- <intercept-url pattern="/**" access="permitAll" />  -->
 	</http>
 	
-	<beans:bean name="bcryptEncoder"
-		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
-
 	<authentication-manager alias="authenticationManager">
 		<!-- SHA-256 values can be produced using 'echo -n your_desired_password 
 			| sha256sum' (using normal *nix environments) -->
@@ -29,13 +28,22 @@
 			<password-encoder ref="bcryptEncoder" />
 			<user-service>
 				<user name="admin"
-					password="$2a$10$uDSfsckAcnmUrDuLgGDX9OmkFkEoRUzQODbuaSt.mrpvQHpnDFepG"
+					password="$2a$10$xT2wuh1kMCxP6clXitlDL.zGiqIvDNOxHc8ztu0wNuvvPGzdJY3Q."
 					authorities="ROLE_ADMIN" />
 				<user name="user"
-					password="$2a$10$uDSfsckAcnmUrDuLgGDX9OmkFkEoRUzQODbuaSt.mrpvQHpnDFepG"
+					password="$2a$10$xT2wuh1kMCxP6clXitlDL.zGiqIvDNOxHc8ztu0wNuvvPGzdJY3Q."
 					authorities="ROLE_USER" />
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>
-
+	
+	<beans:bean id="authenticationEntryPoint" 
+		class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="login" />
+	</beans:bean>
+		
+	<beans:bean name="bcryptEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+		
+	
 </beans:beans>

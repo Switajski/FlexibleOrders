@@ -90,4 +90,5 @@
     <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender">
         <property name="host" value="${email.host}"/>
     </bean>
+    
 </beans>

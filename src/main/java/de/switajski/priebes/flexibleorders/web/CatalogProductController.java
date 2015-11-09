@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
-import de.switajski.priebes.flexibleorders.service.CatalogProductServiceImpl;
+import de.switajski.priebes.flexibleorders.service.CatalogProductServiceByMagento;
 
 /**
  * 
@@ -26,7 +27,7 @@ public class CatalogProductController extends ExceptionController{
     @Autowired
 	private CatalogProductRepository cProductRepo;
     @Autowired
-    private CatalogProductServiceImpl catalogProductService;
+    private CatalogProductServiceByMagento catalogProductService;
 	
 	@RequestMapping(value = "/json", method=RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAll(@RequestParam(value = "page", required = true) Integer page,

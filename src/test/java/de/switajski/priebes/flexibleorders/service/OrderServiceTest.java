@@ -77,7 +77,7 @@ public class OrderServiceTest {
     @Mock
     private ItemDtoConverterService itemDtoConverterService;
     @Mock
-    private CatalogProductServiceImpl catalogProductService;
+    private CatalogProductServiceByMagento catalogProductService;
     @Mock
     private CatalogDeliveryMethodRepository catalogDeliveryMethod;
     @Mock

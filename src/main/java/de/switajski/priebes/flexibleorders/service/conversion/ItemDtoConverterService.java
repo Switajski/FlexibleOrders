@@ -136,7 +136,6 @@ public class ItemDtoConverterService {
         if (ri.getReport() instanceof Invoice) {
             Invoice invoice = (Invoice) ri.getReport();
             item.invoiceNumber = ri.getReport().getDocumentNumber();
-            item.paymentConditions = invoice.getPaymentConditions();
             item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
         }
         if (ri.getReport() instanceof DeliveryNotes) {

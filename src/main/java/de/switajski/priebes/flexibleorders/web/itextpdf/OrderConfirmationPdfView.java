@@ -13,7 +13,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -71,6 +70,10 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
                 .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
                 .withTotalWidth(PriebesIText5PdfView.WIDTH);
+        
+        if (report.invoiceSpecific_paymentConditions != null){
+        	addPaymentConditions(report.invoiceSpecific_paymentConditions, footerBuilder);
+        }
 
         PdfPTable footer = footerBuilder.build();
 

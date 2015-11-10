@@ -45,7 +45,6 @@ public class CustomPdfPTableBuilder {
 
     /**
      * Create a pre-configured table builder for footer
-     * @param calculation TODO
      * 
      * @return
      */
@@ -58,18 +57,7 @@ public class CustomPdfPTableBuilder {
         String vat = calculation.getVat().toString();
         String gross = calculation.getGross().toString();
         
-        PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
-                .getFont(PriebesIText5PdfView.FONT,
-                        PriebesIText5PdfView.FONT_SIZE,
-                        Font.BOLD));
-        
         CustomPdfPTableBuilder footerBuilder = createFooterBuilder(discountAmount, shipping, discountText, netGoods, net, vat, gross);
-        if (paymentConditions != null) 
-            footerBuilder.addCell(new PdfPCellBuilder(bold.build())
-                .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
-                .withBorder(Rectangle.NO_BORDER)
-                .withColSpan(2)
-                .build());
         
         return footerBuilder;
     }

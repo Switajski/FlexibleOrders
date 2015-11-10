@@ -18,7 +18,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 @Entity
 public class Invoice extends Report {
 
-	private String paymentConditions, discountText;
+	private String discountText;
 	
 	private BigDecimal discountRate;
 
@@ -43,19 +43,9 @@ public class Invoice extends Report {
 	protected Invoice() {
 	}
 
-	public Invoice(String invoiceNumber, String paymentConditions,
-			Address invoiceAddress) {
+	public Invoice(String invoiceNumber, Address invoiceAddress) {
 		super(invoiceNumber);
-		this.paymentConditions = paymentConditions;
 		this.invoiceAddress = invoiceAddress;
-	}
-
-	public String getPaymentConditions() {
-		return paymentConditions;
-	}
-
-	public void setPaymentConditions(String paymentConditions) {
-		this.paymentConditions = paymentConditions;
 	}
 
 	public Address getInvoiceAddress() {

@@ -139,6 +139,7 @@ public class OrderService {
         pAgree.setInvoiceAddress(invoiceAddress);
         pAgree.setExpectedDelivery(confirmParameter.expectedDelivery);
         pAgree.setCustomerNumber(confirmParameter.customerNumber);
+        pAgree.setPaymentConditions(confirmParameter.paymentConditions);
         if (confirmParameter.deliveryMethodNo != null) {
             CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo);
             pAgree.setDeliveryMethod(catalogDeliveryMethod.getDeliveryMethod());

@@ -84,6 +84,7 @@ public class TransitionsController extends ExceptionController {
                 confirmRequest.items);
         confirmParameter.customerDetails = customerDetails;
         confirmParameter.customerNumber = confirmRequest.customerId;
+        confirmParameter.paymentConditions = confirmRequest.paymentConditions;
 
         OrderConfirmation confirmationReport = orderService.confirm(
                 confirmParameter);
@@ -126,7 +127,6 @@ public class TransitionsController extends ExceptionController {
                 invoicingRequest.invoiceNumber,
                 invoicingRequest.created,
                 invoicingRequest.items);
-        invoicingParameter.paymentConditions = invoicingRequest.paymentConditions;
         invoicingParameter.billing = invoicingRequest.billing;
         invoicingParameter.discountRate = invoicingRequest.discountRate;
         invoicingParameter.discountText = invoicingRequest.discountText;

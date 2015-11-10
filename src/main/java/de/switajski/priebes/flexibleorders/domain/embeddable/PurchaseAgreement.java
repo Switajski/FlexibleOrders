@@ -41,8 +41,12 @@ public class PurchaseAgreement {
             @AttributeOverride(name = "country", column = @Column(name = "shipping_country"))
     })
     private Address shippingAddress;
+    
+	public void setExpectedDelivery(java.sql.Date expectedDelivery) {
+		this.expectedDelivery = expectedDelivery;
+	}
 
-    @Embedded
+	@Embedded
     private DeliveryMethod deliveryMethod;
 
     @DateTimeFormat(style = "M-")
@@ -51,7 +55,14 @@ public class PurchaseAgreement {
     @Column(name = "pa_customer_number")
     private Long customerNumber;
 
-    public Address getInvoiceAddress() {
+    @Column(name="pa_paymentConditions")
+	private String paymentConditions;
+
+    public String getPaymentConditions() {
+		return paymentConditions;
+	}
+
+	public Address getInvoiceAddress() {
         return invoiceAddress;
     }
 
@@ -110,5 +121,9 @@ public class PurchaseAgreement {
     public String toString(){
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
+
+	public void setPaymentConditions(String paymentConditions) {
+		this.paymentConditions = paymentConditions;
+	}
 
 }

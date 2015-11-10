@@ -8,7 +8,6 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
     public String invoiceNumber;
-    public String paymentConditions;
     public Date created;
     public List<ItemDto> shippingItemDtos;
     public String billing;

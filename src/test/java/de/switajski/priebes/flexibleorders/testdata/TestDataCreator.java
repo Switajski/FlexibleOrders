@@ -122,14 +122,16 @@ public class TestDataCreator extends AbstractSpringContextTest {
     }
 
     private OrderConfirmation createAB22(DateTime dt, Order b22) {
-        OrderConfirmation ab22 = orderService.confirm(new ConfirmParameter(
+        ConfirmParameter confirmParameter = new ConfirmParameter(
                 b22.getOrderNumber(),
                 "AB22",
                 dt.plusDays(5).toLocalDate(),
                 DHL.getExternalId(),
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
-                converterService.convert(b22)));
+                converterService.convert(b22));
+        confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
+		OrderConfirmation ab22 = orderService.confirm(confirmParameter);
         return ab22;
     }
 
@@ -170,7 +172,6 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 extract(l11AndL12, AMY.getProductNumber(), 5),
                 extract(l11AndL12, MILADKA.getProductNumber(), 5),
                 shippingCosts));
-        invoicingParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
         invoicingService.invoice(
                 invoicingParameter);
     }

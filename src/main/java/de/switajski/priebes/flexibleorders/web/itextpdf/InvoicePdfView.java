@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -26,7 +29,9 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
@@ -84,6 +89,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
 				.createFooterBuilder(calculation, report.invoiceSpecific_paymentConditions)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
+        
+        if (report.invoiceSpecific_paymentConditions != null){
+        	addPaymentConditions(report.invoiceSpecific_paymentConditions, footerBuilder);
+        }
 
 		PdfPTable footer = footerBuilder.build();
 
@@ -92,6 +101,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
 						+ FOOTER_MARGIN_BOTTOM,
 				writer.getDirectContent());
+		
 	}
 
 	private PdfPTable createTable(ReportDto cReport) throws DocumentException {

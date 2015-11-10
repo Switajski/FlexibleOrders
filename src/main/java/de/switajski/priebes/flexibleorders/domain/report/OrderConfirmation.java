@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
@@ -20,7 +21,7 @@ public class OrderConfirmation extends Report {
 
     @Embedded
     private PurchaseAgreement purchaseAgreement;
-
+    
     private String orderAgreementNumber;
 
     public OrderConfirmation() {}

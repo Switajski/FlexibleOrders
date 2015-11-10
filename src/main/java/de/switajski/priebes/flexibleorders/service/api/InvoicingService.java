@@ -78,7 +78,7 @@ public class InvoicingService {
     }
 
     private Invoice createInvoice(InvoicingParameter invoicingParameter) {
-        Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, invoicingParameter.paymentConditions, null);
+        Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, null);
         invoice.setBilling(invoicingParameter.billing);
         invoice.setCreated((invoicingParameter.created == null) ? new Date() : invoicingParameter.created);
         invoice.setDiscountRate(invoicingParameter.discountRate);

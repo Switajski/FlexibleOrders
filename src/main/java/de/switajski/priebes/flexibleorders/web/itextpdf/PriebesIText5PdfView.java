@@ -36,6 +36,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 
 /**
@@ -87,7 +88,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
     public static final int PAGE_MARGIN_TOP = /* top */80;
     public static final int PAGE_MARGIN_RIGHT = /* right */72;
     public static final int PAGE_MARGIN_LEFT = /* left */60;
-    public static final int FOOTER_MARGIN_BOTTOM = 30;
+    public static final int FOOTER_MARGIN_BOTTOM = 40;
     public static final float WIDTH = 464f;
 
     /**
@@ -395,6 +396,19 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
                         0);
 
     }
+    
+    protected void addPaymentConditions(String paymentConditions,
+			CustomPdfPTableBuilder footerBuilder) {
+		PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
+		        .getFont(PriebesIText5PdfView.FONT,
+		                PriebesIText5PdfView.FONT_SIZE,
+		                Font.BOLD));
+		footerBuilder.addCell(new PdfPCellBuilder(bold.build())
+		    .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
+		    .withBorder(Rectangle.NO_BORDER)
+		    .withColSpan(2)
+		    .build());
+	}
 
     @Override
     public void onParagraph(PdfWriter writer, Document document,

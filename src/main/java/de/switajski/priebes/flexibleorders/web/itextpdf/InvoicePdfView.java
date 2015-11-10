@@ -82,8 +82,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		
 		// insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-				.createFooterBuilder(
-						calculation)
+				.createFooterBuilder(calculation, report.invoiceSpecific_paymentConditions)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
 
 		PdfPTable footer = footerBuilder.build();

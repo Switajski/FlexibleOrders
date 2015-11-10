@@ -7,7 +7,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 public class InvoiceCalculation {
     private Amount netGoods, discountAmount, shipping, net, vat, gross;
-    private String paymentConditions, discountText;
+    private String discountText;
 
     public InvoiceCalculation(ReportDto report){
         netGoods = report.netGoods;
@@ -56,10 +56,6 @@ public class InvoiceCalculation {
 
     public Amount getDiscountAmount() {
         return discountAmount;
-    }
-
-    public String getPaymentConditions() {
-        return paymentConditions;
     }
 
     public String getDiscountText() {

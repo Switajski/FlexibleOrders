@@ -49,21 +49,33 @@ public class CustomPdfPTableBuilder {
      * 
      * @return
      */
-    public static CustomPdfPTableBuilder createFooterBuilder(InvoiceCalculation calculation) {
+    public static CustomPdfPTableBuilder createFooterBuilder(InvoiceCalculation calculation, String paymentConditions) {
         String discountAmount = calculation.getDiscountAmount() == null ? null : calculation.getDiscountAmount().toString();
         String shipping = calculation.getShipping() == null ? null : calculation.getShipping().toString();
         String discountText = calculation.getDiscountText();
         String netGoods = calculation.getNetGoods().toString();
         String net = calculation.getNet().toString();
         String vat = calculation.getVat().toString();
-        String paymentConditions = calculation.getPaymentConditions();
         String gross = calculation.getGross().toString();
         
-        return createFooterBuilder(discountAmount, shipping, discountText, netGoods, net, vat, paymentConditions, gross);
+        PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
+                .getFont(PriebesIText5PdfView.FONT,
+                        PriebesIText5PdfView.FONT_SIZE,
+                        Font.BOLD));
+        
+        CustomPdfPTableBuilder footerBuilder = createFooterBuilder(discountAmount, shipping, discountText, netGoods, net, vat, gross);
+        if (paymentConditions != null) 
+            footerBuilder.addCell(new PdfPCellBuilder(bold.build())
+                .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
+                .withBorder(Rectangle.NO_BORDER)
+                .withColSpan(2)
+                .build());
+        
+        return footerBuilder;
     }
     
     public static CustomPdfPTableBuilder createFooterBuilder(String netGoods, String vat, String gross){
-        return createFooterBuilder(null, null, null, null, netGoods, vat, null, gross);
+        return createFooterBuilder(null, null, null, null, netGoods, vat, gross);
     }
 
     private static CustomPdfPTableBuilder createFooterBuilder(
@@ -73,7 +85,6 @@ public class CustomPdfPTableBuilder {
             String net,
             String netGoods,
             String vat,
-            String paymentConditions,
             String gross) {
         PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
                 .getFont(PriebesIText5PdfView.FONT,
@@ -135,13 +146,6 @@ public class CustomPdfPTableBuilder {
                 .addCell(rightAlign.withPhrase(
                         bold.withText(gross).build())
                         .withBorder(Rectangle.TOP)
-                        .build());
-
-        if (paymentConditions != null) footerBuilder
-                .addCell(leftAlign
-                        .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
-                        .withBorder(Rectangle.NO_BORDER)
-                        .withColSpan(2)
                         .build());
 
         return footerBuilder;

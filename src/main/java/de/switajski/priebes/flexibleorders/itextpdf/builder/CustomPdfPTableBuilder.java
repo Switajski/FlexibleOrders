@@ -16,12 +16,12 @@ public class CustomPdfPTableBuilder {
 
     public ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
 
-    private ArrayList<TableProperties> tableProperties;
+    private ArrayList<ColumnFormat> tableProperties;
 
     private Float totalWidth = null;
 
     public CustomPdfPTableBuilder(
-            ArrayList<TableProperties> tableProperties) {
+            ArrayList<ColumnFormat> tableProperties) {
         this.tableProperties = tableProperties;
     }
 
@@ -86,9 +86,9 @@ public class CustomPdfPTableBuilder {
         PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build())
                 .withRightHorizontalAlignment();
 
-        ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-        rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 30));
-        rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 70));
+        ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+        rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 30));
+        rowProperties.add(new ColumnFormat("2", Element.ALIGN_RIGHT, 70));
 
         CustomPdfPTableBuilder footerBuilder = new CustomPdfPTableBuilder(rowProperties);
         if (discountAmount != null && discountText != null){

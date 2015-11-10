@@ -20,7 +20,7 @@ public class PdfPTableBuilder {
 	private List<String> footerList = new ArrayList<String>();
 	private boolean createFooter = true;
 
-	private ArrayList<TableProperties> tableProperties;
+	private ArrayList<ColumnFormat> tableProperties;
 	private boolean createHeader = true;
 
 	/**
@@ -28,114 +28,114 @@ public class PdfPTableBuilder {
 	 * 
 	 * @param rowProperties
 	 */
-	public PdfPTableBuilder(ArrayList<TableProperties> rowProperties) {
+	public PdfPTableBuilder(ArrayList<ColumnFormat> rowProperties) {
 		this.tableProperties = rowProperties;
 	}
 
-	public static ArrayList<TableProperties> createPropertiesWithFourCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
+	public static ArrayList<ColumnFormat> createPropertiesWithFourCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
 		rowProperties
-				.add(new TableProperties("Anzahl", Element.ALIGN_RIGHT, 10));
-		rowProperties.add(new TableProperties(
+				.add(new ColumnFormat("Anzahl", Element.ALIGN_RIGHT, 10));
+		rowProperties.add(new ColumnFormat(
 				"Art. Nr.",
 				Element.ALIGN_LEFT,
 				10));
 		rowProperties
-				.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 50));
-		rowProperties.add(new TableProperties(
+				.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 50));
+		rowProperties.add(new ColumnFormat(
 				"Bestellnr.",
 				Element.ALIGN_RIGHT,
 				30));
 		return rowProperties;
 	}
 
-	public static ArrayList<TableProperties> createPropertiesWithSixCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties(
+	public static ArrayList<ColumnFormat> createPropertiesWithSixCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+		rowProperties.add(new ColumnFormat(
 				"Art. Nr.",
 				Element.ALIGN_LEFT,
 				10));
 		rowProperties
-				.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 40));
+				.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 40));
 		rowProperties
-				.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
-		rowProperties.add(new TableProperties(
+				.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new ColumnFormat(
 				"EK per St"+Unicode.U_UML+"ck",
 				Element.ALIGN_LEFT,
 				15));
-		rowProperties.add(new TableProperties(
+		rowProperties.add(new ColumnFormat(
 				"Bestellnr.",
 				Element.ALIGN_LEFT,
 				10));
 		rowProperties
-				.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
+				.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 15));
 		return rowProperties;
 	}
 	
-	public static ArrayList<TableProperties> createPropertiesWithSevenCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties(
+	public static ArrayList<ColumnFormat> createPropertiesWithSevenCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+		rowProperties.add(new ColumnFormat(
 				"Art. Nr.",
 				Element.ALIGN_LEFT,
 				10));
 		rowProperties
-				.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 25));
+				.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 25));
 		rowProperties
-				.add(new TableProperties("Anzahl", Element.ALIGN_RIGHT, 7));
-		rowProperties.add(new TableProperties(
+				.add(new ColumnFormat("Anzahl", Element.ALIGN_RIGHT, 7));
+		rowProperties.add(new ColumnFormat(
 				"EK per St"+Unicode.U_UML+"ck",
 				Element.ALIGN_RIGHT,
 				12));
-		rowProperties.add(new TableProperties(
+		rowProperties.add(new ColumnFormat(
 				"Lieferscheinnr.",
 				Element.ALIGN_RIGHT,
 				15));
-		rowProperties.add(new TableProperties(
+		rowProperties.add(new ColumnFormat(
 				"Lieferdatum",
 				Element.ALIGN_RIGHT,
 				15));
 		rowProperties
-				.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 16));
+				.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 16));
 		return rowProperties;
 	}
 
-	public static ArrayList<TableProperties> createPropertiesWithFiveCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties(
+	public static ArrayList<ColumnFormat> createPropertiesWithFiveCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+		rowProperties.add(new ColumnFormat(
 				"Art. Nr.",
 				Element.ALIGN_LEFT,
 				10));
 		rowProperties
-				.add(new TableProperties("Artikel", Element.ALIGN_LEFT, 50));
+				.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 50));
 		rowProperties
-				.add(new TableProperties("Anzahl", Element.ALIGN_LEFT, 10));
-		rowProperties.add(new TableProperties(
+				.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 10));
+		rowProperties.add(new ColumnFormat(
 				"EK per St\u00fcck",
 				Element.ALIGN_LEFT,
 				15));
 		rowProperties
-				.add(new TableProperties("gesamt", Element.ALIGN_RIGHT, 15));
+				.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 15));
 		return rowProperties;
 	}
 
-	public static ArrayList<TableProperties> createPropertiesWithTwoCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 60));
-		rowProperties.add(new TableProperties("2", Element.ALIGN_RIGHT, 40));
+	public static ArrayList<ColumnFormat> createPropertiesWithTwoCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+		rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 60));
+		rowProperties.add(new ColumnFormat("2", Element.ALIGN_RIGHT, 40));
 		return rowProperties;
 	}
 	
-	public static ArrayList<TableProperties> createPropertiesWithThreeCols() {
-		ArrayList<TableProperties> rowProperties = new ArrayList<TableProperties>();
-		rowProperties.add(new TableProperties("1", Element.ALIGN_LEFT, 33));
-		rowProperties.add(new TableProperties("2", Element.ALIGN_LEFT, 33));
-		rowProperties.add(new TableProperties("3", Element.ALIGN_LEFT, 34));
+	public static ArrayList<ColumnFormat> createPropertiesWithThreeCols() {
+		ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+		rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 33));
+		rowProperties.add(new ColumnFormat("2", Element.ALIGN_LEFT, 33));
+		rowProperties.add(new ColumnFormat("3", Element.ALIGN_LEFT, 34));
 		return rowProperties;
 	}
 
 	private float[] getWidths() {
 		ArrayList<Float> iList = new ArrayList<Float>();
-		for (TableProperties prop : tableProperties) {
+		for (ColumnFormat prop : tableProperties) {
 			iList.add(prop.relativeWidth);
 		}
 		return convertFloats(iList);
@@ -180,7 +180,7 @@ public class PdfPTableBuilder {
 	}
 
 	public static List<PdfPCell> createFooter(List<String> footerList,
-			ArrayList<TableProperties> tableProperties) {
+			ArrayList<ColumnFormat> tableProperties) {
 		int current = 0;
 		int last = footerList.size() - 1;
 		List<PdfPCell> cells = new ArrayList<PdfPCell>();
@@ -222,7 +222,7 @@ public class PdfPTableBuilder {
 
 	public ArrayList<PdfPCell> createHeaderCells() {
 		ArrayList<PdfPCell> header = new ArrayList<PdfPCell>();
-		for (TableProperties prop : tableProperties) {
+		for (ColumnFormat prop : tableProperties) {
 			PdfPCell bposHeader = new PdfPCell(
 					new PhraseBuilder(prop.heading).size8()
 							.build());
@@ -246,12 +246,12 @@ public class PdfPTableBuilder {
 		if (list.size() != this.tableProperties.size())
 			throw new IllegalArgumentException(
 					"Row number trying to add does not fit to table");
-		this.bodyList.add(list);
+		bodyList.add(list);
 		return this;
 	}
 
 	public PdfPTableBuilder addFooterRow(String string) {
-		this.footerList.add(string);
+		footerList.add(string);
 		return this;
 	}
 

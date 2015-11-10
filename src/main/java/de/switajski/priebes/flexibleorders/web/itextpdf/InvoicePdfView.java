@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -29,9 +26,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
@@ -122,8 +117,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				// Bestellnr
 				list.add(he.getOrderItem().getOrder().getOrderNumber());
 				// gesamt
-				list.add(he
-						.getOrderItem()
+				list.add(he.getOrderItem()
 						.getNegotiatedPriceNet()
 						.multiply(he.getQuantity())
 						.toString());
@@ -157,8 +151,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 				// Lieferdatum
 				list.add(ReportViewHelper.createdDatesOf(sis));
 				// gesamt
-				list.add(ii
-						.getOrderItem()
+				list.add(ii.getOrderItem()
 						.getNegotiatedPriceNet()
 						.multiply(ii.getQuantity())
 						.toString());

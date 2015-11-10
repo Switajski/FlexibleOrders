@@ -51,22 +51,6 @@ public class PdfPCellBuilder {
 		return this;
 	}
 
-	public static PdfPCell withLeftAlignment(String content) {
-		return new PdfPCellBuilder(new Phrase(
-				content,
-				PriebesIText5PdfView.font))
-				.withLeftHorizontalAlignment()
-				.build();
-	}
-
-	public static PdfPCell withRightAlignment(String content) {
-		return new PdfPCellBuilder(new Phrase(
-				content,
-				PriebesIText5PdfView.font))
-				.withRightHorizontalAlignment()
-				.build();
-	}
-
 	public PdfPCellBuilder withPhrase(Phrase phrase) {
 		this.phrase = phrase;
 		return this;

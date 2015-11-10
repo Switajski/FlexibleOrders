@@ -58,17 +58,17 @@ public class PdfPTableBuilder {
 		rowProperties
 				.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 40));
 		rowProperties
-				.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 10));
+				.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 7));
 		rowProperties.add(new ColumnFormat(
 				"EK per St"+Unicode.U_UML+"ck",
 				Element.ALIGN_LEFT,
-				15));
+				13));
 		rowProperties.add(new ColumnFormat(
 				"Bestellnr.",
 				Element.ALIGN_LEFT,
-				10));
-		rowProperties
-				.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 15));
+				18,
+				PriebesIText5PdfView.eightSizeFont));
+		rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
 		return rowProperties;
 	}
 	
@@ -208,12 +208,7 @@ public class PdfPTableBuilder {
 		for (List<String> bp : bodyList) {
 			int i = 0;
 			for (String stringOfCell : bp) {
-				if (tableProperties.get(i).alignment == Element.ALIGN_RIGHT)
-					pdfPTable.addCell(PdfPCellBuilder
-							.withRightAlignment(stringOfCell));
-				else
-					pdfPTable.addCell(PdfPCellBuilder
-							.withLeftAlignment(stringOfCell));
+				pdfPTable.addCell(tableProperties.get(i).createCell(stringOfCell));
 				i++;
 			}
 		}

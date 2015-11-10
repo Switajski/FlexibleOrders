@@ -192,39 +192,6 @@ public class ReportViewHelper {
         return cinfo;
     }
 
-    /**
-     * @deprecated use {@link #createExtendedTable(ReportDto)} instead
-     * @param report
-     * @return
-     * @throws DocumentException
-     */
-    public static PdfPTable createExtendedTable(Report report)
-            throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithSixCols());
-        for (ReportItem he : report.getItemsOrdered()) {
-            List<String> list = new ArrayList<String>();
-            // Art.Nr.:
-            String pNo = he.getOrderItem().getProduct().getProductNumber();
-            list.add(pNo.equals(0L) ? "n.a." : pNo.toString());
-            // Artikel
-            list.add(he.getOrderItem().getProduct().getName());
-            // Anzahl
-            list.add(String.valueOf(he.getQuantity()));
-            // EK per Stueck
-            list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
-            // Bestellnr
-            list.add(he.getOrderItem().getOrder().getOrderNumber());
-            // gesamt
-            list.add(he.getOrderItem().getNegotiatedPriceNet()
-                    .multiply(he.getQuantity()).toString());
-
-            builder.addBodyRow(list);
-        }
-
-        return builder.withFooter(false).build();
-    }
-
     public static PdfPTable createExtendedTable(ReportDto report)
             throws DocumentException {
         PdfPTableBuilder builder = new PdfPTableBuilder(

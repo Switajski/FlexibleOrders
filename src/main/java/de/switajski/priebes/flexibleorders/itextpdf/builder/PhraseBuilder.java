@@ -9,13 +9,15 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 public class PhraseBuilder {
 
 	private StringBuilder text = new StringBuilder();
-	private Font font = PriebesIText5PdfView.font;
+	private Font font;
 
 	public PhraseBuilder(String text) {
+		font = PriebesIText5PdfView.font;
 		this.text = new StringBuilder(text);
 	}
 
 	public PhraseBuilder() {
+		font = PriebesIText5PdfView.font;
 	}
 
 	public Phrase build() {

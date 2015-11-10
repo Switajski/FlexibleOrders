@@ -42,7 +42,10 @@ public class PurchaseAgreementService {
 		for (ConfirmationItem cis : dh.getReportItems(ConfirmationItem.class)) {
 			OrderConfirmation orderConfirmation = (OrderConfirmation) cis
 					.getReport();
-			if (agreedOnly && orderConfirmation.isAgreed()) {
+			if (agreedOnly) {
+				if (orderConfirmation.isAgreed())
+					ocs.add(orderConfirmation.getPurchaseAgreement());
+			} else {
 				ocs.add(orderConfirmation.getPurchaseAgreement());
 			}
 		}

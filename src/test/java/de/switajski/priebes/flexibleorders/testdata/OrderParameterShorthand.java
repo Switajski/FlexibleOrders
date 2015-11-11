@@ -10,7 +10,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderParameterShorthand{
     
-    public static OrderParameter order(String orderNumber, Customer customer, LocalDate expectedDelivery, ItemDto... items){
+    public static OrderParameter orderParam(String orderNumber, Customer customer, LocalDate expectedDelivery, ItemDto... items){
         OrderParameter op = new OrderParameter();
         op.customerNumber = customer.getCustomerNumber();
         op.orderNumber = orderNumber;

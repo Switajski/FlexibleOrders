@@ -2,7 +2,7 @@ package de.switajski.priebes.flexibleorders.testdata;
 
 import static de.switajski.priebes.flexibleorders.testdata.ConfirmParameterShorthand.confirm;
 import static de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand.item;
-import static de.switajski.priebes.flexibleorders.testdata.OrderParameterShorthand.order;
+import static de.switajski.priebes.flexibleorders.testdata.OrderParameterShorthand.orderParam;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -55,31 +55,31 @@ public class TestDataFixture {
     public static final DeliveryMethod DHL = new DeliveryMethodBuilder().dhl().build();
 
     
-    public static OrderParameter B11 = order(B11_STR, YVONNE, NOW, 
+    public static OrderParameter B11 = orderParam(B11_STR, YVONNE, NOW, 
             item(AMY,       10), 
             item(MILADKA,   15), 
             item(PAUL,      30));
     
-    public static OrderParameter B12 = order(B12_STR, YVONNE, NOW, 
+    public static OrderParameter B12 = orderParam(B12_STR, YVONNE, NOW, 
             item(SALOME,    12), 
             item(JUREK,     5));
     
-    public static OrderParameter B13    = order(B13_STR, YVONNE, NOW,                 
+    public static OrderParameter B13    = orderParam(B13_STR, YVONNE, NOW,                 
             item(PAUL, 4), 
             item(JUREK, 27), 
             item(SALOME, 8), 
             item(MILADKA, 6));
     
-    public static OrderParameter B15    = order(B15_STR, YVONNE, delay(2),            
+    public static OrderParameter B15    = orderParam(B15_STR, YVONNE, delay(2),            
             item(MILADKA, 5), 
             item(PAUL, 8), 
             item(SALOME, 3));
     
-    public static OrderParameter B21 = order(B21_STR, NAIDA, NOW, 
+    public static OrderParameter B21 = orderParam(B21_STR, NAIDA, NOW, 
             item(SALOME, 17), 
             item(AMY, 3));
     
-    public static OrderParameter B22 = order(B22_STR, NAIDA, NOW, 
+    public static OrderParameter B22 = orderParam(B22_STR, NAIDA, NOW, 
             item(JUREK, 13), 
             item(PAUL, 6));
     

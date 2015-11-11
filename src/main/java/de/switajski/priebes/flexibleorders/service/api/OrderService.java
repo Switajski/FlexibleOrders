@@ -154,6 +154,11 @@ public class OrderService {
         Order order = orderRepo.findByOrderNumber(orderNumber);
         if (order == null) throw new IllegalArgumentException(
                 "Bestellnr. zum l" + Unicode.O_UML + "schen nicht gefunden");
+        for (OrderItem oi : order.getItems()){
+        	if (!oi.getReportItems().isEmpty()){
+        		throw new RuntimeException("Kann nicht l" + Unicode.O_UML + "schen: Bestellung hat Dokumente wie ABs, Lieferscheine, Rechnungen etc.");
+        	}
+        }
         orderRepo.delete(order);
         return true;
     }

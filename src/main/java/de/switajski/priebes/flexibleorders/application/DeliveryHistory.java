@@ -18,7 +18,11 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
-//TODO use on read only objects
+/**
+ * Concept is to provide delivery histories without a call another service. Therefore the client has to retrieve itself all relevant report items. 
+ * @author Marek
+ *
+ */
 public class DeliveryHistory {
 
     private Collection<ReportItem> reportItems;
@@ -37,6 +41,11 @@ public class DeliveryHistory {
         return new DeliveryHistory(ris);
     }
 
+    /**
+     * Creates whole delivery history
+     * @param reportItem
+     * @return
+     */
     public static DeliveryHistory of(ReportItem reportItem) {
         return new DeliveryHistory(reportItem.getOrderItem().getReportItems());
     }
@@ -129,7 +138,7 @@ public class DeliveryHistory {
         }
         return nos;
     }
-
+    
     public Set<String> getCreditNoteNumbers() {
         return getReportNumbers(CreditNoteItem.class);
     }

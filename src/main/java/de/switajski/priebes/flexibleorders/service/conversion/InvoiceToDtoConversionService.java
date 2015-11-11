@@ -21,7 +21,7 @@ public class InvoiceToDtoConversionService {
 	public ReportDto toDto(Invoice report) {
 		ReportDto dto = reportToDtoConversionService.toDto(report);
 		dto.shippingSpecific_shippingCosts = report.getShippingCosts();
-		dto.invoiceSpecific_paymentConditions = purchaseAgreementService.retrieveSingleLegal(report.getItems()).getPaymentConditions();
+		dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(report).getPaymentConditions();
 		dto.invoiceSpecific_billing = report.getBilling();
 		return dto;
 	}

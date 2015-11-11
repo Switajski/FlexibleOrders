@@ -71,8 +71,8 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
                 .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
                 .withTotalWidth(PriebesIText5PdfView.WIDTH);
         
-        if (report.invoiceSpecific_paymentConditions != null){
-        	addPaymentConditions(report.invoiceSpecific_paymentConditions, footerBuilder);
+        if (report.orderConfirmationSpecific_paymentConditions != null){
+        	addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
         }
 
         PdfPTable footer = footerBuilder.build();

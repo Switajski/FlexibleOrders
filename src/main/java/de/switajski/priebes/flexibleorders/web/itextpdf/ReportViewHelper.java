@@ -21,7 +21,6 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
@@ -174,7 +173,7 @@ public class ReportViewHelper {
             cib.append(a.getPostalCode().toString() + " ");
             cib.append(a.getCity()).append(NEWLINE);
 
-            if (!isEmpty(a.getCountry().getName())) cib.append(a.getCountry());
+            if (!isEmpty(a.getCountry().getName())) cib.append(a.getCountry().getName());
         }
         return cib.toString();
     }

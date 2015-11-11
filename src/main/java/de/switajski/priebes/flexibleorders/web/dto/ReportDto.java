@@ -46,6 +46,7 @@ public class ReportDto {
 
     // order agreement specific
     public String orderConfirmationNumber;
+    public String orderConfirmationSpecific_paymentConditions;
 
     public String shippingSpecific_trackNumber, shippingSpecific_packageNumber;
     public Amount shippingSpecific_shippingCosts;
@@ -56,7 +57,7 @@ public class ReportDto {
 
     // invoice specific
     public boolean invoiceSpecific_hasItemsWithDifferentCreationDates;
-    public String invoiceSpecific_billing, invoiceSpecific_paymentConditions;
+    public String invoiceSpecific_billing;
     public Address invoiceSpecific_headerAddress;
     public BigDecimal invoiceSpecific_discountRate;
     public String invoiceSpecific_discountText;

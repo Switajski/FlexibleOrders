@@ -82,11 +82,11 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		
 		// insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-				.createFooterBuilder(calculation, report.invoiceSpecific_paymentConditions)
+				.createFooterBuilder(calculation, report.orderConfirmationSpecific_paymentConditions)
 				.withTotalWidth(PriebesIText5PdfView.WIDTH);
         
-        if (report.invoiceSpecific_paymentConditions != null){
-        	addPaymentConditions(report.invoiceSpecific_paymentConditions, footerBuilder);
+        if (report.orderConfirmationSpecific_paymentConditions != null){
+        	addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
         }
 
 		PdfPTable footer = footerBuilder.build();

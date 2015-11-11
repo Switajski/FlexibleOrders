@@ -53,7 +53,7 @@ public class ReportDtoTestFixture {
                 .setContact4("Email: info@priebe.eu")
                 .build();
         r.customerSpecific_mark = "Filiale";
-        r.invoiceSpecific_paymentConditions = "So schnell wie m"+ Unicode.O_UML + "glich, ohne Prozente sonst Inkasso Moskau";
+        r.orderConfirmationSpecific_paymentConditions = "So schnell wie m"+ Unicode.O_UML + "glich, ohne Prozente sonst Inkasso Moskau";
         r.customerSpecific_vatIdNo = "ATU-No.111234515";
         r.customerSpecific_vendorNumber = "PRIEBES-1";
         r.customerSpecific_saleRepresentative = "Herr Vertreter1";

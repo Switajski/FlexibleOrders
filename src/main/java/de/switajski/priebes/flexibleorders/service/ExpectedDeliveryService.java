@@ -23,5 +23,13 @@ public class ExpectedDeliveryService {
 		}
 		return expectedDeliveryDates;
 	}
+	
+	public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
+		Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
+		for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)){
+			expectedDeliveryWeekOfYear.add(new LocalDate(pa.getExpectedDelivery()).getWeekOfWeekyear());
+		}
+		return expectedDeliveryWeekOfYear;
+	}
 
 }

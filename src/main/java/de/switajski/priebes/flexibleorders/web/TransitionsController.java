@@ -154,6 +154,7 @@ public class TransitionsController extends ExceptionController {
         deliverParameter.packageNumber = deliverRequest.packageNumber;
         deliverParameter.showPricesInDeliveryNotes = deliverRequest.showPricesInDeliveryNotes;
         deliverParameter.shipment = new Amount(deliverRequest.shipment, Currency.EUR);
+        deliverParameter.ignoreContradictoryExpectedDeliveryDates = deliverRequest.ignoreContradictoryExpectedDeliveryDates;
         
         deliverParameter.customerNumber = deliverRequest.customerId;
         DeliveryNotes dn = deliveryService.deliver(

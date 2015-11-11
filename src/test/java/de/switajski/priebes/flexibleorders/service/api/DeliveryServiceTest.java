@@ -3,31 +3,36 @@ package de.switajski.priebes.flexibleorders.service.api;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.verification.VerificationModeFactory;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
@@ -59,57 +64,99 @@ public class DeliveryServiceTest {
     @Mock
     ReportRepository reportRepo;
     @Mock
+    ExpectedDeliveryService expectedDeliveryService;
+    @Mock
     ShippingAddressService shippingAddressService;
     @Mock
     QuantityLeftCalculatorService qtyLeftCalcService;
+    
+    DeliverParameter deliverParameter;
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
     public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
         // GIVEN
-        mockValidation();
-        givenReportItems();
-        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class)))
-                .thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1, ADDRESS_2)));
+    	givenOrdersWithConfirmationAndDweliverParameter();
+    	deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
+        givenTwoShippingAddresses();
+        givenDeliverParameter();
 
         // WHEN / THEN
-        deliveryService.deliver(givenDeliverParameter());
+        whenDelivering();
 
     }
+
+	private void whenDelivering() {
+		deliveryService.deliver(deliverParameter);
+	}
     
     private void givenReportItems() {
         when(convService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(givenItemMap());
+                .thenReturn(givenItemsWithDifferentExpectedDeliveryDates());
     }
 
-    private DeliverParameter givenDeliverParameter() {
-        DeliverParameter deliverParam = new DeliverParameter();
-        deliverParam.deliveryNotesNumber = DN_NO;
-        return deliverParam;
+    private void givenDeliverParameter() {
+        deliverParameter = new DeliverParameter();
+        deliverParameter.deliveryNotesNumber = DN_NO;
     }
 
     @Test
     public void shouldDeliverIfContradictoryExpectedDeliveryDatesExistAndIgnoreFlagIsSet() {
-        mockValidation();
-        givenReportItems();
-        DeliverParameter deliverParameter = givenDeliverParameter();
+        givenOrdersWithConfirmationAndDweliverParameter();
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
         givenOneShippingAddress();
 
-        // WHEN
-        deliveryService.deliver(deliverParameter);
+        whenDelivering();
 
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
     }
+    
+    @Test(expected=ContradictoryPurchaseAgreementException.class)
+    public void shouldNotDeliverIfContradictoryExpectedDeliveryDatesExist() {
+        givenOrdersWithConfirmationAndDweliverParameter();
+        LocalDate now = new LocalDate(new Date());
+        deliverParameter.ignoreContradictoryExpectedDeliveryDates = false;
+        deliverParameter.created = new Date();
+        when(expectedDeliveryService.retrieve(anySet())).thenReturn(new HashSet<LocalDate>(Arrays.asList(now, now.plusWeeks(1))));
+        givenOneShippingAddress();
 
-    @Test
+        whenDelivering();
+
+        // THEN
+        assertThatNoDeliveryNotesIsSaved();
+    }
+    
+    @Test(expected = ContradictoryPurchaseAgreementException.class)
+    public void shouldNotDeliverIfContradictoryShippingAddressesExist() {
+        givenOrdersWithConfirmationAndDweliverParameter();
+        deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
+        givenTwoShippingAddresses();
+
+        whenDelivering();
+
+        assertThatNoDeliveryNotesIsSaved();
+    }
+    
+	private void givenOrdersWithConfirmationAndDweliverParameter() {
+		mockValidation();
+        givenReportItems();
+        givenDeliverParameter();
+	}
+
+
+    private void assertThatNoDeliveryNotesIsSaved() {
+    	verify(reportRepo, VerificationModeFactory.noMoreInteractions()).save(Matchers.any(Report.class));
+	}
+
+	@Test
     public void shouldDeliverIfNoExpectedDeliveryDateIsSet() {
         mockValidation();
         givenReportItems();
         givenOneShippingAddress();
+        givenDeliverParameter();
 
         // WHEN
-        deliveryService.deliver(givenDeliverParameter());
+        whenDelivering();
 
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
@@ -121,12 +168,12 @@ public class DeliveryServiceTest {
         mockValidation();
         givenReportItems();
         givenOneShippingAddress();
-        DeliverParameter param = givenDeliverParameter();
-        param.shipment = SHIPPING_COSTS;
-        param.deliveryMethod = DELIVERY_METHOD;
+        givenDeliverParameter();
+        deliverParameter.shipment = SHIPPING_COSTS;
+        deliverParameter.deliveryMethod = DELIVERY_METHOD;
         
         // WHEN
-        deliveryService.deliver(param);
+        whenDelivering();
         
         // THEN
         ArgumentCaptor<DeliveryNotes> deliveryNotes = ArgumentCaptor.forClass(DeliveryNotes.class);
@@ -138,6 +185,10 @@ public class DeliveryServiceTest {
 
     private void givenOneShippingAddress() {
         when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1)));
+    }
+    
+    private void givenTwoShippingAddresses() {
+        when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1, ADDRESS_2)));
     }
 
     private void assertThatDeliveryNotesIsSavedWithTwoItems() {
@@ -151,41 +202,39 @@ public class DeliveryServiceTest {
         when(reportRepo.findByDocumentNumber(DN_NO)).thenReturn(null);
     }
 
-    private Map<ReportItem, Integer> givenItemMap() {
+    private Map<ReportItem, Integer> givenItemsWithDifferentExpectedDeliveryDates() {
         Map<ReportItem, Integer> map = new HashMap<ReportItem, Integer>();
-        map.put(givenItemWith(null), 2);
-        map.put(givenItemOtherWith(null), 5);
+        
+        map.put(givenItemWith(), 2);
+        map.put(givenItemOtherWith(), 5);
         return map;
     }
 
-    private ReportItem givenItemWith(PurchaseAgreement purchaseAgreement) {
-        return new ConfirmationItemBuilder()
-                .setItem(
-                        new OrderItemBuilder()
-                                .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(12)
-                                .build())
-                .setQuantity(6)
-                .setReport(
-                        new OrderConfirmationBuilder()
-                                .setAgreementDetails(purchaseAgreement)
-                                .build())
-                .build();
+    private ReportItem givenItemWith() {
+        int quantity = 6;
+		int orderedQuantity = 12;
+		return createConfirmationItem(quantity, orderedQuantity);
     }
 
-    private ReportItem givenItemOtherWith(PurchaseAgreement pa) {
-        return new ConfirmationItemBuilder()
+	private ReportItem createConfirmationItem(int quantity, int orderedQuantity) {
+		return new ConfirmationItemBuilder()
                 .setItem(
                         new OrderItemBuilder()
                                 .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(25)
+                                .setOrderedQuantity(orderedQuantity)
                                 .build())
-                .setQuantity(9)
+                .setQuantity(quantity)
                 .setReport(
                         new OrderConfirmationBuilder()
-                                .setAgreementDetails(pa)
+                                .setAgreementDetails(null) // purchase agreement here is irrelevant. All info about purchase agreements are retrieved via services.
                                 .build())
                 .build();
+	}
+
+    private ReportItem givenItemOtherWith() {
+        int orderedQuantity = 25;
+		int quantity = 9;
+		return createConfirmationItem(quantity, orderedQuantity);
     }
 
 }

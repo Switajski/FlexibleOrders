@@ -102,6 +102,7 @@ public class JsonCreateReportRequest {
     @JsonDeserialize(using = BigDecimalDeserializer.class)
     public BigDecimal discountRate;
 
+	public boolean ignoreContradictoryExpectedDeliveryDates;
 		
 	public Address createInvoiceAddress(){
 		return new Address(name1, name2, street, postalCode, city,

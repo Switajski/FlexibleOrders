@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkPaidService;
+import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -52,6 +53,8 @@ public class TransitionsController extends ExceptionController {
     private AgreementService agreementService;
     @Autowired
     private MarkPaidService markPaidService;
+    @Autowired
+	private OrderConfirmationService orderConfirmationService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
@@ -86,7 +89,7 @@ public class TransitionsController extends ExceptionController {
         confirmParameter.customerNumber = confirmRequest.customerId;
         confirmParameter.paymentConditions = confirmRequest.paymentConditions;
 
-        OrderConfirmation confirmationReport = orderService.confirm(
+        OrderConfirmation confirmationReport = orderConfirmationService.confirm(
                 confirmParameter);
         return ExtJsResponseCreator.createResponse(confirmationReport);
     }

@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 
 @Entity
 public class Invoice extends Report {
@@ -30,7 +31,7 @@ public class Invoice extends Report {
 	 */
 	@Embedded
 	private Amount shippingCosts;
-
+	
 	/**
 	 * Date on which due date is calculated.
 	 */

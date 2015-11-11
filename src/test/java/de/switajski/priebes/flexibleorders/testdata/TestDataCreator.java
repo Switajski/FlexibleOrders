@@ -52,6 +52,7 @@ import de.switajski.priebes.flexibleorders.service.api.AgreementService;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -76,6 +77,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private OrderConfirmationService orderConfirmationService;
 
     @Autowired
     private ItemDtoConverterService converterService;
@@ -131,7 +135,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 YVONNE.getInvoiceAddress(),
                 converterService.convert(b22));
         confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
-		OrderConfirmation ab22 = orderService.confirm(confirmParameter);
+		OrderConfirmation ab22 = orderConfirmationService.confirm(confirmParameter);
         return ab22;
     }
 
@@ -142,9 +146,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
         orderService.order(B13);
         orderService.order(B15);
 
-        OrderConfirmation ab11 = orderService.confirm(AB11);
-        orderService.confirm(AB13);
-        OrderConfirmation ab15 = orderService.confirm(AB15);
+        OrderConfirmation ab11 = orderConfirmationService.confirm(AB11);
+        orderConfirmationService.confirm(AB13);
+        OrderConfirmation ab15 = orderConfirmationService.confirm(AB15);
 
         ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
         ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");

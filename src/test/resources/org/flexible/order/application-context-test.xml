@@ -59,7 +59,6 @@
         dependency inject an object into your class.
     -->
     <context:component-scan base-package="de.switajski.priebes.flexibleorders">
-        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
     <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
         <property name="driverClassName" value="${database.driverClassName}"/>

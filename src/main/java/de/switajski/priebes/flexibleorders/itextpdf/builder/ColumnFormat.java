@@ -31,6 +31,8 @@ public class ColumnFormat {
 		PhraseBuilder phraseB = new PhraseBuilder(content);
 		if (font == null)
 			phraseB.withFont(PriebesIText5PdfView.font);
+		else 
+			phraseB.withFont(font);
 		Phrase phrase = phraseB.build();
 		
 		PdfPCellBuilder pdfPCellBuilder = new PdfPCellBuilder(phrase);

@@ -15,6 +15,7 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.Product;
@@ -23,6 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
@@ -32,6 +34,7 @@ import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 import de.switajski.priebes.flexibleorders.service.helper.StringUtil;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
 public class ReportViewHelper {
 
@@ -85,60 +88,81 @@ public class ReportViewHelper {
         return paragraphs;
     }
 
-    public static PdfPTable createExtInfoTable(ExtInfoTableParameter p) {
+    public static PdfPTable createExtInfoTable(ExtInfoTableParameter p) throws DocumentException {
         PhraseBuilder pb = new PhraseBuilder("");
         PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
-        Phrase firstCol = new PhraseBuilder(createString(p.orderNumbers, "B-Nr.")).build();
-        appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, firstCol, "AB-Nr.");
-        appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, firstCol, "L-Nr.");
-        appendDocNumbersIfNotEmpty(p.invoiceNumbers, firstCol, "R-Nr.");
-        appendDocNumbersIfNotEmpty(p.creditNoteNumbers, firstCol, "Gutschirft-Nr.");
+        int columnSize = 2;
+		PdfPTable table = new PdfPTable(columnSize);
+        appendDocNumbersIfNotEmpty(p.orderNumbers, table, "B-Nr.");
+        appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, table, "AB-Nr.");
+        appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, table, "L-Nr.");
+        appendDocNumbersIfNotEmpty(p.invoiceNumbers, table, "R-Nr.");
+        appendDocNumbersIfNotEmpty(p.creditNoteNumbers, table, "G-Nr.");
+        table.setWidths(new float[]{22, 78});
+        
 
+        Phrase firstCol = new PhraseBuilder().build();
         firstCol.add(NEWLINE);
         if (p.expectedDelivery != null) {
             firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
         }
         firstCol.add(new PhraseBuilder()
-                .append(NEWLINE)
                 .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
                 .append(isEmpty(p.saleRepresentative) ? "" :
                         NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
+        PdfPCell cell = new PdfPCell(firstCol);
+        PdfPCellUtility.noBorder(cell);
+        cell.setColspan(columnSize);
+        table.addCell(cell);
 
-        StringBuilder secondColB = new StringBuilder();
+        StringBuilder secondColBuilder = new StringBuilder();
         if (p.shippingAddress != null){
-            secondColB = new StringBuilder().append("Lieferadresse:")
+            secondColBuilder = new StringBuilder().append("Lieferadresse:")
                     .append(NEWLINE + createString(p.shippingAddress));
             if (p.deliveryMethod != null)
-                secondColB.append(NEWLINE).append(NEWLINE)
+                secondColBuilder.append(NEWLINE).append(NEWLINE)
                     .append(createString(p.deliveryMethod))
                     .toString();
         }
 
-        String thirdCol = new StringBuilder()
+        String thirdColBuilder = new StringBuilder()
                 .append("Kundennr.: " + p.customerNo + NEWLINE)
                 .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
                         + p.vendorNumber + NEWLINE + NEWLINE)
                 .append(createString(p.contactInformation))
                 .toString();
 
-        CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithThreeCols())
-                .addCell(cellb.withPhrase(firstCol).build())
-                .addCell(cellb.withPhrase(pb.withText(secondColB.toString()).build()).build())
-                .addCell(cellb.withPhrase(pb.withText(thirdCol).build()).build());
+        PdfPTable extInfoTable = new CustomPdfPTableBuilder(
+        PdfPTableBuilder.createPropertiesWithThreeCols()).build();
+        PdfPCell firstCell = new PdfPCell(table);
+        PdfPCellUtility.noBorder(firstCell);
+        extInfoTable.addCell(firstCell);
+        extInfoTable.addCell(cellb.withPhrase(pb.withText(secondColBuilder.toString()).build()).build());
+        extInfoTable.addCell(cellb.withPhrase(pb.withText(thirdColBuilder).build()).build());
+        extInfoTable.setWidthPercentage(100);
 
-        PdfPTable infoTable = infoTableBuilder.build();
-
-        infoTable.setWidthPercentage(100);
-
-        return infoTable;
+        return extInfoTable;
     }
 
-    private static void appendDocNumbersIfNotEmpty(Collection<String> p,
-            Phrase firstCol, String docNoName) {
-        if (p != null && !p.isEmpty()) {
-            firstCol.add(new PhraseBuilder().append(NEWLINE + createString(p, docNoName)).build());
+    private static void appendDocNumbersIfNotEmpty(Collection<String> strings,
+            PdfPTable table, String docNoName) {
+        if (strings != null && !strings.isEmpty()) {
+        	PdfPCell cell = new PdfPCell(new PhraseBuilder().size8().append(docNoName).append(":").build());
+        	PdfPCellUtility.noBorder(cell);
+			table.addCell(cell);
+        	
+			StringBuilder sb = new StringBuilder();
+        	Iterator<String> itr = strings.iterator();
+        	while (itr.hasNext()){
+        		String s = itr.next();
+        		sb.append(s);
+        		if (itr.hasNext())
+        			sb.append(", ");
+        	}
+        	PdfPCell cell2 = new PdfPCell(new PhraseBuilder().size8().append(sb.toString()).build());
+        	PdfPCellUtility.noBorder(cell2);
+			table.addCell(cell2);
         }
     }
 

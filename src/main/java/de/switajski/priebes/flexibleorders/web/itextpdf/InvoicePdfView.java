@@ -39,7 +39,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
 		ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-		String customerNo = "Kundennummer: " + report.customerNumber;
+		String customerNo = report.customerNumber.toString();
 		String date = "Rechnungsdatum: "
 				+ dateFormat.format(report.created);
 		String heading = "Rechnung";
@@ -59,6 +59,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         param.orderNumbers = report.related_orderNumbers;
 		param.invoiceNumbers = report.related_invoiceNumbers;
 		param.orderAgreementNumbers = report.related_orderAgreementNumbers;
+		param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
 		param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
 		param.creditNoteNumbers = report.related_creditNoteNumbers;
 		

@@ -58,12 +58,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<dependency>
+		<!-- decomment in case the javascript should run on the application server --><!-- <dependency>
 			<groupId>de.switajski</groupId>
 			<artifactId>FlexibleOrdersGui</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 			<type>zip</type>
-		</dependency>
+		</dependency> -->
 		<!-- General dependencies for standard applications -->
 		<dependency>
 			<groupId>junit</groupId>

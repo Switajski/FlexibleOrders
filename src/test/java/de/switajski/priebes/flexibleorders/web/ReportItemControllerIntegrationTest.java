@@ -5,18 +5,10 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
@@ -27,6 +19,7 @@ import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
+@Transactional
 public class ReportItemControllerIntegrationTest extends TestDataCreator{
 	
 	@Autowired
@@ -47,14 +40,9 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator{
     JsonObjectResponse response;
 	List<ItemDto> retrievedItems;
 	
-	@Before
-	public void setup(){
-		super.createTestData();
-	}
-
-	@Rollback(true)
     @Test
     public void shouldRetrieveSpecifiedAgreedItemsToBeShipped() throws Exception{
+		super.createTestData();
 		givenFilterOnAgreedItems();
 		
 		whenListingItemsToBeProcessed();
@@ -65,9 +53,9 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator{
 		assertThat(filterReport("AB22").size(), equalTo(2));
 	}
 	
-	@Rollback(true)
     @Test
     public void shouldRetrieveSpecifiedShippedItemsToBeInvoiced() throws Exception{
+		super.createTestData();
 		givenFilterOnShippedItems();
 		
 		whenListingItemsToBeProcessed();
@@ -79,9 +67,9 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator{
 		assertThat(filterReport("L15").size(), equalTo(2));
 	}
 	
-	@Rollback(true)
     @Test
     public void shouldRetrieveSpecifiedInvoicedItemsToBeMarkedAsPayed() throws Exception{
+		super.createTestData();
 		givenFilterOnInvoicedItems();
 		
 		whenListingItemsToBeProcessed();

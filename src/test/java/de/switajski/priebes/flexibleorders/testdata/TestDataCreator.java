@@ -30,11 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -98,7 +94,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     // @Ignore("This test is to initialize test data for GUI testing")
 //    @Test
-    @Rollback(false)
+//    @Rollback(false)
     public void run() {
         createTestData();
     }
@@ -112,10 +108,10 @@ public class TestDataCreator extends AbstractSpringContextTest {
         createNaidasOrders();
 	}
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void createDeliveryMethods() {
+    private void createDeliveryMethods() {
         deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
         deliveryMethodRepo.save(new CatalogDeliveryMethod(DHL));
+        deliveryMethodRepo.flush();
     }
 
     private void createNaidasOrders() {
@@ -134,7 +130,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 b22.getOrderNumber(),
                 "AB22",
                 dt.plusDays(5).toLocalDate(),
-                DHL.getExternalId(),
+                null,
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
                 converterService.convert(b22));
@@ -270,8 +266,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         return cpRepo.save(products);
     }
 
-    @Before
-    public void createCustomers() {
+    private void createCustomers() {
         Set<Customer> customers = new HashSet<Customer>();
         customers.add(EDWARD);
         customers.add(JEROME);

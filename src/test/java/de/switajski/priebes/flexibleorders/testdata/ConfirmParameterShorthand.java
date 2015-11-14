@@ -17,7 +17,6 @@ public class ConfirmParameterShorthand {
         cp.confirmNumber = confirmNumber;
         cp.customerNumber = customer.getCustomerNumber();
         cp.customerDetails = customer.getDetails();
-        cp.deliveryMethodNo = 1L;
         cp.invoiceAddress = customer.getInvoiceAddress();
         cp.shippingAddress = customer.getShippingAddress();
         cp.orderItems = Arrays.asList(items);

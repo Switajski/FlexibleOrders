@@ -40,7 +40,7 @@ public abstract class Report extends GenericEntity {
     private String documentNumber;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="report")
     protected Set<ReportItem> items = new HashSet<ReportItem>();
 
     protected Report() {}

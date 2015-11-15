@@ -94,7 +94,7 @@ public class DeliveryService {
 			int expectedWeek = expectedDeliveryDates.iterator().next();
 			int isWeek = weekOf(deliveryNotes.getCreated());
 			if (expectedWeek != isWeek){
-				throw new ContradictoryPurchaseAgreementException("Widerrüchliche Liefertermine: KW aus AB ist " + expectedWeek + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
+				throw new ContradictoryPurchaseAgreementException("Widerr"+Unicode.U_UML+"chliche Liefertermine: KW aus AB ist " + expectedWeek + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
 			}
 		}
 	}

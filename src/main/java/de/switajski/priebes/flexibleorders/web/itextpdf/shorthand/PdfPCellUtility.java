@@ -8,4 +8,10 @@ public class PdfPCellUtility {
 		cell.setBorder(0);
 		return cell;
 	}
+	
+	public static PdfPCell noBorder(){
+		PdfPCell cell = new PdfPCell();
+		noBorder(cell);
+		return cell;
+	}
 }

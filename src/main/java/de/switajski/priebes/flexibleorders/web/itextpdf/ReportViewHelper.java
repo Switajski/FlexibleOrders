@@ -116,14 +116,13 @@ public class ReportViewHelper {
         cell.setColspan(columnSize);
         table.addCell(cell);
 
-        StringBuilder secondColBuilder = new StringBuilder();
+        PdfPCell secondCol = new PdfPCell();
+        PdfPCellUtility.noBorder(secondCol);
         if (p.shippingAddress != null){
-            secondColBuilder = new StringBuilder().append("Lieferadresse:")
-                    .append(NEWLINE + createString(p.shippingAddress));
+            secondCol.addElement(new Phrase("Lieferadresse:"));
+            secondCol.addElement(new PhraseBuilder(createString(p.shippingAddress)).size8().build());
             if (p.deliveryMethod != null)
-                secondColBuilder.append(NEWLINE).append(NEWLINE)
-                    .append(createString(p.deliveryMethod))
-                    .toString();
+                secondCol.addElement(new PhraseBuilder("\n" + createString(p.deliveryMethod)).size8().build());
         }
 
         String thirdColBuilder = new StringBuilder()
@@ -138,7 +137,7 @@ public class ReportViewHelper {
         PdfPCell firstCell = new PdfPCell(table);
         PdfPCellUtility.noBorder(firstCell);
         extInfoTable.addCell(firstCell);
-        extInfoTable.addCell(cellb.withPhrase(pb.withText(secondColBuilder.toString()).build()).build());
+        extInfoTable.addCell(secondCol);
         extInfoTable.addCell(cellb.withPhrase(pb.withText(thirdColBuilder).build()).build());
         extInfoTable.setWidthPercentage(100);
 

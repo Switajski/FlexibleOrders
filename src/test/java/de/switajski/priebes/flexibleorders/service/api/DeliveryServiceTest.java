@@ -117,7 +117,7 @@ public class DeliveryServiceTest {
         LocalDate now = new LocalDate(new Date());
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = false;
         deliverParameter.created = new Date();
-        when(expectedDeliveryService.retrieve(anySet())).thenReturn(new HashSet<LocalDate>(Arrays.asList(now, now.plusWeeks(1))));
+        when(expectedDeliveryService.retrieveWeekOfYear(anySet())).thenReturn(new HashSet<Integer>(Arrays.asList(45, 56)));
         givenOneShippingAddress();
 
         whenDelivering();

@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -92,9 +95,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreementService agreementService;
 
-    // @Ignore("This test is to initialize test data for GUI testing")
-//    @Test
-//    @Rollback(false)
+    @Ignore("This test is to initialize test data for GUI testing")
+    @Test
+    @Rollback(false)
     public void run() {
         createTestData();
     }

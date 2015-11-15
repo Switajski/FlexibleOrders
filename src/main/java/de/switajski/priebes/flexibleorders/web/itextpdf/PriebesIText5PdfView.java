@@ -193,7 +193,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 
     }
 
-    private Image createLogo() throws BadElementException,
+    public Image createLogo() throws BadElementException,
             MalformedURLException, IOException {
         if (logoPath != null) return Image.getInstance(logoPath);
         else return Image.getInstance(this.getServletContext()

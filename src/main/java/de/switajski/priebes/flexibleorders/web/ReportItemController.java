@@ -118,18 +118,7 @@ public class ReportItemController extends ExceptionController {
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
 
         if (state == ProductionState.SHIPPED) {
-            HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
-            for (String documentNumber : documentNumbers) {
-                Report report = reportRepository.findByDocumentNumber(documentNumber);
-                DeliveryNotes dn = (DeliveryNotes) report;
-                List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
-                if (dn.hasShippingCosts()){
-                    shippingCosts.add(itemDtoConverterService.convert(dn));
-                }
-                List<ItemDto> temp = shippingCosts;
-                shippingCosts.addAll(openItems.getContent());
-                openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
-            }
+            openItems = addShippingCosts(pageable, openItems);
         }
 
         // TODO: replace this workaround with spec
@@ -139,6 +128,23 @@ public class ReportItemController extends ExceptionController {
         return ExtJsResponseCreator.createResponse(openItems);
 
     }
+
+	private Page<ItemDto> addShippingCosts(PageRequest pageable,
+			Page<ItemDto> openItems) {
+		HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
+		for (String documentNumber : documentNumbers) {
+		    Report report = reportRepository.findByDocumentNumber(documentNumber);
+		    DeliveryNotes dn = (DeliveryNotes) report;
+		    List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
+		    if (dn.hasShippingCosts()){
+		        shippingCosts.add(itemDtoConverterService.convert(dn));
+		    }
+		    List<ItemDto> temp = shippingCosts;
+		    shippingCosts.addAll(openItems.getContent());
+		    openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
+		}
+		return openItems;
+	}
 
     private HashSet<String> getDocumentNumbersOf(Page<ItemDto> openItems) {
         HashSet<String> documentNumbers = new HashSet<String>();

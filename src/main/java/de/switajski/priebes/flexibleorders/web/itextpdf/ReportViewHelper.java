@@ -9,10 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -24,45 +27,63 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
-import de.switajski.priebes.flexibleorders.service.helper.StringUtil;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
 public class ReportViewHelper {
+	
+	public static List<Element> createAddress(Address adresse) throws DocumentException{
+		return createAddress(adresse, null);
+	}
 
-    public static List<Paragraph> createAddress(Address adresse)
+    public static List<Element> createAddress(Address adresse, Image image)
             throws DocumentException {
-        List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+        List<Element> elements = new ArrayList<Element>();
 
-        paragraphs.add(ParagraphBuilder.createEmptyLine());
-        paragraphs.add(ParagraphBuilder.createEmptyLine());
-        paragraphs.add(ParagraphBuilder.createEmptyLine());
-        paragraphs.add(ParagraphBuilder.createEmptyLine());
+        float indentationLeftForAddress = 36f;
+        elements.add(ParagraphBuilder.createEmptyLine());
+        elements.add(ParagraphBuilder.createEmptyLine());
+        elements.add(ParagraphBuilder.createEmptyLine());
+		if (image != null){
+        	Image img = Image.getInstance(image);
+            img.setAlignment(Image.LEFT);
+            img.setIndentationLeft(indentationLeftForAddress);
+            img.scaleToFit(50, 20);
+            elements.add(img);
+        } else {
+	        elements.add(ParagraphBuilder.createEmptyLine());
+        }
+		
         if (adresse == null) {
-            paragraphs.add(ParagraphBuilder.createEmptyLine());
-            paragraphs.add(ParagraphBuilder.createEmptyLine());
-            paragraphs.add(ParagraphBuilder.createEmptyLine());
+            elements.add(ParagraphBuilder.createEmptyLine());
+            elements.add(ParagraphBuilder.createEmptyLine());
+            elements.add(ParagraphBuilder.createEmptyLine());
         }
         else {
-            paragraphs.add(new ParagraphBuilder(adresse.getName1())
-                    .withIndentationLeft(36f)
-                    .withLineSpacing(12f)
-                    .addTextLine(adresse.getName2())
-                    .addTextLine(adresse.getStreet())
-                    .addTextLine(
-                            adresse.getPostalCode() + " " + adresse.getCity())
-                    .addTextLine(adresse.getCountry().getName()).build());
+        	boolean name2Empty = StringUtils.isEmpty(adresse.getName2());
+        	
+            ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
+				.withIndentationLeft(indentationLeftForAddress)
+				.withLineSpacing(12f);
+			if (name2Empty)
+            	paragraphBuilder.addTextLine(adresse.getName2());
+			paragraphBuilder.addTextLine(adresse.getStreet())
+				.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
+				.addTextLine(adresse.getCountry().getName());
+			if (name2Empty)
+				paragraphBuilder.addTextLine("");
+            
+			elements.add(paragraphBuilder.build());
         }
-        paragraphs.add(ParagraphBuilder.createEmptyLine());
-        return paragraphs;
+        elements.add(ParagraphBuilder.createEmptyLine());
+        return elements;
     }
 
     public static PdfPTable createInfoTable(String rightTop,
@@ -177,13 +198,6 @@ public class ReportViewHelper {
             return new StringBuilder().append("Lieferart per Post").toString();
         }
         return "";
-    }
-
-    private static String createString(Collection<String> documentNumbers,
-            String singular) {
-        return new StringBuilder().append(singular + ": ")
-                .append(StringUtil.concatWithCommas(documentNumbers))
-                .toString();
     }
 
     private static String createString(Address a) {

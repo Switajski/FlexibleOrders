@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -31,7 +32,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;
 
-        for (Paragraph p : ReportViewHelper.createAddress(adresse))
+        for (Element p : ReportViewHelper.createAddress(adresse))
             document.add(p);
         
         document.add(ReportViewHelper.createDate(date));

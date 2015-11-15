@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -42,11 +43,11 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 		String customerNo = report.customerNumber.toString();
 		String date = "Rechnungsdatum: "
 				+ dateFormat.format(report.created);
-		String heading = "Rechnung";
+		String heading = "Rechnung " + report.documentNumber;
 
 		InvoiceCalculation calculation = new InvoiceCalculation(report);
 		
-		for (Paragraph p: ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress))
+		for (Element p: ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, this.createLogo()))
 			document.add(p);
 
 		document.add(ReportViewHelper.createDate(date));

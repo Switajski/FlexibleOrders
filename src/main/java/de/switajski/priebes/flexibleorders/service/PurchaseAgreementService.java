@@ -98,7 +98,7 @@ public class PurchaseAgreementService {
 		// in eine DeliveryHistoryService mit create(Report)
 		Set<ReportItem> ris = new HashSet<ReportItem>();
 		for (ReportItem ri:report.getItems()){
-			ri.getOrderItem().getReportItems();
+			ris.addAll(ri.getOrderItem().getReportItems());
 		}
 		DeliveryHistory dh = new DeliveryHistory(ris);
 		return dh;

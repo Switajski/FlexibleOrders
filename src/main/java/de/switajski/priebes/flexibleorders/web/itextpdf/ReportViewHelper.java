@@ -25,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
@@ -261,25 +262,40 @@ public class ReportViewHelper {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithFourCols());
         // Refactor - see #71
-        for (ReportItem he : cReport.getItemsByOrder()) {
-            if (!he.getOrderItem().isShippingCosts()) {
-                List<String> row = new ArrayList<String>();
-                // Anzahl
-                row.add(String.valueOf(he.getQuantity()) + " x ");
-                // Art.Nr.:
-                String pNo = he.getOrderItem().getProduct().getProductNumber();
-                row.add(pNo.equals("0") ? "n.a." : pNo.toString());
-                // Artikel
-                row.add(he.getOrderItem().getProduct().getName());
-                // Bestellnr
-                row.add(he.getOrderItem().getOrder().getOrderNumber());
-
-                builder.addBodyRow(row);
-            }
+        for (ReportItem ri : cReport.getItemsByOrder()) {
+        	if (!(ri instanceof PendingItem)){
+	            if (!ri.getOrderItem().isShippingCosts()) {
+	                List<String> row = createRowWithoutPrices(ri);
+	                builder.addBodyRow(row);
+	            }
+        	}
         }
+        
+        builder.addBreak("Ausstehende Artikel");
+        
+        for (ReportItem ri : cReport.getItemsByOrder()) {
+        	if (ri instanceof PendingItem){
+        		builder.addBodyRow(createRowWithoutPrices(ri));
+        	}
+        }
+        
 
         return builder.withFooter(false).build();
     }
+
+	private static List<String> createRowWithoutPrices(ReportItem he) {
+		List<String> row = new ArrayList<String>();
+		// Anzahl
+		row.add(String.valueOf(he.getQuantity()) + " x ");
+		// Art.Nr.:
+		String pNo = he.getOrderItem().getProduct().getProductNumber();
+		row.add(pNo.equals("0") ? "n.a." : pNo.toString());
+		// Artikel
+		row.add(he.getOrderItem().getProduct().getName());
+		// Bestellnr
+		row.add(he.getOrderItem().getOrder().getOrderNumber());
+		return row;
+	}
 
     public static Paragraph createDate(String date) {
         return new ParagraphBuilder(date).withAlignment(Element.ALIGN_RIGHT)

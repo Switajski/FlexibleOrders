@@ -118,7 +118,7 @@ public class JsonCreateReportRequest {
 		if (items.isEmpty())
 			throw new IllegalArgumentException("Keine Positionen angegeben!");
 		for (ItemDto item:items){
-			if (item.quantity < 1)
+			if (item.quantityLeft < 1)
 				throw new IllegalArgumentException("Menge von "+item.productName+" ist kleiner als 1");
 			if (item.priceNet == null)
 				throw new IllegalArgumentException("Keinen Preis angegeben");

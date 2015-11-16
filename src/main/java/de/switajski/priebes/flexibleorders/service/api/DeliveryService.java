@@ -16,6 +16,7 @@ import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
@@ -47,7 +48,8 @@ public class DeliveryService {
         if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
                 "Lieferscheinnummer existiert bereits");
 
-        Map<ReportItem, Integer> risWithQty = convService.mapItemDtosToReportItemsWithQty(deliverParameter.agreementItemDtos);
+        Map<ReportItem, Integer> risWithQty = 
+        		convService.mapItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped);
         Set<ReportItem> ris = risWithQty.keySet();
 
         Address shippingAddress = retrieveShippingAddress(ris);
@@ -57,11 +59,11 @@ public class DeliveryService {
         }
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
-            ReportItem agreementItem = riWithQty.getKey();
+            ReportItem itemToBeShipped = riWithQty.getKey();
             int qty = riWithQty.getValue();
-            OrderItem orderItemToBeDelivered = agreementItem.getOrderItem();
+            OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
 
-            qtyLeftCalcService.validateQuantity(qty, agreementItem);
+            qtyLeftCalcService.validateQuantity(qty, itemToBeShipped);
 
             deliveryNotes.addItem(new ShippingItem(
                     deliveryNotes,
@@ -70,6 +72,18 @@ public class DeliveryService {
                     new Date()));
 
             deliveryNotes.setShippedAddress(shippingAddress);
+        }
+        
+        for (Entry<ReportItem, Integer> piWithQty : 
+        	convService.mapPendingItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped).entrySet()){
+        	ReportItem itemToBeShipped = piWithQty.getKey();
+            int qty = piWithQty.getValue();
+            OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
+            
+        	deliveryNotes.addItem(new PendingItem(
+        			orderItemToBeDelivered,
+        			qty,
+        			new Date()));
         }
 
         return reportRepo.save(deliveryNotes);

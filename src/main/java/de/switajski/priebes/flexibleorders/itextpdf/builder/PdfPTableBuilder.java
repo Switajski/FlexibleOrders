@@ -22,10 +22,12 @@ public class PdfPTableBuilder {
 
 	private ArrayList<ColumnFormat> tableProperties;
 	private boolean createHeader = true;
+	private Integer breakIndex;
+	private String breakHeading;
 
 	/**
 	 * Constructor with least arguments to build a {@link PdfPTable} table
-	 * 
+	 * 	
 	 * @param rowProperties
 	 */
 	public PdfPTableBuilder(ArrayList<ColumnFormat> rowProperties) {
@@ -205,11 +207,21 @@ public class PdfPTableBuilder {
 	}
 
 	private void createBody(PdfPTable pdfPTable) {
-		for (List<String> bp : bodyList) {
-			int i = 0;
+		for (int i=0; i<bodyList.size();i++) {
+			if (breakIndex != null && breakIndex == i){
+				Phrase phrase = new PhraseBuilder(breakHeading).size12().build();
+				PdfPCell cell = new PdfPCell();
+				cell.addElement(phrase);
+				cell.setBorder(Rectangle.BOTTOM);
+				cell.setColspan(tableProperties.size());
+				pdfPTable.addCell(cell);
+			}
+			
+			List<String> bp = bodyList.get(i);
+			int j=0;
 			for (String stringOfCell : bp) {
-				pdfPTable.addCell(tableProperties.get(i).createCell(stringOfCell));
-				i++;
+				pdfPTable.addCell(tableProperties.get(j).createCell(stringOfCell));
+				j++;
 			}
 		}
 
@@ -258,6 +270,11 @@ public class PdfPTableBuilder {
 	public PdfPTableBuilder withHeader(boolean b) {
 		createHeader = b;
 		return this;
+	}
+
+	public void addBreak(String heading) {
+		breakIndex = bodyList.size();
+		breakHeading = heading;
 	}
 
 }

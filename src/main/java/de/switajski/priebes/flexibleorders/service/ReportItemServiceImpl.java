@@ -125,4 +125,10 @@ public class ReportItemServiceImpl {
 		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
 	}
 	
+	@Transactional(readOnly = true)
+	public Page<ItemDto> toBeProcessed(PageRequest pageRequest, Specification<ReportItem> spec){
+		Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
+		return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
+	}
+	
 }

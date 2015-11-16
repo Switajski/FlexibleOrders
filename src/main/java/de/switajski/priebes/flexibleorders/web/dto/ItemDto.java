@@ -70,6 +70,8 @@ public class ItemDto {
     public LocalDate expectedDelivery;
 
     public boolean agreed = true;
+    
+    public boolean pending = false;
 
     @Override
     public int hashCode() {

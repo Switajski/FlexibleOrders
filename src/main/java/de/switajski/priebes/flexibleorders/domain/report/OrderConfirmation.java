@@ -1,12 +1,11 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 
 /**
  * 
@@ -23,8 +22,8 @@ public class OrderConfirmation extends Report {
     private PurchaseAgreement purchaseAgreement;
     
     private String orderAgreementNumber;
-
-    public OrderConfirmation() {}
+    
+	public OrderConfirmation() {}
 
     /**
      * 

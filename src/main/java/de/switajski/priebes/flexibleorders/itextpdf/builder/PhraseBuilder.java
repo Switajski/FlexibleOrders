@@ -50,7 +50,7 @@ public class PhraseBuilder {
 		return withFont(PriebesIText5PdfView.boldFont);
 	}
 
-	public PhraseBuilder size11() {
+	public PhraseBuilder size12() {
 		return withFont(PriebesIText5PdfView.twelveSizefont);
 	}
 	

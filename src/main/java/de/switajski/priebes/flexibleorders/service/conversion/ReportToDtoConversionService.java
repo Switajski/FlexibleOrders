@@ -83,8 +83,9 @@ public class ReportToDtoConversionService {
 		dto.netGoods = AmountCalculator.sum(AmountCalculator
 				.getAmountsTimesQuantity(report.getItems()));
 		
-		if (report instanceof DeliveryNotes)
+		if (report instanceof DeliveryNotes){
 		    dto.showPricesInDeliveryNotes = ((DeliveryNotes) report).isShowPrices();
+		}
 		if (report instanceof Invoice){
 		    Invoice invoice = (Invoice) report;
 		    dto.invoiceSpecific_discountText = invoice.getDiscountText();

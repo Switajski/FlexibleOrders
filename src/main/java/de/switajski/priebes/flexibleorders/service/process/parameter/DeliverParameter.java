@@ -15,7 +15,7 @@ public class DeliverParameter {
 	//TODO: make shipment an itemDto, in which you can choose the deliveryMethod
 	public Amount shipment;
 	public Date created;
-	public List<ItemDto> agreementItemDtos;
+	public List<ItemDto> itemsToBeShipped;
     public boolean ignoreContradictoryExpectedDeliveryDates;
     public DeliveryMethod deliveryMethod;
     public boolean showPricesInDeliveryNotes;
@@ -30,7 +30,7 @@ public class DeliverParameter {
 			List<ItemDto> agreementItemDtos) {
 		this.deliveryNotesNumber = deliveryNotesNumber;
 		this.created = created;
-		this.agreementItemDtos = agreementItemDtos;
+		this.itemsToBeShipped = agreementItemDtos;
 	}
 
     public DeliverParameter() {

@@ -63,7 +63,7 @@ public class ItemDtoConverterService {
             item.productName = "Versandkosten";
         Customer customer = deliveryNotes.getCustomerSafely();
         item.customerNumber = customer.getCustomerNumber();
-        item.customerName = customer.getLastName();
+        item.customerName = customer.getCompanyName();
         item.productType = ProductType.SHIPPING;
         
         return item;
@@ -78,7 +78,7 @@ public class ItemDtoConverterService {
             item.customerNumber = order
                     .getCustomer()
                     .getCustomerNumber();
-            item.customerName = order.getCustomer().getLastName();
+            item.customerName = order.getCustomer().getCompanyName();
             item.orderNumber = order.getOrderNumber();
         }
         item.created = orderItem.getCreated();
@@ -95,21 +95,33 @@ public class ItemDtoConverterService {
 
     @Transactional(readOnly = true)
     public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
-        Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
+        return itemDtosToReportItemsWithQty(itemDtos, false);
+    }
+    
+    @Transactional(readOnly = true)
+    public Map<ReportItem, Integer> mapPendingItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
+        return itemDtosToReportItemsWithQty(itemDtos, true);
+    }
+
+	private Map<ReportItem, Integer> itemDtosToReportItemsWithQty(
+			Collection<ItemDto> itemDtos, boolean mapPending) {
+		Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
         for (ItemDto agreementItemDto : itemDtos) {
-            if (agreementItemDto.productType == ProductType.SHIPPING)
-                continue;
-            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
-            if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
-            risWithQty.put(
-                    agreementItem,
-                    agreementItemDto.quantityLeft); // TODO: GUI sets
-                                                    // quanitityToDeliver at
-                                                    // this nonsense
-                                                    // parameter
+        	if (agreementItemDto.pending == mapPending){
+	            if (agreementItemDto.productType != ProductType.SHIPPING){
+		            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
+		            if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+		            risWithQty.put(
+		                    agreementItem,
+		                    agreementItemDto.quantityLeft); // TODO: GUI sets
+		                                                    // quanitityToDeliver at
+		                                                    // this nonsense
+		                                                    // parameter
+	            }
+        	}
         }
         return risWithQty;
-    }
+	}
 
     public List<ItemDto> convertReport(Report report) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
@@ -134,7 +146,6 @@ public class ItemDtoConverterService {
             }
         }
         if (ri.getReport() instanceof Invoice) {
-            Invoice invoice = (Invoice) ri.getReport();
             item.invoiceNumber = ri.getReport().getDocumentNumber();
             item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
         }
@@ -153,7 +164,7 @@ public class ItemDtoConverterService {
         Order order = ri.getOrderItem().getOrder();
         item.customer = order.getCustomer().getId();
         item.customerNumber = order.getCustomer().getCustomerNumber();
-        item.customerName = order.getCustomer().getLastName();
+        item.customerName = order.getCustomer().getCompanyName();
         item.documentNumber = ri.getReport().getDocumentNumber();
         item.id = ri.getId();
         item.orderNumber = order.getOrderNumber();

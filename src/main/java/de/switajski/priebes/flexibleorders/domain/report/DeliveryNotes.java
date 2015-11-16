@@ -18,95 +18,107 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 @Entity
 public class DeliveryNotes extends Report {
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "name1", column = @Column(name = "shipped_name1")),
-            @AttributeOverride(name = "name2", column = @Column(name = "shipped_name2")),
-            @AttributeOverride(name = "street", column = @Column(name = "shipped_street")),
-            @AttributeOverride(name = "postalCode", column = @Column(name = "shipped_postal_code")),
-            @AttributeOverride(name = "city", column = @Column(name = "shipped_city")),
-            @AttributeOverride(name = "country", column = @Column(name = "shipped_country"))
-    })
-    private Address shippedAddress;
+	@AttributeOverrides({
+			@AttributeOverride(name = "name1", column = @Column(name = "shipped_name1")),
+			@AttributeOverride(name = "name2", column = @Column(name = "shipped_name2")),
+			@AttributeOverride(name = "street", column = @Column(name = "shipped_street")),
+			@AttributeOverride(name = "postalCode", column = @Column(name = "shipped_postal_code")),
+			@AttributeOverride(name = "city", column = @Column(name = "shipped_city")),
+			@AttributeOverride(name = "country", column = @Column(name = "shipped_country")) })
+	private Address shippedAddress;
 
-    private String trackNumber;
+	private String trackNumber;
 
-    private String packageNumber;
+	private String packageNumber;
 
-    private Amount shippingCosts;
+	private Amount shippingCosts;
 
-    @Embedded
-    private DeliveryMethod deliveryMethod;
-    
-    private Boolean showPrices;
+	@Embedded
+	private DeliveryMethod deliveryMethod;
 
-    public Amount getNetAmount() {
-        Amount summed = new Amount();
-        for (ReportItem he : this.getItems())
-            summed.add(he.getOrderItem().getNegotiatedPriceNet());
-        return summed;
-    }
+	private Boolean showPrices;
 
-    public Address getShippedAddress() {
-        return shippedAddress;
-    }
+	public Amount getNetAmount() {
+		Amount summed = new Amount();
+		for (ReportItem he : this.getItems())
+			summed.add(he.getOrderItem().getNegotiatedPriceNet());
+		return summed;
+	}
 
-    public void setShippedAddress(Address shippedAddress) {
-        this.shippedAddress = shippedAddress;
-    }
+	public Address getShippedAddress() {
+		return shippedAddress;
+	}
 
-    public String getTrackNumber() {
-        return trackNumber;
-    }
+	public void setShippedAddress(Address shippedAddress) {
+		this.shippedAddress = shippedAddress;
+	}
 
-    public String getPackageNumber() {
-        return packageNumber;
-    }
+	public String getTrackNumber() {
+		return trackNumber;
+	}
 
-    public void setPackageNumber(String packageNumber) {
-        this.packageNumber = packageNumber;
-    }
+	public String getPackageNumber() {
+		return packageNumber;
+	}
 
-    public void setTrackNumber(String trackNumber) {
-        this.trackNumber = trackNumber;
-    }
+	public void setPackageNumber(String packageNumber) {
+		this.packageNumber = packageNumber;
+	}
 
-    public Amount getShippingCosts() {
-        return shippingCosts;
-    }
+	public void setTrackNumber(String trackNumber) {
+		this.trackNumber = trackNumber;
+	}
 
-    public void setShippingCosts(Amount shippingCosts) {
-        this.shippingCosts = shippingCosts;
-    }
+	public Amount getShippingCosts() {
+		return shippingCosts;
+	}
 
-    public boolean hasShippingCosts() {
-        if (getShippingCosts() == null) return false;
-        if (getShippingCosts().isGreaterZero()) return true;
-        return false;
-    }
+	public void setShippingCosts(Amount shippingCosts) {
+		this.shippingCosts = shippingCosts;
+	}
 
-    public DeliveryMethod getDeliveryMethod() {
-        return deliveryMethod;
-    }
+	public boolean hasShippingCosts() {
+		if (getShippingCosts() == null)
+			return false;
+		if (getShippingCosts().isGreaterZero())
+			return true;
+		return false;
+	}
 
-    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
-        this.deliveryMethod = deliveryMethod;
-    }
+	public DeliveryMethod getDeliveryMethod() {
+		return deliveryMethod;
+	}
 
-    @JsonIgnore
-    public Set<ShippingItem> getShippingItems() {
-        Set<ShippingItem> shippingItems = new HashSet<ShippingItem>();
-        for (ReportItem reportItem : this.items) {
-            shippingItems.add((ShippingItem) reportItem);
-        }
-        return shippingItems;
-    }
+	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
 
-    public boolean isShowPrices() {
-        return showPrices;
-    }
+	@JsonIgnore
+	public Set<ShippingItem> getShippingItems() {
+		Set<ShippingItem> shippingItems = new HashSet<ShippingItem>();
+		for (ReportItem reportItem : this.items) {
+			shippingItems.add((ShippingItem) reportItem);
+		}
+		return shippingItems;
+	}
 
-    public void setShowPrices(Boolean showPrices) {
-        this.showPrices = showPrices;
-    }
+	public boolean isShowPrices() {
+		return showPrices;
+	}
+
+	public void setShowPrices(Boolean showPrices) {
+		this.showPrices = showPrices;
+	}
+
+	@JsonIgnore
+	public Set<PendingItem> getPendingItems() {
+		Set<PendingItem> pis = new HashSet<PendingItem>();
+		for (ReportItem pi : items) {
+			if (pi instanceof PendingItem)
+				pis.add((PendingItem) pi);
+		}
+		return pis;
+
+	}
 
 }

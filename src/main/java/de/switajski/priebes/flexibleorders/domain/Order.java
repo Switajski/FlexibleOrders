@@ -46,7 +46,7 @@ public class Order extends GenericEntity {
 	private OriginSystem originSystem;
 	
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="customerOrder")
 	private Set<OrderItem> items = new HashSet<OrderItem>();
 	
 	@NotNull

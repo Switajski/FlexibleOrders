@@ -30,7 +30,9 @@ public class QuantityCalculatorTest {
     private OrderItem orderItem;
     private Address address = AddressBuilder.createDefault();
 
-    private QuantityLeftCalculatorService calcService = new QuantityLeftCalculatorService();
+    private QuantityUtility calcService = new QuantityUtility();
+    
+    Integer calculatedQuantity;
 
     @Test
     public void toBeConfirmed_qtyLeftShouldBeQtyMinusQtyProcessed() {
@@ -39,11 +41,15 @@ public class QuantityCalculatorTest {
         orderItem.addReportItem(givenAgreedItem(QTY_PROCESSED));
 
         // WHEN
-        Integer calculatedQuantity = calcService.calculateLeft(orderItem);
+        whenCalculatingQtyToBeAgreed();
 
         // THEN
         assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
     }
+
+	private void whenCalculatingQtyToBeAgreed() {
+		calculatedQuantity = orderItem.calculateLeft();
+	}
 
     @Test
     public void toBeAgreed_qtyLeftShouldBeQtyMinusQtyProcessed() {
@@ -53,11 +59,15 @@ public class QuantityCalculatorTest {
         orderItem.addReportItem(givenDeliveryItem(QTY_PROCESSED));
 
         // WHEN
-        Integer calculatedQuantity = calcService.calculateLeft(orderItem.getConfirmationItems().iterator().next());
+        whenCalculatingQtyToBeShipped();
 
         // THEN
         assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
     }
+
+	private void whenCalculatingQtyToBeShipped() {
+		calculatedQuantity = orderItem.getConfirmationItems().iterator().next().calculateLeft();
+	}
 
     private ConfirmationItem givenAgreedItem(int quantityProcessed) {
         return new ConfirmationItemBuilder()

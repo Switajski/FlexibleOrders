@@ -15,6 +15,7 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
@@ -124,5 +125,39 @@ public abstract class ReportItem extends GenericEntity implements
     public DeliveryHistory createDeliveryHistory() {
         return DeliveryHistory.of(this);
     }
+    
+    // TODO: refactor this - too many dependencies
+    public int calculateLeft() {
+        DeliveryHistory history = DeliveryHistory.of(this);
+        if (this instanceof ConfirmationItem) {
+            if (!((ConfirmationItem) this).isAgreed()) {
+                return toBeAgreed(history);
+            }
+            else {
+                return toBeShipped(history);
+            }
+        }
+        else if (this instanceof ShippingItem) return toBeInvoiced(history);
+        else if (this instanceof InvoiceItem) return toBePaid(history);
+        else return 0;
+    }
+    
+    public Integer toBeAgreed(DeliveryHistory history) {
+        return QuantityUtility.sumQty(history.getNonAgreedConfirmationItems()) - QuantityUtility.sumQty(history.getAgreedConfirmationItems());
+    }
+
+    public int toBeShipped(DeliveryHistory history) {
+        return QuantityUtility.sumQty(history.getAgreedConfirmationItems()) - QuantityUtility.sumQty(history.getReportItems(ShippingItem.class));
+    }
+
+    public int toBeInvoiced(DeliveryHistory history) {
+        return QuantityUtility.sumQty(history.getReportItems(ShippingItem.class)) - QuantityUtility.sumQty(history.getReportItems(InvoiceItem.class));
+    }
+
+    public int toBePaid(DeliveryHistory history) {
+        return QuantityUtility.sumQty(history.getReportItems(InvoiceItem.class)) - QuantityUtility.sumQty(history.getReportItems(ReceiptItem.class));
+    }
+
+
 
 }

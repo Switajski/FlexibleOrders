@@ -24,7 +24,6 @@ public class StatisticsService {
 	private StatusFilterDispatcher dispatcher;
 
 	public Amount calculateOpenAmount(String state) {
-		QuantityLeftCalculatorService calculator = new QuantityLeftCalculatorService();
 		Set<OrderItem> calculated = new HashSet<OrderItem>();
 		Amount summed = Amount.ZERO_EURO;
 
@@ -34,7 +33,7 @@ public class StatisticsService {
 		for (ReportItem ri : ris) {
 			if (calculated.add(ri.getOrderItem())){
 				summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
-						.multiply(calculator.calculateLeft(ri)));
+						.multiply(ri.calculateLeft()));
 			}
 		}
 		return summed;

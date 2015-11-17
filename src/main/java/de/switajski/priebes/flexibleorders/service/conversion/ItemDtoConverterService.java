@@ -25,14 +25,14 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class ItemDtoConverterService {
 
     @Autowired
-    QuantityLeftCalculatorService quantityLeftCalculatorService;
+    QuantityUtility quantityLeftCalculatorService;
     
     @Autowired
     ExpectedDeliveryService edService; 

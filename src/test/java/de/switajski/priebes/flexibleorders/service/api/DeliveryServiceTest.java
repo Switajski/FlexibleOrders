@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgree
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -67,7 +67,7 @@ public class DeliveryServiceTest {
     @Mock
     ShippingAddressService shippingAddressService;
     @Mock
-    QuantityLeftCalculatorService qtyLeftCalcService;
+    QuantityUtility qtyLeftCalcService;
     
     DeliverParameter deliverParameter;
     

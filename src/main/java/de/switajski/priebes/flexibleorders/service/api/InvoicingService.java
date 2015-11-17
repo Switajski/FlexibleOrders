@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
-import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -34,7 +34,7 @@ public class InvoicingService {
     @Autowired
     private InvoicingAddressService invoicingAddressService;
     @Autowired
-    private QuantityLeftCalculatorService qtyLeftCalcService;
+    private QuantityUtility qtyLeftCalcService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {

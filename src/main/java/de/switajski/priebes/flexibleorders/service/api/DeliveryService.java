@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.QuantityLeftCalculatorService;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -39,7 +39,7 @@ public class DeliveryService {
     @Autowired
     private ShippingAddressService shippingAddressService;
     @Autowired
-    private QuantityLeftCalculatorService qtyLeftCalcService;
+    private QuantityUtility qtyLeftCalcService;
     @Autowired
     private ExpectedDeliveryService expectedDeliveryService;
 

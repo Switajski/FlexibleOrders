@@ -103,16 +103,30 @@ public class OrderConfirmationService {
         return cis;
     }
 	
-    private ReportItem createConfirmationItemByOrderNumber(String productNumber, String orderNumber, Integer quantity) {
-        List<OrderItem> ois = orderItemRepo.findByOrderNumber(orderNumber);
-        for (OrderItem oi : ois) {
-            if (oi.getProduct().getProductNumber().equals(productNumber)) 
-            	return new ConfirmationItem(oi, quantity);
+    protected ReportItem createConfirmationItemByOrderNumber(String productNumber, String orderNumber, Integer quantity) {
+        Set<OrderItem> matching = getMatchingOrderItems(productNumber, orderNumber, quantity);
+        if (matching.size() == 1){
+        	return new ConfirmationItem(matching.iterator().next(), quantity);
+        } else if (matching.size() > 1){
+        	
         }
+        
         throw new NotFoundException(String.format("Bestellposition mit Artikelnummer %s nicht in Bestellung %s gefunden", productNumber, orderNumber));
     }
 
-    private ReportItem createConfirmationItemById(long orderItemId, int qty) {
+	private Set<OrderItem> getMatchingOrderItems(String productNumber, String orderNumber, int quantity) {
+		List<OrderItem> ois = orderItemRepo.findByOrderNumber(orderNumber);
+		Set<OrderItem> matchingOis = new HashSet<OrderItem>(); 
+        for (OrderItem oi : ois) {
+            if (oi.getProduct().getProductNumber().equals(productNumber)) {
+            	
+            	matchingOis.add(oi);
+            }
+        }
+        return matchingOis;
+	}
+
+    protected ReportItem createConfirmationItemById(long orderItemId, int qty) {
         OrderItem oi = orderItemRepo.findOne(orderItemId);
         if (oi == null) throw new NotFoundException("Bestellposition mit gegebener ID nicht gefunden");
         return new ConfirmationItem(oi, qty);

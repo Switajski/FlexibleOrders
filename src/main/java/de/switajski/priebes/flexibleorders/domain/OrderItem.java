@@ -10,9 +10,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
@@ -22,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 
 @Entity
 @JsonAutoDetect
@@ -76,9 +80,15 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
                 .append(getOrderedQuantity())
                 .append(" x ")
                 .append(getProduct().getName())
-//                .append(" ")
-//                .append(DeliveryHistory.of(this).provideStatus())
                 .toString();
+    }
+    
+    public int calculateLeft() {
+        DeliveryHistory deliveryHistory = DeliveryHistory.of(this);
+        if (deliveryHistory.isEmpty()) {
+            return orderedQuantity;
+        }
+        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.getAgreedConfirmationItems());
     }
 
     @Override

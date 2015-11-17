@@ -25,13 +25,13 @@ public class QuantityUtility {
         if (qty == null) 
         	throw new IllegalArgumentException("Menge nicht angegeben");
         
-        if (reportItem.calculateLeft() == 0) 
+        if (reportItem.toBeProcessed() == 0) 
         	throw new IllegalArgumentException(reportItem.toString() + " hat keine offenen Positionen mehr");
         
         if (qty < 1) 
         	throw new IllegalArgumentException("Menge kleiner eins");
         
-        if (qty > reportItem.calculateLeft()) 
+        if (qty > reportItem.toBeProcessed()) 
         	throw new IllegalArgumentException("angeforderte Menge ist zu gross");
     }
 }

@@ -30,29 +30,27 @@ public class QuantityCalculatorTest {
     private OrderItem orderItem;
     private Address address = AddressBuilder.createDefault();
 
-    private QuantityUtility calcService = new QuantityUtility();
-    
     Integer calculatedQuantity;
 
     @Test
-    public void toBeConfirmed_qtyLeftShouldBeQtyMinusQtyProcessed() {
+    public void quantityToBeConfirmedShouldBeOrderedMinusConfirmed() {
         // GIVEN
         orderItem = givenOrderItem(QTY);
         orderItem.addReportItem(givenAgreedItem(QTY_PROCESSED));
 
         // WHEN
-        whenCalculatingQtyToBeAgreed();
+        whenCalculatingQtyToConfirmed();
 
         // THEN
         assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
     }
 
-	private void whenCalculatingQtyToBeAgreed() {
-		calculatedQuantity = orderItem.calculateLeft();
+	private void whenCalculatingQtyToConfirmed() {
+		calculatedQuantity = orderItem.toBeConfirmed();
 	}
 
     @Test
-    public void toBeAgreed_qtyLeftShouldBeQtyMinusQtyProcessed() {
+    public void quantityToBeShippedShouldAgreedMinusShipped() {
         // GIVEN
         orderItem = givenOrderItem(QTY);
         orderItem.addReportItem(givenAgreedItem(QTY));
@@ -66,7 +64,7 @@ public class QuantityCalculatorTest {
     }
 
 	private void whenCalculatingQtyToBeShipped() {
-		calculatedQuantity = orderItem.getConfirmationItems().iterator().next().calculateLeft();
+		calculatedQuantity = orderItem.getConfirmationItems().iterator().next().toBeProcessed();
 	}
 
     private ConfirmationItem givenAgreedItem(int quantityProcessed) {

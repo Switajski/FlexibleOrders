@@ -127,7 +127,7 @@ public abstract class ReportItem extends GenericEntity implements
     }
     
     // TODO: refactor this - too many dependencies
-    public int calculateLeft() {
+    public int toBeProcessed() {
         DeliveryHistory history = DeliveryHistory.of(this);
         if (this instanceof ConfirmationItem) {
             if (!((ConfirmationItem) this).isAgreed()) {

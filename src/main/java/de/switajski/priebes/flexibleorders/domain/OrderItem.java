@@ -83,7 +83,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
                 .toString();
     }
     
-    public int calculateLeft() {
+    public int toBeConfirmed() {
         DeliveryHistory deliveryHistory = DeliveryHistory.of(this);
         if (deliveryHistory.isEmpty()) {
             return orderedQuantity;

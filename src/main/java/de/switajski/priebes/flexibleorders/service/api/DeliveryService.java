@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDate.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +38,6 @@ public class DeliveryService {
     @Autowired
     private ShippingAddressService shippingAddressService;
     @Autowired
-    private QuantityUtility qtyLeftCalcService;
-    @Autowired
     private ExpectedDeliveryService expectedDeliveryService;
 
     @Transactional
@@ -63,7 +60,7 @@ public class DeliveryService {
             int qty = riWithQty.getValue();
             OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
 
-            qtyLeftCalcService.validateQuantity(qty, itemToBeShipped);
+            QuantityUtility.validateQuantity(qty, itemToBeShipped);
 
             deliveryNotes.addItem(new ShippingItem(
                     deliveryNotes,

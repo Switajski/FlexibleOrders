@@ -51,7 +51,7 @@ import de.switajski.priebes.flexibleorders.service.api.AgreementService;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -78,7 +78,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private OrderService orderService;
     
     @Autowired
-    private OrderConfirmationService orderConfirmationService;
+    private ConfirmService orderConfirmationService;
 
     @Autowired
     private ItemDtoConverterService converterService;
@@ -95,8 +95,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreementService agreementService;
 
-    @Ignore("This test is to initialize test data for GUI testing")
-    @Test
+//    @Ignore("This test is to initialize test data for GUI testing")
+//    @Test
     @Rollback(false)
     public void run() {
         createTestData();

@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,7 +31,7 @@ public class CustomerController extends ExceptionController {
 
 	@Autowired
 	private CustomerRepository customerRepo;
-
+	
 	@RequestMapping(value = "/json", method = RequestMethod.GET)
 	public @ResponseBody JsonObjectResponse listAll(
 			@RequestParam(value = "page", required = true) Integer page,

@@ -20,7 +20,7 @@ public class QuantityUtility {
      * @param qty to bring in the next process step
      * @param reportItem should have enough 
      */
-    public void validateQuantity(Integer qty, ReportItem reportItem) {
+    public static void validateQuantity(Integer qty, ReportItem reportItem) {
         if (qty == null) 
         	throw new IllegalArgumentException("Menge nicht angegeben");
         

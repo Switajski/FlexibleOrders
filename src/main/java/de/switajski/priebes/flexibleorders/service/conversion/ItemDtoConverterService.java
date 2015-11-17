@@ -25,15 +25,11 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class ItemDtoConverterService {
 
-    @Autowired
-    QuantityUtility quantityLeftCalculatorService;
-    
     @Autowired
     ExpectedDeliveryService edService; 
 
@@ -89,7 +85,7 @@ public class ItemDtoConverterService {
         item.productType = orderItem.getProduct().getProductType();
         item.status = DeliveryHistory.of(orderItem).provideStatus();
         item.quantity = orderItem.getOrderedQuantity();
-        item.quantityLeft = quantityLeftCalculatorService.calculateLeft(orderItem);
+        item.quantityLeft = orderItem.toBeConfirmed();
         return item;
     }
 
@@ -176,7 +172,7 @@ public class ItemDtoConverterService {
         item.productName = ri.getOrderItem().getProduct().getName();
         item.quantity = ri.getQuantity();
         item.status = ri.provideStatus();
-        item.quantityLeft = quantityLeftCalculatorService.calculateLeft(ri);
+        item.quantityLeft = ri.toBeProcessed();
         return item;
     }
 

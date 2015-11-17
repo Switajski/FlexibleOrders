@@ -33,8 +33,6 @@ public class InvoicingService {
     private ItemDtoConverterService itemDtoConverterService;
     @Autowired
     private InvoicingAddressService invoicingAddressService;
-    @Autowired
-    private QuantityUtility qtyLeftCalcService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
@@ -48,7 +46,7 @@ public class InvoicingService {
             ReportItem shippingItem = entry.getKey();
             Integer qty = entry.getValue();
 
-            qtyLeftCalcService.validateQuantity(qty, shippingItem);
+            QuantityUtility.validateQuantity(qty, shippingItem);
             invoice.addItem(new InvoiceItem(
                     invoice,
                     shippingItem.getOrderItem(),

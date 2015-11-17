@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -88,7 +86,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
         if (deliveryHistory.isEmpty()) {
             return orderedQuantity;
         }
-        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.getAgreedConfirmationItems());
+        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.getNonAgreedConfirmationItems());
     }
 
     @Override
@@ -181,43 +179,22 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
     }
 
     public Set<ConfirmationItem> getConfirmationItems() {
-        Set<ConfirmationItem> riToReturn = new HashSet<ConfirmationItem>();
-        for (ReportItem ri : getReportItems()) {
-            if (ri instanceof ConfirmationItem) riToReturn.add((ConfirmationItem) ri);
-        }
-        return riToReturn;
-    }
-
-    public Set<InvoiceItem> getInvoiceItems() {
-        Set<InvoiceItem> riToReturn = new HashSet<InvoiceItem>();
-        for (ReportItem ri : getReportItems()) {
-            if (ri instanceof InvoiceItem) riToReturn.add((InvoiceItem) ri);
-        }
-        return riToReturn;
-    }
-
-    public Set<ReceiptItem> getReceiptItems() {
-        Set<ReceiptItem> riToReturn = new HashSet<ReceiptItem>();
-        for (ReportItem ri : getReportItems()) {
-            if (ri instanceof ReceiptItem) riToReturn.add((ReceiptItem) ri);
-        }
-        return riToReturn;
+        return getReportItems(ConfirmationItem.class);
     }
 
     public Set<ShippingItem> getShippingItems() {
-        Set<ShippingItem> riToReturn = new HashSet<ShippingItem>();
-        for (ReportItem ri : getReportItems()) {
-            if (ri instanceof ShippingItem) riToReturn.add((ShippingItem) ri);
-        }
-        return riToReturn;
+        return getReportItems(ShippingItem.class);
     }
 
-    public Set<CancellationItem> getCancellationItems() {
-        Set<CancellationItem> riToReturn = new HashSet<CancellationItem>();
-        for (ReportItem ri : getReportItems()) {
-            if (ri instanceof CancellationItem) riToReturn.add((CancellationItem) ri);
-        }
-        return riToReturn;
+    @SuppressWarnings("unchecked")
+	public <T> Set<T> getReportItems(Class<T> type){
+    	Set<T> riToReturn = new HashSet<>();
+    	for (ReportItem item:reportItems){
+    		if (type.isInstance(item)){
+    			riToReturn.add((T) item);
+    		}
+    	}
+    	return riToReturn;
     }
 
     public boolean isShippingCosts() {

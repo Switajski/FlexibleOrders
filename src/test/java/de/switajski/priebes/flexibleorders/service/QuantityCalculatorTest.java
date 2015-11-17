@@ -44,7 +44,7 @@ public class QuantityCalculatorTest {
         // THEN
         assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
     }
-
+    
 	private void whenCalculatingQtyToConfirmed() {
 		calculatedQuantity = orderItem.toBeConfirmed();
 	}
@@ -62,7 +62,7 @@ public class QuantityCalculatorTest {
         // THEN
         assertThat(calculatedQuantity, is(QTY - QTY_PROCESSED));
     }
-
+    
 	private void whenCalculatingQtyToBeShipped() {
 		calculatedQuantity = orderItem.getConfirmationItems().iterator().next().toBeProcessed();
 	}

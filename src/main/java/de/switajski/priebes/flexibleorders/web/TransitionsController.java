@@ -28,7 +28,7 @@ import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkPaidService;
-import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -54,7 +54,7 @@ public class TransitionsController extends ExceptionController {
     @Autowired
     private MarkPaidService markPaidService;
     @Autowired
-	private OrderConfirmationService orderConfirmationService;
+	private ConfirmService orderConfirmationService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody

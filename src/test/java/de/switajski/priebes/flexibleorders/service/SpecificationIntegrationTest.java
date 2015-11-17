@@ -26,7 +26,7 @@ import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsT
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.service.api.AgreementService;
 import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
-import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -64,7 +64,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     @Autowired
     private AgreementService agreementService;
 
-	private OrderConfirmationService orderConfirmationService;
+	private ConfirmService orderConfirmationService;
 
     private static final int JUREK_QTY = 5; // All Jureks from B12
 

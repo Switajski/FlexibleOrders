@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmPara
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
-public class OrderConfirmationService {
+public class ConfirmService {
 
     @Autowired
     private CatalogDeliveryMethodRepository deliveryMethodRepo;

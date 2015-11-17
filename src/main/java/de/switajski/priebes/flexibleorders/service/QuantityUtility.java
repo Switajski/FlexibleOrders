@@ -2,8 +2,6 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.util.Set;
 
-import org.springframework.stereotype.Service;
-
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public class QuantityUtility {
@@ -16,6 +14,7 @@ public class QuantityUtility {
         return summed;
     }
 
+    //TODO: move to validator
     /**
      * 
      * @param qty to bring in the next process step

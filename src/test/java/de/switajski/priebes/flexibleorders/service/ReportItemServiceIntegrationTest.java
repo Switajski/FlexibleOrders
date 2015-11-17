@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
-import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -39,7 +39,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 	@Autowired
     private OrderService orderService;
 	@Autowired
-	private OrderConfirmationService orderConfirmationService;
+	private ConfirmService orderConfirmationService;
 	@Autowired
 	private ReportItemServiceImpl reportItemService;
 	@Autowired

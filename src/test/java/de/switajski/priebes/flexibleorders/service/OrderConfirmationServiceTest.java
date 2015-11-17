@@ -39,7 +39,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.api.OrderConfirmationService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -72,7 +72,7 @@ public class OrderConfirmationServiceTest {
     @Mock
     private OrderItemRepository orderItemRepo;
     @InjectMocks
-    private OrderConfirmationService orderConfirmationService = new OrderConfirmationService();
+    private ConfirmService orderConfirmationService = new ConfirmService();
 
 
 	@Test

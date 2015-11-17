@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
@@ -70,8 +71,7 @@ public class ConfirmService {
         cr.setPurchaseAgreement(pAgree);
         cr.setCustomerDetails(confirmParameter.customerDetails);
 
-        for (ReportItem ci : createConfirmationItemsSafely(confirmParameter.itemsToBeConfirmed))
-            cr.addItem(ci);
+        addConfirmationItemsSafely(confirmParameter.itemsToBeConfirmed, cr);
         
         return reportRepo.save(cr);
     }
@@ -86,50 +86,69 @@ public class ConfirmService {
         if (shippingAddress == null) throw new IllegalArgumentException("Keine Lieferadresse angegeben");
     }
 	
-	private Set<ReportItem> createConfirmationItemsSafely(List<ItemDto> itemDtos) {
+	private Set<ReportItem> addConfirmationItemsSafely(List<ItemDto> itemDtos, OrderConfirmation orderConfirmation) {
         Set<ReportItem> cis = new HashSet<ReportItem>();
         for (ItemDto entry : itemDtos) {
-            ReportItem item = null;
-            if (entry.id != null) {
-                item = createConfirmationItemById(entry.id, entry.quantityLeft);
+        	boolean added = false;
+            Integer qtyToBeConfirmed = entry.quantityLeft;
+			if (entry.id != null) {
+                cis.add(createConfirmationItemById(orderConfirmation, entry.id, qtyToBeConfirmed));
+                added = true;
+                
+            } else if (!StringUtils.isEmpty(entry.product) && !entry.product.equals("0")) {
+            	Set<OrderItem> notConfirmed = matchNotConfirmed(entry.product, entry.orderNumber);
+				if (notConfirmed.size() == 1){
+					OrderItem match = notConfirmed.iterator().next();
+					if (match.toBeConfirmed() <= qtyToBeConfirmed){
+						cis.add(new ConfirmationItem(orderConfirmation, match, qtyToBeConfirmed));
+						added = true;
+					} else {
+						StringBuilder errMsgBuilder = new StringBuilder().append("Angegebene Menge zum best").append(Unicode.A_UML)
+								.append("tigen ist ").append(qtyToBeConfirmed).append(". Dagegen m sind nur noch ").append(match.toBeConfirmed()).append(Unicode.U_UML).append("brig");
+						throw new IllegalArgumentException(errMsgBuilder.toString());
+					}
+				} else {
+					OrderItem match = findExactMatch(notConfirmed, qtyToBeConfirmed);
+					if (match != null){
+						cis.add(new ConfirmationItem(orderConfirmation, match, qtyToBeConfirmed));
+						added = true;
+					} else {
+						String string = new StringBuilder().append("Zwar sind noch nicht best").append(Unicode.A_UML).append("tigte Bestellpositionen vorhanden, aber die angegbene Menge passt zu keiner").toString();
+						throw new IllegalArgumentException(string);
+					}
+				}
             }
-            else if (!StringUtils.isEmpty(entry.product) && !entry.product.equals("0")) {
-                item = createConfirmationItemByOrderNumber(entry.product, entry.orderNumber, entry.quantityLeft);
-            }
-            if (item == null) 
+            if (!added) 
             	throw new IllegalArgumentException("Weder ID von Bestellposition noch Bestellung mit Artikelnummer angegeben");
-            else cis.add(item);
         }
         return cis;
     }
 	
-    protected ReportItem createConfirmationItemByOrderNumber(String productNumber, String orderNumber, Integer quantity) {
-        Set<OrderItem> matching = getMatchingOrderItems(productNumber, orderNumber, quantity);
-        if (matching.size() == 1){
-        	return new ConfirmationItem(matching.iterator().next(), quantity);
-        } else if (matching.size() > 1){
-        	
-        }
-        
-        throw new NotFoundException(String.format("Bestellposition mit Artikelnummer %s nicht in Bestellung %s gefunden", productNumber, orderNumber));
-    }
 
-	private Set<OrderItem> getMatchingOrderItems(String productNumber, String orderNumber, int quantity) {
+	private OrderItem findExactMatch(Set<OrderItem> matching, Integer quantity) {
+		for (OrderItem candidate:matching){
+			if (quantity == candidate.toBeConfirmed()){
+				return candidate;
+			}
+		}
+		return null;
+	}
+
+	private Set<OrderItem> matchNotConfirmed(String productNumber, String orderNumber) {
 		List<OrderItem> ois = orderItemRepo.findByOrderNumber(orderNumber);
 		Set<OrderItem> matchingOis = new HashSet<OrderItem>(); 
         for (OrderItem oi : ois) {
-            if (oi.getProduct().getProductNumber().equals(productNumber)) {
-            	
+            if (oi.getProduct().getProductNumber().equals(productNumber) && (oi.toBeConfirmed() > 0)) {
             	matchingOis.add(oi);
             }
         }
         return matchingOis;
 	}
 
-    protected ReportItem createConfirmationItemById(long orderItemId, int qty) {
+    protected ReportItem createConfirmationItemById(OrderConfirmation orderConfirmation, long orderItemId, int qty) {
         OrderItem oi = orderItemRepo.findOne(orderItemId);
         if (oi == null) throw new NotFoundException("Bestellposition mit gegebener ID nicht gefunden");
-        return new ConfirmationItem(oi, qty);
+        return new ConfirmationItem(orderConfirmation, oi, qty);
     }
 
 

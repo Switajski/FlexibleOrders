@@ -13,7 +13,7 @@ import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.service.CustomerServiceImpl;
-import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportingService;
 
 /**
  * A central place to register application converters and formatters. 
@@ -28,7 +28,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
     CustomerRepository customerRepo;
     
     @Autowired
-    ReportItemServiceImpl itemService;
+    ReportingService reportingService;
     
     @Autowired
     OrderItemRepository itemRepo;

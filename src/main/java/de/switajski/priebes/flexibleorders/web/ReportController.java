@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderConfirmationRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
@@ -60,7 +60,7 @@ public class ReportController {
     @Autowired
     OrderRepository orderRepo;
     @Autowired
-    ReportItemServiceImpl itemService;
+    ReportingService reportingService;
     @Autowired
     CustomerRepository customerService;
     @Autowired
@@ -172,7 +172,7 @@ public class ReportController {
         JsonObjectResponse response = new JsonObjectResponse();
 
         if (orderNumber != null) {
-            List<String> orderNumbers = itemService
+            List<String> orderNumbers = reportingService
                     .retrieveOrderNumbersLike(orderNumber);
             if (!orderNumbers.isEmpty()) {
                 response.setTotal(orderNumbers.size());
@@ -186,7 +186,7 @@ public class ReportController {
             List<Customer> customers = customerService.findAll();
             ArrayList<String> list = new ArrayList<String>();
             for (Customer customer : customers)
-                list.addAll(itemService.retrieveOrderNumbersByCustomer(
+                list.addAll(reportingService.retrieveOrderNumbersByCustomer(
                         customer,
                         new PageRequest(0, 20)).getContent());
             response.setTotal(list.size());

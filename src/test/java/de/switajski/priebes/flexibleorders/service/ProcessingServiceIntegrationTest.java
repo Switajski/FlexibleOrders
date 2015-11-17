@@ -34,14 +34,14 @@ import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
+public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest{
 	
 	@Autowired
     private OrderingService orderingService;
 	@Autowired
 	private ConfirmingService confirmingService;
 	@Autowired
-	private ReportItemServiceImpl reportItemService;
+	private ReportingService reportingService;
 	@Autowired
     private CustomerRepository cRepo;
     @Autowired
@@ -55,7 +55,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 		givenOrderConfirmations();
 		
 		int itemLimit = 2; //qty of documents
-		Page<ItemDto> toBeShipped = reportItemService.retrieve(new PageRequest(0, itemLimit), new AgreedItemsToBeShippedSpec());
+		Page<ItemDto> toBeShipped = reportingService.retrieve(new PageRequest(0, itemLimit), new AgreedItemsToBeShippedSpec());
 		
 		assertThat(toBeShipped.getContent().size(), equalTo(16));//qty of items in document
 		

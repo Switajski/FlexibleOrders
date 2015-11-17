@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
@@ -27,7 +27,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator{
 	@Autowired
 	private ConfirmingService confirmingService;
 	@Autowired
-	private ReportItemServiceImpl reportItemService;
+	private ReportingService reportingService;
 	@Autowired
     private CustomerRepository cRepo;
     @Autowired

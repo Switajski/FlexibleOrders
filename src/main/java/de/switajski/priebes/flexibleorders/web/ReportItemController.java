@@ -30,7 +30,7 @@ import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
-import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
+import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -52,7 +52,7 @@ public class ReportItemController extends ExceptionController {
     public static final String STATUS_STRING = "status";
 
     @Autowired
-    private ReportItemServiceImpl reportItemService;
+    private ReportingService reportingService;
     // TODO: on Controller layer only Services are allowed
     @Autowired
     private CustomerRepository customerRepo;
@@ -83,12 +83,12 @@ public class ReportItemController extends ExceptionController {
                     .get(CUSTOMER_FILTER)));
             if (customer == null) throw new IllegalArgumentException(
                     "Kunde mit gegebener Id nicht gefunden");
-            ordered = reportItemService.retrieveAllToBeConfirmedByCustomer(
+            ordered = reportingService.retrieveAllToBeConfirmedByCustomer(
                     customer,
                     pageable);
         }
         else {
-            ordered = reportItemService.retrieveAllToBeConfirmed(pageable);
+            ordered = reportingService.retrieveAllToBeConfirmed(pageable);
         }
         return ExtJsResponseCreator.createResponse(ordered);
     }
@@ -114,7 +114,7 @@ public class ReportItemController extends ExceptionController {
             specs.add(new HasCustomerSpec(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
         }
 
-        Page<ItemDto> openItems = reportItemService.retrieve(
+        Page<ItemDto> openItems = reportingService.retrieve(
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
 
         if (state == ProductionState.SHIPPED) {

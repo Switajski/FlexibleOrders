@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDt
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
-public class ReportItemServiceImpl {
+public class ReportingService {
 
 	@Autowired
 	private OrderRepository orderRepo;

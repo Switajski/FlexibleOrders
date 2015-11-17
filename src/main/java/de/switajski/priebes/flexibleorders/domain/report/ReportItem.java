@@ -7,7 +7,10 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
+import de.switajski.priebes.flexibleorders.service.helper.FOStringUtility;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
@@ -126,7 +130,6 @@ public abstract class ReportItem extends GenericEntity implements
         return DeliveryHistory.of(this);
     }
     
-    // TODO: refactor this - too many dependencies
     public int toBeProcessed() {
         DeliveryHistory history = DeliveryHistory.of(this);
         if (this instanceof ConfirmationItem) {
@@ -158,6 +161,24 @@ public abstract class ReportItem extends GenericEntity implements
         return QuantityUtility.sumQty(history.getReportItems(InvoiceItem.class)) - QuantityUtility.sumQty(history.getReportItems(ReceiptItem.class));
     }
 
+    @PrePersist
+	protected void validateQuantity(){
+		if (sum() > getOrderItem().getOrderedQuantity()) {
+			throw new IllegalStateException(
+					new StringBuilder().append("Sum of all ")
+					.append(FOStringUtility.camelCaseToSplitted(this.getClass().getSimpleName()))
+					.append("(s) cannot be greater than ordered quantity of ")
+					.append(FOStringUtility.camelCaseToSplitted(OrderItem.class.getSimpleName()))
+					.toString());
+		}
+	}
 
+	private int sum() {
+		int sum = 0;
+		for (ReportItem specificReportItem : getOrderItem().getReportItems(this.getClass())){
+			sum += specificReportItem.getQuantity();
+		}
+		return sum;
+	}
 
 }

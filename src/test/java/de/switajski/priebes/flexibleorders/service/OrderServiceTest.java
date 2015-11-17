@@ -47,7 +47,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -83,13 +83,13 @@ public class OrderServiceTest {
     @Mock
     private OrderItemRepository orderItemRepo;
     @InjectMocks
-    private OrderService orderService = new OrderService();
+    private OrderingService orderingService = new OrderingService();
 
     @Test
     public void shouldOrder() {
         givenMocks();
 
-        orderService.order(new OrderParameter(CUSTOMER_ID, "123", new Date(), givenReportItems()));
+        orderingService.order(new OrderParameter(CUSTOMER_ID, "123", new Date(), givenReportItems()));
 
         ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepo).save(orderCaptor.capture());

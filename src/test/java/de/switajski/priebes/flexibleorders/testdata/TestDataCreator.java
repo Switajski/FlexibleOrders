@@ -47,12 +47,12 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.service.api.AgreementService;
+import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -75,10 +75,10 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private CustomerRepository cRepo;
 
     @Autowired
-    private OrderService orderService;
+    private OrderingService orderingService;
     
     @Autowired
-    private ConfirmService confirmService;
+    private ConfirmingService confirmingService;
 
     @Autowired
     private ItemDtoConverterService converterService;
@@ -93,7 +93,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
     @Autowired
-    private AgreementService agreementService;
+    private AgreeingService agreeingService;
 
 //    @Ignore("This test is to initialize test data for GUI testing")
 //    @Test
@@ -120,11 +120,11 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private void createNaidasOrders() {
         DateTime dt = new DateTime();
 
-        orderService.order(B21);
-        Order b22 = orderService.order(B22);
+        orderingService.order(B21);
+        Order b22 = orderingService.order(B22);
         OrderConfirmation ab22 = createAB22(dt, b22);
 
-        orderService.cancelReport(ab22.getDocumentNumber());
+        orderingService.cancelReport(ab22.getDocumentNumber());
 
     }
 
@@ -138,23 +138,23 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 YVONNE.getInvoiceAddress(),
                 converterService.convert(b22));
         confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
-		OrderConfirmation ab22 = confirmService.confirm(confirmParameter);
+		OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
         return ab22;
     }
 
     private void createYvonnesOrders() {
 
-        orderService.order(B11);
-        orderService.order(B12);
-        orderService.order(B13);
-        orderService.order(B15);
+        orderingService.order(B11);
+        orderingService.order(B12);
+        orderingService.order(B13);
+        orderingService.order(B15);
 
-        OrderConfirmation ab11 = confirmService.confirm(AB11);
-        confirmService.confirm(AB13);
-        OrderConfirmation ab15 = confirmService.confirm(AB15);
+        OrderConfirmation ab11 = confirmingService.confirm(AB11);
+        confirmingService.confirm(AB13);
+        OrderConfirmation ab15 = confirmingService.confirm(AB15);
 
-        ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
-        ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
+        ab11 = agreeingService.agree(ab11.getDocumentNumber(), "AU11");
+        ab15 = agreeingService.agree(ab15.getDocumentNumber(), "AU15");
 
         List<ItemDto> itemsFromAu11 = converterService.convertReport(ab11);
         List<ItemDto> itemsFromAu15 = converterService.convertReport(ab15);

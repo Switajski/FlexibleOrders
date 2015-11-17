@@ -23,13 +23,13 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
-import de.switajski.priebes.flexibleorders.service.api.AgreementService;
+import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.MarkPaidService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.MarkingPaidService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -44,17 +44,17 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 public class TransitionsController extends ExceptionController {
 
     @Autowired
-    private OrderService orderService;
+    private OrderingService orderingService;
     @Autowired
     private InvoicingService invoicingService;
     @Autowired
     private ShippingService shippingService;
     @Autowired
-    private AgreementService agreementService;
+    private AgreeingService agreeingService;
     @Autowired
-    private MarkPaidService markPaidService;
+    private MarkingPaidService markingPaidService;
     @Autowired
-	private ConfirmService confirmService;
+	private ConfirmingService confirmService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
@@ -113,7 +113,7 @@ public class TransitionsController extends ExceptionController {
                 deliverRequest.items);
         orderParameter.expectedDelivery = deliverRequest.expectedDelivery;
 
-        Order order = orderService.order(
+        Order order = orderingService.order(
                 orderParameter);
 
         return ExtJsResponseCreator.createResponse(order);
@@ -165,7 +165,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse agree(
             @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
-        OrderConfirmation orderAgreement = agreementService.agree(orderConfirmationNumber, orderAgreementNumber);
+        OrderConfirmation orderAgreement = agreeingService.agree(orderConfirmationNumber, orderAgreementNumber);
         return ExtJsResponseCreator.createResponse(orderAgreement);
     }
 
@@ -173,7 +173,7 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody
     JsonObjectResponse deleteOrder(
             @RequestParam(value = "orderNumber", required = true) String orderNumber) {
-        orderService.deleteOrder(orderNumber);
+        orderingService.deleteOrder(orderNumber);
         return ExtJsResponseCreator.createResponse(orderNumber);
     }
 
@@ -182,7 +182,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse deleteReport(
             @RequestParam(value = "documentNumber", required = true) String documentNumber)
             throws Exception {
-        orderService.deleteReport(documentNumber);
+        orderingService.deleteReport(documentNumber);
         return ExtJsResponseCreator.createResponse(documentNumber);
     }
 
@@ -191,7 +191,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse cancelConfirmationReport(
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
             throws Exception {
-        CancelReport cr = orderService
+        CancelReport cr = orderingService
                 .cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createResponse(cr);
     }
@@ -201,7 +201,7 @@ public class TransitionsController extends ExceptionController {
     JsonObjectResponse markPaid(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
             throws Exception {
-        Receipt receipt = markPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
+        Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createResponse(receipt);
     }

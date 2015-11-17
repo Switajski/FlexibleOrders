@@ -39,7 +39,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -72,7 +72,7 @@ public class OrderConfirmationServiceTest {
     @Mock
     private OrderItemRepository orderItemRepo;
     @InjectMocks
-    private ConfirmService orderConfirmationService = new ConfirmService();
+    private ConfirmingService confirmingService = new ConfirmingService();
 
 
 	@Test
@@ -92,7 +92,7 @@ public class OrderConfirmationServiceTest {
         setupProducts(MILADKA, SALOME, PAUL, JUREK, AMY);
 
         // WHEN
-        orderConfirmationService.confirm(AB11);
+        confirmingService.confirm(AB11);
 
         // THEN
         verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.itemsToBeConfirmed)));

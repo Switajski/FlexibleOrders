@@ -24,10 +24,10 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
-import de.switajski.priebes.flexibleorders.service.api.AgreementService;
+import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -47,7 +47,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private CatalogProductServiceByMagento productService;
 
     @Autowired
-    private OrderService orderService;
+    private OrderingService orderingService;
 
     @Autowired
     private OrderRepository orderRepo;
@@ -59,12 +59,12 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private ReportItemRepository reportItemRepository;
 
     @Autowired
-    private ShippingService deliveryService;
+    private ShippingService shippingService;
 
     @Autowired
-    private AgreementService agreementService;
+    private AgreeingService agreeingService;
 
-	private ConfirmService orderConfirmationService;
+	private ConfirmingService confirmingService;
 
     private static final int JUREK_QTY = 5; // All Jureks from B12
 
@@ -170,7 +170,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL11.trackNumber = "trackNumber";
         deliverParameterL11.packageNumber = "packNo";
         deliverParameterL11.showPricesInDeliveryNotes = false;
-        deliveryService.ship(
+        shippingService.ship(
                 deliverParameterL11);
 
         DeliverParameter deliverParameterL12 = new DeliverParameter("L12", new Date(), Arrays.asList(
@@ -179,7 +179,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL12.trackNumber = "trackNumber";
         deliverParameterL12.packageNumber = "packNo";
         deliverParameterL12.showPricesInDeliveryNotes = false;
-        deliveryService.ship(
+        shippingService.ship(
                 deliverParameterL12);
 
         DeliverParameter deliverParameterL13 = new DeliverParameter("L13", new Date(), Arrays.asList(
@@ -188,14 +188,14 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL13.trackNumber = "trackNumber";
         deliverParameterL13.packageNumber = "packNo";
         deliverParameterL13.showPricesInDeliveryNotes = false;
-        deliveryService.ship(deliverParameterL13);
+        shippingService.ship(deliverParameterL13);
 
         DeliverParameter deliverParameter14 = new DeliverParameter("L14", new Date(), Arrays.asList(
                 createItemDto(5, PAUL, orderAgreement)));
         deliverParameter14.trackNumber = "trackNumber";
         deliverParameter14.packageNumber = "packNo";
         deliverParameter14.showPricesInDeliveryNotes = false;
-        deliveryService.ship(deliverParameter14);
+        shippingService.ship(deliverParameter14);
     }
 
     private ItemDto createItemDto(int qty, Product product,
@@ -258,7 +258,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         List<ItemDto> b11AndB12 = itemDtoConverterService.convert(b11);
         b11AndB12.addAll(itemDtoConverterService.convert(b12));
 
-        OrderConfirmation confirmationReport = orderConfirmationService.confirm(
+        OrderConfirmation confirmationReport = confirmingService.confirm(
                 new ConfirmParameter(
                         b11.getOrderNumber(),
                         "AB11",
@@ -268,7 +268,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
                         AddressBuilder.createDefault(),
                         b11AndB12));
 
-        confirmationReport = agreementService.agree(confirmationReport.getDocumentNumber(), "AU11");
+        confirmationReport = agreeingService.agree(confirmationReport.getDocumentNumber(), "AU11");
         return confirmationReport;
     }
 }

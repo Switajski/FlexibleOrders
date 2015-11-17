@@ -14,8 +14,8 @@ import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -23,9 +23,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ReportItemControllerIntegrationTest extends TestDataCreator{
 	
 	@Autowired
-    private OrderService orderService;
+    private OrderingService orderingService;
 	@Autowired
-	private ConfirmService orderConfirmationService;
+	private ConfirmingService confirmingService;
 	@Autowired
 	private ReportItemServiceImpl reportItemService;
 	@Autowired

@@ -30,7 +30,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderConfirmationRepositor
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportItemServiceImpl;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderConfirmationToDtoConversionService;
@@ -64,7 +64,7 @@ public class ReportController {
     @Autowired
     CustomerRepository customerService;
     @Autowired
-    OrderService orderService;
+    OrderingService orderService;
     @Autowired 
     ReportToDtoConversionService reportDtoConversionService;
     @Autowired 

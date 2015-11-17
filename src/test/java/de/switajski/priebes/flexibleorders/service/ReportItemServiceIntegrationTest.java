@@ -29,17 +29,17 @@ import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
-import de.switajski.priebes.flexibleorders.service.api.OrderService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
+import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 	
 	@Autowired
-    private OrderService orderService;
+    private OrderingService orderingService;
 	@Autowired
-	private ConfirmService orderConfirmationService;
+	private ConfirmingService confirmingService;
 	@Autowired
 	private ReportItemServiceImpl reportItemService;
 	@Autowired
@@ -72,7 +72,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 		LocalDate now = new LocalDate(new Date());
 		
 		String b100 = "B100";
-		orderService.order(orderParam(b100, NAIDA, now, 
+		orderingService.order(orderParam(b100, NAIDA, now, 
 				item(SALOME, 2),
 				item(PAUL, 2),
 				item(MILADKA, 2),
@@ -83,7 +83,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 				item(MILADKA, 2)));
 		
 		String b101 = "B101";
-		orderService.order(orderParam(b101, NAIDA, now, 
+		orderingService.order(orderParam(b101, NAIDA, now, 
 				item(SALOME, 2),
 				item(PAUL, 2),
 				item(MILADKA, 2),
@@ -94,7 +94,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 				item(MILADKA, 2)));
 		
 		String b102 = "B102";
-		orderService.order(orderParam(b102, NAIDA, now, 
+		orderingService.order(orderParam(b102, NAIDA, now, 
 				item(SALOME, 2),
 				item(PAUL, 2),
 				item(MILADKA, 2),
@@ -104,7 +104,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 				item(SALOME, 2),
 				item(MILADKA, 2)));
 		
-		orderConfirmationService.confirm(confirm(b100, "AB100", YVONNE, delay(10), 
+		confirmingService.confirm(confirm(b100, "AB100", YVONNE, delay(10), 
 	            item(SALOME, 2, b100), 
 	            item(PAUL, 2, b100), 
 	            item(MILADKA, 2, b100),   
@@ -114,7 +114,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 	            item(SALOME, 2, b100),
 	            item(MILADKA, 2 , b100)));
 		
-		orderConfirmationService.confirm(confirm(b101, "AB101", YVONNE, delay(10), 
+		confirmingService.confirm(confirm(b101, "AB101", YVONNE, delay(10), 
 	            item(SALOME, 2, b101), 
 	            item(PAUL, 2, b101), 
 	            item(MILADKA, 2, b101),   
@@ -124,7 +124,7 @@ public class ReportItemServiceIntegrationTest extends AbstractSpringContextTest{
 	            item(SALOME, 2, b101),
 	            item(MILADKA, 2 , b101)));
 		
-		orderConfirmationService.confirm(confirm(b102, "AB102", YVONNE, delay(10), 
+		confirmingService.confirm(confirm(b102, "AB102", YVONNE, delay(10), 
 	            item(SALOME, 2, b102), 
 	            item(PAUL, 2, b102), 
 	            item(MILADKA, 2, b102),   

@@ -57,7 +57,7 @@ public class ShippingServiceTest {
     private static final DeliveryMethod DELIVERY_METHOD = new DeliveryMethodBuilder().dhl().build();
 
     @InjectMocks
-    ShippingService shippingService = new ShippingService();
+	ShippingService shippingService = new ShippingService();
     @Mock
     ItemDtoConverterService convService;
     @Mock

@@ -29,11 +29,12 @@ public class ConfirmationItem extends ReportItem {
 	 */
 	@JsonIgnore
 	public OrderConfirmation getOrderConfirmation(){
-	    return (OrderConfirmation) getReport();
+	    return (OrderConfirmation) report;
 	}
 
-	public ConfirmationItem(OrderItem oi, Integer quantityLeft) {
+	public ConfirmationItem(OrderConfirmation orderConfirmation, OrderItem oi, Integer quantityLeft) {
 		super(oi, quantityLeft, new Date());
+		orderConfirmation.addItem(this);
 	}
 
 	@Override

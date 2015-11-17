@@ -44,7 +44,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBui
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class DeliveryServiceTest {
+public class ShippingServiceTest {
 
     private static final Address ADDRESS_1 = AddressBuilder.buildWithGeneratedAttributes(2);
 
@@ -57,7 +57,7 @@ public class DeliveryServiceTest {
     private static final DeliveryMethod DELIVERY_METHOD = new DeliveryMethodBuilder().dhl().build();
 
     @InjectMocks
-    DeliveryService deliveryService = new DeliveryService();
+    ShippingService shippingService = new ShippingService();
     @Mock
     ItemDtoConverterService convService;
     @Mock
@@ -123,7 +123,7 @@ public class DeliveryServiceTest {
 
 
 	private void whenDelivering() {
-		deliveryService.deliver(deliverParameter);
+		shippingService.ship(deliverParameter);
 	}
     
     private void givenDeliverParameter() {

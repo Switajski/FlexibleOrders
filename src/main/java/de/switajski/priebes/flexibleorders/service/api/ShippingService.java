@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterSe
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 
 @Service
-public class DeliveryService {
+public class ShippingService {
 
     @Autowired
     private ReportRepository reportRepo;
@@ -41,7 +41,7 @@ public class DeliveryService {
     private ExpectedDeliveryService expectedDeliveryService;
 
     @Transactional
-    public DeliveryNotes deliver(DeliverParameter deliverParameter) {
+    public DeliveryNotes ship(DeliverParameter deliverParameter) {
         if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
                 "Lieferscheinnummer existiert bereits");
 

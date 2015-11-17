@@ -25,7 +25,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.service.api.AgreementService;
-import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
 import de.switajski.priebes.flexibleorders.service.api.OrderService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
@@ -59,7 +59,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private ReportItemRepository reportItemRepository;
 
     @Autowired
-    private DeliveryService deliveryService;
+    private ShippingService deliveryService;
 
     @Autowired
     private AgreementService agreementService;
@@ -170,7 +170,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL11.trackNumber = "trackNumber";
         deliverParameterL11.packageNumber = "packNo";
         deliverParameterL11.showPricesInDeliveryNotes = false;
-        deliveryService.deliver(
+        deliveryService.ship(
                 deliverParameterL11);
 
         DeliverParameter deliverParameterL12 = new DeliverParameter("L12", new Date(), Arrays.asList(
@@ -179,7 +179,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL12.trackNumber = "trackNumber";
         deliverParameterL12.packageNumber = "packNo";
         deliverParameterL12.showPricesInDeliveryNotes = false;
-        deliveryService.deliver(
+        deliveryService.ship(
                 deliverParameterL12);
 
         DeliverParameter deliverParameterL13 = new DeliverParameter("L13", new Date(), Arrays.asList(
@@ -188,14 +188,14 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         deliverParameterL13.trackNumber = "trackNumber";
         deliverParameterL13.packageNumber = "packNo";
         deliverParameterL13.showPricesInDeliveryNotes = false;
-        deliveryService.deliver(deliverParameterL13);
+        deliveryService.ship(deliverParameterL13);
 
         DeliverParameter deliverParameter14 = new DeliverParameter("L14", new Date(), Arrays.asList(
                 createItemDto(5, PAUL, orderAgreement)));
         deliverParameter14.trackNumber = "trackNumber";
         deliverParameter14.packageNumber = "packNo";
         deliverParameter14.showPricesInDeliveryNotes = false;
-        deliveryService.deliver(deliverParameter14);
+        deliveryService.ship(deliverParameter14);
     }
 
     private ItemDto createItemDto(int qty, Product product,

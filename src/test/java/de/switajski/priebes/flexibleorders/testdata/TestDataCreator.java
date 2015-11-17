@@ -48,7 +48,7 @@ import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepos
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.api.AgreementService;
-import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmService;
@@ -78,13 +78,13 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private OrderService orderService;
     
     @Autowired
-    private ConfirmService orderConfirmationService;
+    private ConfirmService confirmService;
 
     @Autowired
     private ItemDtoConverterService converterService;
 
     @Autowired
-    private DeliveryService deliveryService;
+    private ShippingService shippingService;
 
     @Autowired
     private InvoicingService invoicingService;
@@ -138,7 +138,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 YVONNE.getInvoiceAddress(),
                 converterService.convert(b22));
         confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
-		OrderConfirmation ab22 = orderConfirmationService.confirm(confirmParameter);
+		OrderConfirmation ab22 = confirmService.confirm(confirmParameter);
         return ab22;
     }
 
@@ -149,9 +149,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
         orderService.order(B13);
         orderService.order(B15);
 
-        OrderConfirmation ab11 = orderConfirmationService.confirm(AB11);
-        orderConfirmationService.confirm(AB13);
-        OrderConfirmation ab15 = orderConfirmationService.confirm(AB15);
+        OrderConfirmation ab11 = confirmService.confirm(AB11);
+        confirmService.confirm(AB13);
+        OrderConfirmation ab15 = confirmService.confirm(AB15);
 
         ab11 = agreementService.agree(ab11.getDocumentNumber(), "AU11");
         ab15 = agreementService.agree(ab15.getDocumentNumber(), "AU15");
@@ -193,7 +193,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.trackNumber = "trackNumber15";
         deliverParameter.packageNumber = "packageNumber15"; 
         deliverParameter.shipment = new Amount(BigDecimal.ZERO);
-        deliveryService.deliver(deliverParameter);
+        shippingService.ship(deliverParameter);
     }
 
     private void createL14(List<ItemDto> itemsFromAu11) {
@@ -204,7 +204,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.trackNumber = "trackNumber14";
         deliverParameter.packageNumber = "packageNumber14";
         deliverParameter.shipment = new Amount(BigDecimal.ZERO);
-        deliveryService.deliver(deliverParameter);
+        shippingService.ship(deliverParameter);
     }
 
     private void createL13(List<ItemDto> itemsFromAu11) {
@@ -217,7 +217,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.trackNumber = "trackNumber13";
         deliverParameter.packageNumber = "packageNumber13";
         deliverParameter.shipment = new Amount(BigDecimal.ONE);
-        deliveryService.deliver(deliverParameter);
+        shippingService.ship(deliverParameter);
     }
 
     private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) {
@@ -230,7 +230,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.trackNumber = "trackNumber12";
         deliverParameter.packageNumber = "packageNumber12";
         deliverParameter.shipment = new Amount(BigDecimal.ONE); 
-        DeliveryNotes l12 = deliveryService.deliver(deliverParameter);
+        DeliveryNotes l12 = shippingService.ship(deliverParameter);
         return l12;
     }
 
@@ -244,7 +244,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.trackNumber = "trackNumber";
         deliverParameter.packageNumber = "packageNumber";
         deliverParameter.shipment = new Amount(BigDecimal.TEN);
-        DeliveryNotes l11 = deliveryService.deliver(
+        DeliveryNotes l11 = shippingService.ship(
                 deliverParameter);
         return l11;
     }

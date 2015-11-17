@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.api.AgreementService;
-import de.switajski.priebes.flexibleorders.service.api.DeliveryService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkPaidService;
@@ -48,13 +48,13 @@ public class TransitionsController extends ExceptionController {
     @Autowired
     private InvoicingService invoicingService;
     @Autowired
-    private DeliveryService deliveryService;
+    private ShippingService shippingService;
     @Autowired
     private AgreementService agreementService;
     @Autowired
     private MarkPaidService markPaidService;
     @Autowired
-	private ConfirmService orderConfirmationService;
+	private ConfirmService confirmService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody
@@ -89,7 +89,7 @@ public class TransitionsController extends ExceptionController {
         confirmParameter.customerNumber = confirmRequest.customerId;
         confirmParameter.paymentConditions = confirmRequest.paymentConditions;
 
-        OrderConfirmation confirmationReport = orderConfirmationService.confirm(
+        OrderConfirmation confirmationReport = confirmService.confirm(
                 confirmParameter);
         return ExtJsResponseCreator.createResponse(confirmationReport);
     }
@@ -155,7 +155,7 @@ public class TransitionsController extends ExceptionController {
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = deliverRequest.ignoreContradictoryExpectedDeliveryDates;
         
         deliverParameter.customerNumber = deliverRequest.customerId;
-        DeliveryNotes dn = deliveryService.deliver(
+        DeliveryNotes dn = shippingService.ship(
                 deliverParameter);
         return ExtJsResponseCreator.createResponse(dn);
     }

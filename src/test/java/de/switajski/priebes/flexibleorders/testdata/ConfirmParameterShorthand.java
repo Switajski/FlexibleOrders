@@ -19,7 +19,7 @@ public class ConfirmParameterShorthand {
         cp.customerDetails = customer.getDetails();
         cp.invoiceAddress = customer.getInvoiceAddress();
         cp.shippingAddress = customer.getShippingAddress();
-        cp.orderItems = Arrays.asList(items);
+        cp.itemsToBeConfirmed = Arrays.asList(items);
         return cp;
     }
 }

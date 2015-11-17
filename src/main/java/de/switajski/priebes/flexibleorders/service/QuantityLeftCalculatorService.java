@@ -21,7 +21,7 @@ public class QuantityLeftCalculatorService {
         DeliveryHistory history = DeliveryHistory.of(reportItem);
         if (reportItem instanceof ConfirmationItem) {
             if (!((ConfirmationItem) reportItem).isAgreed()) {
-                return toBeAgreed(history, ConfirmationItem.class);
+                return toBeAgreed(history);
             }
             else {
                 return toBeShipped(history);
@@ -40,7 +40,7 @@ public class QuantityLeftCalculatorService {
         return orderItem.getOrderedQuantity() - sumQty(deliveryHistory.getAgreedConfirmationItems());
     }
 
-    public Integer toBeAgreed(DeliveryHistory history, Class<? extends ReportItem> clazz) {
+    public Integer toBeAgreed(DeliveryHistory history) {
         return sumQty(history.getNonAgreedConfirmationItems()) - sumQty(history.getAgreedConfirmationItems());
     }
 
@@ -70,11 +70,16 @@ public class QuantityLeftCalculatorService {
      * @param reportItem should have enough 
      */
     public void validateQuantity(Integer qty, ReportItem reportItem) {
-        if (qty == null) throw new IllegalArgumentException("Menge nicht angegeben");
-        if (calculateLeft(reportItem) == 0) throw new IllegalArgumentException(
-                reportItem.toString() + " hat keine offenen Positionen mehr");
-        if (qty < 1) throw new IllegalArgumentException("Menge kleiner eins");
-        if (qty > calculateLeft(reportItem)) throw new IllegalArgumentException(
-                "angeforderte Menge ist zu gross");
+        if (qty == null) 
+        	throw new IllegalArgumentException("Menge nicht angegeben");
+        
+        if (calculateLeft(reportItem) == 0) 
+        	throw new IllegalArgumentException(reportItem.toString() + " hat keine offenen Positionen mehr");
+        
+        if (qty < 1) 
+        	throw new IllegalArgumentException("Menge kleiner eins");
+        
+        if (qty > calculateLeft(reportItem)) 
+        	throw new IllegalArgumentException("angeforderte Menge ist zu gross");
     }
 }

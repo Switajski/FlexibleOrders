@@ -44,7 +44,7 @@ public class OrderConfirmationService {
     public OrderConfirmation confirm(ConfirmParameter confirmParameter) {
         Address invoiceAddress = confirmParameter.invoiceAddress;
         Address shippingAddress = confirmParameter.shippingAddress;
-        validateConfirm(confirmParameter.orderNumber, confirmParameter.confirmNumber, confirmParameter.orderItems, shippingAddress);
+        validateConfirm(confirmParameter.orderNumber, confirmParameter.confirmNumber, confirmParameter.itemsToBeConfirmed, shippingAddress);
 
         Order order = orderRepo.findByOrderNumber(confirmParameter.orderNumber);
         if (order == null) throw new IllegalArgumentException("Bestellnr. nicht gefunden");
@@ -70,7 +70,7 @@ public class OrderConfirmationService {
         cr.setPurchaseAgreement(pAgree);
         cr.setCustomerDetails(confirmParameter.customerDetails);
 
-        for (ReportItem ci : createConfirmationItemsSafely(confirmParameter.orderItems))
+        for (ReportItem ci : createConfirmationItemsSafely(confirmParameter.itemsToBeConfirmed))
             cr.addItem(ci);
         
         return reportRepo.save(cr);
@@ -91,26 +91,28 @@ public class OrderConfirmationService {
         for (ItemDto entry : itemDtos) {
             ReportItem item = null;
             if (entry.id != null) {
-                item = createConfirmationItem(entry.id, entry.quantityLeft);
+                item = createConfirmationItemById(entry.id, entry.quantityLeft);
             }
             else if (!StringUtils.isEmpty(entry.product) && !entry.product.equals("0")) {
-                item = createConfirmationItem(entry.product, entry.orderNumber, entry.quantityLeft);
+                item = createConfirmationItemByOrderNumber(entry.product, entry.orderNumber, entry.quantityLeft);
             }
-            if (item == null) throw new IllegalArgumentException("Weder ID von Bestellposition noch Bestellung mit Artikelnummer angegeben");
+            if (item == null) 
+            	throw new IllegalArgumentException("Weder ID von Bestellposition noch Bestellung mit Artikelnummer angegeben");
             else cis.add(item);
         }
         return cis;
     }
 	
-    private ReportItem createConfirmationItem(String productNumber, String orderNumber, Integer quantity) {
+    private ReportItem createConfirmationItemByOrderNumber(String productNumber, String orderNumber, Integer quantity) {
         List<OrderItem> ois = orderItemRepo.findByOrderNumber(orderNumber);
         for (OrderItem oi : ois) {
-            if (oi.getProduct().getProductNumber().equals(productNumber)) return new ConfirmationItem(oi, quantity);
+            if (oi.getProduct().getProductNumber().equals(productNumber)) 
+            	return new ConfirmationItem(oi, quantity);
         }
         throw new NotFoundException(String.format("Bestellposition mit Artikelnummer %s nicht in Bestellung %s gefunden", productNumber, orderNumber));
     }
 
-    private ReportItem createConfirmationItem(long orderItemId, int qty) {
+    private ReportItem createConfirmationItemById(long orderItemId, int qty) {
         OrderItem oi = orderItemRepo.findOne(orderItemId);
         if (oi == null) throw new NotFoundException("Bestellposition mit gegebener ID nicht gefunden");
         return new ConfirmationItem(oi, qty);

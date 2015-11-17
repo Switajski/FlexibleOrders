@@ -95,7 +95,7 @@ public class OrderConfirmationServiceTest {
         orderConfirmationService.confirm(AB11);
 
         // THEN
-        verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.orderItems)));
+        verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.itemsToBeConfirmed)));
     }
 	
     private void setupProducts(CatalogProduct... products) {

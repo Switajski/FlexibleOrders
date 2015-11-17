@@ -15,7 +15,7 @@ public class ConfirmParameter {
 	public Long deliveryMethodNo;
 	public Address shippingAddress;
 	public Address invoiceAddress;
-	public List<ItemDto> orderItems;
+	public List<ItemDto> itemsToBeConfirmed;
 	public CustomerDetails customerDetails;
 	public String paymentConditions;
     public Long customerNumber;
@@ -29,7 +29,7 @@ public class ConfirmParameter {
 		this.deliveryMethodNo = deliveryMethodNoNumber;
 		this.shippingAddress = shippingAddress;
 		this.invoiceAddress = invoiceAddress;
-		this.orderItems = orderItems;
+		this.itemsToBeConfirmed = orderItems;
 	}
 
 	public ConfirmParameter() {

@@ -17,25 +17,25 @@ import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 @Service
 public class StatisticsService {
 
-	@Autowired
-	private ReportItemRepository reportItemRepo;
-	
-	@Autowired
-	private StatusFilterDispatcher dispatcher;
+    @Autowired
+    private ReportItemRepository reportItemRepo;
 
-	public Amount calculateOpenAmount(String state) {
-		Set<OrderItem> calculated = new HashSet<OrderItem>();
-		Amount summed = Amount.ZERO_EURO;
+    @Autowired
+    private StatusFilterDispatcher dispatcher;
 
-		List<ReportItem> ris = reportItemRepo
-				.findAll(dispatcher.dispatchStatus(ProductionState.mapFromString(state)));
+    public Amount calculateOpenAmount(String state) {
+        Set<OrderItem> calculated = new HashSet<OrderItem>();
+        Amount summed = Amount.ZERO_EURO;
 
-		for (ReportItem ri : ris) {
-			if (calculated.add(ri.getOrderItem())){
-				summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
-						.multiply(ri.toBeProcessed()));
-			}
-		}
-		return summed;
-	}
+        List<ReportItem> ris = reportItemRepo
+                .findAll(dispatcher.dispatchStatus(ProductionState.mapFromString(state)));
+
+        for (ReportItem ri : ris) {
+            if (calculated.add(ri.getOrderItem())) {
+                summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
+                        .multiply(ri.toBeProcessed()));
+            }
+        }
+        return summed;
+    }
 }

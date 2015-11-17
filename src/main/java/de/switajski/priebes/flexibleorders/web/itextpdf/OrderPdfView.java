@@ -28,9 +28,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 /**
  * Pdf view customized for the display of an order
- * 
+ *
  * @author Marek
- * 
+ *
  */
 @Component
 public class OrderPdfView extends PriebesIText5PdfView {
@@ -80,15 +80,14 @@ public class OrderPdfView extends PriebesIText5PdfView {
             footer.writeSelectedRows(0, -1,
                     /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
                     /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-                            + FOOTER_MARGIN_BOTTOM,
+                    + FOOTER_MARGIN_BOTTOM,
                     writer.getDirectContent());
         }
 
     }
 
     private String replaceNull(String customerFirstName) {
-        if (customerFirstName == null)
-            return "";
+        if (customerFirstName == null) return "";
         return customerFirstName;
     }
 
@@ -119,9 +118,9 @@ public class OrderPdfView extends PriebesIText5PdfView {
     private String getPriceXquantity(OrderItem he) {
         if (he.getNegotiatedPriceNet() != null
                 && he.getNegotiatedPriceNet().getValue() != null) return he
-                .getNegotiatedPriceNet()
-                .multiply(he.getOrderedQuantity())
-                .toString();
+                        .getNegotiatedPriceNet()
+                        .multiply(he.getOrderedQuantity())
+                        .toString();
         else return "-";
     }
 
@@ -137,14 +136,13 @@ public class OrderPdfView extends PriebesIText5PdfView {
     private boolean hasVat(ReportDto order) {
         return !(order.vatRate == null);
     }
-    
-	private boolean hasRecommendedPrices(ReportDto order) {
+
+    private boolean hasRecommendedPrices(ReportDto order) {
         for (OrderItem oi : order.orderItems) {
             if (oi.getNegotiatedPriceNet() == null
                     || oi.getNegotiatedPriceNet().getValue() == null) return false;
         }
         return true;
     }
-
 
 }

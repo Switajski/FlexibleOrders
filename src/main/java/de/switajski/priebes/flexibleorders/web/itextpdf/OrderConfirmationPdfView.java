@@ -34,8 +34,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
                 .get(ReportDto.class.getSimpleName());
 
         String heading = "Auftragsbest" + Unicode.A_UML + "tigung " + report.documentNumber.toString();
-        if (report.orderConfirmationNumber != null)
-            heading += " - best"+Unicode.A_UML+"tigt mit "+report.orderConfirmationNumber;
+        if (report.orderConfirmationNumber != null) heading += " - best" + Unicode.A_UML + "tigt mit " + report.orderConfirmationNumber;
 
         String date = "AB-Datum: " + dateFormat.format(report.created);
         String customerNo = "Kundennummer: " + report.customerNumber;
@@ -54,40 +53,39 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
         PdfPTable infoTable = report.isShowExtendedInformation() ?
                 ReportViewHelper.createExtInfoTable(new ExtInfoTableParameter(report)) :
-                ReportViewHelper.createInfoTable(
-                        customerNo,
-                        removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
-                        ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
-                                report.shippingSpecific_expectedDelivery),
-                        "");
-        document.add(infoTable);
+                    ReportViewHelper.createInfoTable(
+                            customerNo,
+                            removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
+                            ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
+                                    report.shippingSpecific_expectedDelivery),
+                            "");
+                document.add(infoTable);
 
-        document.add(ParagraphBuilder.createEmptyLine());
+                document.add(ParagraphBuilder.createEmptyLine());
 
-        // insert main table
-        document.add(ReportViewHelper.createExtendedTable(report));
+                // insert main table
+                document.add(ReportViewHelper.createExtendedTable(report));
 
-        // insert footer table
-        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-                .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
-                .withTotalWidth(PriebesIText5PdfView.WIDTH);
-        
-        if (report.orderConfirmationSpecific_paymentConditions != null){
-        	addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
-        }
+                // insert footer table
+                CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
+                        .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
+                        .withTotalWidth(PriebesIText5PdfView.WIDTH);
 
-        PdfPTable footer = footerBuilder.build();
+        if (report.orderConfirmationSpecific_paymentConditions != null) {
+            addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
+                }
 
-        footer.writeSelectedRows(0, -1,
-                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
+                PdfPTable footer = footerBuilder.build();
+
+                footer.writeSelectedRows(0, -1,
+                        /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
+                        /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
                         + FOOTER_MARGIN_BOTTOM,
-                writer.getDirectContent());
+                        writer.getDirectContent());
     }
 
     private String removeNull(String customerLastName) {
-        if (customerLastName == null)
-            return "";
+        if (customerLastName == null) return "";
         return customerLastName;
     }
 

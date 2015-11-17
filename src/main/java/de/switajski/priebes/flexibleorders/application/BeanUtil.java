@@ -12,7 +12,7 @@ public class BeanUtil {
     /**
      * from http://stackoverflow.com/questions/6099040/find-out-the-differences-
      * between-two-java-beans-for-version-tracking
-     * 
+     *
      * @param oldObject
      * @param newObject
      * @return
@@ -40,10 +40,11 @@ public class BeanUtil {
                 if (property1 == null && property2 == null) continue;
                 else {
                     differences.add(property1 == null ?
-                            intro + "null != \"" + property2 + "\")":
-                            intro + "\"" + property1 + "\" != null)");
+                            intro + "null != \"" + property2 + "\")" :
+                                intro + "\"" + property1 + "\" != null)");
                 }
-            } else if (!property1.equals(property2)) {
+            }
+            else if (!property1.equals(property2)) {
                 differences.add(intro + "\"" + property1 + "\" != \"" + property2 + "\")");
             }
         }
@@ -64,9 +65,8 @@ public class BeanUtil {
     }
 
     private static Object findDiffering(Iterable<?> pas, Object pa) {
-        for (Object pa2:pas)
-            if (!pa2.equals(pa))
-                return pa2;
+        for (Object pa2 : pas)
+            if (!pa2.equals(pa)) return pa2;
         throw new IllegalArgumentException("No differing found");
     }
 

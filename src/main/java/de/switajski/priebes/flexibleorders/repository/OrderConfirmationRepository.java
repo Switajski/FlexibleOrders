@@ -8,9 +8,9 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 
 @Repository
-public interface OrderConfirmationRepository extends JpaRepository<OrderConfirmation, String>, JpaSpecificationExecutor<Report>{
+public interface OrderConfirmationRepository extends JpaRepository<OrderConfirmation, String>, JpaSpecificationExecutor<Report> {
 
-	OrderConfirmation findByOrderAgreementNumber(String orderAgreementNumber);
+    OrderConfirmation findByOrderAgreementNumber(String orderAgreementNumber);
 
     OrderConfirmation findByDocumentNumber(String orderConfirmationNo);
 

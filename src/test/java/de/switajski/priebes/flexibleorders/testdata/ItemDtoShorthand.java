@@ -13,19 +13,15 @@ public class ItemDtoShorthand {
         item.quantity = qty;
         return item;
     }
-    
+
     public static ItemDto item(CatalogProduct product, int qty, String reportNo) {
         ItemDto item = item(product, qty);
-        //TODO: qtyLeft is really nonsense
+        // TODO: qtyLeft is really nonsense
         item.quantityLeft = qty;
-        if (reportNo.startsWith("B"))
-            item.orderNumber = reportNo;
-        else if (reportNo.startsWith("AB"))
-            item.orderConfirmationNumber = reportNo;
-        else if (reportNo.startsWith("L"))
-            item.deliveryNotesNumber = reportNo;
-        else if (reportNo.startsWith("R"))
-            item.invoiceNumber = reportNo;
+        if (reportNo.startsWith("B")) item.orderNumber = reportNo;
+        else if (reportNo.startsWith("AB")) item.orderConfirmationNumber = reportNo;
+        else if (reportNo.startsWith("L")) item.deliveryNotesNumber = reportNo;
+        else if (reportNo.startsWith("R")) item.invoiceNumber = reportNo;
         return item;
     }
 

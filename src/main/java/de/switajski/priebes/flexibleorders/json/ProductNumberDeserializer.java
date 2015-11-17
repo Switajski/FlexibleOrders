@@ -18,16 +18,16 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 @Component
 public class ProductNumberDeserializer extends JsonDeserializer<Product> {
 
-	@Transactional
-	@Override
-	public Product deserialize(JsonParser jp, DeserializationContext ctxt)
-			throws IOException, JsonProcessingException {
-		Product product = new Product();
-		ObjectCodec oc = jp.getCodec();
-		JsonNode node = oc.readTree(jp);
-		product.setProductNumber(node.asText());
-		return product;
+    @Transactional
+    @Override
+    public Product deserialize(JsonParser jp, DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
+        Product product = new Product();
+        ObjectCodec oc = jp.getCodec();
+        JsonNode node = oc.readTree(jp);
+        product.setProductNumber(node.asText());
+        return product;
 
-	}
+    }
 
 }

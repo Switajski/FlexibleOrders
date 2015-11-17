@@ -15,10 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.CancellationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
@@ -56,7 +53,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
     /**
      * Constructor with all attributes needed to create a valid item
-     * 
+     *
      * @param order
      * @param product
      * @param orderedQuantity
@@ -71,16 +68,17 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
         if (order != null && !order.getItems().contains(this)) order.getItems().add(this);
     }
 
+    @Override
     public String toString() {
         return new StringBuilder("#")
-                .append(getId())
-                .append(": ")
-                .append(getOrderedQuantity())
-                .append(" x ")
-                .append(getProduct().getName())
-                .toString();
+        .append(getId())
+        .append(": ")
+        .append(getOrderedQuantity())
+        .append(" x ")
+        .append(getProduct().getName())
+        .toString();
     }
-    
+
     public int toBeConfirmed() {
         DeliveryHistory deliveryHistory = DeliveryHistory.of(this);
         if (deliveryHistory.isEmpty()) {
@@ -154,7 +152,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
     /**
      * handles bidirectional relationship
-     * 
+     *
      * @param reportItem
      *            has no other Report than this. If null, this orderItem will be
      *            set.
@@ -187,14 +185,14 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
     }
 
     @SuppressWarnings("unchecked")
-	public <T> Set<T> getReportItems(Class<T> type){
-    	Set<T> riToReturn = new HashSet<>();
-    	for (ReportItem item:reportItems){
-    		if (type.isInstance(item)){
-    			riToReturn.add((T) item);
-    		}
-    	}
-    	return riToReturn;
+    public <T> Set<T> getReportItems(Class<T> type) {
+        Set<T> riToReturn = new HashSet<>();
+        for (ReportItem item : reportItems) {
+            if (type.isInstance(item)) {
+                riToReturn.add((T) item);
+            }
+        }
+        return riToReturn;
     }
 
     public boolean isShippingCosts() {
@@ -203,7 +201,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
 
     /**
      * convenience method
-     * 
+     *
      * @return
      */
     @JsonIgnore

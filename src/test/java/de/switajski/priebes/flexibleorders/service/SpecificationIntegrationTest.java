@@ -25,9 +25,9 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
-import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -64,29 +64,29 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     @Autowired
     private AgreeingService agreeingService;
 
-	private ConfirmingService confirmingService;
+    private ConfirmingService confirmingService;
 
     private static final int JUREK_QTY = 5; // All Jureks from B12
 
     private static final Product AMY = new CatalogProductBuilder()
-            .amy().build()
-            .toProduct();
+    .amy().build()
+    .toProduct();
 
     private static final Product PAUL = new CatalogProductBuilder()
-            .paul().build()
-            .toProduct();
+    .paul().build()
+    .toProduct();
 
     private static final Product MILADKA = new CatalogProductBuilder()
-            .miladka().build()
-            .toProduct();
+    .miladka().build()
+    .toProduct();
 
     private static final Product SALOME = new CatalogProductBuilder()
-            .salome().build()
-            .toProduct();
+    .salome().build()
+    .toProduct();
 
     private static final Product JUREK = new CatalogProductBuilder()
-            .jurek().build()
-            .toProduct();
+    .jurek().build()
+    .toProduct();
 
     @Transactional
     @Test
@@ -160,7 +160,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * <ul>
      * <li>5 Paul</li>
      * </ul>
-     * 
+     *
      * @param orderAgreement
      */
     private void givenDeliveryReports(OrderConfirmation orderAgreement) {
@@ -226,13 +226,13 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * <li>15 Miladka</li>
      * <li>30 Paul</li>
      * </ul>
-     * 
+     *
      * B12:
      * <ul>
      * <li>12 Salome</li>
      * <li>5 Jurek</li>
      * </ul>
-     * 
+     *
      * AB11:
      * <ul>
      * <li>10 Amy</li>
@@ -241,9 +241,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * <li>12 Salome</li>
      * <li>5 Jurek</li>
      * </ul>
-     * 
+     *
      * AU11: </br> same as AB11
-     * 
+     *
      * @return
      */
     private OrderConfirmation givenOrderAgreement() {

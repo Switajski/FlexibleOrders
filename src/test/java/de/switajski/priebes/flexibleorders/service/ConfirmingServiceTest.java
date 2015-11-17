@@ -14,7 +14,6 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,12 +43,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterSe
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class OrderConfirmationServiceTest {
-	
-    private static final Integer ORDERED_QUANTITY = 3;
-    private static final String PRODUCT_NO = "3";
-    private static final Long CUSTOMER_ID = 2l;
-    private static final BigDecimal PRICE_NET = new BigDecimal(5.55);
+public class ConfirmingServiceTest {
 
     @Mock
     private ReportRepository reportRepository;
@@ -74,8 +68,7 @@ public class OrderConfirmationServiceTest {
     @InjectMocks
     private ConfirmingService confirmingService = new ConfirmingService();
 
-
-	@Test
+    @Test
     public void shouldConfirmWithNoId() {
         // GIVEN
         MockitoAnnotations.initMocks(this);
@@ -88,7 +81,7 @@ public class OrderConfirmationServiceTest {
         when(orderRepo.findByOrderNumber(B11.orderNumber)).thenReturn(b12);
         when(orderItemRepo.findByOrderNumber(B11.orderNumber)).thenReturn(new ArrayList<OrderItem>(b11.getItems()));
         when(orderItemRepo.findByOrderNumber(B12.orderNumber)).thenReturn(new ArrayList<OrderItem>(b12.getItems()));
-        
+
         setupProducts(MILADKA, SALOME, PAUL, JUREK, AMY);
 
         // WHEN
@@ -97,13 +90,13 @@ public class OrderConfirmationServiceTest {
         // THEN
         verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.itemsToBeConfirmed)));
     }
-	
+
     private void setupProducts(CatalogProduct... products) {
         for (CatalogProduct product : products)
             when(catalogProductService.findByProductNumber(product.getProductNumber())).thenReturn(product);
     }
-    
-	public ArgumentMatcher<Report> hasSameProductNumbersAs(Collection<ItemDto> items){
+
+    public ArgumentMatcher<Report> hasSameProductNumbersAs(Collection<ItemDto> items) {
         return new ProductNumbersMatcher(items);
     }
 
@@ -117,28 +110,25 @@ public class OrderConfirmationServiceTest {
 
             OrderConfirmation oc = (OrderConfirmation) argument;
             HashSet<String> productNumbersIs = createProductNumbers(oc);
-            
+
             return productNumbersIs.equals(productNumbersShouldBe);
         }
-        
 
         public ProductNumbersMatcher(Collection<ItemDto> items) {
             productNumbersShouldBe = new HashSet<String>();
-            for (ItemDto item:items)
+            for (ItemDto item : items)
                 productNumbersShouldBe.add(item.product);
         }
 
-
         private HashSet<String> createProductNumbers(OrderConfirmation oc) {
             HashSet<String> productNumbersIs = new HashSet<String>();
-            for (ReportItem i : oc.getItems()){
+            for (ReportItem i : oc.getItems()) {
                 String productNumber = i.getOrderItem().getProduct().getProductNumber();
                 productNumbersIs.add(productNumber);
             }
             return productNumbersIs;
         }
-        
-    }
 
+    }
 
 }

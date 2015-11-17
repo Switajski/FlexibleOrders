@@ -12,34 +12,33 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 @Service
 public class CustomerServiceImpl {
 
-	private CustomerRepository customerRepo;
+    private CustomerRepository customerRepo;
 
-	@Autowired
-	public CustomerServiceImpl(CustomerRepository customerRepo) {
-		this.customerRepo = customerRepo;
-	}
-	
-	@Transactional
-	public Customer create(Customer customer){
-		return customerRepo.save(customer);
-	}
-	
-	public List<Customer> findAll() {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Not implemented yet");
-	}
+    @Autowired
+    public CustomerServiceImpl(CustomerRepository customerRepo) {
+        this.customerRepo = customerRepo;
+    }
 
-	@Transactional
-	public void delete(Long customerNumber) {
-		Customer customer = retrieveCustomerSavely(customerNumber);
-		customerRepo.delete(customer);
-	}
+    @Transactional
+    public Customer create(Customer customer) {
+        return customerRepo.save(customer);
+    }
 
-	private Customer retrieveCustomerSavely(Long customerNumber) {
-		Customer customer = customerRepo.findByCustomerNumber(customerNumber);
-		if (customer == null) 
-			throw new IllegalArgumentException("Kunde mit gegebener Kundennummer nicht gefunden");
-		return customer;
-	}
+    public List<Customer> findAll() {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
+
+    @Transactional
+    public void delete(Long customerNumber) {
+        Customer customer = retrieveCustomerSavely(customerNumber);
+        customerRepo.delete(customer);
+    }
+
+    private Customer retrieveCustomerSavely(Long customerNumber) {
+        Customer customer = customerRepo.findByCustomerNumber(customerNumber);
+        if (customer == null) throw new IllegalArgumentException("Kunde mit gegebener Kundennummer nicht gefunden");
+        return customer;
+    }
 
 }

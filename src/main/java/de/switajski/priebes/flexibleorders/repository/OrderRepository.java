@@ -11,26 +11,26 @@ import org.springframework.data.jpa.repository.Query;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 
-public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order>{
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-	Order findByOrderNumber(String orderNumber);
+    Order findByOrderNumber(String orderNumber);
 
-	Page<Order> findByCustomer(Customer customer, Pageable pageable);
+    Page<Order> findByCustomer(Customer customer, Pageable pageable);
 
-	List<Order> findByOrderNumberLike(String orderNumber);
+    List<Order> findByOrderNumberLike(String orderNumber);
 
-	List<Order> findByCustomer(Customer customer);
-	
-	//TODO: replace by "ReportItemEmptySpecification" #7
-	static String fromOrderWhereReportItemsIsEmpty = "from Order o join o.items oi where oi.reportItems is empty ";
-	
-	static String groupBy = " group by o";
-	
-	@Query("SELECT o " + fromOrderWhereReportItemsIsEmpty + groupBy)
-	Page<Order> findAllToBeConfirmed(Pageable pageable);
-	
-	@Query("SELECT o " + fromOrderWhereReportItemsIsEmpty
-			+ "and o.customer = ?1" + groupBy)
-	Page<Order> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
-	
+    List<Order> findByCustomer(Customer customer);
+
+    // TODO: replace by "ReportItemEmptySpecification" #7
+    static String fromOrderWhereReportItemsIsEmpty = "from Order o join o.items oi where oi.reportItems is empty ";
+
+    static String groupBy = " group by o";
+
+    @Query("SELECT o " + fromOrderWhereReportItemsIsEmpty + groupBy)
+    Page<Order> findAllToBeConfirmed(Pageable pageable);
+
+    @Query("SELECT o " + fromOrderWhereReportItemsIsEmpty
+            + "and o.customer = ?1" + groupBy)
+    Page<Order> findAllToBeConfirmedByCustomer(Customer customer, Pageable pageable);
+
 }

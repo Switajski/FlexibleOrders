@@ -27,109 +27,112 @@ import de.switajski.priebes.flexibleorders.service.ReportingService;
 
 @RequestMapping("/orderitems")
 @Controller
-public class OrderItemsController extends ExceptionController{
+public class OrderItemsController extends ExceptionController {
 
-	@Autowired
-	private OrderItemRepository itemService;
-	//TODO: on Controller layer only Services are allowed
-	@Autowired
-	private OrderRepository orderRepo;
-	@Autowired
-	private ReportingService reportingService;
+    @Autowired
+    private OrderItemRepository itemService;
+    // TODO: on Controller layer only Services are allowed
+    @Autowired
+    private OrderRepository orderRepo;
+    @Autowired
+    private ReportingService reportingService;
 
-	@RequestMapping(value="/json", method=RequestMethod.DELETE)
-	public @ResponseBody JsonObjectResponse delete( @RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
-		JsonObjectResponse response = new JsonObjectResponse();
+    @RequestMapping(value = "/json", method = RequestMethod.DELETE)
+    public @ResponseBody JsonObjectResponse delete(@RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
+        JsonObjectResponse response = new JsonObjectResponse();
 
-		if (json.charAt(0) == '['){
-			List<OrderItem> entities = parseJsonArray(json);
-			for (OrderItem entity:entities){
-				itemService.delete(entity);
-			}
-			response.setTotal(entities.size());
-		} else {
-			OrderItem entity = parseJsonObject(json);
-			itemService.delete(entity);					
-			response.setData(entity);
-			response.setTotal(1l);
-		}
+        if (json.charAt(0) == '[') {
+            List<OrderItem> entities = parseJsonArray(json);
+            for (OrderItem entity : entities) {
+                itemService.delete(entity);
+            }
+            response.setTotal(entities.size());
+        }
+        else {
+            OrderItem entity = parseJsonObject(json);
+            itemService.delete(entity);
+            response.setData(entity);
+            response.setTotal(1l);
+        }
 
-		response.setMessage("Entity deleted.");
-		response.setSuccess(true);
+        response.setMessage("Entity deleted.");
+        response.setSuccess(true);
 
-		return response;
-	}
+        return response;
+    }
 
-	@RequestMapping(value="/json", /*headers = "Accept:application/json",*/ method=RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
-		JsonObjectResponse response = new JsonObjectResponse();
+    @RequestMapping(value = "/json", /* headers = "Accept:application/json", */method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse create(@RequestBody String json) throws JsonParseException, JsonMappingException, IOException {
+        JsonObjectResponse response = new JsonObjectResponse();
 
-		if (json.charAt(0) == '['){
-			List<OrderItem> entities = parseJsonArray(json);
-			for (OrderItem entity:entities){
-				itemService.save(entity);
-			}
-			response.setTotal(entities.size());
-		} else {
-			OrderItem entity = parseJsonObject(json);
-			itemService.save(entity);					
-			response.setData(entity);
-			response.setTotal(1l);
-		}
+        if (json.charAt(0) == '[') {
+            List<OrderItem> entities = parseJsonArray(json);
+            for (OrderItem entity : entities) {
+                itemService.save(entity);
+            }
+            response.setTotal(entities.size());
+        }
+        else {
+            OrderItem entity = parseJsonObject(json);
+            itemService.save(entity);
+            response.setData(entity);
+            response.setTotal(1l);
+        }
 
-		response.setMessage("All entities retrieved.");
-		response.setSuccess(true);
-		response.setTotal(itemService.count());
+        response.setMessage("All entities retrieved.");
+        response.setSuccess(true);
+        response.setTotal(itemService.count());
 
-		return response;
-	}
+        return response;
+    }
 
-	private OrderItem parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
-		return (OrderItem) mapper.readValue(json, OrderItem.class); 
-	}
+    private OrderItem parseJsonObject(String json) throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getSerializationConfig();
+        return mapper.readValue(json, OrderItem.class);
+    }
 
-	//TODO: move to SerializationHelper
-	public List<OrderItem> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
-		OrderItem[] typedArray = (OrderItem[]) Array.newInstance(OrderItem.class,1);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.getSerializationConfig();
-		OrderItem[] records = (OrderItem[]) mapper.readValue(json, typedArray.getClass());
+    // TODO: move to SerializationHelper
+    public List<OrderItem> parseJsonArray(String json) throws JsonParseException, JsonMappingException, IOException {
+        OrderItem[] typedArray = (OrderItem[]) Array.newInstance(OrderItem.class, 1);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getSerializationConfig();
+        OrderItem[] records = mapper.readValue(json, typedArray.getClass());
 
-		ArrayList<OrderItem> list = new ArrayList<OrderItem>();
-		for (OrderItem record:records)
-			list.add(record);
+        ArrayList<OrderItem> list = new ArrayList<OrderItem>();
+        for (OrderItem record : records)
+            list.add(record);
 
-		return list;
-	}
-	
-	
-	
-	@RequestMapping(value="/json", params="orderNumber", headers = "Accept=application/json")
-	public @ResponseBody JsonObjectResponse listByOrderNumber(
-			@RequestParam(value = "orderNumber", required = true) String orderNumber) {
-		JsonObjectResponse response = new JsonObjectResponse();
-		Set<OrderItem> entities =  orderRepo.findByOrderNumber(orderNumber).getItems();
-		response.setMessage("All order items retrieved.");
-		response.setSuccess(true);
-		response.setTotal(entities.size());
-		response.setData(entities);
+        return list;
+    }
 
-		return response;
-	}
+    @RequestMapping(value = "/json", params = "orderNumber", headers = "Accept=application/json")
+    public @ResponseBody JsonObjectResponse listByOrderNumber(
+            @RequestParam(value = "orderNumber", required = true) String orderNumber) {
+        JsonObjectResponse response = new JsonObjectResponse();
+        Set<OrderItem> entities = orderRepo.findByOrderNumber(orderNumber).getItems();
+        response.setMessage("All order items retrieved.");
+        response.setSuccess(true);
+        response.setTotal(entities.size());
+        response.setData(entities);
 
-	/**
-	 * Site is created by Extjs and JSON
-	 * @param page
-	 * @param size
-	 * @param uiModel
-	 * @return
-	 */
-	@RequestMapping(value = "confirm", produces = "text/html")
-    public String showConfirmationPage(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        return response;
+    }
+
+    /**
+     * Site is created by Extjs and JSON
+     * 
+     * @param page
+     * @param size
+     * @param uiModel
+     * @return
+     */
+    @RequestMapping(value = "confirm", produces = "text/html")
+    public String showConfirmationPage(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         return "orderitems/confirm";
     }
-	
 
 }

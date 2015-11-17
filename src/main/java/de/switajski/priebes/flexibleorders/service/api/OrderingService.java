@@ -38,9 +38,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * "http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html">
  * http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html</a>
  * </br> and converters from request object to ItemDto
- * 
+ *
  * @author Marek Switajski
- * 
+ *
  */
 @Service
 public class OrderingService {
@@ -66,9 +66,9 @@ public class OrderingService {
 
     /**
      * Creates initially an order with its order items
-     * 
+     *
      * @param orderParameter
-     * 
+     *
      * @return created order, when successfully persisted
      */
     @Transactional
@@ -154,10 +154,10 @@ public class OrderingService {
         Order order = orderRepo.findByOrderNumber(orderNumber);
         if (order == null) throw new IllegalArgumentException(
                 "Bestellnr. zum l" + Unicode.O_UML + "schen nicht gefunden");
-        for (OrderItem oi : order.getItems()){
-        	if (!oi.getReportItems().isEmpty()){
-        		throw new RuntimeException("Kann nicht l" + Unicode.O_UML + "schen: Bestellung hat Dokumente wie ABs, Lieferscheine, Rechnungen etc.");
-        	}
+        for (OrderItem oi : order.getItems()) {
+            if (!oi.getReportItems().isEmpty()) {
+                throw new RuntimeException("Kann nicht l" + Unicode.O_UML + "schen: Bestellung hat Dokumente wie ABs, Lieferscheine, Rechnungen etc.");
+            }
         }
         orderRepo.delete(order);
         return true;

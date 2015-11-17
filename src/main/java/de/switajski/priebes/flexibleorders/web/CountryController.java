@@ -18,9 +18,9 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 public class CountryController extends ExceptionController {
 
     @RequestMapping("/country")
-    public @ResponseBody JsonObjectResponse listAll(){
+    public @ResponseBody JsonObjectResponse listAll() {
         Set<CountryDto> countries = new HashSet<CountryDto>();
-        for (Country c : Country.values()){
+        for (Country c : Country.values()) {
             CountryDto dto = new CountryDto();
             dto.id = c.name();
             dto.country = c.getName();
@@ -30,5 +30,5 @@ public class CountryController extends ExceptionController {
         response.setTotal(Country.values().length);
         return response;
     }
-    
+
 }

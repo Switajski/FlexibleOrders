@@ -21,7 +21,8 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTablePa
 public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
     @Override
-    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
@@ -34,7 +35,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         for (Element p : ReportViewHelper.createAddress(adresse))
             document.add(p);
-        
+
         document.add(ReportViewHelper.createDate(date));
 
         for (Paragraph p : ReportViewHelper.createHeading(heading))
@@ -51,9 +52,10 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         document.add(ParagraphBuilder.createEmptyLine());
         // insert main table
-        if (report.showPricesInDeliveryNotes){
+        if (report.showPricesInDeliveryNotes) {
             document.add(ReportViewHelper.createExtendedTable(report));
-        } else {
+        }
+        else {
             document.add(ReportViewHelper.createTableWithoutPrices(report));
         }
 

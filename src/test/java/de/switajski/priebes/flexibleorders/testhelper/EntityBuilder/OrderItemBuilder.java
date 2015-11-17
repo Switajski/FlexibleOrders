@@ -55,11 +55,11 @@ public class OrderItemBuilder implements Builder<OrderItem> {
                         "",
                         OriginSystem.FLEXIBLE_ORDERS,
                         i.toString()),
-                CatalogProductBuilder
+                        CatalogProductBuilder
                         .buildWithGeneratedAttributes(i)
                         .toProduct(),
-                i)
-                .generateAttributes(i).build();
+                        i)
+        .generateAttributes(i).build();
     }
 
     public OrderItemBuilder setReportItems(Set<ReportItem> reportItems) {
@@ -107,7 +107,7 @@ public class OrderItemBuilder implements Builder<OrderItem> {
                 null,
                 catalogProduct.toProduct(),
                 quantity)
-        .build();
+                .build();
         return oi;
     }
 

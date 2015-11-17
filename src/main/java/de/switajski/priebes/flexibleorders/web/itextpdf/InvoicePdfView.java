@@ -34,36 +34,36 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTablePa
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
-    
-	@Override
-	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
+    @Override
+    protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
-		String customerNo = report.customerNumber.toString();
-		String date = "Rechnungsdatum: "
-				+ dateFormat.format(report.created);
-		String heading = "Rechnung " + report.documentNumber;
+        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-		InvoiceCalculation calculation = new InvoiceCalculation(report);
-		
-		for (Element p: ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, this.createLogo()))
-			document.add(p);
+        String customerNo = report.customerNumber.toString();
+        String date = "Rechnungsdatum: "
+                + dateFormat.format(report.created);
+        String heading = "Rechnung " + report.documentNumber;
 
-		document.add(ReportViewHelper.createDate(date));
-		
-		for (Paragraph p: ReportViewHelper.createHeading(heading))
-			document.add(p);
+        InvoiceCalculation calculation = new InvoiceCalculation(report);
 
+        for (Element p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, this.createLogo()))
+            document.add(p);
 
-		ExtInfoTableParameter param = new ExtInfoTableParameter();
+        document.add(ReportViewHelper.createDate(date));
+
+        for (Paragraph p : ReportViewHelper.createHeading(heading))
+            document.add(p);
+
+        ExtInfoTableParameter param = new ExtInfoTableParameter();
         param.orderNumbers = report.related_orderNumbers;
-		param.invoiceNumbers = report.related_invoiceNumbers;
-		param.orderAgreementNumbers = report.related_orderAgreementNumbers;
-		param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
-		param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
-		param.creditNoteNumbers = report.related_creditNoteNumbers;
-		
+        param.invoiceNumbers = report.related_invoiceNumbers;
+        param.orderAgreementNumbers = report.related_orderAgreementNumbers;
+        param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
+        param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
+        param.creditNoteNumbers = report.related_creditNoteNumbers;
+
         param.vendorNumber = report.customerSpecific_vendorNumber;
         param.contactInformation = report.customerSpecific_contactInformation;
         param.mark = report.customerSpecific_mark;
@@ -76,101 +76,99 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
         document.add(ParagraphBuilder.createEmptyLine());
 
-		// insert main table
-		if (report.invoiceSpecific_hasItemsWithDifferentCreationDates)
-			document.add(createTableWithDeliveryNotes(report.items));
-		else
-			document.add(createTable(report));
-		
-		// insert footer table
+        // insert main table
+        if (report.invoiceSpecific_hasItemsWithDifferentCreationDates) document.add(createTableWithDeliveryNotes(report.items));
+        else document.add(createTable(report));
+
+        // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-				.createFooterBuilder(calculation, report.orderConfirmationSpecific_paymentConditions)
-				.withTotalWidth(PriebesIText5PdfView.WIDTH);
-        
-        if (report.orderConfirmationSpecific_paymentConditions != null){
-        	addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
+                .createFooterBuilder(calculation, report.orderConfirmationSpecific_paymentConditions)
+                .withTotalWidth(PriebesIText5PdfView.WIDTH);
+
+        if (report.orderConfirmationSpecific_paymentConditions != null) {
+            addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
         }
 
-		PdfPTable footer = footerBuilder.build();
+        PdfPTable footer = footerBuilder.build();
 
-		footer.writeSelectedRows(0, -1,
-				/* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-				/* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-						+ FOOTER_MARGIN_BOTTOM,
-				writer.getDirectContent());
-		
-	}
+        footer.writeSelectedRows(0, -1,
+                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
+                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
+                        + FOOTER_MARGIN_BOTTOM,
+                writer.getDirectContent());
 
-	private PdfPTable createTable(ReportDto cReport) throws DocumentException {
-		PdfPTableBuilder builder = new PdfPTableBuilder(
-				PdfPTableBuilder.createPropertiesWithSixCols());
-		for (ReportItem he : cReport.getItemsByOrder()) {
-			if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
-				List<String> list = new ArrayList<String>();
-				// Art.Nr.:
-				String pNo = he.getOrderItem().getProduct().getProductNumber();
-				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
-				// Artikel
-				list.add(he.getOrderItem().getProduct().getName());
-				// Anzahl
-				list.add(String.valueOf(he.getQuantity()));
-				// EK per Stueck
-				list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
-				// Bestellnr
-				list.add(he.getOrderItem().getOrder().getOrderNumber());
-				// gesamt
-				list.add(he.getOrderItem()
-						.getNegotiatedPriceNet()
-						.multiply(he.getQuantity())
-						.toString());
+    }
 
-				builder.addBodyRow(list);
-			}
-		}
+    private PdfPTable createTable(ReportDto cReport) throws DocumentException {
+        PdfPTableBuilder builder = new PdfPTableBuilder(
+                PdfPTableBuilder.createPropertiesWithSixCols());
+        for (ReportItem he : cReport.getItemsByOrder()) {
+            if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
+                List<String> list = new ArrayList<String>();
+                // Art.Nr.:
+                String pNo = he.getOrderItem().getProduct().getProductNumber();
+                list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
+                // Artikel
+                list.add(he.getOrderItem().getProduct().getName());
+                // Anzahl
+                list.add(String.valueOf(he.getQuantity()));
+                // EK per Stueck
+                list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
+                // Bestellnr
+                list.add(he.getOrderItem().getOrder().getOrderNumber());
+                // gesamt
+                list.add(he.getOrderItem()
+                        .getNegotiatedPriceNet()
+                        .multiply(he.getQuantity())
+                        .toString());
 
-		return builder.withFooter(false).build();
-	}
-	
-	public static PdfPTable createTableWithDeliveryNotes(Collection<ReportItem> cReport) throws DocumentException {
-		PdfPTableBuilder builder = new PdfPTableBuilder(
-				PdfPTableBuilder.createPropertiesWithSevenCols());
-		for (ReportItem ii : cReport) {
-			Set<ShippingItem> sis = DeliveryHistory.of(ii.getOrderItem()).getReportItems(ShippingItem.class);
-			
-			if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
-				List<String> list = new ArrayList<String>();
-				// Art.Nr.:
-				String pNo = ii.getOrderItem().getProduct().getProductNumber();
-				list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
-				// Artikel
-				list.add(ii.getOrderItem().getProduct().getName());
-				// Anzahl
-				list.add(String.valueOf(ii.getQuantity()));
-				// EK per Stueck
-				list.add(ii.getOrderItem().getNegotiatedPriceNet().toString());
-				// Lieferscheinnr.
-				list.add(ReportViewHelper.documentNumbersOf(sis));
-				// Lieferdatum
-				list.add(ReportViewHelper.createdDatesOf(sis));
-				// gesamt
-				list.add(ii.getOrderItem()
-						.getNegotiatedPriceNet()
-						.multiply(ii.getQuantity())
-						.toString());
+                builder.addBodyRow(list);
+            }
+        }
 
-				builder.addBodyRow(list);
-			}
-		}
+        return builder.withFooter(false).build();
+    }
 
-		return builder.withFooter(false).build();
-	}
-	
-	private String createFormatForRate(BigDecimal rate){
-	    DecimalFormat df = new DecimalFormat();
-	    df.setMaximumFractionDigits(2);
-	    df.setMinimumFractionDigits(0);
-	    df.setGroupingUsed(false);
-	    return df.format(rate);
-	}
+    public static PdfPTable createTableWithDeliveryNotes(Collection<ReportItem> cReport) throws DocumentException {
+        PdfPTableBuilder builder = new PdfPTableBuilder(
+                PdfPTableBuilder.createPropertiesWithSevenCols());
+        for (ReportItem ii : cReport) {
+            Set<ShippingItem> sis = DeliveryHistory.of(ii.getOrderItem()).getReportItems(ShippingItem.class);
+
+            if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
+                List<String> list = new ArrayList<String>();
+                // Art.Nr.:
+                String pNo = ii.getOrderItem().getProduct().getProductNumber();
+                list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
+                // Artikel
+                list.add(ii.getOrderItem().getProduct().getName());
+                // Anzahl
+                list.add(String.valueOf(ii.getQuantity()));
+                // EK per Stueck
+                list.add(ii.getOrderItem().getNegotiatedPriceNet().toString());
+                // Lieferscheinnr.
+                list.add(ReportViewHelper.documentNumbersOf(sis));
+                // Lieferdatum
+                list.add(ReportViewHelper.createdDatesOf(sis));
+                // gesamt
+                list.add(ii.getOrderItem()
+                        .getNegotiatedPriceNet()
+                        .multiply(ii.getQuantity())
+                        .toString());
+
+                builder.addBodyRow(list);
+            }
+        }
+
+        return builder.withFooter(false).build();
+    }
+
+    private String createFormatForRate(BigDecimal rate) {
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(0);
+        df.setGroupingUsed(false);
+        return df.format(rate);
+    }
 
 }

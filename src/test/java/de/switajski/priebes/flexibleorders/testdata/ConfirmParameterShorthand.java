@@ -10,8 +10,8 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ConfirmParameterShorthand {
 
-    public static ConfirmParameter confirm(String orderNumber, String confirmNumber, Customer customer, 
-            LocalDate expectedDelivery, ItemDto... items){
+    public static ConfirmParameter confirm(String orderNumber, String confirmNumber, Customer customer,
+            LocalDate expectedDelivery, ItemDto... items) {
         ConfirmParameter cp = new ConfirmParameter();
         cp.orderNumber = orderNumber;
         cp.confirmNumber = confirmNumber;

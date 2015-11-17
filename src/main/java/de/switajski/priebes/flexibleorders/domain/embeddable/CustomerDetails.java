@@ -9,78 +9,78 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * 
+ *
  * @author Marek Switajski
  *
  */
 @Embeddable
 public class CustomerDetails {
 
-	private String vendorNumber, vatIdNo, paymentConditions;
-	private String saleRepresentative, mark;
-	@Embedded
-	private ContactInformation contactInformation;
-	
-	public String getVendorNumber() {
-		return vendorNumber;
-	}
+    private String vendorNumber, vatIdNo, paymentConditions;
+    private String saleRepresentative, mark;
+    @Embedded
+    private ContactInformation contactInformation;
 
-	public void setVendorNumber(String vendorNumber) {
-		this.vendorNumber = vendorNumber;
-	}
+    public String getVendorNumber() {
+        return vendorNumber;
+    }
 
-	public String getVatIdNo() {
-		return vatIdNo;
-	}
+    public void setVendorNumber(String vendorNumber) {
+        this.vendorNumber = vendorNumber;
+    }
 
-	public void setVatIdNo(String valueAddedTaxIdNo) {
-		this.vatIdNo = valueAddedTaxIdNo;
-	}
+    public String getVatIdNo() {
+        return vatIdNo;
+    }
 
-	public void setPaymentConditions(String paymentConditions) {
-		this.paymentConditions = paymentConditions;
-	}
+    public void setVatIdNo(String valueAddedTaxIdNo) {
+        this.vatIdNo = valueAddedTaxIdNo;
+    }
 
-	public String getPaymentConditions() {
-		return paymentConditions;
-	}
+    public void setPaymentConditions(String paymentConditions) {
+        this.paymentConditions = paymentConditions;
+    }
 
-	public String getMark() {
-		return this.mark;
-	}
-	
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
+    public String getPaymentConditions() {
+        return paymentConditions;
+    }
 
-	public String getSaleRepresentative() {
-		return this.saleRepresentative;
-	}
+    public String getMark() {
+        return this.mark;
+    }
 
-	public void setSaleRepresentative(String saleRepresentative) {
-		this.saleRepresentative = saleRepresentative;
-	}
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
 
-	public void setContactInformation(ContactInformation contactInformation) {
-		this.contactInformation = contactInformation;
-	}
-	
-	public ContactInformation getContactInformation(){
-		return this.contactInformation;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-	    return EqualsBuilder.reflectionEquals(this, obj, false);
-	}
+    public String getSaleRepresentative() {
+        return this.saleRepresentative;
+    }
 
-	@Override
-	public String toString(){
-	    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
-	
-	@Override
-	public int hashCode(){
-	    return HashCodeBuilder.reflectionHashCode(this, false);
-	}
+    public void setSaleRepresentative(String saleRepresentative) {
+        this.saleRepresentative = saleRepresentative;
+    }
+
+    public void setContactInformation(ContactInformation contactInformation) {
+        this.contactInformation = contactInformation;
+    }
+
+    public ContactInformation getContactInformation() {
+        return this.contactInformation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, false);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this, false);
+    }
 }

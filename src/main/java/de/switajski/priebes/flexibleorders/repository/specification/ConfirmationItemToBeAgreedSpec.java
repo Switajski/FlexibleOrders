@@ -18,7 +18,7 @@ public class ConfirmationItemToBeAgreedSpec implements Specification<ReportItem>
     @Override
     public Predicate toPredicate(Root<ReportItem> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         this.query = query;
-        
+
         Subquery<ConfirmationItem> subquery = createCiSubquery();
         return cb.in(root).value(subquery);
     }

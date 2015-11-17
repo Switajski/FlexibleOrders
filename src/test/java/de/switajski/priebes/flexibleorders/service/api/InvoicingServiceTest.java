@@ -18,8 +18,6 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
-import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
-import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
@@ -69,17 +67,17 @@ public class InvoicingServiceTest {
 
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
         return new ConfirmationItemBuilder()
-                .setItem(
-                        new OrderItemBuilder()
-                                .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(12)
-                                .build())
+        .setItem(
+                new OrderItemBuilder()
+                .setProduct(new ProductBuilder().build())
+                .setOrderedQuantity(12)
+                .build())
                 .setQuantity(6)
                 .setReport(
                         new OrderConfirmationBuilder()
-                                .setAgreementDetails(purchaseAgreement)
-                                .build())
-                .build();
+                        .setAgreementDetails(purchaseAgreement)
+                        .build())
+                        .build();
     }
 
 }

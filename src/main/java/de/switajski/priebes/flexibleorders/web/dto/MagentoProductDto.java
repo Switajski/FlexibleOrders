@@ -6,5 +6,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class MagentoProductDto {
 
     public String entity_id, type_id, sku, regular_price_without_tax, name;
-    
+
 }

@@ -24,12 +24,12 @@ import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
-import de.switajski.priebes.flexibleorders.service.api.ShippingService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkingPaidService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -54,13 +54,12 @@ public class TransitionsController extends ExceptionController {
     @Autowired
     private MarkingPaidService markingPaidService;
     @Autowired
-	private ConfirmingService confirmService;
+    private ConfirmingService confirmService;
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse confirm(
+    public @ResponseBody JsonObjectResponse confirm(
             @RequestBody JsonCreateReportRequest confirmRequest)
-            throws Exception {
+                    throws Exception {
         // TODO: see if Conversion factory / Jackson serializer has a strip to
         // null method
         ContactInformation contactInformation = new ContactInformation();
@@ -101,8 +100,7 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest)
+    public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest)
             throws Exception {
         deliverRequest.validate();
 
@@ -120,10 +118,9 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse invoice(
+    public @ResponseBody JsonObjectResponse invoice(
             @RequestBody JsonCreateReportRequest invoicingRequest)
-            throws Exception {
+                    throws Exception {
         invoicingRequest.validate();
 
         InvoicingParameter invoicingParameter = new InvoicingParameter(
@@ -140,10 +137,9 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse deliver(
+    public @ResponseBody JsonObjectResponse deliver(
             @RequestBody JsonCreateReportRequest deliverRequest)
-            throws Exception {
+                    throws Exception {
         deliverRequest.validate();
 
         DeliverParameter deliverParameter = new DeliverParameter(
@@ -153,7 +149,7 @@ public class TransitionsController extends ExceptionController {
         deliverParameter.showPricesInDeliveryNotes = deliverRequest.showPricesInDeliveryNotes;
         deliverParameter.shipment = new Amount(deliverRequest.shipment, Currency.EUR);
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = deliverRequest.ignoreContradictoryExpectedDeliveryDates;
-        
+
         deliverParameter.customerNumber = deliverRequest.customerId;
         DeliveryNotes dn = shippingService.ship(
                 deliverParameter);
@@ -161,8 +157,7 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/agree", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse agree(
+    public @ResponseBody JsonObjectResponse agree(
             @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
         OrderConfirmation orderAgreement = agreeingService.agree(orderConfirmationNumber, orderAgreementNumber);
@@ -170,37 +165,33 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse deleteOrder(
+    public @ResponseBody JsonObjectResponse deleteOrder(
             @RequestParam(value = "orderNumber", required = true) String orderNumber) {
         orderingService.deleteOrder(orderNumber);
         return ExtJsResponseCreator.createResponse(orderNumber);
     }
 
     @RequestMapping(value = "/deleteReport", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse deleteReport(
+    public @ResponseBody JsonObjectResponse deleteReport(
             @RequestParam(value = "documentNumber", required = true) String documentNumber)
-            throws Exception {
+                    throws Exception {
         orderingService.deleteReport(documentNumber);
         return ExtJsResponseCreator.createResponse(documentNumber);
     }
 
     @RequestMapping(value = "/cancelReport", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse cancelConfirmationReport(
+    public @ResponseBody JsonObjectResponse cancelConfirmationReport(
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
-            throws Exception {
+                    throws Exception {
         CancelReport cr = orderingService
                 .cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createResponse(cr);
     }
 
     @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
-    public @ResponseBody
-    JsonObjectResponse markPaid(
+    public @ResponseBody JsonObjectResponse markPaid(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
-            throws Exception {
+                    throws Exception {
         Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createResponse(receipt);

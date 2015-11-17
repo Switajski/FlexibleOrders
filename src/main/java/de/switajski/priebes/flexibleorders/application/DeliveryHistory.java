@@ -19,7 +19,9 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 /**
- * Concept is to provide delivery histories without a call another service. Therefore the client has to retrieve itself all relevant report items. 
+ * Concept is to provide delivery histories without a call another service.
+ * Therefore the client has to retrieve itself all relevant report items.
+ *
  * @author Marek
  *
  */
@@ -43,6 +45,7 @@ public class DeliveryHistory {
 
     /**
      * Creates whole delivery history
+     *
      * @param reportItem
      * @return
      */
@@ -60,7 +63,7 @@ public class DeliveryHistory {
             if (ci.isAgreed()) cis.add(ci);
         return cis;
     }
-    
+
     public Set<ConfirmationItem> getNonAgreedConfirmationItems() {
         Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
         for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
@@ -138,7 +141,7 @@ public class DeliveryHistory {
         }
         return nos;
     }
-    
+
     public Set<String> getCreditNoteNumbers() {
         return getReportNumbers(CreditNoteItem.class);
     }
@@ -156,6 +159,7 @@ public class DeliveryHistory {
         return s;
     }
 
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         OrderItem orderItem = reportItems.iterator().next().getOrderItem();
@@ -167,10 +171,11 @@ public class DeliveryHistory {
         for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
             s.append("\n" + type.getSimpleName() + "s: ");
             for (ReportItem item : getReportItems(type)) {
-                if (item instanceof ConfirmationItem){
-                    if (((ConfirmationItem) item).isAgreed()){
+                if (item instanceof ConfirmationItem) {
+                    if (((ConfirmationItem) item).isAgreed()) {
                         s.append(" - agreed - ");
-                    } else{
+                    }
+                    else {
                         s.append(" - not agreed - ");
                     }
                 }

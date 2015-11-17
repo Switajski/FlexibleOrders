@@ -8,5 +8,5 @@ public class IssuedItemSpec extends AbstractOpenReportItemSpecification {
     public IssuedItemSpec() {
         super(InvoiceItem.class, ReceiptItem.class);
     }
-    
+
 }

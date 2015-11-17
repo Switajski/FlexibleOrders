@@ -45,9 +45,9 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs
- * 
+ *
  * @author Marek Switajski
- * 
+ *
  */
 @CrossOrigin
 @Controller
@@ -65,42 +65,42 @@ public class ReportController {
     CustomerRepository customerService;
     @Autowired
     OrderingService orderService;
-    @Autowired 
+    @Autowired
     ReportToDtoConversionService reportDtoConversionService;
-    @Autowired 
+    @Autowired
     ReportToDtoConversionService creditNoteDtoConversionService;
-    @Autowired 
+    @Autowired
     InvoiceToDtoConversionService invoiceDtoConversionService;
-    @Autowired 
+    @Autowired
     DeliveryNotesToDtoConversionService deliveryNotesDtoConversionService;
-    @Autowired 
+    @Autowired
     OrderConfirmationToDtoConversionService orderConfirmationDtoConversionService;
-	@Autowired
+    @Autowired
     OrderToDtoConversionService orderDtoConversionService;
-	@Autowired
-	OrderConfirmationRepository orderConfirmationRepo;
-    
+    @Autowired
+    OrderConfirmationRepository orderConfirmationRepo;
 
     @RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showReportPdf(@PathVariable("id") String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
-        if (report != null){
-        	return createReportSpecificModelAndView(report);
-        } else if (orderConfirmationRepo.findByOrderAgreementNumber(id) != null){
+        if (report != null) {
+            return createReportSpecificModelAndView(report);
+        }
+        else if (orderConfirmationRepo.findByOrderAgreementNumber(id) != null) {
             return createReportSpecificModelAndView(orderConfirmationRepo.findByOrderAgreementNumber(id));
-        } else {
-        	Order order = orderRepo.findByOrderNumber(id);
-        	if (order != null)
-        		return new ModelAndView(OrderPdfView.class.getSimpleName(),
-                        ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
+        }
+        else {
+            Order order = orderRepo.findByOrderNumber(id);
+            if (order != null) return new ModelAndView(OrderPdfView.class.getSimpleName(),
+                    ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
     }
 
     private ModelAndView createReportSpecificModelAndView(Report report) {
-    	String model = ReportDto.class.getSimpleName();
+        String model = ReportDto.class.getSimpleName();
         if (report instanceof OrderConfirmation) {
             return new ModelAndView(OrderConfirmationPdfView.class.getSimpleName(),
                     model, orderConfirmationDtoConversionService.toDto((OrderConfirmation) report));
@@ -122,10 +122,9 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/listDocumentNumbersLike", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listInvoiceNumbers(
+    public @ResponseBody JsonObjectResponse listInvoiceNumbers(
             @RequestParam(value = "query", required = false) Long orderNumberObject)
-            throws Exception {
+                    throws Exception {
 
         log.debug("listOrderNumbers request:" + orderNumberObject);
         // TODO unify docNumbers
@@ -143,8 +142,7 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/json", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listAll(
+    public @ResponseBody JsonObjectResponse listAll(
             @RequestParam(value = "page", required = true) Integer page,
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
@@ -162,11 +160,10 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/orders/listOrderNumbers", method = RequestMethod.GET)
-    public @ResponseBody
-    JsonObjectResponse listOrderNumbers(
+    public @ResponseBody JsonObjectResponse listOrderNumbers(
             @RequestParam(value = "orderNumber", required = false) String orderNumber,
             @RequestParam(value = "customerId", required = false) Long customerId)
-            throws Exception {
+                    throws Exception {
         // FIXME: find by customer and orderNumber
         log.debug("listOrderNumbers request:" + orderNumber);
         JsonObjectResponse response = new JsonObjectResponse();

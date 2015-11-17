@@ -1,29 +1,29 @@
 package de.switajski.priebes.flexibleorders.reference;
 
 /**
- * Country codes from <br/> 
+ * Country codes from <br/>
  * ISO 3166-1 alpha-2
- * 
+ *
  * @author Marek
  *
  */
 public enum Country {
-	DE("Deutschland"),
-	CH("Schweiz"),
-	AT("Oesterreich"),
-	PL("Polska"),
-	FR("France"),
-	IT("Italia"),
-	UK("United Kingdom"),
-	IE("Ireland");
+    DE("Deutschland"),
+    CH("Schweiz"),
+    AT("Oesterreich"),
+    PL("Polska"),
+    FR("France"),
+    IT("Italia"),
+    UK("United Kingdom"),
+    IE("Ireland");
 
-	private Country(final String text) {
-		this.text = text;
-	}
+    private Country(final String text) {
+        this.text = text;
+    }
 
-	private final String text;
+    private final String text;
 
-	public String getName() {
-		return text;
-	}
+    public String getName() {
+        return text;
+    }
 }

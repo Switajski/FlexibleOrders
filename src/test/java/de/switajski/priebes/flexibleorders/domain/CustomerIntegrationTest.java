@@ -15,38 +15,38 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuil
 
 public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer> {
 
-	@Autowired
-	private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-	@Override
-	protected Customer createEntity() {
-		Long custNo = 15234L;
+    @Override
+    protected Customer createEntity() {
+        Long custNo = 15234L;
 
-		return createCustomer(custNo);
-	}
+        return createCustomer(custNo);
+    }
 
     private Customer createCustomer(Long custNo) {
         return new CustomerBuilder()
-        .edward()
-        .setCustomerNumber(custNo)
-        .build();
+                .edward()
+                .setCustomerNumber(custNo)
+                .build();
     }
 
-	@Override
-	protected JpaRepository<Customer, Long> getRepository() {
-		return customerRepository;
-	}
-	
-	@Test
-	public void searchShouldFindCustomerByKeyword(){
-	    // GIVEN
+    @Override
+    protected JpaRepository<Customer, Long> getRepository() {
+        return customerRepository;
+    }
+
+    @Test
+    public void searchShouldFindCustomerByKeyword() {
+        // GIVEN
         customerRepository.save(new CustomerBuilder().edward().build());
         customerRepository.save(new CustomerBuilder().yvonne().build());
-	    
-	    // WHEN
-	    Page<Customer> customers = customerRepository.search(
-	            new PageRequest(0,10), "urn");
-	    // THEN
-	    assertThat(customers.getContent().size(), is(1));
-	}
+
+        // WHEN
+        Page<Customer> customers = customerRepository.search(
+                new PageRequest(0, 10), "urn");
+        // THEN
+        assertThat(customers.getContent().size(), is(1));
+    }
 }

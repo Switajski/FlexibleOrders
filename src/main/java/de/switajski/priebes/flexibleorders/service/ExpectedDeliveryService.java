@@ -13,23 +13,23 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 @Service
 public class ExpectedDeliveryService {
 
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
-	
-	public Set<LocalDate> retrieve(Set<ReportItem> items) {
-		Set<LocalDate> expectedDeliveryDates = new HashSet<LocalDate>();
-		for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)){
-			expectedDeliveryDates.add(pa.getExpectedDelivery());
-		}
-		return expectedDeliveryDates;
-	}
-	
-	public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
-		Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
-		for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)){
-			expectedDeliveryWeekOfYear.add(new LocalDate(pa.getExpectedDelivery()).getWeekOfWeekyear());
-		}
-		return expectedDeliveryWeekOfYear;
-	}
+    @Autowired
+    PurchaseAgreementService purchaseAgreementService;
+
+    public Set<LocalDate> retrieve(Set<ReportItem> items) {
+        Set<LocalDate> expectedDeliveryDates = new HashSet<LocalDate>();
+        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
+            expectedDeliveryDates.add(pa.getExpectedDelivery());
+        }
+        return expectedDeliveryDates;
+    }
+
+    public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
+        Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
+        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
+            expectedDeliveryWeekOfYear.add(new LocalDate(pa.getExpectedDelivery()).getWeekOfWeekyear());
+        }
+        return expectedDeliveryWeekOfYear;
+    }
 
 }

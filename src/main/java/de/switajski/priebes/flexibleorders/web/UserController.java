@@ -13,7 +13,7 @@ public class UserController {
      * authenticated user (an Authentication), and otherwise Spring Security
      * will intercept the request and send a 401 response through an
      * AuthenticationEntryPoint.
-     * 
+     *
      * @param user
      * @return
      */

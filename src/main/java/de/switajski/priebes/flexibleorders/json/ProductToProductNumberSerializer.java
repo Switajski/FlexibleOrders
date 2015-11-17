@@ -11,12 +11,12 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 
 public class ProductToProductNumberSerializer extends JsonSerializer<Product> {
 
-	@Override
-	public void serialize(Product value, JsonGenerator jgen,
-			SerializerProvider provider) throws IOException,
-			JsonProcessingException {
-		jgen.writeNumber(value.getProductNumber());
-		
-	}
+    @Override
+    public void serialize(Product value, JsonGenerator jgen,
+            SerializerProvider provider) throws IOException,
+            JsonProcessingException {
+        jgen.writeNumber(value.getProductNumber());
+
+    }
 
 }

@@ -13,29 +13,31 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class DeliveryNotesPdfFile extends DeliveryNotesPdfView {
 
-	// TODO: create constructor with filePathAndName as parameter
+    // TODO: create constructor with filePathAndName as parameter
 
-	public String filePathAndName;
+    public String filePathAndName;
 
-	protected PdfWriter newWriter(Document document, OutputStream os)
-			throws DocumentException {
-		PdfWriter writer;
-		try {
-			writer = PdfWriter.getInstance(document, new FileOutputStream(
-					filePathAndName));
-			return writer;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    protected PdfWriter newWriter(Document document, OutputStream os)
+            throws DocumentException {
+        PdfWriter writer;
+        try {
+            writer = PdfWriter.getInstance(document, new FileOutputStream(
+                    filePathAndName));
+            return writer;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	public String getFilePathAndName() {
-		return filePathAndName;
-	}
+    public String getFilePathAndName() {
+        return filePathAndName;
+    }
 
-	public void setFilePathAndName(String filePathAndName) {
-		this.filePathAndName = filePathAndName;
-	}
+    public void setFilePathAndName(String filePathAndName) {
+        this.filePathAndName = filePathAndName;
+    }
 
 }

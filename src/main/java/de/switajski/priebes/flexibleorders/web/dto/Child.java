@@ -8,28 +8,28 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 @JsonAutoDetect
 public class Child {
 
-	String text;
-	boolean leaf;
-	private List<Child> children = new ArrayList<Child>();
+    String text;
+    boolean leaf;
+    private List<Child> children = new ArrayList<Child>();
 
-	public Child(String text, boolean leaf) {
-		this.text = text;
-		this.leaf = leaf;
-	}
+    public Child(String text, boolean leaf) {
+        this.text = text;
+        this.leaf = leaf;
+    }
 
-	public void addChild(Child child) {
-		this.children.add(child);
-	}
+    public void addChild(Child child) {
+        this.children.add(child);
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public boolean isLeaf() {
-		return leaf;
-	}
+    public boolean isLeaf() {
+        return leaf;
+    }
 
-	public List<Child> getChildren() {
-		return children;
-	}
+    public List<Child> getChildren() {
+        return children;
+    }
 }

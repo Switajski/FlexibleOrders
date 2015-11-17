@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.exceptions;
 
-public class NotFoundException extends RuntimeException{
+public class NotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

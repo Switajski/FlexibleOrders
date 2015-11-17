@@ -8,9 +8,9 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class OrderParameterShorthand{
-    
-    public static OrderParameter orderParam(String orderNumber, Customer customer, LocalDate expectedDelivery, ItemDto... items){
+public class OrderParameterShorthand {
+
+    public static OrderParameter orderParam(String orderNumber, Customer customer, LocalDate expectedDelivery, ItemDto... items) {
         OrderParameter op = new OrderParameter();
         op.customerNumber = customer.getCustomerNumber();
         op.orderNumber = orderNumber;
@@ -18,5 +18,5 @@ public class OrderParameterShorthand{
         op.reportItems = Arrays.asList(items);
         return op;
     }
-    
+
 }

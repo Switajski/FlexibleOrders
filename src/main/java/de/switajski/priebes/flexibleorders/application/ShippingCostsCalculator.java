@@ -10,30 +10,28 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 public class ShippingCostsCalculator {
 
-	public Amount calculate(Set<ShippingItem> shippingItems) {
-		Amount summedShippingCosts = new Amount();
-		for (DeliveryNotes dn : retrieveDeliveryNotesWithShippingCosts(shippingItems)) {
-			summedShippingCosts = summedShippingCosts
-					.add(dn.getShippingCosts());
-		}
-		return summedShippingCosts;
-	}
+    public Amount calculate(Set<ShippingItem> shippingItems) {
+        Amount summedShippingCosts = new Amount();
+        for (DeliveryNotes dn : retrieveDeliveryNotesWithShippingCosts(shippingItems)) {
+            summedShippingCosts = summedShippingCosts
+                    .add(dn.getShippingCosts());
+        }
+        return summedShippingCosts;
+    }
 
-	private Set<DeliveryNotes> retrieveDeliveryNotesWithShippingCosts(
-			Set<ShippingItem> shippingItems) {
-		// using HashMap with documentNumber to not sum up shipping costs from
-		// same document
-		HashMap<String, DeliveryNotes> deliveryNotes = new HashMap<String, DeliveryNotes>();
+    private Set<DeliveryNotes> retrieveDeliveryNotesWithShippingCosts(
+            Set<ShippingItem> shippingItems) {
+        // using HashMap with documentNumber to not sum up shipping costs from
+        // same document
+        HashMap<String, DeliveryNotes> deliveryNotes = new HashMap<String, DeliveryNotes>();
 
-		for (ShippingItem entry : shippingItems) {
-			for (ShippingItem shippingItem : entry.getOrderItem().getShippingItems()) {
-				DeliveryNotes dn = shippingItem.getDeliveryNotes();
-				if (dn.getDocumentNumber() == null)
-					throw new IllegalStateException("No Documentno. set");
-				if (dn.hasShippingCosts())
-					deliveryNotes.put(dn.getDocumentNumber(), dn);
-			}
-		}
-		return new HashSet<DeliveryNotes>(deliveryNotes.values());
-	}
+        for (ShippingItem entry : shippingItems) {
+            for (ShippingItem shippingItem : entry.getOrderItem().getShippingItems()) {
+                DeliveryNotes dn = shippingItem.getDeliveryNotes();
+                if (dn.getDocumentNumber() == null) throw new IllegalStateException("No Documentno. set");
+                if (dn.hasShippingCosts()) deliveryNotes.put(dn.getDocumentNumber(), dn);
+            }
+        }
+        return new HashSet<DeliveryNotes>(deliveryNotes.values());
+    }
 }

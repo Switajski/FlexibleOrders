@@ -9,16 +9,16 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CategoryBuil
 
 public class CategoryIntegrationTest extends AbstractIntegrationTest<Category> {
 
-	@Autowired
-	private CategoryRepository catRepo;
+    @Autowired
+    private CategoryRepository catRepo;
 
-	@Override
-	protected Category createEntity() {
-		return CategoryBuilder.buildWithGeneratedAttributes(3146);
-	}
+    @Override
+    protected Category createEntity() {
+        return CategoryBuilder.buildWithGeneratedAttributes(3146);
+    }
 
-	@Override
-	protected JpaRepository<Category, Long> getRepository() {
-		return catRepo;
-	}
+    @Override
+    protected JpaRepository<Category, Long> getRepository() {
+        return catRepo;
+    }
 }

@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
@@ -24,7 +22,7 @@ import de.switajski.priebes.flexibleorders.service.helper.FOStringUtility;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 public abstract class ReportItem extends GenericEntity implements
-        Comparable<ReportItem> {
+Comparable<ReportItem> {
 
     @NotNull
     private Integer quantity;
@@ -43,6 +41,7 @@ public abstract class ReportItem extends GenericEntity implements
      *             The API is meant to create a ConfirmationItem first and then
      *             add to a ConfirmationReport
      */
+    @Deprecated
     public ReportItem(Report report, OrderItem item,
             Integer quantity, Date created) {
         if (item == null || quantity == null) throw new IllegalArgumentException();
@@ -113,12 +112,12 @@ public abstract class ReportItem extends GenericEntity implements
     @Override
     public String toString() {
         return new StringBuilder(this.getClass().getSimpleName())
-                .append(": ").append(" " + getQuantity()).toString();
+        .append(": ").append(" " + getQuantity()).toString();
     }
 
     /**
      * convenience method
-     * 
+     *
      * @return
      */
     @JsonIgnore
@@ -129,7 +128,7 @@ public abstract class ReportItem extends GenericEntity implements
     public DeliveryHistory createDeliveryHistory() {
         return DeliveryHistory.of(this);
     }
-    
+
     public int toBeProcessed() {
         DeliveryHistory history = DeliveryHistory.of(this);
         if (this instanceof ConfirmationItem) {
@@ -144,7 +143,7 @@ public abstract class ReportItem extends GenericEntity implements
         else if (this instanceof InvoiceItem) return toBePaid(history);
         else return 0;
     }
-    
+
     public Integer toBeAgreed(DeliveryHistory history) {
         return QuantityUtility.sumQty(history.getNonAgreedConfirmationItems()) - QuantityUtility.sumQty(history.getAgreedConfirmationItems());
     }
@@ -162,23 +161,23 @@ public abstract class ReportItem extends GenericEntity implements
     }
 
     @PrePersist
-	protected void validateQuantity(){
-		if (sum() > getOrderItem().getOrderedQuantity()) {
-			throw new IllegalStateException(
-					new StringBuilder().append("Sum of all ")
-					.append(FOStringUtility.camelCaseToSplitted(this.getClass().getSimpleName()))
-					.append("(s) cannot be greater than ordered quantity of ")
-					.append(FOStringUtility.camelCaseToSplitted(OrderItem.class.getSimpleName()))
-					.toString());
-		}
-	}
+    protected void validateQuantity() {
+        if (sum() > getOrderItem().getOrderedQuantity()) {
+            throw new IllegalStateException(
+                    new StringBuilder().append("Sum of all ")
+                            .append(FOStringUtility.camelCaseToSplitted(this.getClass().getSimpleName()))
+                            .append("(s) cannot be greater than ordered quantity of ")
+                            .append(FOStringUtility.camelCaseToSplitted(OrderItem.class.getSimpleName()))
+                            .toString());
+        }
+    }
 
-	private int sum() {
-		int sum = 0;
-		for (ReportItem specificReportItem : getOrderItem().getReportItems(this.getClass())){
-			sum += specificReportItem.getQuantity();
-		}
-		return sum;
-	}
+    private int sum() {
+        int sum = 0;
+        for (ReportItem specificReportItem : getOrderItem().getReportItems(this.getClass())) {
+            sum += specificReportItem.getQuantity();
+        }
+        return sum;
+    }
 
 }

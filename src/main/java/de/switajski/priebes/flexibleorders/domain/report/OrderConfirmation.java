@@ -8,7 +8,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 
 /**
- * 
+ *
  * @author Marek Switajski
  *
  */
@@ -20,13 +20,13 @@ public class OrderConfirmation extends Report {
 
     @Embedded
     private PurchaseAgreement purchaseAgreement;
-    
+
     private String orderAgreementNumber;
-    
-	public OrderConfirmation() {}
+
+    public OrderConfirmation() {}
 
     /**
-     * 
+     *
      * @param orderConfirmationNumber
      * @param invoiceAddress
      * @param shippingAddress
@@ -42,7 +42,7 @@ public class OrderConfirmation extends Report {
         pa.setShippingAddress(shippingAddress);
         setPurchaseAgreement(pa);
     }
-    
+
     public String getOrderAgreementNumber() {
         return orderAgreementNumber;
     }
@@ -62,7 +62,7 @@ public class OrderConfirmation extends Report {
     public CustomerDetails getCustomerDetails() {
         return this.customerDetails;
     }
-    
+
     public PurchaseAgreement getPurchaseAgreement() {
         return purchaseAgreement;
     }

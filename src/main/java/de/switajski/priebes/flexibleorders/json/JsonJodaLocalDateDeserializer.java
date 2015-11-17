@@ -11,14 +11,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
-public class JsonJodaLocalDateDeserializer extends JsonDeserializer<LocalDate>{
+public class JsonJodaLocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
     @Override
     public LocalDate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         DateTimeFormatter format = JsonFormatterConstants.DATE_TIME_FORMATTER;
         String date = jp.getText();
-        if (StringUtils.isEmpty(date))
-            return null;
+        if (StringUtils.isEmpty(date)) return null;
         return format.parseDateTime(date).toLocalDate();
     }
 

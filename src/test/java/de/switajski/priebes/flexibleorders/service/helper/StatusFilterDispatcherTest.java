@@ -14,12 +14,12 @@ import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 public class StatusFilterDispatcherTest {
 
     @Test
-    public void shouldDispatchStatusToSpecification() throws Exception{
+    public void shouldDispatchStatusToSpecification() throws Exception {
         // WHEN
         Specification<ReportItem> spec = new StatusFilterDispatcher().dispatchStatus(ProductionState.values()[0]);
-        
+
         // THEN
         assertThat(spec, is(not(nullValue())));
     }
-    
+
 }

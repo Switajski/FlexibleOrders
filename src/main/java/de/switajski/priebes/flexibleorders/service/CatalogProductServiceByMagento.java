@@ -34,10 +34,10 @@ public class CatalogProductServiceByMagento {
 
         StringBuilder urlBuilder;
         urlBuilder = new StringBuilder(URL)
-                .append("?limit=").append(pageable.getPageSize())
-                .append("&page=").append(pageable.getPageNumber())
-                .append("&filter[1][attribute]=name&filter[1][like]=%")
-                .append(query).append("%");
+        .append("?limit=").append(pageable.getPageSize())
+        .append("&page=").append(pageable.getPageNumber())
+        .append("&filter[1][attribute]=name&filter[1][like]=%")
+        .append(query).append("%");
 
         MagentoApiProductResponseObject productMap = new MagentoApiProductResponseObject();
         try {

@@ -53,7 +53,6 @@ public class ReportItemController extends ExceptionController {
 
     @Autowired
     private ReportingService reportingService;
-    // TODO: on Controller layer only Services are allowed
     @Autowired
     private CustomerRepository customerRepo;
     @Autowired
@@ -70,7 +69,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-            throws Exception {
+                    throws Exception {
 
         Customer customer = null;
         PageRequest pageable = new PageRequest((page - 1), limit);
@@ -100,7 +99,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-            throws Exception {
+                    throws Exception {
 
         PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
@@ -129,22 +128,22 @@ public class ReportItemController extends ExceptionController {
 
     }
 
-	private Page<ItemDto> addShippingCosts(PageRequest pageable,
-			Page<ItemDto> openItems) {
-		HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
-		for (String documentNumber : documentNumbers) {
-		    Report report = reportRepository.findByDocumentNumber(documentNumber);
-		    DeliveryNotes dn = (DeliveryNotes) report;
-		    List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
-		    if (dn.hasShippingCosts()){
-		        shippingCosts.add(itemDtoConverterService.convert(dn));
-		    }
-		    List<ItemDto> temp = shippingCosts;
-		    shippingCosts.addAll(openItems.getContent());
-		    openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
-		}
-		return openItems;
-	}
+    private Page<ItemDto> addShippingCosts(PageRequest pageable,
+            Page<ItemDto> openItems) {
+        HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
+        for (String documentNumber : documentNumbers) {
+            Report report = reportRepository.findByDocumentNumber(documentNumber);
+            DeliveryNotes dn = (DeliveryNotes) report;
+            List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
+            if (dn.hasShippingCosts()) {
+                shippingCosts.add(itemDtoConverterService.convert(dn));
+            }
+            List<ItemDto> temp = shippingCosts;
+            shippingCosts.addAll(openItems.getContent());
+            openItems = new PageImpl<ItemDto>(temp, pageable, openItems.getTotalElements());
+        }
+        return openItems;
+    }
 
     private HashSet<String> getDocumentNumbersOf(Page<ItemDto> openItems) {
         HashSet<String> documentNumbers = new HashSet<String>();
@@ -153,7 +152,7 @@ public class ReportItemController extends ExceptionController {
         }
         return documentNumbers;
     }
-    
+
     private ProductionState mapFilterToProcessStep(HashMap<String, String> filterMap) {
         return ProductionState.mapFromString(filterMap.get(STATUS_STRING));
     }
@@ -182,7 +181,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-            throws Exception {
+                    throws Exception {
 
         throw new RuntimeException("Not implemented yet");
     }

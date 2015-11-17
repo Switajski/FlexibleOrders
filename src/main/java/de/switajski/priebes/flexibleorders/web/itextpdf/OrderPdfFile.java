@@ -13,27 +13,29 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class OrderPdfFile extends OrderPdfView {
 
-	private String fileNameAndPath;
+    private String fileNameAndPath;
 
-	protected PdfWriter newWriter(Document document, OutputStream os)
-			throws DocumentException {
-		PdfWriter writer;
-		try {
-			writer = PdfWriter.getInstance(document, new FileOutputStream(
-					fileNameAndPath));
-			return writer;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    protected PdfWriter newWriter(Document document, OutputStream os)
+            throws DocumentException {
+        PdfWriter writer;
+        try {
+            writer = PdfWriter.getInstance(document, new FileOutputStream(
+                    fileNameAndPath));
+            return writer;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	public String getFileNameAndPath() {
-		return fileNameAndPath;
-	}
+    public String getFileNameAndPath() {
+        return fileNameAndPath;
+    }
 
-	public void setFileNameAndPath(String fileNameAndPath) {
-		this.fileNameAndPath = fileNameAndPath;
-	}
+    public void setFileNameAndPath(String fileNameAndPath) {
+        this.fileNameAndPath = fileNameAndPath;
+    }
 
 }

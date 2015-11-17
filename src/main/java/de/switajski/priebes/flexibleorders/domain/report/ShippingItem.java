@@ -9,26 +9,25 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 @Entity
 public class ShippingItem extends ReportItem {
 
-	public ShippingItem() {
-	}
+    public ShippingItem() {}
 
-	public ShippingItem(DeliveryNotes deliveryNotes,
-			OrderItem orderItemToBeDelivered, Integer quantityToDeliver,
-			Date date) {
-		super(
-				deliveryNotes,
-				orderItemToBeDelivered,
-				quantityToDeliver,
-				date);
-	}
+    public ShippingItem(DeliveryNotes deliveryNotes,
+            OrderItem orderItemToBeDelivered, Integer quantityToDeliver,
+            Date date) {
+        super(
+                deliveryNotes,
+                orderItemToBeDelivered,
+                quantityToDeliver,
+                date);
+    }
 
-	@Override
-	public String provideStatus() {
-		return "geliefert";
-	}
+    @Override
+    public String provideStatus() {
+        return "geliefert";
+    }
 
-	public DeliveryNotes getDeliveryNotes() {
-		return (DeliveryNotes) this.report;
-	}
+    public DeliveryNotes getDeliveryNotes() {
+        return (DeliveryNotes) this.report;
+    }
 
 }

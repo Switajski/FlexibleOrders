@@ -10,42 +10,42 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 
 @Entity
 public class ConfirmationItem extends ReportItem {
-	
-	public Boolean pending = false;
 
-	public Boolean isPending() {
-		return pending;
-	}
+    public Boolean pending = false;
 
-	public void setPending(boolean pending) {
-		this.pending = pending;
-	}
+    public Boolean isPending() {
+        return pending;
+    }
 
-	public ConfirmationItem() {
-	}
-	
-	/**
-	 * Convenience method
-	 */
-	@JsonIgnore
-	public OrderConfirmation getOrderConfirmation(){
-	    return (OrderConfirmation) report;
-	}
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
 
-	public ConfirmationItem(OrderConfirmation orderConfirmation, OrderItem oi, Integer quantityLeft) {
-		super(oi, quantityLeft, new Date());
-		orderConfirmation.addItem(this);
-	}
+    public ConfirmationItem() {}
 
-	@Override
-	public String provideStatus() {
-		return "best&auml;tigt";
-	}
+    /**
+     * Convenience method
+     */
+    @JsonIgnore
+    public OrderConfirmation getOrderConfirmation() {
+        return (OrderConfirmation) report;
+    }
 
-	/**
-	 * convenience method
-	 * @return
-	 */
+    public ConfirmationItem(OrderConfirmation orderConfirmation, OrderItem oi, Integer quantityLeft) {
+        super(oi, quantityLeft, new Date());
+        orderConfirmation.addItem(this);
+    }
+
+    @Override
+    public String provideStatus() {
+        return "best&auml;tigt";
+    }
+
+    /**
+     * convenience method
+     * 
+     * @return
+     */
     public boolean isAgreed() {
         return getOrderConfirmation().isAgreed();
     }

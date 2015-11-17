@@ -13,16 +13,15 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public class EmptyReportItemsSpecification implements Specification<OrderItem>{
+public class EmptyReportItemsSpecification implements Specification<OrderItem> {
 
-	@Override
-	public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
-			CriteriaBuilder cb) {
-		Path<Set<ReportItem>> reportItems = root.get("reportItems");
-		Predicate emptyReportItemsPredicate = 
-				cb.isEmpty(reportItems);
-		return emptyReportItemsPredicate;
-	}
+    @Override
+    public Predicate toPredicate(Root<OrderItem> root, CriteriaQuery<?> query,
+            CriteriaBuilder cb) {
+        Path<Set<ReportItem>> reportItems = root.get("reportItems");
+        Predicate emptyReportItemsPredicate =
+                cb.isEmpty(reportItems);
+        return emptyReportItemsPredicate;
+    }
 
-	
 }

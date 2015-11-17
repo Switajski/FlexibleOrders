@@ -13,113 +13,113 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 /**
- * 
+ *
  * @author Marek Switajski
  *
  */
 @Entity
 public class CatalogProduct extends GenericEntity {
 
-	@Column(unique = true)
-	@NotNull
-	private String productNumber;
+    @Column(unique = true)
+    @NotNull
+    private String productNumber;
 
-	@NotNull
-	@Enumerated
-	private ProductType productType;
+    @NotNull
+    @Enumerated
+    private ProductType productType;
 
-	@NotNull
-	private String name;
+    @NotNull
+    private String name;
 
-	@Embedded
-	private Amount recommendedPriceNet;
+    @Embedded
+    private Amount recommendedPriceNet;
 
-	private boolean active;
+    private boolean active;
 
-	private String imageGalery;
+    private String imageGalery;
 
-	private Long sortOrder;
+    private Long sortOrder;
 
-	@ManyToOne
-	private Category category;
+    @ManyToOne
+    private Category category;
 
-	public String getProductNumber() {
-		return productNumber;
-	}
+    public String getProductNumber() {
+        return productNumber;
+    }
 
-	public void setProductNumber(String productNumber) {
-		this.productNumber = productNumber;
-	}
+    public void setProductNumber(String productNumber) {
+        this.productNumber = productNumber;
+    }
 
-	@JsonIgnore
-	public ProductType getProductType() {
-		return productType;
-	}
+    @JsonIgnore
+    public ProductType getProductType() {
+        return productType;
+    }
 
-	public void setProductType(ProductType productType) {
-		this.productType = productType;
-	}
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Amount getRecommendedPriceNet() {
-		return recommendedPriceNet;
-	}
+    public Amount getRecommendedPriceNet() {
+        return recommendedPriceNet;
+    }
 
-	public void setRecommendedPriceNet(Amount recommendedPriceNet) {
-		this.recommendedPriceNet = recommendedPriceNet;
-	}
+    public void setRecommendedPriceNet(Amount recommendedPriceNet) {
+        this.recommendedPriceNet = recommendedPriceNet;
+    }
 
-	@JsonIgnore
-	public boolean isActive() {
-		return active;
-	}
+    @JsonIgnore
+    public boolean isActive() {
+        return active;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	@JsonIgnore
-	public String getImageGalery() {
-		return imageGalery;
-	}
+    @JsonIgnore
+    public String getImageGalery() {
+        return imageGalery;
+    }
 
-	public void setImageGalery(String imageGalery) {
-		this.imageGalery = imageGalery;
-	}
-	
-	@JsonIgnore
-	public Long getSortOrder() {
-		return sortOrder;
-	}
+    public void setImageGalery(String imageGalery) {
+        this.imageGalery = imageGalery;
+    }
 
-	public void setSortOrder(Long sortOrder) {
-		this.sortOrder = sortOrder;
-	}
+    @JsonIgnore
+    public Long getSortOrder() {
+        return sortOrder;
+    }
 
-	@JsonIgnore
-	public Category getCategory() {
-		return category;
-	}
+    public void setSortOrder(Long sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 
-	public void setCategory(Category category) {
-		this.category = category;
-	}
+    @JsonIgnore
+    public Category getCategory() {
+        return category;
+    }
 
-	@JsonIgnore
-	public Product toProduct() {
-		Product product = new Product();
-		product.setName(name);
-		product.setProductNumber(this.productNumber);
-		product.setProductNumber(productNumber);
-		product.setProductType(ProductType.PRODUCT);
-		return product;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @JsonIgnore
+    public Product toProduct() {
+        Product product = new Product();
+        product.setName(name);
+        product.setProductNumber(this.productNumber);
+        product.setProductNumber(productNumber);
+        product.setProductType(ProductType.PRODUCT);
+        return product;
+    }
 
 }

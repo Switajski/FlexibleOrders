@@ -12,60 +12,58 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 @Embeddable
 public class Product {
 
-	private String no;
+    private String no;
 
-	@NotNull
-	@Enumerated
-	private ProductType type;
+    @NotNull
+    @Enumerated
+    private ProductType type;
 
-	@NotNull
-	private String name;
+    @NotNull
+    private String name;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Product))
-			return false;
-		Product c = (Product) obj;
-		if (this.getProductNumber().equals(c.getProductNumber()))
-			return true;
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Product)) return false;
+        Product c = (Product) obj;
+        if (this.getProductNumber().equals(c.getProductNumber())) return true;
+        return false;
+    }
 
-	//TODO: Naming Convention: product.getProductNumber?! -> product.getNo()!
-	public String getProductNumber() {
-		return this.no;
-	}
+    // TODO: Naming Convention: product.getProductNumber?! -> product.getNo()!
+    public String getProductNumber() {
+        return this.no;
+    }
 
-	public void setProductNumber(String productNumber) {
-		this.no = productNumber;
-	}
+    public void setProductNumber(String productNumber) {
+        this.no = productNumber;
+    }
 
-	public ProductType getProductType() {
-		return this.type;
-	}
+    public ProductType getProductType() {
+        return this.type;
+    }
 
-	public void setProductType(ProductType productType) {
-		this.type = productType;
-	}
+    public void setProductType(ProductType productType) {
+        this.type = productType;
+    }
 
-	public String getName() {
-		return this.name;
-	}
-	
-	public boolean hasProductNo(){
-		if (this.no == null)
-			return false;
-		return true;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public boolean hasProductNo() {
+        if (this.no == null) return false;
+        return true;
+    }
 
-	public String toString() {
-		return ReflectionToStringBuilder.toString(
-				this,
-				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(
+                this,
+                ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
 }

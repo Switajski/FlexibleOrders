@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,56 +32,56 @@ import de.switajski.priebes.flexibleorders.web.helper.JsonSerializationHelper;
 @Controller
 public class DeliveryMethodController extends ExceptionController {
 
-	@Autowired
-	private CatalogDeliveryMethodRepository deliveryMethodRepo;
-	
-	@Autowired
-	private DeliveryMethodDtoConverterService deliveryMethodDtoConverterService;
+    @Autowired
+    private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
-	@RequestMapping(value = "/json", method = RequestMethod.GET)
-	public @ResponseBody JsonObjectResponse listAll(
-			@RequestParam(value = "page", required = true) Integer page,
-			@RequestParam(value = "start", required = false) Integer start,
-			@RequestParam(value = "limit", required = true) Integer limit,
-			@RequestParam(value = "sort", required = false) String sorts) {
-		PageRequest pageRequest = createPageRequest(page, limit);
+    @Autowired
+    private DeliveryMethodDtoConverterService deliveryMethodDtoConverterService;
+
+    @RequestMapping(value = "/json", method = RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse listAll(
+            @RequestParam(value = "page", required = true) Integer page,
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = true) Integer limit,
+            @RequestParam(value = "sort", required = false) String sorts) {
+        PageRequest pageRequest = createPageRequest(page, limit);
         Page<DeliveryMethod> dMethods = convertToDeliveryMethod(deliveryMethodRepo.findAll(pageRequest), pageRequest);
-		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
-				JsonSerializationHelper.convertToJsonDeliveryMethodDtos(dMethods
-						.getContent()));
-		response.setTotal(dMethods.getTotalElements());
-		return response;
-	}
+        JsonObjectResponse response = ExtJsResponseCreator.createResponse(
+                JsonSerializationHelper.convertToJsonDeliveryMethodDtos(dMethods
+                        .getContent()));
+        response.setTotal(dMethods.getTotalElements());
+        return response;
+    }
 
     public static PageRequest createPageRequest(Integer page, Integer limit) {
         return new PageRequest(page - 1, limit);
     }
 
-	private Page<DeliveryMethod> convertToDeliveryMethod(Page<CatalogDeliveryMethod> catalogDeliveryMethods, Pageable pageable) {
-	    List<DeliveryMethod> dmSet = new ArrayList<DeliveryMethod>();
-	    for (CatalogDeliveryMethod dm : catalogDeliveryMethods)
-	        dmSet.add(dm.getDeliveryMethod());
+    private Page<DeliveryMethod> convertToDeliveryMethod(Page<CatalogDeliveryMethod> catalogDeliveryMethods, Pageable pageable) {
+        List<DeliveryMethod> dmSet = new ArrayList<DeliveryMethod>();
+        for (CatalogDeliveryMethod dm : catalogDeliveryMethods)
+            dmSet.add(dm.getDeliveryMethod());
         return new PageImpl<DeliveryMethod>(dmSet, pageable, catalogDeliveryMethods.getTotalElements());
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody DeliveryMethodDto cDto)
-			throws JsonParseException, JsonMappingException, IOException {
-		CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
-				cDto,
-				new CatalogDeliveryMethod());
-		deliveryMethodRepo.save(c);
-		return ExtJsResponseCreator.createResponse(c);
-	}
+    public @ResponseBody JsonObjectResponse create(@RequestBody DeliveryMethodDto cDto)
+            throws JsonParseException, JsonMappingException, IOException {
+        CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
+                cDto,
+                new CatalogDeliveryMethod());
+        deliveryMethodRepo.save(c);
+        return ExtJsResponseCreator.createResponse(c);
+    }
 
-	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse udpate(@RequestBody DeliveryMethodDto cDto)
-			throws JsonParseException, JsonMappingException, IOException {
-		CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
-				cDto,
-				deliveryMethodRepo.findOne(cDto.getId()));
-		deliveryMethodRepo.save(c);
-		return ExtJsResponseCreator.createResponse(c);
-	}
+    @RequestMapping(value = "/udpate", method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse udpate(@RequestBody DeliveryMethodDto cDto)
+            throws JsonParseException, JsonMappingException, IOException {
+        CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
+                cDto,
+                deliveryMethodRepo.findOne(cDto.getId()));
+        deliveryMethodRepo.save(c);
+        return ExtJsResponseCreator.createResponse(c);
+    }
 
 }

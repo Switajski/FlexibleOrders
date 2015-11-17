@@ -45,14 +45,14 @@ public class ShippingService {
         if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
                 "Lieferscheinnummer existiert bereits");
 
-        Map<ReportItem, Integer> risWithQty = 
-        		convService.mapItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped);
+        Map<ReportItem, Integer> risWithQty =
+                convService.mapItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped);
         Set<ReportItem> ris = risWithQty.keySet();
 
         Address shippingAddress = retrieveShippingAddress(ris);
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
-        if (!deliverParameter.ignoreContradictoryExpectedDeliveryDates){
-        	validateExptectedDeliveryDates(ris, deliveryNotes);
+        if (!deliverParameter.ignoreContradictoryExpectedDeliveryDates) {
+            validateExptectedDeliveryDates(ris, deliveryNotes);
         }
 
         for (Entry<ReportItem, Integer> riWithQty : risWithQty.entrySet()) {
@@ -70,55 +70,56 @@ public class ShippingService {
 
             deliveryNotes.setShippedAddress(shippingAddress);
         }
-        
-        for (Entry<ReportItem, Integer> piWithQty : 
-        	convService.mapPendingItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped).entrySet()){
-        	ReportItem itemToBeShipped = piWithQty.getKey();
+
+        for (Entry<ReportItem, Integer> piWithQty : convService.mapPendingItemDtosToReportItemsWithQty(deliverParameter.itemsToBeShipped).entrySet()) {
+            ReportItem itemToBeShipped = piWithQty.getKey();
             int qty = piWithQty.getValue();
             OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
-            
-        	deliveryNotes.addItem(new PendingItem(
-        			orderItemToBeDelivered,
-        			qty,
-        			new Date()));
+
+            deliveryNotes.addItem(new PendingItem(
+                    orderItemToBeDelivered,
+                    qty,
+                    new Date()));
         }
 
         return reportRepo.save(deliveryNotes);
     }
 
-    //TODO: move to validator
-	private void validateExptectedDeliveryDates(Set<ReportItem> ris,
-			DeliveryNotes deliveryNotes) {
-		Set<Integer> expectedDeliveryDates = expectedDeliveryService.retrieveWeekOfYear(ris);
-		if (expectedDeliveryDates.size() > 1){
-			StringBuilder messageBuilder = new StringBuilder("Angegebene Positionen haben ABs mit widerspr" + Unicode.U_UML + "chlichen Lieferdaten: ");
-			Iterator<Integer> lItr = expectedDeliveryDates.iterator(); 
-			while (lItr.hasNext()){
-				Integer kw = lItr.next();
-				messageBuilder.append("KW ").append(kw);
-				if (lItr.hasNext()){
-					messageBuilder.append(", ");
-				}
-			}
-			throw new ContradictoryPurchaseAgreementException(messageBuilder.toString());
-		} else if (expectedDeliveryDates.size() == 1) {
-			int expectedWeek = expectedDeliveryDates.iterator().next();
-			int isWeek = weekOf(deliveryNotes.getCreated());
-			if (expectedWeek != isWeek){
-				throw new ContradictoryPurchaseAgreementException("Widerr"+Unicode.U_UML+"chliche Liefertermine: KW aus AB ist " + expectedWeek + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
-			}
-		}
-	}
+    // TODO: move to validator
+    private void validateExptectedDeliveryDates(Set<ReportItem> ris,
+            DeliveryNotes deliveryNotes) {
+        Set<Integer> expectedDeliveryDates = expectedDeliveryService.retrieveWeekOfYear(ris);
+        if (expectedDeliveryDates.size() > 1) {
+            StringBuilder messageBuilder = new StringBuilder("Angegebene Positionen haben ABs mit widerspr" + Unicode.U_UML + "chlichen Lieferdaten: ");
+            Iterator<Integer> lItr = expectedDeliveryDates.iterator();
+            while (lItr.hasNext()) {
+                Integer kw = lItr.next();
+                messageBuilder.append("KW ").append(kw);
+                if (lItr.hasNext()) {
+                    messageBuilder.append(", ");
+                }
+            }
+            throw new ContradictoryPurchaseAgreementException(messageBuilder.toString());
+        }
+        else if (expectedDeliveryDates.size() == 1) {
+            int expectedWeek = expectedDeliveryDates.iterator().next();
+            int isWeek = weekOf(deliveryNotes.getCreated());
+            if (expectedWeek != isWeek) {
+                throw new ContradictoryPurchaseAgreementException("Widerr" + Unicode.U_UML + "chliche Liefertermine: KW aus AB ist " + expectedWeek
+                        + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
+            }
+        }
+    }
 
     private int weekOf(Date created) {
-    	return weekOf(new LocalDate(created));
-	}
+        return weekOf(new LocalDate(created));
+    }
 
-	private int weekOf(LocalDate next) {
-		return next.weekOfWeekyear().get();
-	}
+    private int weekOf(LocalDate next) {
+        return next.weekOfWeekyear().get();
+    }
 
-	private DeliveryNotes createDeliveryNotes(DeliverParameter deliverParameter) {
+    private DeliveryNotes createDeliveryNotes(DeliverParameter deliverParameter) {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
         deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
         deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
@@ -130,14 +131,14 @@ public class ShippingService {
 
     /**
      * @return one invoicing Address
-     * @throws ContradictoryPurchaseAgreementException if no single invoicing address could be determined
+     * @throws ContradictoryPurchaseAgreementException
+     *             if no single invoicing address could be determined
      */
     private Address retrieveShippingAddress(Set<ReportItem> reportItems) {
         Set<Address> ias = shippingAddressService.retrieve(reportItems);
-        if (ias.size() > 1) 
-        	throw new ContradictoryPurchaseAgreementException(
-                "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
-                        + BeanUtil.createStringOfDifferingAttributes(ias));
+        if (ias.size() > 1) throw new ContradictoryPurchaseAgreementException(
+                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
+                            + BeanUtil.createStringOfDifferingAttributes(ias));
         else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
-public class EmptyStringStripToNullDeserializer extends JsonDeserializer<String>{
+public class EmptyStringStripToNullDeserializer extends JsonDeserializer<String> {
 
     @Override
     public String deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {

@@ -1,44 +1,24 @@
 package de.switajski.priebes.flexibleorders.service;
 
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB11;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AMY;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B11;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B12;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.DHL;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.JUREK;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.MILADKA;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.PAUL;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.SALOME;
-import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
-import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
@@ -52,10 +32,9 @@ import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterSe
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class OrderServiceTest {
+public class OrderingServiceTest {
 
     private static final Integer ORDERED_QUANTITY = 3;
     private static final String PRODUCT_NO = "3";
@@ -99,9 +78,9 @@ public class OrderServiceTest {
     private void givenMocks() {
         MockitoAnnotations.initMocks(this);
         Mockito.when(customerRepo.findByCustomerNumber(CUSTOMER_ID))
-                .thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
+        .thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
         Mockito.when(catalogProductService.findByProductNumber(PRODUCT_NO))
-                .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NO)));
+        .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NO)));
     }
 
     private void assertSavedAsExpected(Order orderToBeSaved) {

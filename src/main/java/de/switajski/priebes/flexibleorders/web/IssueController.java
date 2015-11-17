@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IssueController extends ExceptionController {
 
-	@RequestMapping(value = "createissue", produces = "text/html")
-	public String createissue(Model uiModel) {
-		return "creditnotes/createissue";
-	}
+    @RequestMapping(value = "createissue", produces = "text/html")
+    public String createissue(Model uiModel) {
+        return "creditnotes/createissue";
+    }
 
 }

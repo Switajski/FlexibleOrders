@@ -11,18 +11,17 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 @Service
 public class OrderConfirmationToDtoConversionService {
 
-	@Autowired
-	ReportToDtoConversionService reportToDtoConversionService;
-	@Autowired
-	PurchaseAgreementService puchaseAgreementService;
+    @Autowired
+    ReportToDtoConversionService reportToDtoConversionService;
+    @Autowired
+    PurchaseAgreementService puchaseAgreementService;
 
-	@Transactional(readOnly = true)
-	public ReportDto toDto(OrderConfirmation orderConfirmation) {
-		ReportDto dto = reportToDtoConversionService.toDto(orderConfirmation);
-		if (orderConfirmation.isAgreed())
-		    dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
-		dto.orderConfirmationSpecific_paymentConditions = puchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
-		return dto;
-	}
+    @Transactional(readOnly = true)
+    public ReportDto toDto(OrderConfirmation orderConfirmation) {
+        ReportDto dto = reportToDtoConversionService.toDto(orderConfirmation);
+        if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
+        dto.orderConfirmationSpecific_paymentConditions = puchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
+        return dto;
+    }
 
 }

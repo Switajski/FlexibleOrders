@@ -11,13 +11,13 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
-public class ProductTypeDeserializer extends JsonDeserializer<ProductType>{
+public class ProductTypeDeserializer extends JsonDeserializer<ProductType> {
 
     @Override
     public ProductType deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        String ptString = StringUtils.capitalize(jp.getText());;
-        if (StringUtils.isEmpty(ptString))
-            return null;
+        String ptString = StringUtils.capitalize(jp.getText());
+        ;
+        if (StringUtils.isEmpty(ptString)) return null;
         return ProductType.mapFromString(ptString);
     }
 

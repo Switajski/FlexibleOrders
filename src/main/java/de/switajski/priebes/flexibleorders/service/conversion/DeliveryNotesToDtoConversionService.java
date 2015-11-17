@@ -13,19 +13,19 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 @Service
 public class DeliveryNotesToDtoConversionService {
 
-	@Autowired
-	ReportToDtoConversionService reportToDtoConversionService;
-	@Autowired
-	ShippingAddressService shippingAddressService;
-	@Autowired
-	CustomerDetailsService customerDetailsService;
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
+    @Autowired
+    ReportToDtoConversionService reportToDtoConversionService;
+    @Autowired
+    ShippingAddressService shippingAddressService;
+    @Autowired
+    CustomerDetailsService customerDetailsService;
+    @Autowired
+    PurchaseAgreementService purchaseAgreementService;
 
-	@Transactional(readOnly = true)
-	public ReportDto toDto(DeliveryNotes report) {
-		ReportDto dto = reportToDtoConversionService.toDto(report);
-		return dto;
-	}
+    @Transactional(readOnly = true)
+    public ReportDto toDto(DeliveryNotes report) {
+        ReportDto dto = reportToDtoConversionService.toDto(report);
+        return dto;
+    }
 
 }

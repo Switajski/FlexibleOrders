@@ -21,9 +21,9 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 /**
  * Data Transfer Object for ExtJs GUI </br> Build on
  * <code>BestellpositionData</code>, which is written in JavaScript.
- * 
+ *
  * @author Marek Switajski
- * 
+ *
  */
 @JsonAutoDetect
 public class ItemDto {
@@ -34,43 +34,43 @@ public class ItemDto {
     @JsonDeserialize(using = JsonDateDeserializer.class)
     public Date created;
     public String product;
-    public Long  
-        customer, 
-        customerNumber;
-    
+    public Long
+            customer,
+            customerNumber;
+
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    public String productName, 
-        customerName, 
-        orderNumber, 
-        documentNumber, 
-        invoiceNumber, 
-        receiptNumber, 
-        deliveryNotesNumber, 
-        orderConfirmationNumber,
-        orderAgreementNumber, 
-        trackNumber, 
-        packageNumber, 
-        paymentConditions;
+    public String productName,
+            customerName,
+            orderNumber,
+            documentNumber,
+            invoiceNumber,
+            receiptNumber,
+            deliveryNotesNumber,
+            orderConfirmationNumber,
+            orderAgreementNumber,
+            trackNumber,
+            packageNumber,
+            paymentConditions;
 
     public Integer quantity,
-        quantityLeft;
-    
+            quantityLeft;
+
     @JsonDeserialize(using = ProductTypeDeserializer.class)
     public ProductType productType;
-    
+
     @JsonDeserialize(using = BigDecimalDeserializer.class)
     public BigDecimal priceNet;
-    
+
     public boolean shareHistory;
 
     public String status;
-    
+
     @JsonSerialize(using = JsonJodaLocalDateSerializer.class)
     @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
     public LocalDate expectedDelivery;
 
     public boolean agreed = true;
-    
+
     public boolean pending = false;
 
     @Override

@@ -17,20 +17,19 @@ public class InvoicingParameter {
 
     /**
      * Constructor with mandatory fields.
-     * 
+     *
      * @param invoiceNumber
      * @param paymentConditions
      * @param created
      * @param shippingItemDtos
      */
-    public InvoicingParameter(String invoiceNumber, 
-            Date created, 
+    public InvoicingParameter(String invoiceNumber,
+            Date created,
             List<ItemDto> shippingItemDtos) {
         this.invoiceNumber = invoiceNumber;
         this.created = created;
         this.shippingItemDtos = shippingItemDtos;
     }
 
-    public InvoicingParameter() {
-    }
+    public InvoicingParameter() {}
 }

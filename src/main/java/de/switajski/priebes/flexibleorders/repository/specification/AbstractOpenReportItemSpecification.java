@@ -32,23 +32,23 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
  * been delivered. An event is called {@link ReportItem}. Thus the table of
  * report items joined with order items are a history - See following SQL after
  * having started TestDataCreator#createTestData:
- * 
+ *
  * <pre>
- * select oi.id, oi.name, oi.ordered_quantity, ri.id, ri.dtype, ri.quantity 
+ * select oi.id, oi.name, oi.ordered_quantity, ri.id, ri.dtype, ri.quantity
  * from order_item oi
  * join report_item ri on oi.id = ri.order_item
  * order by oi.id, ri.id
  * </pre>
- * 
+ *
  * Querying order items, that are confirmed, but not shipped would be:
- * 
+ *
  * <pre>
- * select 
- * oi.id, oi.name, oi.ordered_quantity 
+ * select
+ * oi.id, oi.name, oi.ordered_quantity
  * from order_item oi
  * where (
  *     select sum(quantity)
- *     from report_item ri 
+ *     from report_item ri
  *     where ri.order_item=oi.id
  *     and dtype = 'ConfirmationItem'
  *     group by dtype
@@ -60,12 +60,12 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
  *     group by dtype
  * )
  * </pre>
- * 
+ *
  * @author Marek Switajski
- * 
+ *
  */
 public class AbstractOpenReportItemSpecification implements
-        Specification<ReportItem> {
+Specification<ReportItem> {
 
     private static final String QTY = "quantity";
     private static final String ORDER_ITEM = "orderItem";
@@ -76,7 +76,7 @@ public class AbstractOpenReportItemSpecification implements
     private Class<? extends ReportItem> reportItemClassToRetrieve;
 
     /**
-     * 
+     *
      * @param reportItemClassToRetrieve
      * @param reportItemClassToSubtract
      */
@@ -88,32 +88,32 @@ public class AbstractOpenReportItemSpecification implements
     }
 
     /**
-     * 
+     *
      * Specification in JQL would look like this:
-     * 
+     *
      * <pre>
-     * select from ConfirmationItem ri where 
+     * select from ConfirmationItem ri where
      *       EXISTS //inCondition
      *       // subquery
-     *       (SELECT he from ReportItem he where he.orderItem = ri.orderItem and 
-     *           (SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent 
+     *       (SELECT he from ReportItem he where he.orderItem = ri.orderItem and
+     *           (SELECT sum(confirmEvent.quantity) from ConfirmationItem confirmEvent
      *           where confirmEvent.orderItem = ri.orderItem)
      *            > "//Subquery2
-     *           (SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent 
-     *           where shipEvent.orderItem = ri.orderItem) 
+     *           (SELECT coalesce(sum(shipEvent.quantity),0) from ShippingItem shipEvent
+     *           where shipEvent.orderItem = ri.orderItem)
      *       );
      * </pre>
-     * 
+     *
      * <br />
      * Besides of selecting order items instead of report items, the spec could
      * be in SQL:
-     * 
+     *
      * <pre>
      *   select *
      *   from order_item oi
      *   where (
      *       select sum(quantity)
-     *       from report_item ri 
+     *       from report_item ri
      *       where ri.order_item=oi.id
      *       and dtype = 'ConfirmationItem'
      *       group by dtype
@@ -126,7 +126,7 @@ public class AbstractOpenReportItemSpecification implements
      *   )
      *
      * </pre>
-     * 
+     *
      * @see http://stackoverflow.com/questions/3997070/jpa-criteria-tutorial
      */
     @Override

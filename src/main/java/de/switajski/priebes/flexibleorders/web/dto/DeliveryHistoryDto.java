@@ -26,7 +26,7 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
                     ri.getReport().getDocumentNumber(),
                     ri.getReport().getDocumentNumber() + ": "
                             + ri.getQuantity(),
-                    true);
+                            true);
             this.add(child);
         }
     }
@@ -41,7 +41,7 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
 
     public String createOrderString(DeliveryHistory dh) {
         OrderItem oi = dh.getItems().iterator().next().getOrderItem();
-        return StringUtil.concatWithCommas(dh.getOrderNumbers()) + 
+        return StringUtil.concatWithCommas(dh.getOrderNumbers()) +
                 ": " + oi.getOrderedQuantity() + " x " + oi.getProduct().getName();
     }
 

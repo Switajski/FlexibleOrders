@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,11 +46,11 @@ import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepos
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
-import de.switajski.priebes.flexibleorders.service.api.ShippingService;
+import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -61,9 +59,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
  * Creates test data in order to ease GUI Testing.
- * 
+ *
  * @author Marek Switajski
- * 
+ *
  */
 @Transactional
 public class TestDataCreator extends AbstractSpringContextTest {
@@ -76,7 +74,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     @Autowired
     private OrderingService orderingService;
-    
+
     @Autowired
     private ConfirmingService confirmingService;
 
@@ -95,21 +93,21 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreeingService agreeingService;
 
-//    @Ignore("This test is to initialize test data for GUI testing")
-//    @Test
+    // @Ignore("This test is to initialize test data for GUI testing")
+    // @Test
     @Rollback(false)
     public void run() {
         createTestData();
     }
 
-	public void createTestData() {
-		createProducts();
+    public void createTestData() {
+        createProducts();
         createCustomers();
         createDeliveryMethods();
 
         createYvonnesOrders();
         createNaidasOrders();
-	}
+    }
 
     private void createDeliveryMethods() {
         deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
@@ -138,7 +136,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 YVONNE.getInvoiceAddress(),
                 converterService.convert(b22));
         confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
-		OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
+        OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
         return ab22;
     }
 
@@ -191,7 +189,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                         extract(itemsFromAu11, PAUL.getProductNumber(), 15),
                         extract(itemsFromAu15, PAUL.getProductNumber(), 8)));
         deliverParameter.trackNumber = "trackNumber15";
-        deliverParameter.packageNumber = "packageNumber15"; 
+        deliverParameter.packageNumber = "packageNumber15";
         deliverParameter.shipment = new Amount(BigDecimal.ZERO);
         shippingService.ship(deliverParameter);
     }
@@ -229,7 +227,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                         extract(itemsFromAu11, MILADKA.getProductNumber(), 3)));
         deliverParameter.trackNumber = "trackNumber12";
         deliverParameter.packageNumber = "packageNumber12";
-        deliverParameter.shipment = new Amount(BigDecimal.ONE); 
+        deliverParameter.shipment = new Amount(BigDecimal.ONE);
         DeliveryNotes l12 = shippingService.ship(deliverParameter);
         return l12;
     }

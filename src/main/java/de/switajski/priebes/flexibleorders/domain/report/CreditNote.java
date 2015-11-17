@@ -10,12 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class CreditNote extends Report {
 
-	@JsonIgnore
-	public Set<ConfirmationItem> getAgreementItems(){
-		Set<ConfirmationItem> shippingItems = new HashSet<ConfirmationItem>();
-		for (ReportItem reportItem: this.items){
-			shippingItems.add((ConfirmationItem) reportItem);
-		}
-		return shippingItems;
-	}
+    @JsonIgnore
+    public Set<ConfirmationItem> getAgreementItems() {
+        Set<ConfirmationItem> shippingItems = new HashSet<ConfirmationItem>();
+        for (ReportItem reportItem : this.items) {
+            shippingItems.add((ConfirmationItem) reportItem);
+        }
+        return shippingItems;
+    }
 }

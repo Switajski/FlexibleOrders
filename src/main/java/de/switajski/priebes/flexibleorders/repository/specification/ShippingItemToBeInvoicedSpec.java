@@ -8,5 +8,5 @@ public class ShippingItemToBeInvoicedSpec extends AbstractOpenReportItemSpecific
     public ShippingItemToBeInvoicedSpec() {
         super(ShippingItem.class, InvoiceItem.class);
     }
-    
+
 }

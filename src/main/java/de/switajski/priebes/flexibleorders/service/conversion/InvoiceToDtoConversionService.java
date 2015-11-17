@@ -11,19 +11,19 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 @Service
 public class InvoiceToDtoConversionService {
 
-	@Autowired
-	ReportToDtoConversionService reportToDtoConversionService;
+    @Autowired
+    ReportToDtoConversionService reportToDtoConversionService;
 
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
+    @Autowired
+    PurchaseAgreementService purchaseAgreementService;
 
-	@Transactional(readOnly = true)
-	public ReportDto toDto(Invoice report) {
-		ReportDto dto = reportToDtoConversionService.toDto(report);
-		dto.shippingSpecific_shippingCosts = report.getShippingCosts();
-		dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(report).getPaymentConditions();
-		dto.invoiceSpecific_billing = report.getBilling();
-		return dto;
-	}
+    @Transactional(readOnly = true)
+    public ReportDto toDto(Invoice report) {
+        ReportDto dto = reportToDtoConversionService.toDto(report);
+        dto.shippingSpecific_shippingCosts = report.getShippingCosts();
+        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(report).getPaymentConditions();
+        dto.invoiceSpecific_billing = report.getBilling();
+        return dto;
+    }
 
 }

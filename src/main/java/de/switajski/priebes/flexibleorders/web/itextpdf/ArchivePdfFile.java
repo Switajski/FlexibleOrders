@@ -13,19 +13,21 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component
 public class ArchivePdfFile extends ArchivePdfView {
 
-	public static final String RESULT = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/ArchivePdfFileTest.pdf";
+    public static final String RESULT = "src/test/java/de/switajski/priebes/flexibleorders/report/itextpdf/ArchivePdfFileTest.pdf";
 
-	protected PdfWriter newWriter(Document document, OutputStream os)
-			throws DocumentException {
-		PdfWriter writer;
-		try {
-			writer = PdfWriter.getInstance(document, new FileOutputStream(
-					RESULT));
-			return writer;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    protected PdfWriter newWriter(Document document, OutputStream os)
+            throws DocumentException {
+        PdfWriter writer;
+        try {
+            writer = PdfWriter.getInstance(document, new FileOutputStream(
+                    RESULT));
+            return writer;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

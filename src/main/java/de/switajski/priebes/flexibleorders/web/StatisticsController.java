@@ -13,14 +13,14 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @RequestMapping("/statistics")
 @Controller
-public class StatisticsController extends ExceptionController{
+public class StatisticsController extends ExceptionController {
 
-	@Autowired
-	private StatisticsService statisticsService;
-	
-	@RequestMapping(value = "/openAmount", method = RequestMethod.GET)
-	public @ResponseBody JsonObjectResponse shippedAmount(
-			@RequestParam String state) throws Exception {
-		return ExtJsResponseCreator.createResponse(statisticsService.calculateOpenAmount(state));
-	}
+    @Autowired
+    private StatisticsService statisticsService;
+
+    @RequestMapping(value = "/openAmount", method = RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse shippedAmount(
+            @RequestParam String state) throws Exception {
+        return ExtJsResponseCreator.createResponse(statisticsService.calculateOpenAmount(state));
+    }
 }

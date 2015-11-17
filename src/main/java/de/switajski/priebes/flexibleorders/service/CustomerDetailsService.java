@@ -32,18 +32,17 @@ public class CustomerDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Set<CustomerDetails> retrieve(Set<ReportItem> reportItems){
+    public Set<CustomerDetails> retrieve(Set<ReportItem> reportItems) {
         Set<CustomerDetails> customerDetails = new HashSet<CustomerDetails>();
-        for (ReportItem ri:reportItems){
+        for (ReportItem ri : reportItems) {
             Report r = ri.getReport();
-            if (r instanceof OrderConfirmation)
-                customerDetails.add(((OrderConfirmation) r).getCustomerDetails());
+            if (r instanceof OrderConfirmation) customerDetails.add(((OrderConfirmation) r).getCustomerDetails());
         }
-            
-        for (ReportItem ri:reportItems){
+
+        for (ReportItem ri : reportItems) {
             customerDetails.addAll(retrieve(ri));
         }
-        return customerDetails; 
+        return customerDetails;
     }
 
 }

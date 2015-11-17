@@ -15,14 +15,14 @@ import de.switajski.priebes.flexibleorders.service.SpecificationIntegrationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		CategoryIntegrationTest.class,
-		OrderConfirmationPdfFileTest.class,
-		CustomerIntegrationTest.class,
-		DeliveryNotesPdfFileTest.class,
-		InvoicePdfFileTest.class,
-		OrderPdfFileTest.class,
-		ProductIntegrationTest.class,
-		SpecificationIntegrationTest.class
+        CategoryIntegrationTest.class,
+        OrderConfirmationPdfFileTest.class,
+        CustomerIntegrationTest.class,
+        DeliveryNotesPdfFileTest.class,
+        InvoicePdfFileTest.class,
+        OrderPdfFileTest.class,
+        ProductIntegrationTest.class,
+        SpecificationIntegrationTest.class
 })
 public class IntegrationTestSuite {
 

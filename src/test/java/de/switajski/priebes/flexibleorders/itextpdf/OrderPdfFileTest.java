@@ -19,46 +19,46 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfFile;
 
 public class OrderPdfFileTest {
 
-	private final static String O_PDF_FILE = "src/test/resources/OrderPdfFileTest.pdf";
+    private final static String O_PDF_FILE = "src/test/resources/OrderPdfFileTest.pdf";
 
-	private Order order;
+    private Order order;
 
-	private ReportDto addOrderItems(ReportDto dto) {
-		dto.orderItems = new HashSet<OrderItem>(Arrays.asList(
-		new OrderItemBuilder(
-				order,
-				CatalogProductBuilder
-						.buildWithGeneratedAttributes(98760)
-						.toProduct(),
-				5)
-				.generateAttributes(15)
-				.build(), 
-		new OrderItemBuilder(
-				order,
-				CatalogProductBuilder
-						.buildWithGeneratedAttributes(98760)
-						.toProduct(),
-				12)
-				.generateAttributes(12)
-				.build()));
-		return dto;
-	}
+    private ReportDto addOrderItems(ReportDto dto) {
+        dto.orderItems = new HashSet<OrderItem>(Arrays.asList(
+                new OrderItemBuilder(
+                        order,
+                        CatalogProductBuilder
+                                .buildWithGeneratedAttributes(98760)
+                                .toProduct(),
+                        5)
+                        .generateAttributes(15)
+                        .build(),
+                new OrderItemBuilder(
+                        order,
+                        CatalogProductBuilder
+                                .buildWithGeneratedAttributes(98760)
+                                .toProduct(),
+                        12)
+                        .generateAttributes(12)
+                        .build()));
+        return dto;
+    }
 
-	@Transactional
-	@Test
-	public void shouldGenerateOrder() throws Exception {
-		OrderPdfFile bpf = new OrderPdfFile();
-		bpf.setFileNameAndPath(O_PDF_FILE);
-		bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
+    @Transactional
+    @Test
+    public void shouldGenerateOrder() throws Exception {
+        OrderPdfFile bpf = new OrderPdfFile();
+        bpf.setFileNameAndPath(O_PDF_FILE);
+        bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
 
-		Map<String, Object> model = new HashMap<String, Object>();
-		ReportDto reportDto = addOrderItems(ReportDtoTestFixture.givenReportDto());
+        Map<String, Object> model = new HashMap<String, Object>();
+        ReportDto reportDto = addOrderItems(ReportDtoTestFixture.givenReportDto());
         model.put(reportDto.getClass().getSimpleName(), reportDto);
 
-		bpf.render(
-				model,
-				new MockHttpServletRequest(),
-				new MockHttpServletResponse());
+        bpf.render(
+                model,
+                new MockHttpServletRequest(),
+                new MockHttpServletResponse());
 
-	}
+    }
 }

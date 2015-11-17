@@ -18,7 +18,7 @@ public class StatusFilterDispatcher {
 
     public Specification<ReportItem> dispatchStatus(ProductionState processStep) {
         if (processStep == null) throw new IllegalArgumentException("Status nicht angegeben");
-        
+
         switch (processStep) {
             case CONFIRMED:
                 return new ConfirmationItemToBeAgreedSpec();
@@ -37,12 +37,12 @@ public class StatusFilterDispatcher {
 
             case ISSUED:
                 return new IssuedItemSpec();
-            
+
             case DELIVERED:
-                return new ShippingItemToBeInvoicedSpec(); 
+                return new ShippingItemToBeInvoicedSpec();
 
         }
-        throw new NotFoundException("Status "+ processStep +"nicht gefunden");
+        throw new NotFoundException("Status " + processStep + "nicht gefunden");
 
     }
 

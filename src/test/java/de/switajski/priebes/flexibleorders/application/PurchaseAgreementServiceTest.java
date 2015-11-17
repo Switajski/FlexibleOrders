@@ -30,13 +30,13 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(givenPurchaseAgreement()),
                 givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
 
-        // WHEN 
+        // WHEN
         Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieve(agreementItems);
-        
+
         // THEN
         assertThat(purchaseAgreements.size(), is(greaterThan(1)));
     }
-    
+
     @Test
     public void shouldLegalPurchaseAgreementsOnly() {
         // GIVEN
@@ -44,26 +44,26 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(givenPurchaseAgreement()),
                 givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
 
-        // WHEN 
+        // WHEN
         Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegal(agreementItems);
-        
+
         // THEN
         assertThat(purchaseAgreements.size(), is(0));
     }
 
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
         return new ConfirmationItemBuilder()
-                .setItem(
-                        new OrderItemBuilder()
-                                .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(12)
-                                .build())
+        .setItem(
+                new OrderItemBuilder()
+                .setProduct(new ProductBuilder().build())
+                .setOrderedQuantity(12)
+                .build())
                 .setQuantity(6)
                 .setReport(
                         new OrderConfirmationBuilder()
-                                .setAgreementDetails(purchaseAgreement)
-                                .build())
-                .build();
+                        .setAgreementDetails(purchaseAgreement)
+                        .build())
+                        .build();
     }
 
     private PurchaseAgreement changeExpectedDeliveryDate(PurchaseAgreement ad) {

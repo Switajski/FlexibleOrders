@@ -14,14 +14,14 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 @Service
 public class DeliveryMethodService {
 
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
-	
-	@Transactional(readOnly=true)
-	public Set<DeliveryMethod> retrieve(Set<ReportItem> reportItems){
-		Set<DeliveryMethod> deliveryMethods = new HashSet<DeliveryMethod>();
-		for (PurchaseAgreement pa:purchaseAgreementService.retrieve(reportItems))
-			deliveryMethods.add(pa.getDeliveryMethod());
-		return deliveryMethods;
-	}
+    @Autowired
+    PurchaseAgreementService purchaseAgreementService;
+
+    @Transactional(readOnly = true)
+    public Set<DeliveryMethod> retrieve(Set<ReportItem> reportItems) {
+        Set<DeliveryMethod> deliveryMethods = new HashSet<DeliveryMethod>();
+        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(reportItems))
+            deliveryMethods.add(pa.getDeliveryMethod());
+        return deliveryMethods;
+    }
 }

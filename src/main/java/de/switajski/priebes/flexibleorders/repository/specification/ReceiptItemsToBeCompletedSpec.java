@@ -10,12 +10,12 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public class ReceiptItemsToBeCompletedSpec implements Specification<ReportItem>{
+public class ReceiptItemsToBeCompletedSpec implements Specification<ReportItem> {
 
-	@Override
-	public Predicate toPredicate(Root<ReportItem> root,
-			CriteriaQuery<?> query, CriteriaBuilder cb) {
-		return cb.equal(root.type(), ReceiptItem.class);
-	}
+    @Override
+    public Predicate toPredicate(Root<ReportItem> root,
+            CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return cb.equal(root.type(), ReceiptItem.class);
+    }
 
 }

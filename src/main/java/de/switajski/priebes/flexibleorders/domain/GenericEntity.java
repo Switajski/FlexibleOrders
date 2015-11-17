@@ -67,10 +67,10 @@ public abstract class GenericEntity {
     public void setCreated(Date created) {
         this.created = created;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
-    
+
 }

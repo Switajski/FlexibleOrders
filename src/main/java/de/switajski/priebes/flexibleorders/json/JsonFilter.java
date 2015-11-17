@@ -4,39 +4,39 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * Helper Class for ExtJs Json Filter Deserialization
- * 
+ *
  * @author Marek
- * 
+ *
  */
 @JsonAutoDetect
 public class JsonFilter {
 
-	public String field;
-	public String value;
-	public String type;
+    public String field;
+    public String value;
+    public String type;
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getType() {
-		return this.type;
-	}
+    public String getType() {
+        return this.type;
+    }
 
 }

@@ -17,7 +17,7 @@ public class PurchaseAgreementBuilder implements Builder<PurchaseAgreement> {
     private LocalDate expectedDelivery;
 
     private Long customerNumber;
-    
+
     @Override
     public PurchaseAgreement build() {
         PurchaseAgreement p = new PurchaseAgreement();

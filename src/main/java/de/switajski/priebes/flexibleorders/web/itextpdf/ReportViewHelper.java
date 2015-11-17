@@ -39,10 +39,10 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTablePa
 import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
 public class ReportViewHelper {
-	
-	public static List<Element> createAddress(Address adresse) throws DocumentException{
-		return createAddress(adresse, null);
-	}
+
+    public static List<Element> createAddress(Address adresse) throws DocumentException {
+        return createAddress(adresse, null);
+    }
 
     public static List<Element> createAddress(Address adresse, Image image)
             throws DocumentException {
@@ -52,36 +52,35 @@ public class ReportViewHelper {
         elements.add(ParagraphBuilder.createEmptyLine());
         elements.add(ParagraphBuilder.createEmptyLine());
         elements.add(ParagraphBuilder.createEmptyLine());
-		if (image != null){
-        	Image img = Image.getInstance(image);
+        if (image != null) {
+            Image img = Image.getInstance(image);
             img.setAlignment(Image.LEFT);
             img.setIndentationLeft(indentationLeftForAddress);
             img.scaleToFit(50, 20);
             elements.add(img);
-        } else {
-	        elements.add(ParagraphBuilder.createEmptyLine());
         }
-		
+        else {
+            elements.add(ParagraphBuilder.createEmptyLine());
+        }
+
         if (adresse == null) {
             elements.add(ParagraphBuilder.createEmptyLine());
             elements.add(ParagraphBuilder.createEmptyLine());
             elements.add(ParagraphBuilder.createEmptyLine());
         }
         else {
-        	boolean name2Empty = StringUtils.isEmpty(adresse.getName2());
-        	
+            boolean name2Empty = StringUtils.isEmpty(adresse.getName2());
+
             ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
-				.withIndentationLeft(indentationLeftForAddress)
-				.withLineSpacing(12f);
-			if (name2Empty)
-            	paragraphBuilder.addTextLine(adresse.getName2());
-			paragraphBuilder.addTextLine(adresse.getStreet())
-				.addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
-				.addTextLine(adresse.getCountry().getName());
-			if (name2Empty)
-				paragraphBuilder.addTextLine("");
-            
-			elements.add(paragraphBuilder.build());
+                    .withIndentationLeft(indentationLeftForAddress)
+                    .withLineSpacing(12f);
+            if (name2Empty) paragraphBuilder.addTextLine(adresse.getName2());
+            paragraphBuilder.addTextLine(adresse.getStreet())
+                    .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
+                    .addTextLine(adresse.getCountry().getName());
+            if (name2Empty) paragraphBuilder.addTextLine("");
+
+            elements.add(paragraphBuilder.build());
         }
         elements.add(ParagraphBuilder.createEmptyLine());
         return elements;
@@ -89,7 +88,7 @@ public class ReportViewHelper {
 
     public static PdfPTable createInfoTable(String rightTop,
             String rightBottom, String leftTop, String leftBottom)
-            throws DocumentException {
+                    throws DocumentException {
 
         CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
                 .createInfoTable(leftTop, leftBottom, rightTop, rightBottom);
@@ -115,14 +114,13 @@ public class ReportViewHelper {
         PdfPCellBuilder cellb = new PdfPCellBuilder(new Phrase());
 
         int columnSize = 2;
-		PdfPTable table = new PdfPTable(columnSize);
+        PdfPTable table = new PdfPTable(columnSize);
         appendDocNumbersIfNotEmpty(p.orderNumbers, table, "B-Nr.");
         appendDocNumbersIfNotEmpty(p.orderConfirmationNumbers, table, "AB-Nr.");
         appendDocNumbersIfNotEmpty(p.deliveryNotesNumbers, table, "L-Nr.");
         appendDocNumbersIfNotEmpty(p.invoiceNumbers, table, "R-Nr.");
         appendDocNumbersIfNotEmpty(p.creditNoteNumbers, table, "G-Nr.");
-        table.setWidths(new float[]{22, 78});
-        
+        table.setWidths(new float[] { 22, 78 });
 
         Phrase firstCol = new PhraseBuilder().build();
         firstCol.add(NEWLINE);
@@ -130,9 +128,9 @@ public class ReportViewHelper {
             firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
         }
         firstCol.add(new PhraseBuilder()
-                .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
-                .append(isEmpty(p.saleRepresentative) ? "" :
-                        NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
+        .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
+        .append(isEmpty(p.saleRepresentative) ? "" :
+            NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
         PdfPCell cell = new PdfPCell(firstCol);
         PdfPCellUtility.noBorder(cell);
         cell.setColspan(columnSize);
@@ -140,22 +138,21 @@ public class ReportViewHelper {
 
         PdfPCell secondCol = new PdfPCell();
         PdfPCellUtility.noBorder(secondCol);
-        if (p.shippingAddress != null){
+        if (p.shippingAddress != null) {
             secondCol.addElement(new Phrase("Lieferadresse:"));
             secondCol.addElement(new PhraseBuilder(createString(p.shippingAddress)).size8().build());
-            if (p.deliveryMethod != null)
-                secondCol.addElement(new PhraseBuilder("\n" + createString(p.deliveryMethod)).size8().build());
+            if (p.deliveryMethod != null) secondCol.addElement(new PhraseBuilder("\n" + createString(p.deliveryMethod)).size8().build());
         }
 
         String thirdColBuilder = new StringBuilder()
-                .append("Kundennr.: " + p.customerNo + NEWLINE)
-                .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
-                        + p.vendorNumber + NEWLINE + NEWLINE)
+        .append("Kundennr.: " + p.customerNo + NEWLINE)
+        .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
+                + p.vendorNumber + NEWLINE + NEWLINE)
                 .append(createString(p.contactInformation))
                 .toString();
 
         PdfPTable extInfoTable = new CustomPdfPTableBuilder(
-        PdfPTableBuilder.createPropertiesWithThreeCols()).build();
+                PdfPTableBuilder.createPropertiesWithThreeCols()).build();
         PdfPCell firstCell = new PdfPCell(table);
         PdfPCellUtility.noBorder(firstCell);
         extInfoTable.addCell(firstCell);
@@ -169,21 +166,20 @@ public class ReportViewHelper {
     private static void appendDocNumbersIfNotEmpty(Collection<String> strings,
             PdfPTable table, String docNoName) {
         if (strings != null && !strings.isEmpty()) {
-        	PdfPCell cell = new PdfPCell(new PhraseBuilder().size8().append(docNoName).append(":").build());
-        	PdfPCellUtility.noBorder(cell);
-			table.addCell(cell);
-        	
-			StringBuilder sb = new StringBuilder();
-        	Iterator<String> itr = strings.iterator();
-        	while (itr.hasNext()){
-        		String s = itr.next();
-        		sb.append(s);
-        		if (itr.hasNext())
-        			sb.append(", ");
-        	}
-        	PdfPCell cell2 = new PdfPCell(new PhraseBuilder().size8().append(sb.toString()).build());
-        	PdfPCellUtility.noBorder(cell2);
-			table.addCell(cell2);
+            PdfPCell cell = new PdfPCell(new PhraseBuilder().size8().append(docNoName).append(":").build());
+            PdfPCellUtility.noBorder(cell);
+            table.addCell(cell);
+
+            StringBuilder sb = new StringBuilder();
+            Iterator<String> itr = strings.iterator();
+            while (itr.hasNext()) {
+                String s = itr.next();
+                sb.append(s);
+                if (itr.hasNext()) sb.append(", ");
+            }
+            PdfPCell cell2 = new PdfPCell(new PhraseBuilder().size8().append(sb.toString()).build());
+            PdfPCellUtility.noBorder(cell2);
+            table.addCell(cell2);
         }
     }
 
@@ -191,9 +187,9 @@ public class ReportViewHelper {
         if (deliveryMethod == null) return "";
         if (deliveryMethod.getDeliveryType() == DeliveryType.SPEDITION) {
             return new StringBuilder()
-                    .append("Lieferart per Spedition:")
-                    .append(NEWLINE + createString(deliveryMethod.getAddress()))
-                    .toString();
+            .append("Lieferart per Spedition:")
+            .append(NEWLINE + createString(deliveryMethod.getAddress()))
+            .toString();
         }
         else if (deliveryMethod.getDeliveryType() == DeliveryType.POST) {
             return new StringBuilder().append("Lieferart per Post").toString();
@@ -263,39 +259,38 @@ public class ReportViewHelper {
                 PdfPTableBuilder.createPropertiesWithFourCols());
         // Refactor - see #71
         for (ReportItem ri : cReport.getItemsByOrder()) {
-        	if (!(ri instanceof PendingItem)){
-	            if (!ri.getOrderItem().isShippingCosts()) {
-	                List<String> row = createRowWithoutPrices(ri);
-	                builder.addBodyRow(row);
-	            }
-        	}
+            if (!(ri instanceof PendingItem)) {
+                if (!ri.getOrderItem().isShippingCosts()) {
+                    List<String> row = createRowWithoutPrices(ri);
+                    builder.addBodyRow(row);
+                }
+            }
         }
-        
+
         builder.addBreak("Ausstehende Artikel");
-        
+
         for (ReportItem ri : cReport.getItemsByOrder()) {
-        	if (ri instanceof PendingItem){
-        		builder.addBodyRow(createRowWithoutPrices(ri));
-        	}
+            if (ri instanceof PendingItem) {
+                builder.addBodyRow(createRowWithoutPrices(ri));
+            }
         }
-        
 
         return builder.withFooter(false).build();
     }
 
-	private static List<String> createRowWithoutPrices(ReportItem he) {
-		List<String> row = new ArrayList<String>();
-		// Anzahl
-		row.add(String.valueOf(he.getQuantity()) + " x ");
-		// Art.Nr.:
-		String pNo = he.getOrderItem().getProduct().getProductNumber();
-		row.add(pNo.equals("0") ? "n.a." : pNo.toString());
-		// Artikel
-		row.add(he.getOrderItem().getProduct().getName());
-		// Bestellnr
-		row.add(he.getOrderItem().getOrder().getOrderNumber());
-		return row;
-	}
+    private static List<String> createRowWithoutPrices(ReportItem he) {
+        List<String> row = new ArrayList<String>();
+        // Anzahl
+        row.add(String.valueOf(he.getQuantity()) + " x ");
+        // Art.Nr.:
+        String pNo = he.getOrderItem().getProduct().getProductNumber();
+        row.add(pNo.equals("0") ? "n.a." : pNo.toString());
+        // Artikel
+        row.add(he.getOrderItem().getProduct().getName());
+        // Bestellnr
+        row.add(he.getOrderItem().getOrder().getOrderNumber());
+        return row;
+    }
 
     public static Paragraph createDate(String date) {
         return new ParagraphBuilder(date).withAlignment(Element.ALIGN_RIGHT)

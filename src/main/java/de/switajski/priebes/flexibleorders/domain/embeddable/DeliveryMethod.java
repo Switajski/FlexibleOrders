@@ -7,65 +7,67 @@ import javax.validation.constraints.NotNull;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 
 /**
- * TODO: Split into Carrier and Method. Concept to be analyzed: Delivery abroad, zones, etc...
+ * TODO: Split into Carrier and Method. Concept to be analyzed: Delivery abroad,
+ * zones, etc...
+ * 
  * @author Marek Switajski
  *
  */
 @Embeddable
-public class DeliveryMethod{
-	
-    private Long externalId;
-    
-    @NotNull
-	@Enumerated
-	private DeliveryType deliveryType;
-	
-	private String name, phone;
-	
-	private Address address;
+public class DeliveryMethod {
 
-	public DeliveryMethod() {
-		this.deliveryType = DeliveryType.SPEDITION;
-	}
-	
-	public Long getExternalId() {
+    private Long externalId;
+
+    @NotNull
+    @Enumerated
+    private DeliveryType deliveryType;
+
+    private String name, phone;
+
+    private Address address;
+
+    public DeliveryMethod() {
+        this.deliveryType = DeliveryType.SPEDITION;
+    }
+
+    public Long getExternalId() {
         return externalId;
     }
 
     public void setExternalId(Long id) {
         this.externalId = id;
     }
-	
-	public String getPhone() {
-		return phone;
-	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public Address getAddress() {
-		return address;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public Address getAddress() {
+        return address;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public DeliveryType getDeliveryType() {
-		return deliveryType;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDeliveryType(DeliveryType deliveryType) {
-		this.deliveryType = deliveryType;
-	}
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
+    }
 
 }

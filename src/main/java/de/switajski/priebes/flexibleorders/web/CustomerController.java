@@ -29,62 +29,60 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 @Controller
 public class CustomerController extends ExceptionController {
 
-	@Autowired
-	private CustomerRepository customerRepo;
-	
-	@RequestMapping(value = "/json", method = RequestMethod.GET)
-	public @ResponseBody JsonObjectResponse listAll(
-			@RequestParam(value = "page", required = true) Integer page,
-			@RequestParam(value = "start", required = false) Integer start,
-			@RequestParam(value = "limit", required = true) Integer limit,
-			@RequestParam(value = "sort", required = false) String sorts,
-			@RequestParam(value = "query", required = false) String query) {
-		PageRequest pageable = new PageRequest(
-                		page - 1,
-                		limit, 
-                		Direction.ASC, 
-                		"companyName", "lastName", "firstName");
-		Page<Customer> customers;
-		if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))){
-		    customers = customerRepo.search(pageable, query);
-		}
-		else 
-		    customers = customerRepo.findAll(pageable);
-		JsonObjectResponse response = ExtJsResponseCreator.createResponse(
-				CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
-						.getContent()));
-		response.setTotal(customers.getTotalElements());
-		return response;
-	}
+    @Autowired
+    private CustomerRepository customerRepo;
 
-	@RequestMapping(value = "listitems", produces = "text/html")
-	public String confirm(Model uiModel) {
-		return "customers/listitems";
-	}
+    @RequestMapping(value = "/json", method = RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse listAll(
+            @RequestParam(value = "page", required = true) Integer page,
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = true) Integer limit,
+            @RequestParam(value = "sort", required = false) String sorts,
+            @RequestParam(value = "query", required = false) String query) {
+        PageRequest pageable = new PageRequest(
+                page - 1,
+                limit,
+                Direction.ASC,
+                "companyName", "lastName", "firstName");
+        Page<Customer> customers;
+        if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))) {
+            customers = customerRepo.search(pageable, query);
+        }
+        else customers = customerRepo.findAll(pageable);
+        JsonObjectResponse response = ExtJsResponseCreator.createResponse(
+                CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
+                        .getContent()));
+        response.setTotal(customers.getTotalElements());
+        return response;
+    }
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto)
-			throws JsonParseException, JsonMappingException, IOException {
-		Customer c = CustomerDtoConverterServiceImpl.toCustomer(
-				cDto,
-				new Customer());
-		if (c.getCustomerNumber() == null)
-		    throw new IllegalArgumentException("Keine Kundennummer angegeben");
-		if (customerRepo.findByCustomerNumber(c.getCustomerNumber()) != null){
-		    throw new IllegalArgumentException("Kundennummer besteht bereits");
-		}
-		customerRepo.save(c);
-		return ExtJsResponseCreator.createResponse(c);
-	}
+    @RequestMapping(value = "listitems", produces = "text/html")
+    public String confirm(Model uiModel) {
+        return "customers/listitems";
+    }
 
-	@RequestMapping(value = "/udpate", method = RequestMethod.POST)
-	public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto)
-			throws JsonParseException, JsonMappingException, IOException {
-		Customer c = CustomerDtoConverterServiceImpl.toCustomer(
-				cDto,
-				customerRepo.findByCustomerNumber(cDto.customerNumber));
-		customerRepo.save(c);
-		return ExtJsResponseCreator.createResponse(c);
-	}
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto)
+            throws JsonParseException, JsonMappingException, IOException {
+        Customer c = CustomerDtoConverterServiceImpl.toCustomer(
+                cDto,
+                new Customer());
+        if (c.getCustomerNumber() == null) throw new IllegalArgumentException("Keine Kundennummer angegeben");
+        if (customerRepo.findByCustomerNumber(c.getCustomerNumber()) != null) {
+            throw new IllegalArgumentException("Kundennummer besteht bereits");
+        }
+        customerRepo.save(c);
+        return ExtJsResponseCreator.createResponse(c);
+    }
+
+    @RequestMapping(value = "/udpate", method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto)
+            throws JsonParseException, JsonMappingException, IOException {
+        Customer c = CustomerDtoConverterServiceImpl.toCustomer(
+                cDto,
+                customerRepo.findByCustomerNumber(cDto.customerNumber));
+        customerRepo.save(c);
+        return ExtJsResponseCreator.createResponse(c);
+    }
 
 }

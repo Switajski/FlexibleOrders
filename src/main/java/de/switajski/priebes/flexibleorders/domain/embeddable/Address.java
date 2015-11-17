@@ -36,7 +36,7 @@ public class Address {
     public Address() {};
 
     /**
-     * 
+     *
      * @param name1
      * @param name2
      * @param street
@@ -108,13 +108,12 @@ public class Address {
     }
 
     public boolean isComplete() {
-        if (name1 == null && name2 == null) 
-            return false;
-        if (street == null || city == null || postalCode < 1) 
-            return false;
+        if (name1 == null && name2 == null) return false;
+        if (street == null || city == null || postalCode < 1) return false;
         return true;
     }
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }

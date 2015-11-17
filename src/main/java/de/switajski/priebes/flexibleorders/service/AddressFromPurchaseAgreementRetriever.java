@@ -20,7 +20,7 @@ public abstract class AddressFromPurchaseAgreementRetriever {
     public Set<Address> retrieve(ReportItem reportItem) {
         Set<Address> addresses = new HashSet<Address>();
         if (reportItem.getReport() instanceof OrderConfirmation) {
-            // a purchase agreement only exists after OrderAgreement  
+            // a purchase agreement only exists after OrderAgreement
             addresses.add(getAddress(getPurchaseAgreementFromOrderConfirmation(reportItem)));
         }
         else {

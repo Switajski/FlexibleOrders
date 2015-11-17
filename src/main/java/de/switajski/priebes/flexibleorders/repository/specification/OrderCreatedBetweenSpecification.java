@@ -13,15 +13,15 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.Order;
 
 public class OrderCreatedBetweenSpecification implements Specification<Order> {
-    
+
     private Date from, to;
-    
+
     public OrderCreatedBetweenSpecification(LocalDate from, LocalDate to) {
         this.from = convert(from);
         this.to = convert(to);
     }
-    
-    public static OrderCreatedBetweenSpecification inMonth(LocalDate date){
+
+    public static OrderCreatedBetweenSpecification inMonth(LocalDate date) {
         LocalDate from = date.dayOfMonth().withMinimumValue();
         LocalDate to = date.dayOfMonth().withMaximumValue();
         return new OrderCreatedBetweenSpecification(from, to);
@@ -29,10 +29,10 @@ public class OrderCreatedBetweenSpecification implements Specification<Order> {
 
     @Override
     public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.between(root.<Date>get("created"), from, to);
+        return cb.between(root.<Date> get("created"), from, to);
     }
 
-    private  Date convert(LocalDate date){
+    private Date convert(LocalDate date) {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 }

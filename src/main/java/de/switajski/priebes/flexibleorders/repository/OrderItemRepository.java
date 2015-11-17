@@ -15,13 +15,13 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, JpaSpecificationExecutor<OrderItem> {
 
-	@Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
-	Page<OrderItem> findByCustomer(Customer customer, Pageable pageable);
+    @Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
+    Page<OrderItem> findByCustomer(Customer customer, Pageable pageable);
 
-	@Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
-	List<OrderItem> findByCustomer(Customer customer);
+    @Query("SELECT oi from OrderItem oi where oi.customerOrder.customer = ?1")
+    List<OrderItem> findByCustomer(Customer customer);
 
-	@Query("SELECT oi from OrderItem oi where oi.customerOrder.orderNumber = ?1")
-	List<OrderItem> findByOrderNumber(String orderNumber);
+    @Query("SELECT oi from OrderItem oi where oi.customerOrder.orderNumber = ?1")
+    List<OrderItem> findByOrderNumber(String orderNumber);
 
 }

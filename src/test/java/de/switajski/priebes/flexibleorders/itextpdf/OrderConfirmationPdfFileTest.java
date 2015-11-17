@@ -14,7 +14,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfFile
 public class OrderConfirmationPdfFileTest {
 
     private static final String OC_PDF_FILE = "src/test/resources/ConfirmationReportPdfFileTest.pdf";
-    
+
     @Transactional
     @Test
     public void shouldGenerateOrderConfirmation() throws Exception {

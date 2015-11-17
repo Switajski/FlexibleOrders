@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ItemDtoConverterService {
 
     @Autowired
-    ExpectedDeliveryService edService; 
+    ExpectedDeliveryService edService;
 
     @Autowired
     private ReportItemRepository reportItemRepo;
@@ -42,8 +42,8 @@ public class ItemDtoConverterService {
             items.add(convert(oi));
         return items;
     }
-    
-    public ItemDto convert(DeliveryNotes deliveryNotes){
+
+    public ItemDto convert(DeliveryNotes deliveryNotes) {
         ItemDto item = new ItemDto();
         item.created = deliveryNotes.getCreated();
         item.documentNumber = deliveryNotes.getDocumentNumber();
@@ -51,21 +51,19 @@ public class ItemDtoConverterService {
         item.priceNet = deliveryNotes.getShippingCosts().getValue();
         item.quantity = 1;
         item.quantityLeft = 1;
-        
+
         DeliveryMethod deliveryMethod = deliveryNotes.getDeliveryMethod();
-        if (deliveryMethod != null && deliveryMethod.getName() != null)
-            item.productName = deliveryMethod.getName();
-        else
-            item.productName = "Versandkosten";
+        if (deliveryMethod != null && deliveryMethod.getName() != null) item.productName = deliveryMethod.getName();
+        else item.productName = "Versandkosten";
         Customer customer = deliveryNotes.getCustomerSafely();
         item.customerNumber = customer.getCustomerNumber();
         item.customerName = customer.getCompanyName();
         item.productType = ProductType.SHIPPING;
-        
+
         return item;
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public ItemDto convert(OrderItem orderItem) {
         ItemDto item = new ItemDto();
         Order order = orderItem.getOrder();
@@ -93,31 +91,32 @@ public class ItemDtoConverterService {
     public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
         return itemDtosToReportItemsWithQty(itemDtos, false);
     }
-    
+
     @Transactional(readOnly = true)
     public Map<ReportItem, Integer> mapPendingItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
         return itemDtosToReportItemsWithQty(itemDtos, true);
     }
 
-	private Map<ReportItem, Integer> itemDtosToReportItemsWithQty(
-			Collection<ItemDto> itemDtos, boolean mapPending) {
-		Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
+    private Map<ReportItem, Integer> itemDtosToReportItemsWithQty(
+            Collection<ItemDto> itemDtos, boolean mapPending) {
+        Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
         for (ItemDto agreementItemDto : itemDtos) {
-        	if (agreementItemDto.pending == mapPending){
-	            if (agreementItemDto.productType != ProductType.SHIPPING){
-		            ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
-		            if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
-		            risWithQty.put(
-		                    agreementItem,
-		                    agreementItemDto.quantityLeft); // TODO: GUI sets
-		                                                    // quanitityToDeliver at
-		                                                    // this nonsense
-		                                                    // parameter
-	            }
-        	}
+            if (agreementItemDto.pending == mapPending) {
+                if (agreementItemDto.productType != ProductType.SHIPPING) {
+                    ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
+                    if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+                    risWithQty.put(
+                            agreementItem,
+                            agreementItemDto.quantityLeft); // TODO: GUI sets
+                                                            // quanitityToDeliver
+                                                            // at
+                                                            // this nonsense
+                                                            // parameter
+                }
+            }
         }
         return risWithQty;
-	}
+    }
 
     public List<ItemDto> convertReport(Report report) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
@@ -133,7 +132,7 @@ public class ItemDtoConverterService {
         // TODO: instanceof: this is not subject of this class
         if (ri.getReport() instanceof OrderConfirmation) {
             item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
-            //TODO: should be done by a service
+            // TODO: should be done by a service
             OrderConfirmation orderConfirmation = (OrderConfirmation) ri.getReport();
             item.agreed = orderConfirmation.isAgreed();
             PurchaseAgreement pa = orderConfirmation.getPurchaseAgreement();
@@ -176,7 +175,7 @@ public class ItemDtoConverterService {
         return item;
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<ItemDto> convert(Order order) {
         List<ItemDto> ois = new ArrayList<ItemDto>();
         for (OrderItem orderItem : order.getItems()) {

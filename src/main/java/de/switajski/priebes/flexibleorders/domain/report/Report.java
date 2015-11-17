@@ -40,7 +40,7 @@ public abstract class Report extends GenericEntity {
     private String documentNumber;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="report")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "report")
     protected Set<ReportItem> items = new HashSet<ReportItem>();
 
     protected Report() {}
@@ -68,7 +68,7 @@ public abstract class Report extends GenericEntity {
                 Product p1 = r1.getOrderItem().getProduct();
                 Product p2 = r2.getOrderItem().getProduct();
                 if (p1.hasProductNo() && p2.hasProductNo())
-                return p1.getProductNumber().compareTo(p2.getProductNumber());
+                    return p1.getProductNumber().compareTo(p2.getProductNumber());
                 else if (!p1.hasProductNo() && !p2.hasProductNo()) {
                     return p1.getName().compareTo(p2.getName());
                 }
@@ -107,7 +107,7 @@ public abstract class Report extends GenericEntity {
 
     /**
      * convenience method
-     * 
+     *
      * @return
      */
     @JsonIgnore

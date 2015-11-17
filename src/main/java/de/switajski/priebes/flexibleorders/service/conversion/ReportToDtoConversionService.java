@@ -30,100 +30,100 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 @Service
 public class ReportToDtoConversionService {
 
-	@Autowired
-	ExpectedDeliveryService expectedDeliveryService;
-	@Autowired
-	InvoicingAddressService invoicingAddressService;
-	@Autowired
-	ShippingAddressService shippingAddressService;
-	@Autowired
-	CustomerDetailsService customerDetailsService;
-	@Autowired
-	PurchaseAgreementService purchaseAgreementService;
-	@Autowired
-	DeliveryMethodService deliveryMethodService;
-	@Autowired
-	CustomerDetailsService customerService;
+    @Autowired
+    ExpectedDeliveryService expectedDeliveryService;
+    @Autowired
+    InvoicingAddressService invoicingAddressService;
+    @Autowired
+    ShippingAddressService shippingAddressService;
+    @Autowired
+    CustomerDetailsService customerDetailsService;
+    @Autowired
+    PurchaseAgreementService purchaseAgreementService;
+    @Autowired
+    DeliveryMethodService deliveryMethodService;
+    @Autowired
+    CustomerDetailsService customerService;
 
-	@Transactional(readOnly=true)
-	public ReportDto toDto(Report report){
-		ReportDto dto = new ReportDto();
-		dto.created = report.getCreated();
-		dto.documentNumber = report.getDocumentNumber();
-		dto.items = report.getItems();
-		
-		DeliveryHistory dh = DeliveryHistory.of(report);
-		dto.related_creditNoteNumbers = dh.getCreditNoteNumbers();
-		dto.related_deliveryNotesNumbers = dh.getDeliveryNotesNumbers();
-		dto.related_invoiceNumbers = dh.getInvoiceNumbers();
-		dto.related_orderAgreementNumbers = dh.getOrderAgreementNumbers();
-		dto.related_orderNumbers = dh.getOrderNumbers();
-		dto.related_orderConfirmationNumbers = dh.getOrderConfirmationNumbers();
+    @Transactional(readOnly = true)
+    public ReportDto toDto(Report report) {
+        ReportDto dto = new ReportDto();
+        dto.created = report.getCreated();
+        dto.documentNumber = report.getDocumentNumber();
+        dto.items = report.getItems();
 
-		Collection<Customer> customers = report.getCustomers();
-		if (report.getCustomers().size() > 1){
-			throw new IllegalStateException("Mehr als einen Kunden f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		} else if (report.getCustomers().size() == 1){
-			Customer customer = customers.iterator().next();
-			dto.customerFirstName = customer.getFirstName();
-			dto.customerLastName = customer.getLastName();
-			dto.customerEmail = customer.getEmail();
-			dto.customerPhone = customer.getPhone();
-			dto.customerNumber = customer.getCustomerNumber();
-		}
-		
-		dto.invoiceSpecific_headerAddress = retrieveInvoicingAddress(report);
-		dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
-		mapCustomerDetails(dto, retrieveCustomerDetails(report));
-		dto.shippingSpecific_expectedDelivery = retrieveExpectedDelivery(report);
-		dto.shippingSpecific_deliveryMethod = retrieveDeliveryMethod(report);
+        DeliveryHistory dh = DeliveryHistory.of(report);
+        dto.related_creditNoteNumbers = dh.getCreditNoteNumbers();
+        dto.related_deliveryNotesNumbers = dh.getDeliveryNotesNumbers();
+        dto.related_invoiceNumbers = dh.getInvoiceNumbers();
+        dto.related_orderAgreementNumbers = dh.getOrderAgreementNumbers();
+        dto.related_orderNumbers = dh.getOrderNumbers();
+        dto.related_orderConfirmationNumbers = dh.getOrderConfirmationNumbers();
 
-		dto.vatRate = 0.19d; //TODO: implement VAT-Service
-		
-		dto.netGoods = AmountCalculator.sum(AmountCalculator
-				.getAmountsTimesQuantity(report.getItems()));
-		
-		if (report instanceof DeliveryNotes){
-		    dto.showPricesInDeliveryNotes = ((DeliveryNotes) report).isShowPrices();
-		}
-		if (report instanceof Invoice){
-		    Invoice invoice = (Invoice) report;
-		    dto.invoiceSpecific_discountText = invoice.getDiscountText();
-		    dto.invoiceSpecific_discountRate = invoice.getDiscountRate();
-		}
+        Collection<Customer> customers = report.getCustomers();
+        if (report.getCustomers().size() > 1) {
+            throw new IllegalStateException("Mehr als einen Kunden f" + Unicode.U_UML + "r gegebene Positionen gefunden");
+        }
+        else if (report.getCustomers().size() == 1) {
+            Customer customer = customers.iterator().next();
+            dto.customerFirstName = customer.getFirstName();
+            dto.customerLastName = customer.getLastName();
+            dto.customerEmail = customer.getEmail();
+            dto.customerPhone = customer.getPhone();
+            dto.customerNumber = customer.getCustomerNumber();
+        }
 
-		return dto;
-	}
+        dto.invoiceSpecific_headerAddress = retrieveInvoicingAddress(report);
+        dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
+        mapCustomerDetails(dto, retrieveCustomerDetails(report));
+        dto.shippingSpecific_expectedDelivery = retrieveExpectedDelivery(report);
+        dto.shippingSpecific_deliveryMethod = retrieveDeliveryMethod(report);
+
+        dto.vatRate = 0.19d; // TODO: implement VAT-Service
+
+        dto.netGoods = AmountCalculator.sum(AmountCalculator
+                .getAmountsTimesQuantity(report.getItems()));
+
+        if (report instanceof DeliveryNotes) {
+            dto.showPricesInDeliveryNotes = ((DeliveryNotes) report).isShowPrices();
+        }
+        if (report instanceof Invoice) {
+            Invoice invoice = (Invoice) report;
+            dto.invoiceSpecific_discountText = invoice.getDiscountText();
+            dto.invoiceSpecific_discountRate = invoice.getDiscountRate();
+        }
+
+        return dto;
+    }
 
     private DeliveryMethod retrieveDeliveryMethod(Report report) {
         DeliveryMethod dm = null;
-		Set<DeliveryMethod> deliveryMethods = deliveryMethodService.retrieve(report.getItems());
-		if (deliveryMethods.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		else if (deliveryMethods.size() == 1){
-			dm = deliveryMethods.iterator().next();
-		}
+        Set<DeliveryMethod> deliveryMethods = deliveryMethodService.retrieve(report.getItems());
+        if (deliveryMethods.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (deliveryMethods.size() == 1) {
+            dm = deliveryMethods.iterator().next();
+        }
         return dm;
     }
 
     private LocalDate retrieveExpectedDelivery(Report report) {
         Set<LocalDate> eDates = expectedDeliveryService.retrieve(report.getItems());
-		LocalDate expectedDelivery = null;
-		if (eDates.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als ein Lieferdatum f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		else if (eDates.size() == 1)
-			expectedDelivery = eDates.iterator().next();
+        LocalDate expectedDelivery = null;
+        if (eDates.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als ein Lieferdatum f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (eDates.size() == 1) expectedDelivery = eDates.iterator().next();
         return expectedDelivery;
     }
 
     private CustomerDetails retrieveCustomerDetails(Report report) {
         CustomerDetails customerDetails = null;
-		Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
-		if (customerDetailss.size() > 1)
-			throw new IllegalStateException("Widerspr"+Unicode.U_UML+"chliche Kundenstammdaten f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		else if (customerDetailss.size() == 1){
-		    customerDetails = customerDetailss.iterator().next();
-		}
+        Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
+        if (customerDetailss.size() > 1) throw new IllegalStateException("Widerspr" + Unicode.U_UML + "chliche Kundenstammdaten f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (customerDetailss.size() == 1) {
+            customerDetails = customerDetailss.iterator().next();
+        }
         return customerDetails;
     }
 
@@ -139,21 +139,20 @@ public class ReportToDtoConversionService {
 
     private Address retrieveShippingAddress(Report report) {
         Address shippingAddress = null;
-		Set<Address> shippingAddresses = shippingAddressService.retrieve(report.getItems());
-		if (shippingAddresses.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		else if (shippingAddresses.size() == 1)
-			shippingAddress = shippingAddresses.iterator().next();
+        Set<Address> shippingAddresses = shippingAddressService.retrieve(report.getItems());
+        if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
         return shippingAddress;
     }
 
     private Address retrieveInvoicingAddress(Report report) {
         Set<Address> invoicingAddresses = invoicingAddressService.retrieve(report.getItems());
-		if (invoicingAddresses.size() > 1)
-			throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f"+Unicode.U_UML+"r gegebene Positionen gefunden");
-		else if (invoicingAddresses.size() == 1){
-			return invoicingAddresses.iterator().next();
-		} 
+        if (invoicingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (invoicingAddresses.size() == 1) {
+            return invoicingAddresses.iterator().next();
+        }
         return null;
     }
 }

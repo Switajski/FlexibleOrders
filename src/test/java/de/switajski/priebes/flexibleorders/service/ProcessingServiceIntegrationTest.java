@@ -34,105 +34,107 @@ import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest{
-	
-	@Autowired
+public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest {
+
+    @Autowired
     private OrderingService orderingService;
-	@Autowired
-	private ConfirmingService confirmingService;
-	@Autowired
-	private ReportingService reportingService;
-	@Autowired
+    @Autowired
+    private ConfirmingService confirmingService;
+    @Autowired
+    private ReportingService reportingService;
+    @Autowired
     private CustomerRepository cRepo;
     @Autowired
     private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
-	@Rollback(false)
-	@Test
-	public void shouldDisplayWholeDocuments(){
-		
-		givenCustomersAndDeliveryMethods();
-		givenOrderConfirmations();
-		
-		int itemLimit = 2; //qty of documents
-		Page<ItemDto> toBeShipped = reportingService.retrieve(new PageRequest(0, itemLimit), new AgreedItemsToBeShippedSpec());
-		
-		assertThat(toBeShipped.getContent().size(), equalTo(16));//qty of items in document
-		
-	}
+    @Rollback(false)
+    @Test
+    public void shouldDisplayWholeDocuments() {
 
-	private void givenCustomersAndDeliveryMethods() {
-		cRepo.save(NAIDA);
-		cRepo.flush();
-		deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
+        givenCustomersAndDeliveryMethods();
+        givenOrderConfirmations();
+
+        int itemLimit = 2; // qty of documents
+        Page<ItemDto> toBeShipped = reportingService.retrieve(
+                new PageRequest(0, itemLimit), new AgreedItemsToBeShippedSpec());
+
+        assertThat(toBeShipped.getContent().size(), equalTo(16));// qty of items
+        // in document
+
+    }
+
+    private void givenCustomersAndDeliveryMethods() {
+        cRepo.save(NAIDA);
+        cRepo.flush();
+        deliveryMethodRepo.save(new CatalogDeliveryMethod(UPS));
         deliveryMethodRepo.save(new CatalogDeliveryMethod(DHL));
-	}
+    }
 
-	private void givenOrderConfirmations() {
-		LocalDate now = new LocalDate(new Date());
-		
-		String b100 = "B100";
-		orderingService.order(orderParam(b100, NAIDA, now, 
-				item(SALOME, 2),
-				item(PAUL, 2),
-				item(MILADKA, 2),
-				item(JUREK, 2),
-				item(AMY, 2),
-				item(SALOME, 2),
-				item(SALOME, 2),
-				item(MILADKA, 2)));
-		
-		String b101 = "B101";
-		orderingService.order(orderParam(b101, NAIDA, now, 
-				item(SALOME, 2),
-				item(PAUL, 2),
-				item(MILADKA, 2),
-				item(JUREK, 2),
-				item(AMY, 2),
-				item(SALOME, 2),
-				item(SALOME, 2),
-				item(MILADKA, 2)));
-		
-		String b102 = "B102";
-		orderingService.order(orderParam(b102, NAIDA, now, 
-				item(SALOME, 2),
-				item(PAUL, 2),
-				item(MILADKA, 2),
-				item(JUREK, 2),
-				item(AMY, 2),
-				item(SALOME, 2),
-				item(SALOME, 2),
-				item(MILADKA, 2)));
-		
-		confirmingService.confirm(confirm(b100, "AB100", YVONNE, delay(10), 
-	            item(SALOME, 2, b100), 
-	            item(PAUL, 2, b100), 
-	            item(MILADKA, 2, b100),   
-	            item(JUREK, 2, b100),
-	            item(AMY, 2, b100),
-	            item(SALOME, 2, b100),
-	            item(SALOME, 2, b100),
-	            item(MILADKA, 2 , b100)));
-		
-		confirmingService.confirm(confirm(b101, "AB101", YVONNE, delay(10), 
-	            item(SALOME, 2, b101), 
-	            item(PAUL, 2, b101), 
-	            item(MILADKA, 2, b101),   
-	            item(JUREK, 2, b101),
-	            item(AMY, 2, b101),
-	            item(SALOME, 2, b101),
-	            item(SALOME, 2, b101),
-	            item(MILADKA, 2 , b101)));
-		
-		confirmingService.confirm(confirm(b102, "AB102", YVONNE, delay(10), 
-	            item(SALOME, 2, b102), 
-	            item(PAUL, 2, b102), 
-	            item(MILADKA, 2, b102),   
-	            item(JUREK, 2, b102),
-	            item(AMY, 2, b102),
-	            item(SALOME, 2, b102),
-	            item(SALOME, 2, b102),
-	            item(MILADKA, 2 , b102)));
-	}
+    private void givenOrderConfirmations() {
+        LocalDate now = new LocalDate(new Date());
+
+        String b100 = "B100";
+        orderingService.order(orderParam(b100, NAIDA, now,
+                item(SALOME, 2),
+                item(PAUL, 2),
+                item(MILADKA, 2),
+                item(JUREK, 2),
+                item(AMY, 2),
+                item(SALOME, 2),
+                item(SALOME, 2),
+                item(MILADKA, 2)));
+
+        String b101 = "B101";
+        orderingService.order(orderParam(b101, NAIDA, now,
+                item(SALOME, 2),
+                item(PAUL, 2),
+                item(MILADKA, 2),
+                item(JUREK, 2),
+                item(AMY, 2),
+                item(SALOME, 2),
+                item(SALOME, 2),
+                item(MILADKA, 2)));
+
+        String b102 = "B102";
+        orderingService.order(orderParam(b102, NAIDA, now,
+                item(SALOME, 2),
+                item(PAUL, 2),
+                item(MILADKA, 2),
+                item(JUREK, 2),
+                item(AMY, 2),
+                item(SALOME, 2),
+                item(SALOME, 2),
+                item(MILADKA, 2)));
+
+        confirmingService.confirm(confirm(b100, "AB100", YVONNE, delay(10),
+                item(SALOME, 2, b100),
+                item(PAUL, 2, b100),
+                item(MILADKA, 2, b100),
+                item(JUREK, 2, b100),
+                item(AMY, 2, b100),
+                item(SALOME, 2, b100),
+                item(SALOME, 2, b100),
+                item(MILADKA, 2, b100)));
+
+        confirmingService.confirm(confirm(b101, "AB101", YVONNE, delay(10),
+                item(SALOME, 2, b101),
+                item(PAUL, 2, b101),
+                item(MILADKA, 2, b101),
+                item(JUREK, 2, b101),
+                item(AMY, 2, b101),
+                item(SALOME, 2, b101),
+                item(SALOME, 2, b101),
+                item(MILADKA, 2, b101)));
+
+        confirmingService.confirm(confirm(b102, "AB102", YVONNE, delay(10),
+                item(SALOME, 2, b102),
+                item(PAUL, 2, b102),
+                item(MILADKA, 2, b102),
+                item(JUREK, 2, b102),
+                item(AMY, 2, b102),
+                item(SALOME, 2, b102),
+                item(SALOME, 2, b102),
+                item(MILADKA, 2, b102)));
+    }
 
 }

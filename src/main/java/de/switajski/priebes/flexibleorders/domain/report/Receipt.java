@@ -11,23 +11,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 public class Receipt extends Report {
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
-	private Date paymentReceived;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    private Date paymentReceived;
 
-	protected Receipt() {
-	}
+    protected Receipt() {}
 
-	public Receipt(String receiptNumber, Date paymentReceived) {
-		super(receiptNumber);
-		this.paymentReceived = paymentReceived;
-	}
+    public Receipt(String receiptNumber, Date paymentReceived) {
+        super(receiptNumber);
+        this.paymentReceived = paymentReceived;
+    }
 
-	public Date getPaymentReceivedDate() {
-		return paymentReceived;
-	}
+    public Date getPaymentReceivedDate() {
+        return paymentReceived;
+    }
 
-	public void setPaymentReceivedDate(Date paymentReceivedDate) {
-		this.paymentReceived = paymentReceivedDate;
-	}
+    public void setPaymentReceivedDate(Date paymentReceivedDate) {
+        this.paymentReceived = paymentReceivedDate;
+    }
 }

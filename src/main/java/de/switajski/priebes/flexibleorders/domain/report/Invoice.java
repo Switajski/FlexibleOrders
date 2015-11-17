@@ -14,80 +14,79 @@ import org.springframework.format.annotation.DateTimeFormat;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 
 @Entity
 public class Invoice extends Report {
 
-	private String discountText;
-	
-	private BigDecimal discountRate;
+    private String discountText;
 
-	@NotNull
-	private Address invoiceAddress;
+    private BigDecimal discountRate;
 
-	/**
-	 * net shipping costs
-	 */
-	@Embedded
-	private Amount shippingCosts;
-	
-	/**
-	 * Date on which due date is calculated.
-	 */
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
-	private Date evaluationDate;
+    @NotNull
+    private Address invoiceAddress;
 
-	private String billing;
+    /**
+     * net shipping costs
+     */
+    @Embedded
+    private Amount shippingCosts;
 
-	protected Invoice() {
-	}
+    /**
+     * Date on which due date is calculated.
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    private Date evaluationDate;
 
-	public Invoice(String invoiceNumber, Address invoiceAddress) {
-		super(invoiceNumber);
-		this.invoiceAddress = invoiceAddress;
-	}
+    private String billing;
 
-	public Address getInvoiceAddress() {
-		return invoiceAddress;
-	}
+    protected Invoice() {}
 
-	public void setInvoiceAddress(Address invoiceAddress) {
-		this.invoiceAddress = invoiceAddress;
-	}
+    public Invoice(String invoiceNumber, Address invoiceAddress) {
+        super(invoiceNumber);
+        this.invoiceAddress = invoiceAddress;
+    }
 
-	public Amount getShippingCosts() {
-		return shippingCosts;
-	}
+    public Address getInvoiceAddress() {
+        return invoiceAddress;
+    }
 
-	public void setShippingCosts(Amount shippingCosts) {
-		this.shippingCosts = shippingCosts;
-	}
+    public void setInvoiceAddress(Address invoiceAddress) {
+        this.invoiceAddress = invoiceAddress;
+    }
 
-	public void addShippingCosts(Amount shippingCost) {
-		this.shippingCosts.add(shippingCost);
-	}
+    public Amount getShippingCosts() {
+        return shippingCosts;
+    }
 
-	public double getVatRate() {
-		return Order.VAT_RATE;
-	}
+    public void setShippingCosts(Amount shippingCosts) {
+        this.shippingCosts = shippingCosts;
+    }
 
-	public Date getEvaluationDate() {
-		return evaluationDate;
-	}
+    public void addShippingCosts(Amount shippingCost) {
+        this.shippingCosts.add(shippingCost);
+    }
 
-	public void setEvaluationDate(Date evaluationDate) {
-		this.evaluationDate = evaluationDate;
-	}
+    @Override
+    public double getVatRate() {
+        return Order.VAT_RATE;
+    }
 
-	public String getBilling() {
-		return billing;
-	}
+    public Date getEvaluationDate() {
+        return evaluationDate;
+    }
 
-	public void setBilling(String billing) {
-		this.billing = billing;
-	}
+    public void setEvaluationDate(Date evaluationDate) {
+        this.evaluationDate = evaluationDate;
+    }
+
+    public String getBilling() {
+        return billing;
+    }
+
+    public void setBilling(String billing) {
+        this.billing = billing;
+    }
 
     public String getDiscountText() {
         return discountText;

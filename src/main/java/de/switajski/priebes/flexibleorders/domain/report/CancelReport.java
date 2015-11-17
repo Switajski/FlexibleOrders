@@ -5,12 +5,12 @@ import javax.persistence.Entity;
 @Entity
 public class CancelReport extends Report {
 
-	protected CancelReport() {
+    protected CancelReport() {
 
-	}
+    }
 
-	public CancelReport(String documentNumber) {
-		super(documentNumber);
-	}
+    public CancelReport(String documentNumber) {
+        super(documentNumber);
+    }
 
 }

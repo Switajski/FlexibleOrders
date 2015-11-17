@@ -13,7 +13,7 @@ public class YyMmGggOrderNoGeneratorService implements OrderNumberGeneratorServi
 
     @Autowired
     OrderRepository orderRepo;
-    
+
     @Override
     public String generate(LocalDate date) {
         Integer year = date.getYear();
@@ -21,10 +21,10 @@ public class YyMmGggOrderNoGeneratorService implements OrderNumberGeneratorServi
         Long generated = orderRepo.count(OrderCreatedBetweenSpecification.inMonth(date));
         generated = generated + 1;
         return new StringBuilder()
-            .append("B")
-            .append(year.toString().substring(2))
-            .append(("00" + month).substring(month.toString().length()))
-            .append(("000" + generated).substring(generated.toString().length())).toString();
+                .append("B")
+                .append(year.toString().substring(2))
+                .append(("00" + month).substring(month.toString().length()))
+                .append(("000" + generated).substring(generated.toString().length())).toString();
     }
 
 }

@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,15 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
+import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -87,32 +91,44 @@ public class ItemDtoConverterService {
         return item;
     }
 
+    @Transactional
+    public void mapItemDtos(DeliveryNotes deliveryNotes, ItemDto itemDto) {
+        if (itemDto.productType != ProductType.SHIPPING) {
+            int qty = itemDto.quantityLeft;
+            ReportItem itemToBeShipped = reportItemRepo.findOne(itemDto.id);
+            if (itemToBeShipped == null) {
+                throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+            }
+
+            OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
+            QuantityUtility.validateQuantity(qty, itemToBeShipped);
+            if (itemDto.pending == false) {
+                deliveryNotes.addItem(new ShippingItem(
+                        deliveryNotes,
+                        orderItemToBeDelivered,
+                        qty,
+                        new Date()));
+            }
+            else {
+                deliveryNotes.addItem(new PendingItem(
+                        deliveryNotes,
+                        orderItemToBeDelivered,
+                        qty,
+                        new Date()));
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
     public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
-        return itemDtosToReportItemsWithQty(itemDtos, false);
-    }
-
-    @Transactional(readOnly = true)
-    public Map<ReportItem, Integer> mapPendingItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
-        return itemDtosToReportItemsWithQty(itemDtos, true);
-    }
-
-    private Map<ReportItem, Integer> itemDtosToReportItemsWithQty(
-            Collection<ItemDto> itemDtos, boolean mapPending) {
         Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
-        for (ItemDto agreementItemDto : itemDtos) {
-            if (agreementItemDto.pending == mapPending) {
-                if (agreementItemDto.productType != ProductType.SHIPPING) {
-                    ReportItem agreementItem = reportItemRepo.findOne(agreementItemDto.id);
-                    if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
-                    risWithQty.put(
-                            agreementItem,
-                            agreementItemDto.quantityLeft); // TODO: GUI sets
-                                                            // quanitityToDeliver
-                                                            // at
-                                                            // this nonsense
-                                                            // parameter
-                }
+        for (ItemDto itemDtoToBeProcessed : itemDtos) {
+            if (itemDtoToBeProcessed.productType != ProductType.SHIPPING) {
+                ReportItem agreementItem = reportItemRepo.findOne(itemDtoToBeProcessed.id);
+                if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+                risWithQty.put(
+                        agreementItem,
+                        itemDtoToBeProcessed.quantityLeft);
             }
         }
         return risWithQty;

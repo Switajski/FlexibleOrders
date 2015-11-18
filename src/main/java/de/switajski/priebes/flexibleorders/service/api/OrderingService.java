@@ -138,18 +138,6 @@ public class OrderingService {
     }
 
     @Transactional
-    private OrderItem createShippingCosts(Amount shipment, Order order) {
-        Product product = new Product();
-        product.setProductType(ProductType.SHIPPING);
-        product.setName("Versand");
-
-        OrderItem shipOi = new OrderItem(order, product, 1);
-        shipOi.setNegotiatedPriceNet(shipment);
-
-        return orderItemRepo.save(shipOi);
-    }
-
-    @Transactional
     public boolean deleteOrder(String orderNumber) {
         Order order = orderRepo.findByOrderNumber(orderNumber);
         if (order == null) throw new IllegalArgumentException(

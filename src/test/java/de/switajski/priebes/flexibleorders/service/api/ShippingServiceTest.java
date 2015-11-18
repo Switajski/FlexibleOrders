@@ -3,13 +3,11 @@ package de.switajski.priebes.flexibleorders.service.api;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -77,59 +75,6 @@ public class ShippingServiceTest {
 
     ArgumentCaptor<DeliveryNotes> capturedDeliveryNotes;
 
-    @Test(expected = ContradictoryPurchaseAgreementException.class)
-    public void shouldRejectDeliveryIfContradictoryShippingAdressesExist() {
-        // GIVEN
-        givenOrdersWithConfirmationAndDeliverParameter();
-        deliverParameter.ignoreContradictoryExpectedDeliveryDates = true;
-        givenTwoShippingAddresses();
-        givenDeliverParameter();
-
-        // WHEN / THEN
-        whenDelivering();
-
-    }
-
-    @Test
-    public void shouldNotDeliverPending() {
-        // GIVEN
-        givenOrdersWithConfirmationAndDeliverParameter();
-        givenPendingItems();
-        givenOneShippingAddress();
-        givenDeliverParameter();
-
-        // WHEN / THEN
-        whenDelivering();
-
-        DeliveryNotes dn = captureSavedDeliveryNotes();
-        assertThat(dn.getItems().size(), is(equalTo(3)));
-        assertThat(dn.getPendingItems().size(), is(equalTo(1)));
-
-    }
-
-    private void givenPendingItems() {
-        pendingItems = new HashMap<ReportItem, Integer>();
-        pendingItems.put(givenItem(), 8);
-        when(convService.mapPendingItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class)))
-                .thenReturn(pendingItems);
-
-    }
-
-    private DeliveryNotes captureSavedDeliveryNotes() {
-        capturedDeliveryNotes = ArgumentCaptor.forClass(DeliveryNotes.class);
-        verify(reportRepo).save(capturedDeliveryNotes.capture());
-        return capturedDeliveryNotes.getValue();
-    }
-
-    private void whenDelivering() {
-        shippingService.ship(deliverParameter);
-    }
-
-    private void givenDeliverParameter() {
-        deliverParameter = new DeliverParameter();
-        deliverParameter.deliveryNotesNumber = DN_NO;
-    }
-
     @Test
     public void shouldDeliverIfContradictoryExpectedDeliveryDatesExistAndIgnoreFlagIsSet() {
         givenOrdersWithConfirmationAndDeliverParameter();
@@ -140,20 +85,6 @@ public class ShippingServiceTest {
 
         // THEN
         assertThatDeliveryNotesIsSavedWithTwoItems();
-    }
-
-    @Test(expected = ContradictoryPurchaseAgreementException.class)
-    public void shouldNotDeliverIfContradictoryExpectedDeliveryDatesExist() {
-        givenOrdersWithConfirmationAndDeliverParameter();
-        deliverParameter.ignoreContradictoryExpectedDeliveryDates = false;
-        deliverParameter.created = new Date();
-        when(expectedDeliveryService.retrieveWeekOfYear(anySet())).thenReturn(new HashSet<Integer>(Arrays.asList(45, 56)));
-        givenOneShippingAddress();
-
-        whenDelivering();
-
-        // THEN
-        assertThatNoDeliveryNotesIsSaved();
     }
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
@@ -215,6 +146,21 @@ public class ShippingServiceTest {
 
     }
 
+    private DeliveryNotes captureSavedDeliveryNotes() {
+        capturedDeliveryNotes = ArgumentCaptor.forClass(DeliveryNotes.class);
+        verify(reportRepo).save(capturedDeliveryNotes.capture());
+        return capturedDeliveryNotes.getValue();
+    }
+
+    private void whenDelivering() {
+        shippingService.ship(deliverParameter);
+    }
+
+    private void givenDeliverParameter() {
+        deliverParameter = new DeliverParameter();
+        deliverParameter.deliveryNotesNumber = DN_NO;
+    }
+
     private void givenOneShippingAddress() {
         when(shippingAddressService.retrieve(Matchers.anySetOf(ReportItem.class))).thenReturn(new HashSet<Address>(Arrays.asList(ADDRESS_1)));
     }
@@ -250,15 +196,15 @@ public class ShippingServiceTest {
 
     private ReportItem createConfirmationItem(int quantity, int orderedQuantity) {
         return new ConfirmationItemBuilder()
-        .setItem(
-                new OrderItemBuilder()
-                .setProduct(new ProductBuilder().build())
-                .setOrderedQuantity(orderedQuantity)
-                .build())
+                .setItem(
+                        new OrderItemBuilder()
+                                .setProduct(new ProductBuilder().build())
+                                .setOrderedQuantity(orderedQuantity)
+                                .build())
                 .setQuantity(quantity)
                 .setReport(
                         new OrderConfirmationBuilder()
-                        .setAgreementDetails(null) // purchase agreement
+                                .setAgreementDetails(null) // purchase agreement
                                                            // here is
                                                            // irrelevant. All
                                                            // info about
@@ -266,8 +212,8 @@ public class ShippingServiceTest {
                                                            // agreements are
                                                            // retrieved via
                                                            // services.
-                        .build())
-                        .build();
+                                .build())
+                .build();
     }
 
     private ReportItem givenItemOther() {

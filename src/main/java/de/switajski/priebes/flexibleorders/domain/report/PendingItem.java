@@ -11,8 +11,9 @@ public class PendingItem extends ReportItem {
 
     public PendingItem() {}
 
-    public PendingItem(OrderItem orderItem, Integer quantityToDeliver, Date date) {
+    public PendingItem(DeliveryNotes deliveryNotes, OrderItem orderItem, Integer quantityToDeliver, Date date) {
         super(orderItem, quantityToDeliver, date);
+        report = deliveryNotes;
     }
 
     @Override

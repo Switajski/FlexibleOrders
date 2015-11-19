@@ -84,7 +84,7 @@ public class CustomPdfPTableBuilder {
                         Font.NORMAL));
         PdfPCellBuilder leftAlign = new PdfPCellBuilder(bold.build());
         PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build())
-        .withRightHorizontalAlignment();
+                .withRightHorizontalAlignment();
 
         ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
         rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 30));
@@ -120,17 +120,17 @@ public class CustomPdfPTableBuilder {
                         bold.withText(netGoods).build()).build());
 
         footerBuilder
-        .addCell(leftAlign
-                .withPhrase(bold.withText("zzgl. 19% MwSt.").build())
-                .build())
+                .addCell(leftAlign
+                        .withPhrase(bold.withText("zzgl. 19% MwSt.").build())
+                        .build())
                 .addCell(rightAlign.withPhrase(
                         bold.withText(vat).build()).build());
 
         footerBuilder
-        .addCell(leftAlign.withPhrase(
-                bold.withText("Gesamtbetrag brutto").build())
-                .withBorder(Rectangle.TOP)
-                .build())
+                .addCell(leftAlign.withPhrase(
+                        bold.withText("Gesamtbetrag brutto").build())
+                        .withBorder(Rectangle.TOP)
+                        .build())
                 .addCell(rightAlign.withPhrase(
                         bold.withText(gross).build())
                         .withBorder(Rectangle.TOP)
@@ -145,40 +145,15 @@ public class CustomPdfPTableBuilder {
 
         CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithTwoCols())
-        .addCell(new PdfPCellBuilder(
-                new PhraseBuilder(leftTop).build()).build())
+                .addCell(new PdfPCellBuilder(
+                        new PhraseBuilder(leftTop).build()).build())
                 .addCell(new PdfPCellBuilder(
                         new PhraseBuilder(rightTop).build()).build())
-                        .addCell(new PdfPCellBuilder(
-                                new PhraseBuilder(leftBottom).build()).build())
-                                .addCell(new PdfPCellBuilder(
-                                        new PhraseBuilder(rightBottom).build()).build());
+                .addCell(new PdfPCellBuilder(
+                        new PhraseBuilder(leftBottom).build()).build())
+                .addCell(new PdfPCellBuilder(
+                        new PhraseBuilder(rightBottom).build()).build());
         return infoTableBuilder;
     }
 
-    /*
-     * TODO use composite pattern: CustomPdfPTableBuilder -> PdfPTableBuilder ->
-     * PdfPCellBuilder -> PhraseBuilder PriebesTable -> Table -> Cell -> Phrase
-     */
-    public static CustomPdfPTableBuilder createInfoTable(
-            String leftTop, String rightTop,
-            String leftMiddle, String rightMiddle,
-            String leftBottom, String rightBottom) {
-
-        CustomPdfPTableBuilder infoTableBuilder = new CustomPdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithTwoCols())
-        .addCell(new PdfPCellBuilder(
-                new PhraseBuilder(leftTop).build()).build())
-                .addCell(new PdfPCellBuilder(
-                        new PhraseBuilder(rightTop).build()).build())
-                        .addCell(new PdfPCellBuilder(
-                                new PhraseBuilder(leftMiddle).build()).build())
-                                .addCell(new PdfPCellBuilder(
-                                        new PhraseBuilder(rightMiddle).build()).build())
-                                        .addCell(new PdfPCellBuilder(
-                                                new PhraseBuilder(leftBottom).build()).build())
-                                                .addCell(new PdfPCellBuilder(
-                                                        new PhraseBuilder(rightBottom).build()).build());
-        return infoTableBuilder;
-    }
 }

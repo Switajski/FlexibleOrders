@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -48,7 +47,7 @@ public class ExpectedDeliveryService {
      */
     @Transactional(readOnly = true)
     public void validateExpectedDeliveryDates(Set<ReportItem> reportItems,
-            DeliveryNotes deliveryNotes) {
+            Date actualDeliveryDate) {
         Set<Integer> expectedDeliveryDates = retrieveWeekOfYear(reportItems);
         if (expectedDeliveryDates.size() > 1) {
             StringBuilder messageBuilder = new StringBuilder("Angegebene Positionen haben ABs mit widerspr" + Unicode.U_UML + "chlichen Lieferdaten: ");
@@ -64,7 +63,7 @@ public class ExpectedDeliveryService {
         }
         else if (expectedDeliveryDates.size() == 1) {
             int expectedWeek = expectedDeliveryDates.iterator().next();
-            int isWeek = weekOf(deliveryNotes.getCreated());
+            int isWeek = weekOf(actualDeliveryDate);
             if (expectedWeek != isWeek) {
                 throw new ContradictoryPurchaseAgreementException("Widerr" + Unicode.U_UML + "chliche Liefertermine: KW aus AB ist " + expectedWeek
                         + ", Datum des Lieferscheins liegt aber in KW " + isWeek);

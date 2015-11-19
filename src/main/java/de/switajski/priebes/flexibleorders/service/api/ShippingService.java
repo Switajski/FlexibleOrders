@@ -41,7 +41,7 @@ public class ShippingService {
         }
 
         if (!deliverParameter.ignoreContradictoryExpectedDeliveryDates) {
-            expectedDeliveryService.validateExpectedDeliveryDates(deliveryNotes.getItems(), deliveryNotes);
+            expectedDeliveryService.validateExpectedDeliveryDates(deliveryNotes.getItems(), deliveryNotes.getCreated());
         }
         Address shippingAddress = shippingAddressService.retrieveShippingAddressOrFail(deliveryNotes.getItems());
         deliveryNotes.setShippedAddress(shippingAddress);

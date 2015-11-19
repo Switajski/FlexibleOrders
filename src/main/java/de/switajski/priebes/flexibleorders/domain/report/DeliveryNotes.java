@@ -27,10 +27,6 @@ public class DeliveryNotes extends Report {
             @AttributeOverride(name = "country", column = @Column(name = "shipped_country")) })
     private Address shippedAddress;
 
-    private String trackNumber;
-
-    private String packageNumber;
-
     private Amount shippingCosts;
 
     @Embedded
@@ -51,22 +47,6 @@ public class DeliveryNotes extends Report {
 
     public void setShippedAddress(Address shippedAddress) {
         this.shippedAddress = shippedAddress;
-    }
-
-    public String getTrackNumber() {
-        return trackNumber;
-    }
-
-    public String getPackageNumber() {
-        return packageNumber;
-    }
-
-    public void setPackageNumber(String packageNumber) {
-        this.packageNumber = packageNumber;
-    }
-
-    public void setTrackNumber(String trackNumber) {
-        this.trackNumber = trackNumber;
     }
 
     public Amount getShippingCosts() {

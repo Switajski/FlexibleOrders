@@ -13,7 +13,8 @@ public class InvoiceItem extends ReportItem {
 
     public InvoiceItem(Invoice invoice,
             OrderItem orderItem, Integer quantityToDeliver, Date date) {
-        super(invoice, orderItem, quantityToDeliver, date);
+        super(orderItem, quantityToDeliver, date);
+        report = invoice;
     }
 
     @Override

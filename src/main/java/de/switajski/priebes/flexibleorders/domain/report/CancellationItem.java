@@ -13,7 +13,8 @@ public class CancellationItem extends ReportItem {
 
     public CancellationItem(CancelReport cancelReport,
             OrderItem orderItem, int quantity, Date date) {
-        super(cancelReport, orderItem, quantity, date);
+        super(orderItem, quantity, date);
+        report = cancelReport;
     }
 
     @Override

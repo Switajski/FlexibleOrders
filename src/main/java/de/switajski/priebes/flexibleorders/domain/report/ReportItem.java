@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 public abstract class ReportItem extends GenericEntity implements
-Comparable<ReportItem> {
+        Comparable<ReportItem> {
 
     @NotNull
     private Integer quantity;
@@ -35,25 +35,6 @@ Comparable<ReportItem> {
     private OrderItem orderItem;
 
     protected ReportItem() {}
-
-    /**
-     * @deprecated use {@link #ReportItem(OrderItem, Integer, Date)} instead.
-     *             The API is meant to create a ConfirmationItem first and then
-     *             add to a ConfirmationReport
-     */
-    @Deprecated
-    public ReportItem(Report report, OrderItem item,
-            Integer quantity, Date created) {
-        if (item == null || quantity == null) throw new IllegalArgumentException();
-        this.report = report;
-        this.orderItem = item;
-        this.quantity = quantity;
-        setCreated(created);
-
-        if (!orderItem.getReportItems().contains(this)) orderItem.addReportItem(this);
-        if (report.getItems().contains(this)) return;
-        report.addItem(this);
-    }
 
     public ReportItem(OrderItem item, Integer quantity, Date created) {
         if (item == null || quantity == null) {
@@ -112,7 +93,7 @@ Comparable<ReportItem> {
     @Override
     public String toString() {
         return new StringBuilder(this.getClass().getSimpleName())
-        .append(": ").append(" " + getQuantity()).toString();
+                .append(": ").append(" " + getQuantity()).toString();
     }
 
     /**
@@ -162,6 +143,9 @@ Comparable<ReportItem> {
 
     @PrePersist
     protected void validateQuantity() {
+        if (quantity < 1) {
+            throw new IllegalStateException("Quantity must be at least 1");
+        }
         if (sum() > getOrderItem().getOrderedQuantity()) {
             throw new IllegalStateException(
                     new StringBuilder().append("Sum of all ")

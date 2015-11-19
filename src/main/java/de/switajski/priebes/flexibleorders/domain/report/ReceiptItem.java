@@ -13,7 +13,8 @@ public class ReceiptItem extends ReportItem {
 
     public ReceiptItem(Receipt receipt,
             OrderItem orderItem, int quantity, Date receivedPaymentDate) {
-        super(receipt, orderItem, quantity, receivedPaymentDate);
+        super(orderItem, quantity, receivedPaymentDate);
+        report = receipt;
     }
 
     @Override

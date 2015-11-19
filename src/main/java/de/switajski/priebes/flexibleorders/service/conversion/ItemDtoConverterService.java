@@ -103,11 +103,14 @@ public class ItemDtoConverterService {
             OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
             QuantityUtility.validateQuantity(qty, itemToBeShipped);
             if (itemDto.pending == false) {
-                deliveryNotes.addItem(new ShippingItem(
+                ShippingItem shippingItem = new ShippingItem(
                         deliveryNotes,
                         orderItemToBeDelivered,
                         qty,
-                        new Date()));
+                        new Date());
+                shippingItem.setPackageNumber(itemDto.packageNumber);
+                shippingItem.setTrackNumber(itemDto.trackNumber);
+                deliveryNotes.addItem(shippingItem);
             }
             else {
                 deliveryNotes.addItem(new PendingItem(
@@ -163,8 +166,6 @@ public class ItemDtoConverterService {
         if (ri.getReport() instanceof DeliveryNotes) {
             DeliveryNotes deliveryNotes = (DeliveryNotes) ri.getReport();
             item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
-            item.trackNumber = deliveryNotes.getTrackNumber();
-            item.packageNumber = deliveryNotes.getPackageNumber();
             // TODO refactor to separate class
             item.shareHistory = (DeliveryHistory.of(ri).getDeliveryNotesNumbers().size() > 1) ? true : false;
         }

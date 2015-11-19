@@ -88,7 +88,7 @@ public class ReportViewHelper {
 
     public static PdfPTable createInfoTable(String rightTop,
             String rightBottom, String leftTop, String leftBottom)
-                    throws DocumentException {
+            throws DocumentException {
 
         CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
                 .createInfoTable(leftTop, leftBottom, rightTop, rightBottom);
@@ -128,9 +128,9 @@ public class ReportViewHelper {
             firstCol.add(new PhraseBuilder().append(NEWLINE + "" + p.expectedDelivery).build());
         }
         firstCol.add(new PhraseBuilder()
-        .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
-        .append(isEmpty(p.saleRepresentative) ? "" :
-            NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
+                .append(isEmpty(p.mark) ? "" : "Ihr Zeichen: " + NEWLINE + p.mark)
+                .append(isEmpty(p.saleRepresentative) ? "" :
+                        NEWLINE + "" + NEWLINE + "Vertreter: " + NEWLINE + p.saleRepresentative).build());
         PdfPCell cell = new PdfPCell(firstCol);
         PdfPCellUtility.noBorder(cell);
         cell.setColspan(columnSize);
@@ -145,9 +145,9 @@ public class ReportViewHelper {
         }
 
         String thirdColBuilder = new StringBuilder()
-        .append("Kundennr.: " + p.customerNo + NEWLINE)
-        .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
-                + p.vendorNumber + NEWLINE + NEWLINE)
+                .append("Kundennr.: " + p.customerNo + NEWLINE)
+                .append(isEmpty(p.vendorNumber) ? "" : "Lieferantennr.: "
+                        + p.vendorNumber + NEWLINE + NEWLINE)
                 .append(createString(p.contactInformation))
                 .toString();
 
@@ -187,9 +187,9 @@ public class ReportViewHelper {
         if (deliveryMethod == null) return "";
         if (deliveryMethod.getDeliveryType() == DeliveryType.SPEDITION) {
             return new StringBuilder()
-            .append("Lieferart per Spedition:")
-            .append(NEWLINE + createString(deliveryMethod.getAddress()))
-            .toString();
+                    .append("Lieferart per Spedition:")
+                    .append(NEWLINE + createString(deliveryMethod.getAddress()))
+                    .toString();
         }
         else if (deliveryMethod.getDeliveryType() == DeliveryType.POST) {
             return new StringBuilder().append("Lieferart per Post").toString();
@@ -278,17 +278,42 @@ public class ReportViewHelper {
         return builder.withFooter(false).build();
     }
 
-    private static List<String> createRowWithoutPrices(ReportItem he) {
+    public static PdfPTable createTableWithPackageNumberAndWithoutPrices(ReportDto cReport)
+            throws DocumentException {
+        PdfPTableBuilder builder = new PdfPTableBuilder(
+                PdfPTableBuilder.createPropertiesWithFiveCols());
+        // Refactor - see #71
+        for (ReportItem ri : cReport.getItemsByOrder()) {
+            if (!(ri instanceof PendingItem)) {
+                if (!ri.getOrderItem().isShippingCosts()) {
+                    List<String> row = createRowWithoutPrices(ri);
+                    builder.addBodyRow(row);
+                }
+            }
+        }
+
+        builder.addBreak("Ausstehende Artikel");
+
+        for (ReportItem ri : cReport.getItemsByOrder()) {
+            if (ri instanceof PendingItem) {
+                builder.addBodyRow(createRowWithoutPrices(ri));
+            }
+        }
+
+        return builder.withFooter(false).build();
+    }
+
+    private static List<String> createRowWithoutPrices(ReportItem ri) {
         List<String> row = new ArrayList<String>();
         // Anzahl
-        row.add(String.valueOf(he.getQuantity()) + " x ");
+        row.add(String.valueOf(ri.getQuantity()) + " x ");
         // Art.Nr.:
-        String pNo = he.getOrderItem().getProduct().getProductNumber();
+        String pNo = ri.getOrderItem().getProduct().getProductNumber();
         row.add(pNo.equals("0") ? "n.a." : pNo.toString());
         // Artikel
-        row.add(he.getOrderItem().getProduct().getName());
+        row.add(ri.getOrderItem().getProduct().getName());
         // Bestellnr
-        row.add(he.getOrderItem().getOrder().getOrderNumber());
+        row.add(ri.getOrderItem().getOrder().getOrderNumber());
         return row;
     }
 

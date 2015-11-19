@@ -100,16 +100,16 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest deliverRequest)
+    public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest orderRequest)
             throws Exception {
-        deliverRequest.validate();
+        orderRequest.validate();
 
         OrderParameter orderParameter = new OrderParameter(
-                deliverRequest.customerId,
-                deliverRequest.orderNumber,
-                deliverRequest.created,
-                deliverRequest.items);
-        orderParameter.expectedDelivery = deliverRequest.expectedDelivery;
+                orderRequest.customerId,
+                orderRequest.orderNumber,
+                orderRequest.created,
+                orderRequest.items);
+        orderParameter.expectedDelivery = orderRequest.expectedDelivery;
 
         Order order = orderingService.order(
                 orderParameter);

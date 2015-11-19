@@ -9,16 +9,17 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 @Entity
 public class ShippingItem extends ReportItem {
 
+    private String packageNumber, trackNumber;
+
     public ShippingItem() {}
 
     public ShippingItem(DeliveryNotes deliveryNotes,
             OrderItem orderItemToBeDelivered, Integer quantityToDeliver,
             Date date) {
-        super(
-                deliveryNotes,
-                orderItemToBeDelivered,
+        super(orderItemToBeDelivered,
                 quantityToDeliver,
                 date);
+        report = deliveryNotes;
     }
 
     @Override
@@ -28,6 +29,22 @@ public class ShippingItem extends ReportItem {
 
     public DeliveryNotes getDeliveryNotes() {
         return (DeliveryNotes) this.report;
+    }
+
+    public String getPackageNumber() {
+        return packageNumber;
+    }
+
+    public void setPackageNumber(String packageNumber) {
+        this.packageNumber = packageNumber;
+    }
+
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
     }
 
 }

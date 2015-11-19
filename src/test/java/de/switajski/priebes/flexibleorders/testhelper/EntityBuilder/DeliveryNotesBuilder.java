@@ -12,8 +12,6 @@ import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotes, Builder<DeliveryNotes>> {
 
     private Address shippedAddress;
-    private String trackNumber;
-    private String packageNumber;
     private Amount shippingCosts;
     private DeliveryMethod deliveryMethod;
 
@@ -22,8 +20,6 @@ public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotes, Builder<D
         DeliveryNotes dn = new DeliveryNotes();
         super.build(dn);
         dn.setShippedAddress(shippedAddress);
-        dn.setTrackNumber(trackNumber);
-        dn.setPackageNumber(packageNumber);
         dn.setShippingCosts(shippingCosts);
         dn.setDeliveryMethod(deliveryMethod);
         return dn;
@@ -31,16 +27,6 @@ public class DeliveryNotesBuilder extends ReportBuilder<DeliveryNotes, Builder<D
 
     public DeliveryNotesBuilder setShippedAddress(Address shippedAddress) {
         this.shippedAddress = shippedAddress;
-        return this;
-    }
-
-    public DeliveryNotesBuilder setTrackNumber(String trackNumber) {
-        this.trackNumber = trackNumber;
-        return this;
-    }
-
-    public DeliveryNotesBuilder setPackageNumber(String packageNumber) {
-        this.packageNumber = packageNumber;
         return this;
     }
 

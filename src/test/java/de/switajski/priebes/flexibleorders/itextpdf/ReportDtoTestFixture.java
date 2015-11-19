@@ -47,11 +47,11 @@ public class ReportDtoTestFixture {
         r.customerNumber = customer.getCustomerNumber();
         r.customerPhone = customer.getPhone();
         r.customerSpecific_contactInformation = new ContactInformationBuilder()
-        .setContact1("Hr. Priebe")
-        .setContact2("Mobil: 0175 / 124312541")
-        .setContact3("Fax: 0175 / 12431241")
-        .setContact4("Email: info@priebe.eu")
-        .build();
+                .setContact1("Hr. Priebe")
+                .setContact2("Mobil: 0175 / 124312541")
+                .setContact3("Fax: 0175 / 12431241")
+                .setContact4("Email: info@priebe.eu")
+                .build();
         r.customerSpecific_mark = "Filiale";
         r.orderConfirmationSpecific_paymentConditions = "So schnell wie m" + Unicode.O_UML + "glich, ohne Prozente sonst Inkasso Moskau";
         r.customerSpecific_vatIdNo = "ATU-No.111234515";
@@ -69,16 +69,16 @@ public class ReportDtoTestFixture {
             Amount priceNegotiated = new Amount(BigDecimal.valueOf(2.5d), Currency.EUR);
             r.items.add(
                     new ShippingItemBuilder()
-                    .setItem(new OrderItemBuilder()
+                            .setItem(new OrderItemBuilder()
                                     .setNegotiatedPriceNet(price)
-                    .setOrderedQuantity(i)
-                    .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
-                    .setProduct(
-                            new CatalogProductBuilder("hfhf", "0", ProductType.PRODUCT)
-                            .setRecommendedPriceNet(priceNegotiated)
-                            .build()
-                            .toProduct())
-                            .build())
+                                    .setOrderedQuantity(i)
+                                    .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
+                                    .setProduct(
+                                            new CatalogProductBuilder("some productname ", "0", ProductType.PRODUCT)
+                                                    .setRecommendedPriceNet(priceNegotiated)
+                                                    .build()
+                                                    .toProduct())
+                                    .build())
                             .setQuantity(i + 1)
                             .setReport(new DeliveryNotesBuilder().build())
                             .build());

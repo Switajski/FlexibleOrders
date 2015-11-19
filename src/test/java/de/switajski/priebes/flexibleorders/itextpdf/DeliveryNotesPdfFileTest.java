@@ -3,32 +3,70 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfFile;
 
 public class DeliveryNotesPdfFileTest {
 
-    private static final String PDF_PATH = "src/test/resources/DeliveryNotesPdfFileTest.pdf";
+    String pdfPath = "src/test/resources/";
+
+    DeliveryNotesPdfFile deliveryNotesPdfFile;
+    ReportDto reportDto;
+    Map<String, Object> model;
+
+    @Before
+    public void setup() {
+        deliveryNotesPdfFile = new DeliveryNotesPdfFile();
+        deliveryNotesPdfFile.setLogoPath("src/main/webapp/images/LogoGross.jpg");
+    }
 
     @Test
-    public void shouldGenerateInvoice() throws Exception {
+    public void shouldGenerateDeliveryNotesWithPendingItems() throws Exception {
+        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPendingItems.pdf");
 
-        DeliveryNotesPdfFile bpf = new DeliveryNotesPdfFile();
-        bpf.setFilePathAndName(PDF_PATH);
-        bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
+        givenReportDtoModel();
+        PendingItem pendingItem = new PendingItem();
+        pendingItem.setQuantity(1);
+        OrderItem item = new OrderItem(
+                new OrderBuilder().setOrderNumber("765").build(),
+                new ProductBuilder().setProductNumber("123").setName("always pending").build(),
+                3);
+        pendingItem.setOrderItem(item);
+        reportDto.items.add(pendingItem);
 
-        Map<String, Object> model = new HashMap<String, Object>();
-        ReportDto reportDto = ReportDtoTestFixture.givenReportDto();
+        whenCreatingPdfFile();
+    }
+
+    @Test
+    public void shouldGenerateDeliveryNotesWithoutPrices() throws Exception {
+        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithoutPrices.pdf");
+
+        givenReportDtoModel();
+
+        whenCreatingPdfFile();
+    }
+
+    private void givenReportDtoModel() {
+        reportDto = ReportDtoTestFixture.givenReportDto();
+
+        model = new HashMap<String, Object>();
         model.put(reportDto.getClass().getSimpleName(), reportDto);
+    }
 
-        bpf.render(
+    private void whenCreatingPdfFile() throws Exception {
+        deliveryNotesPdfFile.render(
                 model,
                 new MockHttpServletRequest(),
                 new MockHttpServletResponse());
-
     }
+
 }

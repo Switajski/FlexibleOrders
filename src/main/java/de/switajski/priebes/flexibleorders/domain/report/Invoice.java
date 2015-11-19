@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
@@ -102,6 +103,12 @@ public class Invoice extends Report {
 
     public void setDiscountRate(BigDecimal discountRate) {
         this.discountRate = discountRate;
+    }
+
+    @Override
+    public boolean hasConsecutiveDocuments() {
+        return !DeliveryHistory.of(this).getReportNumbers(ReceiptItem.class).isEmpty()
+                || !DeliveryHistory.of(this).getReportNumbers(CreditNoteItem.class).isEmpty();
     }
 
 }

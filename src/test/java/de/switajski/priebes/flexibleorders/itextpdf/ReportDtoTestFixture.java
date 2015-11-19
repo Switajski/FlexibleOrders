@@ -65,8 +65,8 @@ public class ReportDtoTestFixture {
         r.items = new HashSet<ReportItem>();
         for (int i = 0; i < 35; i++) {
             new OrderItemBuilder();
-            Amount price = new Amount(BigDecimal.valueOf(4.5d), Currency.EUR);
-            Amount priceNegotiated = new Amount(BigDecimal.valueOf(2.5d), Currency.EUR);
+            Amount price = new Amount(BigDecimal.valueOf(14.5d), Currency.EUR);
+            Amount priceNegotiated = new Amount(BigDecimal.valueOf(12.5d), Currency.EUR);
             r.items.add(
                     new ShippingItemBuilder()
                             .setItem(new OrderItemBuilder()

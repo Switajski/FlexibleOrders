@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.domain.report;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
@@ -69,6 +70,13 @@ public class OrderConfirmation extends Report {
 
     public void setPurchaseAgreement(PurchaseAgreement purchaseAgreement) {
         this.purchaseAgreement = purchaseAgreement;
+    }
+
+    @Override
+    public boolean hasConsecutiveDocuments() {
+        DeliveryHistory deliveryHistory = DeliveryHistory.of(this);
+        return !deliveryHistory.getDeliveryNotesNumbers().isEmpty()
+                || !deliveryHistory.getInvoiceNumbers().isEmpty();
     }
 
 }

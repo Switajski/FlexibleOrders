@@ -51,6 +51,11 @@ public class PdfPCellBuilder {
         return this;
     }
 
+    public PdfPCellBuilder withAlignment(int alignment) {
+        this.horizontalAlignment = alignment;
+        return this;
+    }
+
     public PdfPCellBuilder withPhrase(Phrase phrase) {
         this.phrase = phrase;
         return this;

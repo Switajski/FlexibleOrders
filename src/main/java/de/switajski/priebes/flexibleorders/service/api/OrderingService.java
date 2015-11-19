@@ -177,6 +177,8 @@ public class OrderingService {
         Report r = reportRepo.findByDocumentNumber(reportNumber);
         if (r == null) throw new IllegalArgumentException(
                 "Bericht zum l" + Unicode.O_UML + "schen nicht gefunden");
+        if (r.hasConsecutiveDocuments()) throw new IllegalStateException("L" + Unicode.O_UML + "schen nicht m" + Unicode.O_UML
+                + "glich, da noch abgeleitete Dokumente existieren");
         reportRepo.delete(r);
         return true;
     }

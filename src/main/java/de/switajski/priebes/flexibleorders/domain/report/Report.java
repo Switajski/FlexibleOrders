@@ -68,7 +68,7 @@ public abstract class Report extends GenericEntity {
                 Product p1 = r1.getOrderItem().getProduct();
                 Product p2 = r2.getOrderItem().getProduct();
                 if (p1.hasProductNo() && p2.hasProductNo())
-                    return p1.getProductNumber().compareTo(p2.getProductNumber());
+                return p1.getProductNumber().compareTo(p2.getProductNumber());
                 else if (!p1.hasProductNo() && !p2.hasProductNo()) {
                     return p1.getName().compareTo(p2.getName());
                 }
@@ -128,5 +128,12 @@ public abstract class Report extends GenericEntity {
         else if (customers.size() == 1) return customers.iterator().next();
         throw new IllegalStateException("No customer found");
     }
+
+    /**
+     * 
+     * @return true, if this report has other documents on which it depends on.
+     *         E.g. if this is a receipt, it depends on invoice.
+     */
+    public abstract boolean hasConsecutiveDocuments();
 
 }

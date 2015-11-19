@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
@@ -96,6 +97,11 @@ public class DeliveryNotes extends Report {
         }
         return pis;
 
+    }
+
+    @Override
+    public boolean hasConsecutiveDocuments() {
+        return !DeliveryHistory.of(this).getInvoiceNumbers().isEmpty();
     }
 
 }

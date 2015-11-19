@@ -29,4 +29,9 @@ public class Receipt extends Report {
     public void setPaymentReceivedDate(Date paymentReceivedDate) {
         this.paymentReceived = paymentReceivedDate;
     }
+
+    @Override
+    public boolean hasConsecutiveDocuments() {
+        return false;
+    }
 }

@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
-import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -35,8 +34,7 @@ public class ColumnFormat {
 
         PdfPCellBuilder pdfPCellBuilder = new PdfPCellBuilder(phrase);
 
-        if (alignment == Element.ALIGN_LEFT) pdfPCellBuilder.withLeftHorizontalAlignment();
-        else pdfPCellBuilder.withRightHorizontalAlignment();
+        if (alignment != 0) pdfPCellBuilder.withAlignment(alignment);
 
         return pdfPCellBuilder.build();
     }

@@ -57,9 +57,9 @@ public class TableWithPricesAndWithPackageNumberCreator extends ReportItemsPdfPT
         ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
         rowProperties.add(new ColumnFormat("Art. Nr.", Element.ALIGN_LEFT, 10));
         rowProperties.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 40));
-        rowProperties.add(new ColumnFormat("Paketnr.", Element.ALIGN_LEFT, 8));
-        rowProperties.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 7));
-        rowProperties.add(new ColumnFormat("EK per Stk.", Element.ALIGN_LEFT, 10));
+        rowProperties.add(new ColumnFormat("Paketnr.", Element.ALIGN_CENTER, 8));
+        rowProperties.add(new ColumnFormat("Anzahl", Element.ALIGN_CENTER, 7));
+        rowProperties.add(new ColumnFormat("EK/Stk.", Element.ALIGN_LEFT, 10));
         rowProperties.add(new ColumnFormat("Bestellnr.", Element.ALIGN_LEFT, 18, PriebesIText5PdfView.eightSizeFont));
         rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
         return rowProperties;

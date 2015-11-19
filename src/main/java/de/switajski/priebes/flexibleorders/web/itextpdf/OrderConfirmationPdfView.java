@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithoutPackageNumberCreator;
 
 @Component
 public class OrderConfirmationPdfView extends PriebesIText5PdfView {
@@ -53,35 +54,35 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
 
         PdfPTable infoTable = report.isShowExtendedInformation() ?
                 ReportViewHelper.createExtInfoTable(new ExtInfoTableParameter(report)) :
-                    ReportViewHelper.createInfoTable(
-                            customerNo,
-                            removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
-                            ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
-                                    report.shippingSpecific_expectedDelivery),
-                            "");
-                document.add(infoTable);
+                ReportViewHelper.createInfoTable(
+                        customerNo,
+                        removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
+                        ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
+                                report.shippingSpecific_expectedDelivery),
+                        "");
+        document.add(infoTable);
 
-                document.add(ParagraphBuilder.createEmptyLine());
+        document.add(ParagraphBuilder.createEmptyLine());
 
-                // insert main table
-                document.add(ReportViewHelper.createExtendedTable(report));
+        // insert main table
+        document.add(new TableWithPricesAndWithoutPackageNumberCreator().create(report));
 
-                // insert footer table
-                CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
-                        .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
-                        .withTotalWidth(PriebesIText5PdfView.WIDTH);
+        // insert footer table
+        CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
+                .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
+                .withTotalWidth(PriebesIText5PdfView.WIDTH);
 
         if (report.orderConfirmationSpecific_paymentConditions != null) {
             addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
-                }
+        }
 
-                PdfPTable footer = footerBuilder.build();
+        PdfPTable footer = footerBuilder.build();
 
-                footer.writeSelectedRows(0, -1,
-                        /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-                        /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
+        footer.writeSelectedRows(0, -1,
+                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
+                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
                         + FOOTER_MARGIN_BOTTOM,
-                        writer.getDirectContent());
+                writer.getDirectContent());
     }
 
     private String removeNull(String customerLastName) {

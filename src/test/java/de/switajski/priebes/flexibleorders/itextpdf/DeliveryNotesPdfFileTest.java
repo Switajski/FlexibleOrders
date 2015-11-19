@@ -10,6 +10,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
@@ -32,8 +34,13 @@ public class DeliveryNotesPdfFileTest {
     @Test
     public void shouldGenerateDeliveryNotesWithPendingItems() throws Exception {
         deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPendingItems.pdf");
-
         givenReportDtoModel();
+        reportDto.items.add(givenPendingItem());
+
+        whenCreatingPdfFile();
+    }
+
+    private PendingItem givenPendingItem() {
         PendingItem pendingItem = new PendingItem();
         pendingItem.setQuantity(1);
         OrderItem item = new OrderItem(
@@ -41,18 +48,51 @@ public class DeliveryNotesPdfFileTest {
                 new ProductBuilder().setProductNumber("123").setName("always pending").build(),
                 3);
         pendingItem.setOrderItem(item);
-        reportDto.items.add(pendingItem);
-
-        whenCreatingPdfFile();
+        return pendingItem;
     }
 
     @Test
     public void shouldGenerateDeliveryNotesWithoutPrices() throws Exception {
         deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithoutPrices.pdf");
-
         givenReportDtoModel();
 
         whenCreatingPdfFile();
+    }
+
+    @Test
+    public void shouldGenerateDeliveryNotesWithPackageNumbers() throws Exception {
+        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPackageNumbers.pdf");
+        givenReportDtoModel();
+        addPackageNumbers();
+
+        whenCreatingPdfFile();
+    }
+
+    @Test
+    public void shouldGenerateDeliveryNotesWithPackageNumbersAndPrices() throws Exception {
+        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPackageNumbersAndPrices.pdf");
+        givenReportDtoModel();
+        reportDto.showPricesInDeliveryNotes = true;
+        addPackageNumbers();
+
+        whenCreatingPdfFile();
+    }
+
+    @Test
+    public void shouldGenerateDeliveryNotesWithPrices() throws Exception {
+        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPrices.pdf");
+        givenReportDtoModel();
+        reportDto.showPricesInDeliveryNotes = true;
+
+        whenCreatingPdfFile();
+    }
+
+    private void addPackageNumbers() {
+        for (ReportItem ri : reportDto.items) {
+            if (ri instanceof ShippingItem) {
+                ((ShippingItem) ri).setPackageNumber("P12");
+            }
+        }
     }
 
     private void givenReportDtoModel() {

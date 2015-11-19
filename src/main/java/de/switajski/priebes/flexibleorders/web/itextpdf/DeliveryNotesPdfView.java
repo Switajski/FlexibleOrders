@@ -16,6 +16,11 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.ReportItemsPdfPTableCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithPackageNumberCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithoutPackageNumberCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithoutPricesAndWithPackageNumbersCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithoutPricesAndWithoutPackageNumbersCreator;
 
 @Component
 public class DeliveryNotesPdfView extends PriebesIText5PdfView {
@@ -52,12 +57,25 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         document.add(ParagraphBuilder.createEmptyLine());
         // insert main table
+        boolean hasPackageNumbers = hasPackageNumbers(report);
+        ReportItemsPdfPTableCreator creator;
         if (report.showPricesInDeliveryNotes) {
-            document.add(ReportViewHelper.createExtendedTable(report));
+            if (hasPackageNumbers) {
+                creator = new TableWithPricesAndWithPackageNumberCreator();
+            }
+            else {
+                creator = new TableWithPricesAndWithoutPackageNumberCreator();
+            }
         }
         else {
-            document.add(ReportViewHelper.createTableWithoutPrices(report));
+            if (hasPackageNumbers) {
+                creator = new TableWithoutPricesAndWithPackageNumbersCreator();
+            }
+            else {
+                creator = new TableWithoutPricesAndWithoutPackageNumbersCreator();
+            }
         }
+        document.add(creator.create(report));
 
     }
 

@@ -21,12 +21,9 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
-import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
@@ -34,7 +31,6 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
@@ -223,98 +219,6 @@ public class ReportViewHelper {
         }
         String cinfo = cib.toString();
         return cinfo;
-    }
-
-    public static PdfPTable createExtendedTable(ReportDto report)
-            throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithSixCols());
-        // Refactor - see #71
-        for (ReportItem he : report.getItemsByOrder()) {
-            List<String> list = new ArrayList<String>();
-            // Art.Nr.:
-            Product product = he.getOrderItem().getProduct();
-            list.add(product.hasProductNo() ? product.getProductNumber() : "n.a.");
-            // Artikel
-            list.add(product.getName());
-            // Anzahl
-            list.add(String.valueOf(he.getQuantity()));
-            // EK per Stueck
-            list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
-            // Bestellnr
-            list.add(he.getOrderItem().getOrder().getOrderNumber());
-            // gesamt
-            list.add(he.getOrderItem().getNegotiatedPriceNet()
-                    .multiply(he.getQuantity()).toString());
-
-            builder.addBodyRow(list);
-        }
-
-        return builder.withFooter(false).build();
-    }
-
-    public static PdfPTable createTableWithoutPrices(ReportDto cReport)
-            throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithFourCols());
-        // Refactor - see #71
-        for (ReportItem ri : cReport.getItemsByOrder()) {
-            if (!(ri instanceof PendingItem)) {
-                if (!ri.getOrderItem().isShippingCosts()) {
-                    List<String> row = createRowWithoutPrices(ri);
-                    builder.addBodyRow(row);
-                }
-            }
-        }
-
-        builder.addBreak("Ausstehende Artikel");
-
-        for (ReportItem ri : cReport.getItemsByOrder()) {
-            if (ri instanceof PendingItem) {
-                builder.addBodyRow(createRowWithoutPrices(ri));
-            }
-        }
-
-        return builder.withFooter(false).build();
-    }
-
-    public static PdfPTable createTableWithPackageNumberAndWithoutPrices(ReportDto cReport)
-            throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithFiveCols());
-        // Refactor - see #71
-        for (ReportItem ri : cReport.getItemsByOrder()) {
-            if (!(ri instanceof PendingItem)) {
-                if (!ri.getOrderItem().isShippingCosts()) {
-                    List<String> row = createRowWithoutPrices(ri);
-                    builder.addBodyRow(row);
-                }
-            }
-        }
-
-        builder.addBreak("Ausstehende Artikel");
-
-        for (ReportItem ri : cReport.getItemsByOrder()) {
-            if (ri instanceof PendingItem) {
-                builder.addBodyRow(createRowWithoutPrices(ri));
-            }
-        }
-
-        return builder.withFooter(false).build();
-    }
-
-    private static List<String> createRowWithoutPrices(ReportItem ri) {
-        List<String> row = new ArrayList<String>();
-        // Anzahl
-        row.add(String.valueOf(ri.getQuantity()) + " x ");
-        // Art.Nr.:
-        String pNo = ri.getOrderItem().getProduct().getProductNumber();
-        row.add(pNo.equals("0") ? "n.a." : pNo.toString());
-        // Artikel
-        row.add(ri.getOrderItem().getProduct().getName());
-        // Bestellnr
-        row.add(ri.getOrderItem().getOrder().getOrderNumber());
-        return row;
     }
 
     public static Paragraph createDate(String date) {

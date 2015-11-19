@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -17,8 +18,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
@@ -28,7 +29,7 @@ public class ExtendedTableHeaderCreator {
 
     public PdfPTable create(ExtInfoTableParameter p) throws DocumentException {
         PdfPTable extInfoTable = new CustomPdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithThreeCols()).build();
+                tableProperties()).build();
 
         extInfoTable.addCell(createCellFor1stColumn(p));
         extInfoTable.addCell(createCellFor2ndColumn(p));
@@ -105,17 +106,22 @@ public class ExtendedTableHeaderCreator {
 
     private PdfPCell createCellFor3rdColumn(ExtInfoTableParameter p) {
         PdfPTable table = new PdfPTable(1);
-        table.addCell(cellWithNormalFont("Kundennr.: " + p.customerNo));
+        table.addCell(alignRight(cellWithNormalFont("Kundennr.: " + p.customerNo)));
         if (!isEmpty(p.vendorNumber)) {
-            table.addCell(cellWithNormalFont("Lieferantennr.: " + p.vendorNumber));
+            table.addCell(alignRight(cellWithNormalFont("Lieferantennr.: " + p.vendorNumber)));
         }
         if (p.contactInformation != null && !isEmpty(p.contactInformation.toString())) {
-            table.addCell(cellWithNormalFont("Ihr Ansprechpartner:"));
+            table.addCell(alignRight(cellWithNormalFont("Ihr Ansprechpartner:")));
             for (String str : createString(p.contactInformation))
-                table.addCell(cellWithSmallFont(str));
+                table.addCell(alignRight(cellWithSmallFont(str)));
         }
 
         return wrapInCell(table);
+    }
+
+    private PdfPCell alignRight(PdfPCell cell) {
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        return cell;
     }
 
     private PdfPCell wrapInCell(PdfPTable table) {
@@ -190,6 +196,14 @@ public class ExtendedTableHeaderCreator {
         }
 
         return strings;
+    }
+
+    public ArrayList<ColumnFormat> tableProperties() {
+        ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+        rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 33));
+        rowProperties.add(new ColumnFormat("2", Element.ALIGN_LEFT, 33));
+        rowProperties.add(new ColumnFormat("3", Element.ALIGN_LEFT, 34));
+        return rowProperties;
     }
 
 }

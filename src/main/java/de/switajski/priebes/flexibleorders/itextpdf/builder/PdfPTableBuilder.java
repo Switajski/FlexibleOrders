@@ -127,14 +127,6 @@ public class PdfPTableBuilder {
         return rowProperties;
     }
 
-    public static ArrayList<ColumnFormat> createPropertiesWithThreeCols() {
-        ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
-        rowProperties.add(new ColumnFormat("1", Element.ALIGN_LEFT, 33));
-        rowProperties.add(new ColumnFormat("2", Element.ALIGN_LEFT, 33));
-        rowProperties.add(new ColumnFormat("3", Element.ALIGN_LEFT, 34));
-        return rowProperties;
-    }
-
     private float[] getWidths() {
         ArrayList<Float> iList = new ArrayList<Float>();
         for (ColumnFormat prop : tableProperties) {

@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.helper;
+package de.switajski.priebes.flexibleorders.service;
 
 import org.apache.commons.lang3.StringUtils;
 

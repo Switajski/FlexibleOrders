@@ -16,8 +16,8 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.service.FOStringUtility;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
-import de.switajski.priebes.flexibleorders.service.helper.FOStringUtility;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity

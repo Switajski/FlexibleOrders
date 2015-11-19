@@ -25,6 +25,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuild
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.SimpleTableHeaderCreator;
 
 /**
  * Pdf view customized for the display of an order
@@ -41,12 +42,6 @@ public class OrderPdfView extends PriebesIText5PdfView {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-        String rightTop = replaceNull(report.customerFirstName) + " " + replaceNull(report.customerLastName);
-        String rightBottom = "Kundennummer: "
-                + report.customerNumber;
-        String leftTop = "Bestellnummer: " + report.documentNumber.toString();
-        String leftBottom = "Bestelldatum: "
-                + dateFormat.format(report.created);
         Address adresse = report.invoiceSpecific_headerAddress;
         String heading = "Bestellung";
 
@@ -62,8 +57,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
             document.add(p);
         }
 
-        document.add(ReportViewHelper.createInfoTable(
-                rightTop, rightBottom, leftTop, leftBottom));
+        document.add(new SimpleTableHeaderCreator().create(report));
         document.add(ParagraphBuilder.createEmptyLine());
 
         // insert main table
@@ -80,15 +74,10 @@ public class OrderPdfView extends PriebesIText5PdfView {
             footer.writeSelectedRows(0, -1,
                     /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
                     /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-                    + FOOTER_MARGIN_BOTTOM,
+                            + FOOTER_MARGIN_BOTTOM,
                     writer.getDirectContent());
         }
 
-    }
-
-    private String replaceNull(String customerFirstName) {
-        if (customerFirstName == null) return "";
-        return customerFirstName;
     }
 
     private PdfPTable createTable(ReportDto order) throws DocumentException {
@@ -118,9 +107,9 @@ public class OrderPdfView extends PriebesIText5PdfView {
     private String getPriceXquantity(OrderItem he) {
         if (he.getNegotiatedPriceNet() != null
                 && he.getNegotiatedPriceNet().getValue() != null) return he
-                        .getNegotiatedPriceNet()
-                        .multiply(he.getOrderedQuantity())
-                        .toString();
+                .getNegotiatedPriceNet()
+                .multiply(he.getOrderedQuantity())
+                .toString();
         else return "-";
     }
 

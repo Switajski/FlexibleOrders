@@ -16,7 +16,9 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.ReportItemsPdfPTableCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithPackageNumberCreator;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithoutPackageNumberCreator;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithoutPricesAndWithPackageNumbersCreator;
@@ -38,7 +40,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;
 
-        for (Element p : ReportViewHelper.createAddress(adresse))
+        for (Element p : ReportViewHelper.createAddress(adresse, createLogo()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -48,10 +50,12 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         if (report.isShowExtendedInformation()) {
             ExtInfoTableParameter param = new ExtInfoTableParameter(report);
-            document.add(ReportViewHelper.createExtInfoTable(param));
+            param.invoiceNumbers = null;
+            param.creditNoteNumbers = null;
+            document.add(new ExtendedTableHeaderCreator().create(param));
         }
         else {
-            document.add(ReportViewHelper.createInfoTable(
+            document.add(new SimpleTableHeaderCreator().create(
                     packageNo, customerNo, "", ""));
         }
 

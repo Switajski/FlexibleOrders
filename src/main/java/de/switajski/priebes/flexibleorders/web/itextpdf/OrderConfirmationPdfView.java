@@ -19,6 +19,8 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.ExtendedTableHeaderCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableWithPricesAndWithoutPackageNumberCreator;
 
 @Component
@@ -44,7 +46,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Element p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress))
+        for (Element p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, createLogo()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
@@ -53,8 +55,8 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
             document.add(p);
 
         PdfPTable infoTable = report.isShowExtendedInformation() ?
-                ReportViewHelper.createExtInfoTable(new ExtInfoTableParameter(report)) :
-                ReportViewHelper.createInfoTable(
+                new ExtendedTableHeaderCreator().create(new ExtInfoTableParameter(report)) :
+                new SimpleTableHeaderCreator().create(
                         customerNo,
                         removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
                         ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(

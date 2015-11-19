@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +29,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.ExtendedTableHeaderCreator;
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
@@ -62,7 +61,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         param.orderAgreementNumbers = report.related_orderAgreementNumbers;
         param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
         param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
-        param.creditNoteNumbers = report.related_creditNoteNumbers;
 
         param.vendorNumber = report.customerSpecific_vendorNumber;
         param.contactInformation = report.customerSpecific_contactInformation;
@@ -72,7 +70,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         param.customerNo = customerNo;
         param.billing = StringUtils.isEmpty(report.invoiceSpecific_billing) ? "" : "Abrechnung: " + report.invoiceSpecific_billing;
 
-        document.add(ReportViewHelper.createExtInfoTable(param));
+        document.add(new ExtendedTableHeaderCreator().create(param));
 
         document.add(ParagraphBuilder.createEmptyLine());
 
@@ -161,14 +159,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         }
 
         return builder.withFooter(false).build();
-    }
-
-    private String createFormatForRate(BigDecimal rate) {
-        DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(2);
-        df.setMinimumFractionDigits(0);
-        df.setGroupingUsed(false);
-        return df.format(rate);
     }
 
 }

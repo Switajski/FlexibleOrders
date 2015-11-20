@@ -71,12 +71,13 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
     @Override
     public String toString() {
         return new StringBuilder("#")
-        .append(getId())
-        .append(": ")
-        .append(getOrderedQuantity())
-        .append(" x ")
-        .append(getProduct().getName())
-        .toString();
+                .append(getId())
+                .append(" ").append(this.getClass().getSimpleName())
+                .append(": ")
+                .append(getOrderedQuantity())
+                .append(" x ")
+                .append(getProduct().getName())
+                .toString();
     }
 
     public int toBeConfirmed() {

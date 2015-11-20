@@ -69,18 +69,18 @@ public class QuantityCalculatorTest {
 
     private ConfirmationItem givenAgreedItem(int quantityProcessed) {
         return new ConfirmationItemBuilder()
-        .setReport(givenConfirmationReport())
-        .setQuantity(quantityProcessed)
-        .setItem(orderItem)
-        .build();
+                .setReport(givenConfirmationReport())
+                .setQuantity(quantityProcessed)
+                .setItem(orderItem)
+                .build();
     }
 
     private ReportItem givenDeliveryItem(int qtyProcessed) {
         return new ShippingItemBuilder()
-        .setReport(givenDeliveryNotes())
-        .setQuantity(qtyProcessed)
-        .setItem(orderItem)
-        .build();
+                .setReport(givenDeliveryNotes())
+                .setQuantity(qtyProcessed)
+                .setItem(orderItem)
+                .build();
     }
 
     private Report givenDeliveryNotes() {
@@ -92,7 +92,7 @@ public class QuantityCalculatorTest {
                 givenOrder(),
                 givenProduct(),
                 quantity)
-        .build();
+                .build();
     }
 
     private OrderConfirmation givenConfirmationReport() {
@@ -106,12 +106,12 @@ public class QuantityCalculatorTest {
                 "pro",
                 "234",
                 ProductType.PRODUCT)
-        .build().toProduct();
+                .build().toProduct();
     }
 
     private Order givenOrder() {
         return new OrderBuilder()
-        .setCustomer(CustomerBuilder.buildWithGeneratedAttributes(2))
-        .build();
+                .setCustomer(CustomerBuilder.buildWithGeneratedAttributes(2))
+                .build();
     }
 }

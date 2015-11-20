@@ -92,8 +92,8 @@ public abstract class ReportItem extends GenericEntity implements
 
     @Override
     public String toString() {
-        return new StringBuilder(this.getClass().getSimpleName())
-                .append(": ").append(" " + getQuantity()).toString();
+        return new StringBuilder("#" + getId() + " " + this.getClass().getSimpleName())
+                .append(": ").append(" ").append(getQuantity()).append(" ").append(getOrderItem()).toString();
     }
 
     /**

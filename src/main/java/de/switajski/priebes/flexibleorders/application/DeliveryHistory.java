@@ -162,11 +162,16 @@ public class DeliveryHistory {
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        OrderItem orderItem = reportItems.iterator().next().getOrderItem();
-        s.append("Orderno: " + orderItem.getOrder().getOrderNumber());
-        s.append(", " + orderItem.getOrderedQuantity() + " x ");
-        s.append(orderItem.getProduct().getProductNumber() + " "
-                + orderItem.getProduct().getName());
+        s.append("Orderno: ");
+        new UniqueStringOfReportItemsCollectorTemplate() {
+            @Override
+            public String createString(ReportItem ri) {
+                return new StringBuilder().append(ri.getOrderItem().getOrder().getOrderNumber()).append(" ")
+                        .append(ri.getOrderItem().getOrderedQuantity()).append(" x ")
+                        .append(ri.getOrderItem().getProduct().getProductNumber()).append(" ")
+                        .append(ri.getOrderItem().getProduct().getName()).toString();
+            }
+        }.run(reportItems, s);
         s.append("\n-------------------------------------");
         for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
             s.append("\n" + type.getSimpleName() + "s: ");
@@ -184,5 +189,4 @@ public class DeliveryHistory {
         }
         return s.toString();
     }
-
 }

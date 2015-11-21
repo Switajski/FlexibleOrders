@@ -54,7 +54,7 @@ public class DeliveryHistoryService {
     public Collection<DeliveryNotes> retrieveDeliveryNotesFrom(Report report) {
         DeliveryHistory dh = DeliveryHistory.of(report);
         HashSet<DeliveryNotes> dns = new HashSet<DeliveryNotes>();
-        for (ReportItem ri : dh.getReportItems(ShippingItem.class)) {
+        for (ReportItem ri : dh.reportItems(ShippingItem.class)) {
             dns.add((DeliveryNotes) ri.getReport());
         }
         return dns;

@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.switajski.priebes.flexibleorders.application.process.WholesaleProcessSteps;
+import de.switajski.priebes.flexibleorders.application.process.WholesaleProcess;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
@@ -57,21 +57,21 @@ public class DeliveryHistory {
         return new DeliveryHistory(orderItem.getReportItems());
     }
 
-    public Set<ConfirmationItem> getAgreedConfirmationItems() {
+    public Set<ConfirmationItem> agreedConfirmationItems() {
         Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
-        for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
+        for (ConfirmationItem ci : reportItems(ConfirmationItem.class))
             if (ci.isAgreed()) cis.add(ci);
         return cis;
     }
 
-    public Set<ConfirmationItem> getNonAgreedConfirmationItems() {
+    public Set<ConfirmationItem> notAgreedConfirmationItems() {
         Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
-        for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
+        for (ConfirmationItem ci : reportItems(ConfirmationItem.class))
             if (!ci.isAgreed()) cis.add(ci);
         return cis;
     }
 
-    public <T extends ReportItem> Set<T> getReportItems(Class<T> type) {
+    public <T extends ReportItem> Set<T> reportItems(Class<T> type) {
         Set<T> riToReturn = new HashSet<T>();
         for (ReportItem ri : reportItems) {
             if (type.isInstance(ri)) riToReturn.add(type.cast(ri));
@@ -107,7 +107,7 @@ public class DeliveryHistory {
     }
 
     public ShippingItem getShippingItemOf(InvoiceItem ii) {
-        Set<ShippingItem> sis = this.getReportItems(ShippingItem.class);
+        Set<ShippingItem> sis = this.reportItems(ShippingItem.class);
         if (sis.size() > 1) throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
         else return sis.iterator().next();
     }
@@ -134,7 +134,7 @@ public class DeliveryHistory {
 
     public Set<String> getOrderAgreementNumbers() {
         Set<String> nos = new HashSet<String>();
-        for (ReportItem ci : getReportItems(ConfirmationItem.class)) {
+        for (ReportItem ci : reportItems(ConfirmationItem.class)) {
             ConfirmationItem cis = (ConfirmationItem) ci;
             OrderConfirmation oc = (OrderConfirmation) ci.getReport();
             if (oc.isAgreed()) nos.add(oc.getOrderAgreementNumber());
@@ -148,7 +148,7 @@ public class DeliveryHistory {
 
     public <T extends ReportItem> Set<String> getReportNumbers(Class<? extends ReportItem> clazz) {
         Set<String> nos = new HashSet<String>();
-        for (ReportItem ci : getReportItems(clazz)) {
+        for (ReportItem ci : reportItems(clazz)) {
             nos.add(ci.getReport().getDocumentNumber());
         }
         return nos;
@@ -173,9 +173,9 @@ public class DeliveryHistory {
             }
         }.run(reportItems, s);
         s.append("\n-------------------------------------");
-        for (Class<? extends ReportItem> type : WholesaleProcessSteps.reportItemSteps()) {
+        for (Class<? extends ReportItem> type : WholesaleProcess.reportItemSteps()) {
             s.append("\n" + type.getSimpleName() + "s: ");
-            for (ReportItem item : getReportItems(type)) {
+            for (ReportItem item : reportItems(type)) {
                 if (item instanceof ConfirmationItem) {
                     if (((ConfirmationItem) item).isAgreed()) {
                         s.append(" - agreed - ");
@@ -189,4 +189,5 @@ public class DeliveryHistory {
         }
         return s.toString();
     }
+
 }

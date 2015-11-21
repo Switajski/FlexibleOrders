@@ -19,7 +19,7 @@ public class CustomerDetailsService {
     private Set<CustomerDetails> retrieve(ReportItem reportItem) {
         Set<CustomerDetails> customerDetailss = new HashSet<CustomerDetails>();
         DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
-        for (ConfirmationItem ai : dh.getReportItems(ConfirmationItem.class)) {
+        for (ConfirmationItem ai : dh.reportItems(ConfirmationItem.class)) {
             try {
                 CustomerDetails customerDetails = ((OrderConfirmation) ai.getReport()).getCustomerDetails();
                 customerDetailss.add(customerDetails);

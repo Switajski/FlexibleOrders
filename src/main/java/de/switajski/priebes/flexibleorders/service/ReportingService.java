@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
@@ -107,17 +106,6 @@ public class ReportingService {
                 orders.getTotalElements()
                 );
         return result;
-    }
-
-    @Transactional(readOnly = true)
-    public List<ItemDto> retrieveAllByDocumentNumber(String string) {
-        if (string == null) throw new IllegalArgumentException(
-                "Dokumentennummer nicht angegeben");
-        Report report = reportRepo.findByDocumentNumber(string);
-        List<ItemDto> reportItems = new ArrayList<ItemDto>();
-        for (ReportItem ri : report.getItems())
-            reportItems.add(ri2ItemDtoConversionService.createOverdue(ri));
-        return reportItems;
     }
 
     @Transactional(readOnly = true)

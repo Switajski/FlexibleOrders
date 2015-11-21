@@ -48,7 +48,7 @@ public class PurchaseAgreementService {
             boolean agreedOnly) {
         DeliveryHistory dh = new DeliveryHistory(reportItems);
         Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>();
-        for (ConfirmationItem cis : dh.getReportItems(ConfirmationItem.class)) {
+        for (ConfirmationItem cis : dh.reportItems(ConfirmationItem.class)) {
             OrderConfirmation orderConfirmation = (OrderConfirmation) cis
                     .getReport();
             if (agreedOnly) {

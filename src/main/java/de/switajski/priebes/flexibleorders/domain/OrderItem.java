@@ -85,7 +85,7 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
         if (deliveryHistory.isEmpty()) {
             return orderedQuantity;
         }
-        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.getNonAgreedConfirmationItems());
+        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.notAgreedConfirmationItems());
     }
 
     @Override

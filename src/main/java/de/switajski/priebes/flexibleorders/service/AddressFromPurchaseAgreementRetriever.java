@@ -25,7 +25,7 @@ public abstract class AddressFromPurchaseAgreementRetriever {
         }
         else {
             DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
-            for (ConfirmationItem ai : dh.getReportItems(ConfirmationItem.class)) {
+            for (ConfirmationItem ai : dh.reportItems(ConfirmationItem.class)) {
                 try {
                     PurchaseAgreement purchaseAgreement = ((OrderConfirmation) ai.getReport()).getPurchaseAgreement();
                     addresses.add(getAddress(purchaseAgreement));

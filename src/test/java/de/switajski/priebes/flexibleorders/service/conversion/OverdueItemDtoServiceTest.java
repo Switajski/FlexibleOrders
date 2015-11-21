@@ -1,7 +1,12 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,13 +14,16 @@ import org.junit.Test;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
-import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
@@ -26,19 +34,25 @@ public class OverdueItemDtoServiceTest {
     // SUT
     OverdueItemDtoService overdueItemDtoCreator;
 
-    // Input
+    // Input use cases from "test data.ods"
     Order b11;
-    OrderItem b11_oi;
-    ConfirmationItem ab11_ci;
-    ShippingItem l14_si;
-    ShippingItem l15_si_b11;
+    OrderConfirmation ab11;
     DeliveryNotes l14;
-    DeliveryNotes l15;
 
     Order b15;
-    OrderItem b15_oi;
-    ConfirmationItem ab15_ci;
+    OrderConfirmation ab15;
+
+    DeliveryNotes l15;
     ShippingItem l15_si_b15;
+    ShippingItem l15_si_b11;
+
+    // Special cases:
+    Invoice r15;
+
+    DeliveryNotes l21;
+    DeliveryNotes l22;
+    DeliveryNotes l23;
+    Invoice r21;
 
     // Output
     ItemDto itemDto;
@@ -46,101 +60,228 @@ public class OverdueItemDtoServiceTest {
     @Before
     public void setup() {
         overdueItemDtoCreator = new OverdueItemDtoService();
-        givenOrderItemB11();
-        givenOrderItemB15();
     }
 
     @Test
-    public void confirmationItemFromAB11ShouldHaveOverdue() {
+    public void shouldCreateItemToBeShippedIfQtyOfConfirmationItemIsNotCoveredByShippingItems() {
+        givenB11();
+        givenB15();
+        givenAB11();
+        givenAB15();
+        givenL14();
+        givenL15();
 
-        whenConverting(ab11_ci);
+        whenCreatingOverdue(ab11.getItems().iterator().next());
 
-        assertThat(itemDto.quantity, equalTo(8));
+        assertThat(itemDto.quantity, equalTo(10));
     }
 
     @Test
-    public void shippingItemFromL14ShouldHaveOverdue() {
+    public void shouldNotCreateItemToBeShippedIfQtyOfConfirmationItemIsCoveredByShippingItems() {
+        givenB11();
+        givenB15();
+        givenAB15();
+        givenL15();
 
-        whenConverting(l14_si);
+        whenCreatingOverdue(ab15.getItems().iterator().next());
+
+        assertThat(itemDto, is(nullValue()));
+    }
+
+    @Test
+    public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists() {
+        givenB11();
+        givenB15();
+        givenL14();
+        givenL15();
+
+        whenCreatingOverdue(l14.getItems().iterator().next());
 
         assertThat(itemDto.quantity, equalTo(5));
     }
 
     @Test
-    public void shippingItemFromL15AndB11ShouldHaveOverdue() {
+    public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists2() {
+        givenB11();
+        givenB15();
+        givenL14();
+        givenL15();
 
-        whenConverting(l15_si_b11);
+        whenCreatingOverdue(l15_si_b11);
 
         assertThat(itemDto.quantity, equalTo(15));
     }
 
     @Test
-    public void shippingItemFromL15AndB15ShouldHaveOverdue() {
+    public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists3() {
+        givenB11();
+        givenB15();
+        givenL14();
+        givenL15();
 
-        whenConverting(l15_si_b15);
+        whenCreatingOverdue(l15_si_b15);
 
         assertThat(itemDto.quantity, equalTo(8));
     }
 
-    private void givenOrderItemB11() {
+    @Test
+    public void shouldNotCreateItemToBeInvoicedIfInvoiceItemWithSameQtyExists() {
+        givenB11();
+        givenB15();
+        givenL14();
+        givenL15();
+        givenR15();
 
+        whenCreatingOverdue(l15_si_b11);
+
+        assertThat(itemDto, is(nullValue()));
+    }
+
+    @Test
+    public void shouldCreateItemToBeInvoicedIfQtyOfShippingItemsAreNotCoveredByInvoiceItem() {
+        givenB11();
+        givenB15();
+        givenL14();
+        givenL15();
+        givenR15();
+
+        whenCreatingOverdue(l14.getItems().iterator().next());
+
+        assertThat(itemDto.quantity, is(equalTo(5)));
+    }
+
+    @Test
+    public void shouldHandleItemsToBeInvoicedIfInvoiceItemsExistsWithSameQuantity() {
+        givenB11();
+        givenL2xs();
+        givenR21();
+
+        Set<ItemDto> itemDtos = new HashSet<ItemDto>();
+        whenCreatingOverdue(l21.getItems().iterator().next());
+        itemDtos.add(itemDto);
+        whenCreatingOverdue(l22.getItems().iterator().next());
+        itemDtos.add(itemDto);
+        whenCreatingOverdue(l23.getItems().iterator().next());
+        itemDtos.add(itemDto);
+
+        assertThat(itemDtos.size(), is(equalTo(2)));
+
+    }
+
+    void givenB11() {
         b11 = new OrderBuilder()
                 .setCustomer(new CustomerBuilder().setId(1L).build())
                 .setOrderNumber("B11")
-                .build();
-        b11_oi = new OrderItem(b11, new Product(), 0);
-
-        ab11_ci = new ConfirmationItemBuilder()
-                .setItem(b11_oi)
-                .setQuantity(30)
-                .setReport(new OrderConfirmationBuilder()
-                        .setOrderAgreementNumber("AU11")
-                        .setDocumentNumber("AB11")
-                        .build())
-                .build();
-
-        l14 = new DeliveryNotesBuilder().setDocumentNumber("L14").build();
-        l14_si = new ShippingItemBuilder()
-                .setReport(l14)
-                .setQuantity(5)
-                .setItem(b11_oi)
-                .build();
-
-        l15_si_b11 = new ShippingItemBuilder()
-                .setReport(l14)
-                .setQuantity(15)
-                .setItem(b11_oi)
+                .addOrderItem(new OrderItem(b11, new Product(), 30))
                 .build();
 
     }
 
-    private void givenOrderItemB15() {
+    void givenL14() {
+        l14 = new DeliveryNotesBuilder()
+                .setDocumentNumber("L14")
+                .addItem(new ShippingItemBuilder()
+                        .setQuantity(5)
+                        .setItem(orderItemOfB11())
+                        .build())
+                .build();
+    }
+
+    OrderItem orderItemOfB11() {
+        return b11.getItems().iterator().next();
+    }
+
+    void givenAB11() {
+        ab11 = new OrderConfirmationBuilder()
+                .setOrderAgreementNumber("AU11")
+                .addItem(new ConfirmationItemBuilder()
+                        .setItem(orderItemOfB11())
+                        .setQuantity(30)
+                        .build())
+                .setDocumentNumber("AB11")
+                .build();
+    }
+
+    void givenB15() {
         b15 = new OrderBuilder()
                 .setCustomer(new CustomerBuilder().setId(1L).build())
                 .setOrderNumber("B15")
-                .build();
-
-        b15_oi = new OrderItem(b15, new Product(), 0);
-
-        ab15_ci = new ConfirmationItemBuilder()
-                .setItem(b15_oi)
-                .setQuantity(8)
-                .setReport(new OrderConfirmationBuilder()
-                        .setOrderAgreementNumber("AU15")
-                        .setDocumentNumber("AB15")
-                        .build())
-                .build();
-
-        l15 = new DeliveryNotesBuilder().setDocumentNumber("L15").build();
-        l15_si_b15 = new ShippingItemBuilder()
-                .setReport(l15)
-                .setItem(b15_oi)
-                .setQuantity(8)
+                .addOrderItem(new OrderItem(b15, new Product(), 8))
                 .build();
 
     }
 
-    private void whenConverting(ReportItem reportItem) {
+    void givenAB15() {
+        ab15 = new OrderConfirmationBuilder()
+                .setOrderAgreementNumber("AU15")
+                .setDocumentNumber("AB15")
+                .addItem(new ConfirmationItemBuilder()
+                        .setItem(b15.getItems().iterator().next())
+                        .setQuantity(8)
+                        .build())
+                .build();
+    }
+
+    void givenL2xs() {
+        l21 = createSingleDeliveryNotesForB11();
+        l22 = createSingleDeliveryNotesForB11();
+        l23 = createSingleDeliveryNotesForB11();
+    }
+
+    void givenR21() {
+        r21 = new InvoiceBuilder()
+                .setDocumentNumber("R15")
+                .addItem(new InvoiceItemBuilder()
+                        .setItem(orderItemOfB11())
+                        .setQuantity(1)
+                        .build())
+                .build();
+    }
+
+    private DeliveryNotes createSingleDeliveryNotesForB11() {
+        DeliveryNotes createSingleDeliveryNotesForB11 = new DeliveryNotesBuilder()
+                .addItem(new ShippingItemBuilder()
+                        .setItem(orderItemOfB11())
+                        .setQuantity(1)
+                        .build())
+                .build();
+        return createSingleDeliveryNotesForB11;
+    }
+
+    void givenL15() {
+        l15 = new DeliveryNotesBuilder().setDocumentNumber("L15").build();
+
+        l15_si_b15 = new ShippingItemBuilder()
+                .setReport(l15)
+                .setItem(orderItemOfB15())
+                .setQuantity(8)
+                .build();
+        l15.addItem(l15_si_b15);
+
+        l15_si_b11 = new ShippingItemBuilder()
+                .setReport(l15)
+                .setItem(orderItemOfB11())
+                .setQuantity(15)
+                .build();
+        l15.addItem(l15_si_b11);
+
+    }
+
+    void givenR15() {
+        r15 = new InvoiceBuilder()
+                .setDocumentNumber("R15")
+                .addItem(new InvoiceItemBuilder()
+                        .setItem(orderItemOfB11())
+                        .setQuantity(15)
+                        .build())
+                .build();
+    }
+
+    OrderItem orderItemOfB15() {
+        return b15.getItems().iterator().next();
+    }
+
+    void whenCreatingOverdue(ReportItem reportItem) {
         itemDto = overdueItemDtoCreator.createOverdue(reportItem);
     }
 }

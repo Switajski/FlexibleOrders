@@ -21,6 +21,11 @@ public abstract class ReportBuilder<BEAN extends Report, BUILDER extends Builder
         return this;
     }
 
+    public ReportBuilder<BEAN, BUILDER> addItem(ReportItem item) {
+        this.items.add(item);
+        return this;
+    }
+
     public BEAN build(BEAN report) {
         report.setDocumentNumber(documentNumber);
         for (ReportItem item : items) {

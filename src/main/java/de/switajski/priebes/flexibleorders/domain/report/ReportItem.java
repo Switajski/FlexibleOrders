@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -13,11 +12,9 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.web.helper.LanguageTranslator;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -85,8 +82,9 @@ public abstract class ReportItem extends GenericEntity implements
 
     @Override
     public int compareTo(ReportItem o) {
-        // TODO Auto-generated method stub
-        return 0;
+        if (o.hashCode() > this.hashCode()) return 1;
+        else if (o.hashCode() == this.hashCode()) return 0;
+        else return -1;
     }
 
     public abstract String provideStatus();
@@ -105,41 +103,6 @@ public abstract class ReportItem extends GenericEntity implements
     @JsonIgnore
     public Customer getCustomer() {
         return this.getOrderItem().getCustomer();
-    }
-
-    public DeliveryHistory createDeliveryHistory() {
-        return DeliveryHistory.of(this);
-    }
-
-    public int toBeProcessed() {
-        DeliveryHistory history = new DeliveryHistory(Arrays.asList(this));
-        if (this instanceof ConfirmationItem) {
-            if (!((ConfirmationItem) this).isAgreed()) {
-                return toBeAgreed(history);
-            }
-            else {
-                return toBeShipped(history);
-            }
-        }
-        else if (this instanceof ShippingItem) return toBeInvoiced(history);
-        else if (this instanceof InvoiceItem) return toBePaid(history);
-        else return 0;
-    }
-
-    public Integer toBeAgreed(DeliveryHistory history) {
-        return QuantityUtility.sumQty(history.getNonAgreedConfirmationItems()) - QuantityUtility.sumQty(history.getAgreedConfirmationItems());
-    }
-
-    public int toBeShipped(DeliveryHistory history) {
-        return QuantityUtility.sumQty(history.getAgreedConfirmationItems()) - QuantityUtility.sumQty(history.getReportItems(ShippingItem.class));
-    }
-
-    public int toBeInvoiced(DeliveryHistory history) {
-        return QuantityUtility.sumQty(history.getReportItems(ShippingItem.class)) - QuantityUtility.sumQty(history.getReportItems(InvoiceItem.class));
-    }
-
-    public int toBePaid(DeliveryHistory history) {
-        return QuantityUtility.sumQty(history.getReportItems(InvoiceItem.class)) - QuantityUtility.sumQty(history.getReportItems(ReceiptItem.class));
     }
 
     @PrePersist

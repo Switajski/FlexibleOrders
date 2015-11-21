@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +20,14 @@ public class OverdueItemDtoService {
 
     @Transactional(readOnly = true)
     public ItemDto createOverdue(ReportItem ri) {
+        int toBeProcessed = new QuantityToBeProcessedDeterminator(ri).toBeProcessed();
+
+        if (toBeProcessed == 0) {
+            return null;
+        }
+
         ItemDto item = new ItemDto();
+        item.quantity = toBeProcessed;
         item.documentNumber = ri.getReport().getDocumentNumber();
         // TODO: instanceof: this is not subject of this class
         if (ri.getReport() instanceof OrderConfirmation) {
@@ -57,10 +66,14 @@ public class OverdueItemDtoService {
         item.product = ri.getOrderItem().getProduct().getProductNumber();
         item.productType = ri.getOrderItem().getProduct().getProductType();
         item.productName = ri.getOrderItem().getProduct().getName();
-        item.quantity = ri.toBeProcessed();
         item.status = ri.provideStatus();
         // item.quantityLeft = ri.toBe;
         return item;
+    }
+
+    public List<ItemDto> create() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

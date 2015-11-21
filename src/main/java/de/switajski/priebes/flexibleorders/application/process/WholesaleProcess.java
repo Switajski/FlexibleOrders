@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.application.process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
@@ -17,12 +16,10 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 /**
  *
- * @deprecated Too complicated - use specific Items instead
  * @author Marek Switajski
  *
  */
-@Deprecated
-public class WholesaleProcessSteps {
+public class WholesaleProcess {
 
     public static List<Class<? extends ReportItem>> reportItemSteps() {
         List<Class<? extends ReportItem>> reportItemOrder = new ArrayList<Class<? extends ReportItem>>();
@@ -40,41 +37,6 @@ public class WholesaleProcessSteps {
         reportOrder.add(Invoice.class);
         reportOrder.add(Receipt.class);
         return reportOrder;
-    }
-
-    public static Class<? extends ReportItem> getPreviousReportItemStep(
-            Class<? extends ReportItem> clazz) {
-        ListIterator<Class<? extends ReportItem>> lItr = getReportItemIteratorFor(clazz);
-        if (lItr.hasPrevious()) return lItr.previous();
-        return null;
-    }
-
-    public static Class<? extends Report> getPreviousReportStep(
-            Class<? extends Report> clazz) {
-        ListIterator<Class<? extends Report>> lItr = getReportStepIteratorFor(clazz);
-        if (lItr.hasPrevious()) return lItr.previous();
-        return null;
-    }
-
-    public static Class<? extends ReportItem> getNextReportItemStep(
-            Class<? extends ReportItem> clazz) {
-        ListIterator<Class<? extends ReportItem>> lItr = getReportItemIteratorFor(clazz);
-        if (lItr.hasNext()) return lItr.next();
-        return null;
-    }
-
-    private static ListIterator<Class<? extends ReportItem>> getReportItemIteratorFor(
-            Class<? extends ReportItem> clazz) {
-        ListIterator<Class<? extends ReportItem>> lItr = reportItemSteps()
-                .listIterator(reportItemSteps().indexOf(clazz));
-        return lItr;
-    }
-
-    private static ListIterator<Class<? extends Report>> getReportStepIteratorFor(
-            Class<? extends Report> clazz) {
-        ListIterator<Class<? extends Report>> lItr = reportSteps()
-                .listIterator(reportItemSteps().indexOf(clazz));
-        return lItr;
     }
 
 }

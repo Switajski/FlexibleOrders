@@ -14,6 +14,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.service.conversion.QuantityToBeProcessedDeterminator;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
@@ -64,7 +65,7 @@ public class QuantityCalculatorTest {
     }
 
     private void whenCalculatingQtyToBeShipped() {
-        calculatedQuantity = orderItem.getConfirmationItems().iterator().next().toBeProcessed();
+        calculatedQuantity = new QuantityToBeProcessedDeterminator(orderItem.getConfirmationItems().iterator().next()).toBeProcessed();
     }
 
     private ConfirmationItem givenAgreedItem(int quantityProcessed) {

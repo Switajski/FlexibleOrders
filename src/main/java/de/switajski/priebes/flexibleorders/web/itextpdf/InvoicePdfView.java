@@ -131,7 +131,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithSevenCols());
         for (ReportItem ii : cReport) {
-            Set<ShippingItem> sis = DeliveryHistory.of(ii.getOrderItem()).getReportItems(ShippingItem.class);
+            Set<ShippingItem> sis = DeliveryHistory.of(ii.getOrderItem()).reportItems(ShippingItem.class);
 
             if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
                 List<String> list = new ArrayList<String>();

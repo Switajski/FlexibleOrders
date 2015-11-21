@@ -20,7 +20,7 @@ public class OverdueItemDtoService {
 
     @Transactional(readOnly = true)
     public ItemDto createOverdue(ReportItem ri) {
-        int toBeProcessed = new QuantityToBeProcessedDeterminator(ri).toBeProcessed();
+        int toBeProcessed = new QuantityToBeProcessedDeterminator(ri).overdueQuantity();
 
         if (toBeProcessed == 0) {
             return null;

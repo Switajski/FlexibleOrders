@@ -55,7 +55,7 @@ public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest 
         givenOrderConfirmations();
 
         int itemLimit = 2; // qty of documents
-        Page<ItemDto> toBeShipped = reportingService.retrieve(
+        Page<ItemDto> toBeShipped = reportingService.retrieveOverdue(
                 new PageRequest(0, itemLimit), new AgreedItemsToBeShippedSpec());
 
         assertThat(toBeShipped.getContent().size(), equalTo(16));// qty of items

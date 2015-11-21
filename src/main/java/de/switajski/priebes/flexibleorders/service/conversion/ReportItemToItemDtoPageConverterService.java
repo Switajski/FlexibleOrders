@@ -18,25 +18,25 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ReportItemToItemDtoPageConverterService {
 
     @Autowired
-    private OverdueItemDtoService itemDtoConverterService;
+    private OverdueItemDtoService overdueItemDtoService;
 
     @Transactional(readOnly = true)
-    public PageImpl<ItemDto> createWithWholeNonCompletedReports(
+    public PageImpl<ItemDto> createOverdueReports(
             PageRequest pageable,
             Page<ReportItem> reportItems) {
-        List<ItemDto> convertedReportItems = convertReportItems(reportItems.getContent());
+        List<ItemDto> overdueItemDtos = createOverdueItems(reportItems.getContent());
 
         PageImpl<ItemDto> reportItemPage = createPage(
                 reportItems.getTotalElements(),
                 pageable,
-                convertedReportItems);
+                overdueItemDtos);
         return reportItemPage;
     }
 
-    public List<ItemDto> convertReportItems(List<ReportItem> content) {
+    public List<ItemDto> createOverdueItems(List<ReportItem> content) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
         for (ReportItem ri : content) {
-            ris.add(itemDtoConverterService.createOverdue(ri));
+            ris.add(overdueItemDtoService.createOverdue(ri));
         }
         return ris;
     }

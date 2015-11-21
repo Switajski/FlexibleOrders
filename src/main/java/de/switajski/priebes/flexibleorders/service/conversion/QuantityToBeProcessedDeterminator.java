@@ -22,39 +22,29 @@ public class QuantityToBeProcessedDeterminator {
         history = DeliveryHistory.of(ri.getOrderItem());
     }
 
-    public int toBeProcessed() {
+    public int overdueQuantity() {
         if (ri instanceof ConfirmationItem) {
             if (!((ConfirmationItem) ri).isAgreed()) {
-                return toBeAgreed();
+                return ri.getQuantity();
             }
             else {
-                return toBeShipped();
+                return overdueQuantity(ConfirmationItem.class, ShippingItem.class);
             }
         }
-        else if (ri instanceof ShippingItem) return toBeInvoiced();
-        else if (ri instanceof InvoiceItem) return toBePaid();
+        else if (ri instanceof ShippingItem) return overdueQuantity(ShippingItem.class, InvoiceItem.class);
+        else if (ri instanceof InvoiceItem) return overdueQuantity(InvoiceItem.class, ReceiptItem.class);
         else return 0;
     }
 
-    private Integer toBeAgreed() {
-        return sumQty(history.notAgreedConfirmationItems()) - sumQty(history.agreedConfirmationItems());
-    }
-
-    private int toBeShipped() {
-        return sumQty(history.agreedConfirmationItems()) - sumQty(history.reportItems(ShippingItem.class));
-    }
-
-    // TODO rename to is overdue and overdueQty - remove
-    // reportItem.toBeProcessed, because only needed when creating overdue items
-    private int toBeInvoiced() {
+    private int overdueQuantity(Class<? extends ReportItem> currentType, Class<? extends ReportItem> typeToBeCreated) {
         DeliveryHistory history = DeliveryHistory.of(ri.getOrderItem());
 
         Set<ReportItem> matchingInvoiceItems = new HashSet<ReportItem>();
-        for (ReportItem item : history.reportItems(InvoiceItem.class)) {
+        for (ReportItem item : history.reportItems(typeToBeCreated)) {
             if (item.getQuantity() == ri.getQuantity()) matchingInvoiceItems.add(item);
         }
         Set<ReportItem> concurringShippingItems = new HashSet<ReportItem>();
-        for (ReportItem item : history.reportItems(ShippingItem.class)) {
+        for (ReportItem item : history.reportItems(currentType)) {
             if (item.getQuantity() == ri.getQuantity()) concurringShippingItems.add(item);
         }
 
@@ -77,7 +67,7 @@ public class QuantityToBeProcessedDeterminator {
 
     }
 
-    private int toBePaid() {
+    private int toBeProcesse() {
         return sumQty(history.reportItems(InvoiceItem.class)) - sumQty(history.reportItems(ReceiptItem.class));
     }
 

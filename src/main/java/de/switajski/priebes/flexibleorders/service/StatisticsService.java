@@ -34,7 +34,7 @@ public class StatisticsService {
         for (ReportItem ri : ris) {
             if (calculated.add(ri.getOrderItem())) {
                 summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
-                        .multiply(new QuantityToBeProcessedDeterminator(ri).toBeProcessed()));
+                        .multiply(new QuantityToBeProcessedDeterminator(ri).overdueQuantity()));
             }
         }
         return summed;

@@ -28,7 +28,7 @@ public class QuantityUtility {
 
         if (qty < 1) throw new IllegalArgumentException("Menge kleiner eins");
 
-        int toBeProcessed = new QuantityToBeProcessedDeterminator(reportItem).toBeProcessed();
+        int toBeProcessed = new QuantityToBeProcessedDeterminator(reportItem).overdueQuantity();
         if (toBeProcessed == 0) throw new IllegalArgumentException(reportItem.toString() + " hat keine offenen Positionen mehr");
 
         if (qty > toBeProcessed) throw new IllegalArgumentException("angeforderte Menge ist zu gross");

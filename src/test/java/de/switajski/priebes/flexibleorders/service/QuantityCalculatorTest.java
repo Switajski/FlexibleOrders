@@ -65,7 +65,7 @@ public class QuantityCalculatorTest {
     }
 
     private void whenCalculatingQtyToBeShipped() {
-        calculatedQuantity = new QuantityToBeProcessedDeterminator(orderItem.getConfirmationItems().iterator().next()).toBeProcessed();
+        calculatedQuantity = new QuantityToBeProcessedDeterminator(orderItem.getConfirmationItems().iterator().next()).overdueQuantity();
     }
 
     private ConfirmationItem givenAgreedItem(int quantityProcessed) {

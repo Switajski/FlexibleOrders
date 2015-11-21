@@ -109,9 +109,9 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemDto> retrieve(PageRequest pageRequest, Specification<ReportItem> spec) {
+    public Page<ItemDto> retrieveOverdue(PageRequest pageRequest, Specification<ReportItem> spec) {
         Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
-        return pageConverterService.createWithWholeNonCompletedReports(pageRequest, openReportItems);
+        return pageConverterService.createOverdueReports(pageRequest, openReportItems);
     }
 
 }

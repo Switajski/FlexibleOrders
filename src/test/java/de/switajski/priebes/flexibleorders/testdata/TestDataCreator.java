@@ -23,6 +23,7 @@ import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.WYOMI
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,6 +42,8 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
@@ -51,7 +54,8 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OverdueItemDtoService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
@@ -79,7 +83,10 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private ConfirmingService confirmingService;
 
     @Autowired
-    private ItemDtoConverterService converterService;
+    private ItemDtoToReportItemConversionService converterService;
+
+    @Autowired
+    private OverdueItemDtoService riToItemConversionService;
 
     @Autowired
     private ShippingService shippingService;
@@ -154,8 +161,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ab11 = agreeingService.agree(ab11.getDocumentNumber(), "AU11");
         ab15 = agreeingService.agree(ab15.getDocumentNumber(), "AU15");
 
-        List<ItemDto> itemsFromAu11 = converterService.convertReport(ab11);
-        List<ItemDto> itemsFromAu15 = converterService.convertReport(ab15);
+        List<ItemDto> itemsFromAu11 = convertReport(ab11);
+        List<ItemDto> itemsFromAu15 = convertReport(ab15);
 
         DeliveryNotes l11 = createL11(itemsFromAu11);
         DeliveryNotes l12 = createL12(itemsFromAu11);
@@ -163,8 +170,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
         createL14(itemsFromAu11);
         createL15(itemsFromAu11, itemsFromAu15);
 
-        List<ItemDto> l11AndL12 = converterService.convertReport(l11);
-        l11AndL12.addAll(converterService.convertReport(l12));
+        List<ItemDto> l11AndL12 = convertReport(l11);
+        l11AndL12.addAll(convertReport(l12));
 
         createR11(l11AndL12);
     }
@@ -276,6 +283,14 @@ public class TestDataCreator extends AbstractSpringContextTest {
         customers.add(YVONNE);
         cRepo.save(customers);
         cRepo.flush();
+    }
+
+    public List<ItemDto> convertReport(Report report) {
+        List<ItemDto> ris = new ArrayList<ItemDto>();
+        for (ReportItem ri : report.getItems()) {
+            ris.add(riToItemConversionService.createOverdue(ri));
+        }
+        return ris;
     }
 
 }

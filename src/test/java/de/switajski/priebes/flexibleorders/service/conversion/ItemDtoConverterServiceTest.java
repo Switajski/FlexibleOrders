@@ -29,7 +29,7 @@ public class ItemDtoConverterServiceTest {
     ReportItemRepository repo;
 
     @InjectMocks
-    ItemDtoConverterService service = new ItemDtoConverterService();
+    ItemDtoToReportItemConversionService service = new ItemDtoToReportItemConversionService();
 
     DeliveryNotes deliveryNotes;
 

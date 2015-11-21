@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
@@ -60,7 +60,7 @@ public class ReportItemController extends ExceptionController {
     @Autowired
     private ReportRepository reportRepository;
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDto2ReportItemConverterService;
 
     @RequestMapping(value = "/ordered", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse listAllToBeConfirmed(
@@ -136,7 +136,7 @@ public class ReportItemController extends ExceptionController {
             DeliveryNotes dn = (DeliveryNotes) report;
             List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
             if (dn.hasShippingCosts()) {
-                shippingCosts.add(itemDtoConverterService.convert(dn));
+                shippingCosts.add(itemDto2ReportItemConverterService.createShippingCosts(dn));
             }
             List<ItemDto> temp = shippingCosts;
             shippingCosts.addAll(openItems.getContent());

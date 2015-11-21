@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -17,20 +19,35 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ReportItemToItemDtoPageConverterService {
 
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private OverdueItemDtoService itemDtoConverterService;
 
     @Transactional(readOnly = true)
     public PageImpl<ItemDto> createWithWholeNonCompletedReports(
             PageRequest pageable,
             Page<ReportItem> reportItems) {
-        List<ItemDto> convertedReportItems = itemDtoConverterService
-                .convertReportItems(reportItems.getContent());
+        List<ItemDto> convertedReportItems = convertReportItems(reportItems.getContent());
 
         PageImpl<ItemDto> reportItemPage = createPage(
                 reportItems.getTotalElements(),
                 pageable,
                 convertedReportItems);
         return reportItemPage;
+    }
+
+    public List<ItemDto> convertReportItems(List<ReportItem> content) {
+        List<ItemDto> ris = new ArrayList<ItemDto>();
+        for (ReportItem ri : content) {
+            // FIXME: delete this debuggin code
+            if (ri.getReport().getDocumentNumber().equals("L14")) {
+                DeliveryHistory dh = DeliveryHistory.of(ri.getReport());
+            }
+            if (ri.getReport().getDocumentNumber().equals("L15")) {
+                DeliveryHistory dh = DeliveryHistory.of(ri.getReport());
+            }
+
+            ris.add(itemDtoConverterService.createOverdue(ri));
+        }
+        return ris;
     }
 
     public PageImpl<ItemDto> createPage(Long totalElements,

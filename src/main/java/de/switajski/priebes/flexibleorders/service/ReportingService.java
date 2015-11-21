@@ -19,7 +19,8 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OverdueItemDtoService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoPageConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -35,7 +36,9 @@ public class ReportingService {
     @Autowired
     private ReportItemToItemDtoPageConverterService pageConverterService;
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDtoConverterService;
+    @Autowired
+    private OverdueItemDtoService ri2ItemDtoConversionService;
 
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
@@ -112,8 +115,8 @@ public class ReportingService {
                 "Dokumentennummer nicht angegeben");
         Report report = reportRepo.findByDocumentNumber(string);
         List<ItemDto> reportItems = new ArrayList<ItemDto>();
-        for (ReportItem he : report.getItems())
-            reportItems.add(itemDtoConverterService.convert(he));
+        for (ReportItem ri : report.getItems())
+            reportItems.add(ri2ItemDtoConversionService.createOverdue(ri));
         return reportItems;
     }
 

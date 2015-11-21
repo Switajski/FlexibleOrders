@@ -7,6 +7,7 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 
 public class CustomerBuilder implements Builder<Customer> {
 
+    private Long id;
     private Long customerNumber;
     private Address invoiceAddress;
     private Address shippingAddress;
@@ -215,6 +216,11 @@ public class CustomerBuilder implements Builder<Customer> {
 
     public CustomerBuilder setPaymentGracePeriod(int paymentGracePeriod) {
         this.paymentGracePeriod = paymentGracePeriod;
+        return this;
+    }
+
+    public CustomerBuilder setId(Long id) {
+        this.id = id;
         return this;
     }
 

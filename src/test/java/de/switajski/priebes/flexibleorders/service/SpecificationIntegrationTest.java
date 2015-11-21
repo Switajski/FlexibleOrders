@@ -28,7 +28,8 @@ import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OverdueItemDtoService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
@@ -53,7 +54,10 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private OrderRepository orderRepo;
 
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDtoConverterService;
+
+    @Autowired
+    private OverdueItemDtoService ri2ItemDtoConversionService;
 
     @Autowired
     private ReportItemRepository reportItemRepository;
@@ -69,24 +73,24 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
     private static final int JUREK_QTY = 5; // All Jureks from B12
 
     private static final Product AMY = new CatalogProductBuilder()
-    .amy().build()
-    .toProduct();
+            .amy().build()
+            .toProduct();
 
     private static final Product PAUL = new CatalogProductBuilder()
-    .paul().build()
-    .toProduct();
+            .paul().build()
+            .toProduct();
 
     private static final Product MILADKA = new CatalogProductBuilder()
-    .miladka().build()
-    .toProduct();
+            .miladka().build()
+            .toProduct();
 
     private static final Product SALOME = new CatalogProductBuilder()
-    .salome().build()
-    .toProduct();
+            .salome().build()
+            .toProduct();
 
     private static final Product JUREK = new CatalogProductBuilder()
-    .jurek().build()
-    .toProduct();
+            .jurek().build()
+            .toProduct();
 
     @Transactional
     @Test
@@ -200,7 +204,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     private ItemDto createItemDto(int qty, Product product,
             OrderConfirmation agreement) {
-        ItemDto item = itemDtoConverterService.convert(
+        ItemDto item = ri2ItemDtoConversionService.createOverdue(
                 getFirstItemOf(
                         product,
                         agreement));

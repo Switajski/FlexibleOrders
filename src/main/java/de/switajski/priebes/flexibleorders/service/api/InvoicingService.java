@@ -21,7 +21,7 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -30,7 +30,7 @@ public class InvoicingService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
     private InvoicingAddressService invoicingAddressService;
 

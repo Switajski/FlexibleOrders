@@ -39,7 +39,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -58,7 +58,7 @@ public class ConfirmingServiceTest {
     @Mock
     private OrderRepository orderRepo;
     @Mock
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Mock
     private CatalogProductServiceByMagento catalogProductService;
     @Mock

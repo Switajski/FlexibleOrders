@@ -16,26 +16,17 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
-import de.switajski.priebes.flexibleorders.domain.report.Receipt;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
-public class ItemDtoConverterService {
-
-    @Autowired
-    ExpectedDeliveryService edService;
+public class ItemDtoToReportItemConversionService {
 
     @Autowired
     private ReportItemRepository reportItemRepo;
@@ -47,7 +38,7 @@ public class ItemDtoConverterService {
         return items;
     }
 
-    public ItemDto convert(DeliveryNotes deliveryNotes) {
+    public ItemDto createShippingCosts(final DeliveryNotes deliveryNotes) {
         ItemDto item = new ItemDto();
         item.created = deliveryNotes.getCreated();
         item.documentNumber = deliveryNotes.getDocumentNumber();
@@ -137,61 +128,6 @@ public class ItemDtoConverterService {
         return risWithQty;
     }
 
-    public List<ItemDto> convertReport(Report report) {
-        List<ItemDto> ris = new ArrayList<ItemDto>();
-        for (ReportItem ri : report.getItems()) {
-            ris.add(convert(ri));
-        }
-        return ris;
-    }
-
-    public ItemDto convert(ReportItem ri) {
-        ItemDto item = new ItemDto();
-        item.documentNumber = ri.getReport().getDocumentNumber();
-        // TODO: instanceof: this is not subject of this class
-        if (ri.getReport() instanceof OrderConfirmation) {
-            item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
-            // TODO: should be done by a service
-            OrderConfirmation orderConfirmation = (OrderConfirmation) ri.getReport();
-            item.agreed = orderConfirmation.isAgreed();
-            PurchaseAgreement pa = orderConfirmation.getPurchaseAgreement();
-            if (pa != null) {
-                item.expectedDelivery = pa.getExpectedDelivery();
-            }
-        }
-        if (ri.getReport() instanceof Invoice) {
-            item.invoiceNumber = ri.getReport().getDocumentNumber();
-            item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
-        }
-        if (ri.getReport() instanceof DeliveryNotes) {
-            DeliveryNotes deliveryNotes = (DeliveryNotes) ri.getReport();
-            item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
-            // TODO refactor to separate class
-            item.shareHistory = (DeliveryHistory.of(ri).getDeliveryNotesNumbers().size() > 1) ? true : false;
-        }
-        if (ri.getReport() instanceof Receipt) {
-            item.receiptNumber = ri.getReport().getDocumentNumber();
-        }
-        item.created = ri.getCreated();
-        Order order = ri.getOrderItem().getOrder();
-        item.customer = order.getCustomer().getId();
-        item.customerNumber = order.getCustomer().getCustomerNumber();
-        item.customerName = order.getCustomer().getCompanyName();
-        item.documentNumber = ri.getReport().getDocumentNumber();
-        item.id = ri.getId();
-        item.orderNumber = order.getOrderNumber();
-        if (ri.getOrderItem().getNegotiatedPriceNet() != null) {
-            item.priceNet = ri.getOrderItem().getNegotiatedPriceNet().getValue();
-        }
-        item.product = ri.getOrderItem().getProduct().getProductNumber();
-        item.productType = ri.getOrderItem().getProduct().getProductType();
-        item.productName = ri.getOrderItem().getProduct().getName();
-        item.quantity = ri.getQuantity();
-        item.status = ri.provideStatus();
-        item.quantityLeft = ri.toBeProcessed();
-        return item;
-    }
-
     @Transactional(readOnly = true)
     public List<ItemDto> convert(Order order) {
         List<ItemDto> ois = new ArrayList<ItemDto>();
@@ -207,14 +143,6 @@ public class ItemDtoConverterService {
             items.addAll(convert(order));
         }
         return items;
-    }
-
-    public List<ItemDto> convertReportItems(List<ReportItem> content) {
-        List<ItemDto> ris = new ArrayList<ItemDto>();
-        for (ReportItem ri : content) {
-            ris.add(convert(ri));
-        }
-        return ris;
     }
 
 }

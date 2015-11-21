@@ -29,6 +29,7 @@ public class QuantityUtility {
 
         if (qty < 1) throw new IllegalArgumentException("Menge kleiner eins");
 
-        if (qty > reportItem.toBeProcessed()) throw new IllegalArgumentException("angeforderte Menge ist zu gross");
+        // if (qty > reportItem.toBeProcessed()) throw new
+        // IllegalArgumentException("angeforderte Menge ist zu gross");
     }
 }

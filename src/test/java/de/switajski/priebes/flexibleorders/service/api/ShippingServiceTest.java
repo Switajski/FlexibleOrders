@@ -22,7 +22,7 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMethodBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -38,7 +38,7 @@ public class ShippingServiceTest {
     @InjectMocks
     ShippingService shippingService = new ShippingService();
     @Mock
-    ItemDtoConverterService convService;
+    ItemDtoToReportItemConversionService convService;
     @Mock
     ReportRepository reportRepo;
     @Mock

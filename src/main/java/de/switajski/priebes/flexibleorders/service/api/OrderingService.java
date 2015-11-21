@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.CatalogProductServiceByMagento;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -60,7 +60,7 @@ public class OrderingService {
     @Autowired
     private OrderRepository orderRepo;
     @Autowired
-    private ItemDtoConverterService itemDtoConverterService;
+    private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
     private CatalogProductServiceByMagento cProductService;
 

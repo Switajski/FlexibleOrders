@@ -15,7 +15,7 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
 
     public BEAN build(BEAN bean) {
         bean.setQuantity(quantity);
-        bean.setReport(report);
+        if (report != null) report.addItem(bean);
         bean.setOrderItem(item);
         bean.setCreated(created);
         return bean;

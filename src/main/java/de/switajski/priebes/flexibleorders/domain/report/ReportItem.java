@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -16,8 +17,8 @@ import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.service.FOStringUtility;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
+import de.switajski.priebes.flexibleorders.web.helper.LanguageTranslator;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
@@ -111,7 +112,7 @@ public abstract class ReportItem extends GenericEntity implements
     }
 
     public int toBeProcessed() {
-        DeliveryHistory history = DeliveryHistory.of(this);
+        DeliveryHistory history = new DeliveryHistory(Arrays.asList(this));
         if (this instanceof ConfirmationItem) {
             if (!((ConfirmationItem) this).isAgreed()) {
                 return toBeAgreed(history);
@@ -146,13 +147,20 @@ public abstract class ReportItem extends GenericEntity implements
         if (quantity < 1) {
             throw new IllegalStateException("Quantity must be at least 1");
         }
-        if (sum() > getOrderItem().getOrderedQuantity()) {
+        if (sum() > orderItem.getOrderedQuantity()) {
+            String word = LanguageTranslator.translate(this);
+            StringBuilder messageBuilder = new StringBuilder()
+                    .append(this.quantity).append(" Stk. wurde eingegeben.<br>")
+                    .append(orderItem.getOrderedQuantity()).append(" ")
+                    .append(orderItem.getProduct().getName())
+                    .append(" wurden in ").append(orderItem.getOrder().getOrderNumber())
+                    .append(" bestellt.<br>");
+            if (sum() != quantity) {
+                messageBuilder.append(sum() - quantity).append(" Stk. haben bereits andere ")
+                        .append(word).append("(en)").append("<br>");
+            }
             throw new IllegalStateException(
-                    new StringBuilder().append("Sum of all ")
-                            .append(FOStringUtility.camelCaseToSplitted(this.getClass().getSimpleName()))
-                            .append("(s) cannot be greater than ordered quantity of ")
-                            .append(FOStringUtility.camelCaseToSplitted(OrderItem.class.getSimpleName()))
-                            .toString());
+                    messageBuilder.append("<br>").toString());
         }
     }
 

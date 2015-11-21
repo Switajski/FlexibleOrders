@@ -34,7 +34,8 @@ public class OrderItemBuilder implements Builder<OrderItem> {
     @Override
     public OrderItem build() {
         OrderItem item = new OrderItem(order, product, orderedQuantity);
-        item.setReportItems(reportItems);
+        for (ReportItem reportItem : reportItems)
+            item.addReportItem(reportItem);
         item.setNegotiatedPriceNet(negotiatedPriceNet);
         item.setPackageNumber(packageNumber);
         item.setTrackingNumber(trackingNumber);
@@ -55,11 +56,11 @@ public class OrderItemBuilder implements Builder<OrderItem> {
                         "",
                         OriginSystem.FLEXIBLE_ORDERS,
                         i.toString()),
-                        CatalogProductBuilder
+                CatalogProductBuilder
                         .buildWithGeneratedAttributes(i)
                         .toProduct(),
-                        i)
-        .generateAttributes(i).build();
+                i)
+                .generateAttributes(i).build();
     }
 
     public OrderItemBuilder setReportItems(Set<ReportItem> reportItems) {
@@ -97,7 +98,7 @@ public class OrderItemBuilder implements Builder<OrderItem> {
         return this;
     }
 
-    public OrderItemBuilder addHandlingEvent(ReportItem reportItem) {
+    public OrderItemBuilder addReportItem(ReportItem reportItem) {
         this.reportItems.add(reportItem);
         return this;
     }

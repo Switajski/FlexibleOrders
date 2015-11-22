@@ -30,8 +30,4 @@ public class Receipt extends Report {
         this.paymentReceived = paymentReceivedDate;
     }
 
-    @Override
-    public boolean hasConsecutiveDocuments() {
-        return false;
-    }
 }

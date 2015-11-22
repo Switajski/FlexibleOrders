@@ -129,11 +129,11 @@ public abstract class Report extends GenericEntity {
         throw new IllegalStateException("No customer found");
     }
 
-    /**
-     * 
-     * @return true, if this report has other documents on which it depends on.
-     *         E.g. if this is a receipt, it depends on invoice.
-     */
-    public abstract boolean hasConsecutiveDocuments();
+    public boolean hasConsecutiveDocuments() {
+        for (ReportItem ri : getItems()) {
+            if (!ri.getSuccessors().isEmpty()) return true;
+        }
+        return false;
+    }
 
 }

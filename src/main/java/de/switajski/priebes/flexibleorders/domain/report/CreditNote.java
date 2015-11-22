@@ -19,8 +19,4 @@ public class CreditNote extends Report {
         return shippingItems;
     }
 
-    @Override
-    public boolean hasConsecutiveDocuments() {
-        return false;
-    }
 }

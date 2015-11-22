@@ -20,6 +20,7 @@ public class DeliverParameter {
     public boolean ignoreContradictoryExpectedDeliveryDates;
     public DeliveryMethod deliveryMethod;
     public boolean showPricesInDeliveryNotes;
+    public boolean singleDeliveryNotes;
 
     /**
      * Constructor with mandatory fields

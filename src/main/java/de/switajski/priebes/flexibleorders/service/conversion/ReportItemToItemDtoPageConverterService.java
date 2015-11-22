@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,9 +37,24 @@ public class ReportItemToItemDtoPageConverterService {
     public List<ItemDto> createOverdueItems(List<ReportItem> content) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
         for (ReportItem ri : content) {
-            ris.add(overdueItemDtoService.createOverdue(ri));
+            Set<ReportItem> successors = ri.getSuccessors();
+            if (!successors.isEmpty()) {
+                if (sumQty(successors) == ri.getQuantity()) continue;
+                else ris.add(overdueItemDtoService.createOverdue(ri, ri.getQuantity() - sumQty(successors)));
+            }
+            else {
+                ris.add(overdueItemDtoService.createOverdue(ri, ri.getQuantity()));
+            }
         }
         return ris;
+    }
+
+    private int sumQty(Set<ReportItem> successors) {
+        int sum = 0;
+        for (ReportItem successor : successors) {
+            sum += successor.getQuantity();
+        }
+        return sum;
     }
 
     public PageImpl<ItemDto> createPage(Long totalElements,

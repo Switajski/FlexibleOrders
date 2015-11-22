@@ -69,7 +69,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-                    throws Exception {
+            throws Exception {
 
         Customer customer = null;
         PageRequest pageable = new PageRequest((page - 1), limit);
@@ -99,7 +99,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-                    throws Exception {
+            throws Exception {
 
         PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
@@ -181,7 +181,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-                    throws Exception {
+            throws Exception {
 
         throw new RuntimeException("Not implemented yet");
     }

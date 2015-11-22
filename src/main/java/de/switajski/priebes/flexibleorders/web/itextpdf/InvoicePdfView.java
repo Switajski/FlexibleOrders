@@ -1,10 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,23 +9,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
-import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.ExtendedTableHeaderCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableForInvoiceCreator;
 
 @Component
 public class InvoicePdfView extends PriebesIText5PdfView {
@@ -75,8 +66,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         document.add(ParagraphBuilder.createEmptyLine());
 
         // insert main table
-        if (report.invoiceSpecific_hasItemsWithDifferentCreationDates) document.add(createTableWithDeliveryNotes(report.items));
-        else document.add(createTable(report));
+        document.add(new TableForInvoiceCreator().create(report));
 
         // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
@@ -95,70 +85,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
                         + FOOTER_MARGIN_BOTTOM,
                 writer.getDirectContent());
 
-    }
-
-    private PdfPTable createTable(ReportDto cReport) throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithSixCols());
-        for (ReportItem he : cReport.getItemsByOrder()) {
-            if (he.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
-                List<String> list = new ArrayList<String>();
-                // Art.Nr.:
-                String pNo = he.getOrderItem().getProduct().getProductNumber();
-                list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
-                // Artikel
-                list.add(he.getOrderItem().getProduct().getName());
-                // Anzahl
-                list.add(String.valueOf(he.getQuantity()));
-                // EK per Stueck
-                list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
-                // Bestellnr
-                list.add(he.getOrderItem().getOrder().getOrderNumber());
-                // gesamt
-                list.add(he.getOrderItem()
-                        .getNegotiatedPriceNet()
-                        .multiply(he.getQuantity())
-                        .toString());
-
-                builder.addBodyRow(list);
-            }
-        }
-
-        return builder.withFooter(false).build();
-    }
-
-    public static PdfPTable createTableWithDeliveryNotes(Collection<ReportItem> cReport) throws DocumentException {
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithSevenCols());
-        for (ReportItem ii : cReport) {
-            Set<ShippingItem> sis = DeliveryHistory.of(ii.getOrderItem()).reportItems(ShippingItem.class);
-
-            if (ii.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
-                List<String> list = new ArrayList<String>();
-                // Art.Nr.:
-                String pNo = ii.getOrderItem().getProduct().getProductNumber();
-                list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
-                // Artikel
-                list.add(ii.getOrderItem().getProduct().getName());
-                // Anzahl
-                list.add(String.valueOf(ii.getQuantity()));
-                // EK per Stueck
-                list.add(ii.getOrderItem().getNegotiatedPriceNet().toString());
-                // Lieferscheinnr.
-                list.add(ReportViewHelper.documentNumbersOf(sis));
-                // Lieferdatum
-                list.add(ReportViewHelper.createdDatesOf(sis));
-                // gesamt
-                list.add(ii.getOrderItem()
-                        .getNegotiatedPriceNet()
-                        .multiply(ii.getQuantity())
-                        .toString());
-
-                builder.addBodyRow(list);
-            }
-        }
-
-        return builder.withFooter(false).build();
     }
 
 }

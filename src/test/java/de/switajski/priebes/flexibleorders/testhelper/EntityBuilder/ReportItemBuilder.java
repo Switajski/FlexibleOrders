@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import java.util.Date;
+import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -10,6 +11,8 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
 
     protected Integer quantity;
     protected Report report = null;
+    protected ReportItem predecessor;
+    protected Set<ReportItem> successors;
     protected OrderItem item;
     protected Date created;
 
@@ -18,6 +21,8 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
         if (report != null) report.addItem(bean);
         bean.setOrderItem(item);
         bean.setCreated(created);
+        bean.setPredecessor(predecessor);
+        bean.setSuccessors(successors);
         return bean;
     }
 
@@ -38,6 +43,16 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
 
     public ReportItemBuilder<BEAN, BUILDER> setDate(Date created) {
         this.created = created;
+        return this;
+    }
+
+    public ReportItemBuilder<BEAN, BUILDER> setPredecessor(ReportItem predecessor) {
+        this.predecessor = predecessor;
+        return this;
+    }
+
+    public ReportItemBuilder<BEAN, BUILDER> setSuccessor(Set<ReportItem> successors) {
+        this.successors = successors;
         return this;
     }
 

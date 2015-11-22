@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,21 +16,31 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 @Service
 public class OverdueItemDtoService {
 
+    /**
+     * @deprecated this method was used before successor / predecessor in
+     *             reporItem mapping. use
+     *             {@link #createOverdue(ReportItem, int)}
+     * @param ri
+     * @return
+     */
+    @Deprecated
     @Transactional(readOnly = true)
     public ItemDto createOverdue(ReportItem ri) {
         int toBeProcessed = new QuantityToBeProcessedDeterminator(ri).overdueQuantity();
-
         if (toBeProcessed == 0) {
             return null;
         }
+        return createOverdue(ri, toBeProcessed);
+    }
 
+    @Transactional(readOnly = true)
+    public ItemDto createOverdue(ReportItem ri, int toBeProcessed) {
         ItemDto item = new ItemDto();
         item.quantity = toBeProcessed;
+        item.quantityLeft = toBeProcessed;
         item.documentNumber = ri.getReport().getDocumentNumber();
-        // TODO: instanceof: this is not subject of this class
         if (ri.getReport() instanceof OrderConfirmation) {
             item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
-            // TODO: should be done by a service
             OrderConfirmation orderConfirmation = (OrderConfirmation) ri.getReport();
             item.agreed = orderConfirmation.isAgreed();
             PurchaseAgreement pa = orderConfirmation.getPurchaseAgreement();
@@ -46,7 +54,6 @@ public class OverdueItemDtoService {
         }
         if (ri.getReport() instanceof DeliveryNotes) {
             item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
-            // TODO refactor to separate class
             item.shareHistory = (DeliveryHistory.of(ri).getDeliveryNotesNumbers().size() > 1) ? true : false;
         }
         if (ri.getReport() instanceof Receipt) {
@@ -67,13 +74,7 @@ public class OverdueItemDtoService {
         item.productType = ri.getOrderItem().getProduct().getProductType();
         item.productName = ri.getOrderItem().getProduct().getName();
         item.status = ri.provideStatus();
-        // item.quantityLeft = ri.toBe;
         return item;
-    }
-
-    public List<ItemDto> create() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

@@ -99,6 +99,7 @@ public class ItemDtoToReportItemConversionService {
                         orderItemToBeDelivered,
                         qty,
                         new Date());
+                shippingItem.setPredecessor(itemToBeShipped);
                 shippingItem.setPackageNumber(itemDto.packageNumber);
                 shippingItem.setTrackNumber(itemDto.trackNumber);
                 deliveryNotes.addItem(shippingItem);

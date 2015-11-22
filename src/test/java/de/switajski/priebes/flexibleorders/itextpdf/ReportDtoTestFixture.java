@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
@@ -14,10 +15,12 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ContactInformationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
@@ -67,23 +70,33 @@ public class ReportDtoTestFixture {
             new OrderItemBuilder();
             Amount price = new Amount(BigDecimal.valueOf(14.5d), Currency.EUR);
             Amount priceNegotiated = new Amount(BigDecimal.valueOf(12.5d), Currency.EUR);
+            OrderItem orderItem = givenOrderItem(i, price, priceNegotiated);
             r.items.add(
                     new ShippingItemBuilder()
-                            .setItem(new OrderItemBuilder()
-                                    .setNegotiatedPriceNet(price)
-                                    .setOrderedQuantity(i)
-                                    .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
-                                    .setProduct(
-                                            new CatalogProductBuilder("some productname ", "0", ProductType.PRODUCT)
-                                                    .setRecommendedPriceNet(priceNegotiated)
-                                                    .build()
-                                                    .toProduct())
-                                    .build())
+                            .setItem(orderItem)
                             .setQuantity(i + 1)
                             .setReport(new DeliveryNotesBuilder().build())
+                            .setPredecessor(new ConfirmationItemBuilder()
+                                    .setReport(new OrderConfirmationBuilder().setDocumentNumber("Vorgaenger Doknr").build())
+                                    .setItem(orderItem)
+                                    .setQuantity(2)
+                                    .build())
                             .build());
         }
 
         return r;
+    }
+
+    private static OrderItem givenOrderItem(int i, Amount price, Amount priceNegotiated) {
+        return new OrderItemBuilder()
+                .setNegotiatedPriceNet(price)
+                .setOrderedQuantity(i)
+                .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
+                .setProduct(
+                        new CatalogProductBuilder("some productname ", "0", ProductType.PRODUCT)
+                                .setRecommendedPriceNet(priceNegotiated)
+                                .build()
+                                .toProduct())
+                .build();
     }
 }

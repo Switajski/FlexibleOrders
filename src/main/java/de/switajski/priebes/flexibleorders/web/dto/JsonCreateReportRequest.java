@@ -105,6 +105,8 @@ public class JsonCreateReportRequest {
 
     public boolean ignoreContradictoryExpectedDeliveryDates;
 
+    public boolean singleDeliveryNotes;
+
     public Address createInvoiceAddress() {
         return new Address(name1, name2, street, postalCode, city,
                 Country.DE);

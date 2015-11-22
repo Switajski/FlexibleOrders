@@ -28,9 +28,11 @@ public class MarkingPaidService {
         Receipt receipt = new Receipt(billingParameter.receiptNumber, billingParameter.date);
         ReportItem reportItem = null;
         for (ReportItem ri : invoice.getItems()) {
+            ReceiptItem receiptItem = new ReceiptItem(receipt, ri.getOrderItem(), ri
+                    .getQuantity(), new Date());
+            receiptItem.setPredecessor(ri);
             receipt.addItem(
-                    new ReceiptItem(receipt, ri.getOrderItem(), ri
-                            .getQuantity(), new Date()));
+                    receiptItem);
             if (reportItem == null) reportItem = ri;
         }
         return reportRepo.save(receipt);

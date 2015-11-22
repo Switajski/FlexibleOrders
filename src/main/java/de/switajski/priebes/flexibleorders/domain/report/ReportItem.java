@@ -1,12 +1,15 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +24,12 @@ import de.switajski.priebes.flexibleorders.web.helper.LanguageTranslator;
 @Entity
 public abstract class ReportItem extends GenericEntity implements
         Comparable<ReportItem> {
+
+    @OneToOne(optional = true)
+    private ReportItem predecessor;
+
+    @OneToMany(mappedBy = "predecessor")
+    private Set<ReportItem> successors;
 
     @NotNull
     private Integer quantity;
@@ -133,6 +142,22 @@ public abstract class ReportItem extends GenericEntity implements
             sum += specificReportItem.getQuantity();
         }
         return sum;
+    }
+
+    public ReportItem getPredecessor() {
+        return predecessor;
+    }
+
+    public void setPredecessor(ReportItem predecessor) {
+        this.predecessor = predecessor;
+    }
+
+    public Set<ReportItem> getSuccessors() {
+        return successors;
+    }
+
+    public void setSuccessors(Set<ReportItem> successors) {
+        this.successors = successors;
     }
 
 }

@@ -47,11 +47,13 @@ public class InvoicingService {
             Integer qty = entry.getValue();
 
             QuantityUtility.validateQuantity(qty, shippingItem);
-            invoice.addItem(new InvoiceItem(
+            InvoiceItem invoiceItem = new InvoiceItem(
                     invoice,
                     shippingItem.getOrderItem(),
                     qty,
-                    new Date()));
+                    new Date());
+            invoiceItem.setPredecessor(shippingItem);
+            invoice.addItem(invoiceItem);
 
         }
 

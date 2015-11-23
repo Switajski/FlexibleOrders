@@ -261,8 +261,8 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
                 .addTextLine(
                         "IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
                 .withAlignment(Element.ALIGN_CENTER)
-                .withFont(FontFactory.getFont(FONT, 9, Font.NORMAL))
-                .withLineSpacing(12f)
+                .withFont(eightSizeFont)
+                .withLineSpacing(11f)
                 .build();
         PdfPCell footerCell = new PdfPCell();
         footerCell.addElement(fPara);
@@ -272,8 +272,8 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
         footer.writeSelectedRows(
                 0,
                 -1, /* xPos */
-                34, /* yPos */
-                120,
+                40, /* yPos */
+                90,
                 writer.getDirectContent());
 
         if (SHOW_PAGE_NUMBERS) addPageNumber(writer, document);
@@ -367,14 +367,6 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
         absText(writer, String.format("S. %d / ", writer.getPageNumber()),
                 x - 25, y + 2);
 
-    }
-
-    public void writeTable(PdfWriter writer, PdfPTable footer) {
-        footer.writeSelectedRows(0, -1,
-                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-                        + FOOTER_MARGIN_BOTTOM,
-                writer.getDirectContent());
     }
 
     private static void absText(PdfWriter writer, String text, int x, int y) {

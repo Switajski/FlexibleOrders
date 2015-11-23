@@ -54,7 +54,7 @@ public class ReportViewHelper {
             ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
                     .withIndentationLeft(indentationLeftForAddress)
                     .withLineSpacing(12f);
-            if (name2Empty) paragraphBuilder.addTextLine(adresse.getName2());
+            if (!name2Empty) paragraphBuilder.addTextLine(adresse.getName2());
             paragraphBuilder.addTextLine(adresse.getStreet())
                     .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
                     .addTextLine(adresse.getCountry().getName());

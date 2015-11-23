@@ -50,6 +50,9 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         if (report.isShowExtendedInformation()) {
             ExtInfoTableParameter param = new ExtInfoTableParameter(report);
+            param.packageNumber = report.shippingSpecific_packageNumber;
+            param.trackNumber = report.shippingSpecific_trackNumber;
+            param.deliveryNotesNumbers = null;
             param.invoiceNumbers = null;
             param.creditNoteNumbers = null;
             document.add(new ExtendedTableHeaderCreator().create(param));

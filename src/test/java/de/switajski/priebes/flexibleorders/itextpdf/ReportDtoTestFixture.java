@@ -64,9 +64,12 @@ public class ReportDtoTestFixture {
         r.vatRate = 0.4d;
 
         r.related_orderNumbers = new HashSet<String>(Arrays.asList("B12", "B13"));
+        r.related_orderConfirmationNumbers = new HashSet<String>(Arrays.asList("AB11", "AB13"));
+        r.related_deliveryNotesNumbers = new HashSet<String>(Arrays.asList("L11", "L13"));
+        r.related_invoiceNumbers = new HashSet<String>(Arrays.asList("R11", "R13"));
 
         r.items = new HashSet<ReportItem>();
-        for (int i = 0; i < 35; i++) {
+        for (int i = 0; i < 20; i++) {
             new OrderItemBuilder();
             Amount price = new Amount(BigDecimal.valueOf(14.5d), Currency.EUR);
             Amount priceNegotiated = new Amount(BigDecimal.valueOf(12.5d), Currency.EUR);

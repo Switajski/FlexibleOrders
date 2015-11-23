@@ -58,4 +58,8 @@ public class PhraseBuilder {
         return withFont(PriebesIText5PdfView.eightSizeFont);
     }
 
+    public PhraseBuilder size8Bold() {
+        return withFont(PriebesIText5PdfView.eightSizeBoldFont);
+    }
+
 }

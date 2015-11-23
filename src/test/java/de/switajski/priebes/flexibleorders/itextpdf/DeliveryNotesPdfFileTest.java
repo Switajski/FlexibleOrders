@@ -97,6 +97,7 @@ public class DeliveryNotesPdfFileTest {
 
     private void givenReportDtoModel() {
         reportDto = ReportDtoTestFixture.givenReportDto();
+        reportDto.shippingSpecific_packageNumber = "1";
 
         model = new HashMap<String, Object>();
         model.put(reportDto.getClass().getSimpleName(), reportDto);

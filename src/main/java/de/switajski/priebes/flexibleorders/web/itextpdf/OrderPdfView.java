@@ -39,7 +39,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
         Address adresse = report.invoiceSpecific_headerAddress;
-        String heading = "Bestellung";
+        String heading = "Bestellung" + report.documentNumber;
 
         Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(Order.VAT_RATE);

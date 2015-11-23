@@ -48,8 +48,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
         ExtInfoTableParameter param = new ExtInfoTableParameter();
         param.orderNumbers = report.related_orderNumbers;
-        param.invoiceNumbers = report.related_invoiceNumbers;
-        param.orderAgreementNumbers = report.related_orderAgreementNumbers;
         param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
         param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
 
@@ -80,11 +78,14 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         PdfPTable footer = footerBuilder.build();
 
         footer.writeSelectedRows(0, -1,
-                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-                        + FOOTER_MARGIN_BOTTOM,
+                PriebesIText5PdfView.PAGE_MARGIN_LEFT, // xPos
+                footerYPos(), // yPos
                 writer.getDirectContent());
 
+    }
+
+    protected int footerYPos() {
+        return PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + PriebesIText5PdfView.FOOTER_MARGIN_BOTTOM;
     }
 
 }

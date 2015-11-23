@@ -79,6 +79,10 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
             PriebesIText5PdfView.FONT,
             8,
             Font.NORMAL);
+    public static Font eightSizeBoldFont = FontFactory.getFont(
+            PriebesIText5PdfView.FONT,
+            8,
+            Font.BOLD);
 
     /**
      * format settings
@@ -87,11 +91,11 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
             "dd.MM.yyyy");
     public final static DateFormat weekDateFormat = new SimpleDateFormat("w");
     public static final float BORDER_WIDTH = 0.15f;
-    public static final int PAGE_MARGIN_BOTTOM = /* bottom */180;
+    public static final int PAGE_MARGIN_BOTTOM = /* bottom */190;
     public static final int PAGE_MARGIN_TOP = /* top */80;
     public static final int PAGE_MARGIN_RIGHT = /* right */72;
     public static final int PAGE_MARGIN_LEFT = /* left */60;
-    public static final int FOOTER_MARGIN_BOTTOM = 40;
+    public static final int FOOTER_MARGIN_BOTTOM = 5;
     public static final float WIDTH = 464f;
 
     /**
@@ -105,7 +109,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
     /**
      * other properties
      */
-    private static final boolean SHOW_PAGE_NUMBERS = false;
+    private static final boolean SHOW_PAGE_NUMBERS = true;
 
     private String logoPath = null;
 
@@ -346,8 +350,12 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
 
     PdfTemplate total;
 
+    private int pageNumber = 1;
+
     @Override
-    public void onEndPage(PdfWriter writer, Document document) {}
+    public void onEndPage(PdfWriter writer, Document document) {
+        pageNumber++;
+    }
 
     private void addPageNumber(PdfWriter writer, Document document) {
         Image img2;
@@ -364,7 +372,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
         catch (DocumentException e) {
             e.printStackTrace();
         }
-        absText(writer, String.format("S. %d / ", writer.getPageNumber()),
+        absText(writer, String.format("S. " + pageNumber + " / ", writer.getPageNumber()),
                 x - 25, y + 2);
 
     }
@@ -373,7 +381,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
         PdfContentByte cb = writer.getDirectContent();
         try {
             BaseFont bf = BaseFont.createFont(PriebesIText5PdfView.FONT,
-                    BaseFont.CP1250, BaseFont.NOT_EMBEDDED);
+                    ENCODING, BaseFont.NOT_EMBEDDED);
             cb.saveState();
             cb.beginText();
             cb.moveText(x, y);
@@ -411,7 +419,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
                         PriebesIText5PdfView.FONT_SIZE,
                         Font.BOLD));
         footerBuilder.addCell(new PdfPCellBuilder(bold.build())
-                .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).build())
+                .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).size8().build())
                 .withBorder(Rectangle.NO_BORDER)
                 .withColSpan(2)
                 .build());

@@ -20,6 +20,8 @@ public class ExtInfoTableParameter {
     public String vatIdNo;
     public DeliveryMethod deliveryMethod;
     public Address shippingAddress;
+    public String trackNumber;
+    public String packageNumber;
 
     public ExtInfoTableParameter(
             String expectedDelivery,

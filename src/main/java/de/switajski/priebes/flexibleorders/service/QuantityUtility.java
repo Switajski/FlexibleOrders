@@ -3,7 +3,7 @@ package de.switajski.priebes.flexibleorders.service;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.service.conversion.QuantityToBeProcessedDeterminator;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 public class QuantityUtility {
 
@@ -28,12 +28,14 @@ public class QuantityUtility {
 
         if (qty < 1) throw new IllegalArgumentException("Menge kleiner eins");
 
-        int toBeProcessed = new QuantityToBeProcessedDeterminator(reportItem).overdueQuantity();
-        // if (toBeProcessed == 0) throw new
-        // IllegalArgumentException(reportItem.toString() +
-        // " hat keine offenen Positionen mehr");
-        //
-        // if (qty > toBeProcessed) throw new
-        // IllegalArgumentException("angeforderte Menge ist zu gross");
+        int toBeProcessed = reportItem.overdue();
+        if (toBeProcessed == 0) throw new IllegalArgumentException(reportItem.toString() +
+                " hat keine offenen Positionen mehr");
+
+        if (qty > toBeProcessed) {
+            StringBuilder msg = new StringBuilder("angeforderte Menge ist ").append(qty).append(". ")
+                    .append(reportItem.overdue()).append(" sind aber noch ").append(Unicode.U_UML).append("brig.");
+            throw new IllegalArgumentException(msg.toString());
+        }
     }
 }

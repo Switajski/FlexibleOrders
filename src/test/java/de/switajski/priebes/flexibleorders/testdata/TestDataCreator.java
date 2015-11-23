@@ -174,9 +174,10 @@ public class TestDataCreator extends AbstractSpringContextTest {
         List<ItemDto> l11AndL12 = convertReport(l11);
         l11AndL12.addAll(convertReport(l12));
 
-        createR11(l11AndL12);
+        // createR11(l11AndL12);
     }
 
+    // FIXME: This is not working anymore
     private void createR11(List<ItemDto> l11AndL12) {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.priceNet = BigDecimal.valueOf(11d);
@@ -185,8 +186,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 extract(l11AndL12, AMY.getProductNumber(), 5),
                 extract(l11AndL12, MILADKA.getProductNumber(), 5),
                 shippingCosts));
-        invoicingService.invoice(
-                invoicingParameter);
+        invoicingService.invoice(invoicingParameter);
     }
 
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {

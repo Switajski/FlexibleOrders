@@ -134,6 +134,7 @@ public abstract class ReportItem extends GenericEntity implements
             throw new IllegalStateException(
                     messageBuilder.append("<br>").toString());
         }
+
     }
 
     private int sum() {
@@ -158,6 +159,18 @@ public abstract class ReportItem extends GenericEntity implements
 
     public void setSuccessors(Set<ReportItem> successors) {
         this.successors = successors;
+    }
+
+    /**
+     * @return sum(successors) - quantity
+     */
+    public int overdue() {
+        if (successors == null) return quantity;
+
+        int sum = 0;
+        for (ReportItem ri : successors)
+            sum += ri.getQuantity();
+        return quantity - sum;
     }
 
 }

@@ -171,20 +171,18 @@ public class TestDataCreator extends AbstractSpringContextTest {
         createL14(itemsFromAu11);
         createL15(itemsFromAu11, itemsFromAu15);
 
-        List<ItemDto> l11AndL12 = convertReport(l11);
-        l11AndL12.addAll(convertReport(l12));
-
-        // createR11(l11AndL12);
+        createR11(convertReport(l11), convertReport(l12));
     }
 
-    // FIXME: This is not working anymore
-    private void createR11(List<ItemDto> l11AndL12) {
+    private void createR11(List<ItemDto> l11, List<ItemDto> l12) {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.priceNet = BigDecimal.valueOf(11d);
         shippingCosts.productType = ProductType.SHIPPING;
         InvoicingParameter invoicingParameter = new InvoicingParameter("R11", new Date(), Arrays.asList(
-                extract(l11AndL12, AMY.getProductNumber(), 5),
-                extract(l11AndL12, MILADKA.getProductNumber(), 5),
+                extract(l11, AMY.getProductNumber(), 2),
+                extract(l11, MILADKA.getProductNumber(), 2),
+                extract(l12, AMY.getProductNumber(), 3),
+                extract(l12, MILADKA.getProductNumber(), 3),
                 shippingCosts));
         invoicingService.invoice(invoicingParameter);
     }

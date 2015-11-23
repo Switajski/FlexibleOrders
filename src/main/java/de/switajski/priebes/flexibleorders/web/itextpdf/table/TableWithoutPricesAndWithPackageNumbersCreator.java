@@ -58,7 +58,7 @@ public class TableWithoutPricesAndWithPackageNumbersCreator extends ReportItemsP
         row.add(String.valueOf(ri.getQuantity()) + " x ");
         // Art.Nr.:
         String pNo = ri.getOrderItem().getProduct().getProductNumber();
-        row.add(pNo.equals("0") ? "n.a." : pNo.toString());
+        row.add(sku(pNo));
         // Artikel
         row.add(ri.getOrderItem().getProduct().getName());
         // Paketnr.

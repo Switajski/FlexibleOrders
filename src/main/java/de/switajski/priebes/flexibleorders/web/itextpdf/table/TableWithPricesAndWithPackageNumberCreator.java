@@ -23,29 +23,29 @@ public class TableWithPricesAndWithPackageNumberCreator extends ReportItemsPdfPT
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());
         // Refactor - see #71
-        for (ReportItem he : report.getItemsByOrder()) {
+        for (ReportItem ri : report.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.
-            Product product = he.getOrderItem().getProduct();
-            list.add(product.hasProductNo() ? product.getProductNumber() : "n.a.");
+            Product product = ri.getOrderItem().getProduct();
+            list.add(sku(product.getProductNumber()));
             // Artikel
             list.add(product.getName());
             // Paketnr.
-            if (he instanceof ShippingItem) {
-                list.add(((ShippingItem) he).getPackageNumber());
+            if (ri instanceof ShippingItem) {
+                list.add(((ShippingItem) ri).getPackageNumber());
             }
             else {
                 list.add("");
             }
             // Anzahl
-            list.add(String.valueOf(he.getQuantity()));
+            list.add(String.valueOf(ri.getQuantity()));
             // EK per Stueck
-            list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
+            list.add(ri.getOrderItem().getNegotiatedPriceNet().toString());
             // Bestellnr
-            list.add(he.getOrderItem().getOrder().getOrderNumber());
+            list.add(ri.getOrderItem().getOrder().getOrderNumber());
             // gesamt
-            list.add(he.getOrderItem().getNegotiatedPriceNet()
-                    .multiply(he.getQuantity()).toString());
+            list.add(ri.getOrderItem().getNegotiatedPriceNet()
+                    .multiply(ri.getQuantity()).toString());
 
             builder.addBodyRow(list);
         }

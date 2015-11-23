@@ -1,7 +1,5 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -18,14 +15,13 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.itextpdf.table.SimpleTableHeaderCreator;
+import de.switajski.priebes.flexibleorders.web.itextpdf.table.TableForOrderCreator;
 
 /**
  * Pdf view customized for the display of an order
@@ -61,7 +57,7 @@ public class OrderPdfView extends PriebesIText5PdfView {
         document.add(ParagraphBuilder.createEmptyLine());
 
         // insert main table
-        document.add(createTable(report));
+        document.add(new TableForOrderCreator().create(report));
 
         // insert footer table
         if (hasRecommendedPrices(report) && hasVat(report)) {
@@ -78,48 +74,6 @@ public class OrderPdfView extends PriebesIText5PdfView {
                     writer.getDirectContent());
         }
 
-    }
-
-    private PdfPTable createTable(ReportDto order) throws DocumentException {
-
-        PdfPTableBuilder builder = new PdfPTableBuilder(
-                PdfPTableBuilder.createPropertiesWithFiveCols());
-        for (OrderItem oi : order.getOrderItemsByOrder()) {
-            if (!oi.isShippingCosts()) {
-                List<String> row = new ArrayList<String>();
-                Product product = oi.getProduct();
-                String pNoStr = (product.hasProductNo()) ? product.getProductNumber().toString() : "n.a.";
-                row.add(pNoStr);
-                // Artikel
-                row.add(product.getName());
-                // Anzahl
-                row.add(String.valueOf(oi.getOrderedQuantity()));
-                // EK per Stueck
-                row.add(getPriceString(oi));
-                // gesamt
-                row.add(getPriceXquantity(oi));
-                builder.addBodyRow(row);
-            }
-        }
-        return builder.withFooter(false).build();
-    }
-
-    private String getPriceXquantity(OrderItem he) {
-        if (he.getNegotiatedPriceNet() != null
-                && he.getNegotiatedPriceNet().getValue() != null) return he
-                .getNegotiatedPriceNet()
-                .multiply(he.getOrderedQuantity())
-                .toString();
-        else return "-";
-    }
-
-    private String getPriceString(OrderItem he) {
-        String priceString = "";
-        if (he.getNegotiatedPriceNet() != null
-                && he.getOrderedQuantity() != null
-                && he.getNegotiatedPriceNet().getValue() != null) priceString = he.getNegotiatedPriceNet().toString();
-        else priceString = "Preis n. verf.";
-        return priceString;
     }
 
     private boolean hasVat(ReportDto order) {

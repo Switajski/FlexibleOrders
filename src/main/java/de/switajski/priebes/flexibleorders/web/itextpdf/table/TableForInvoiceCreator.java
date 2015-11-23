@@ -27,7 +27,7 @@ public class TableForInvoiceCreator extends ReportItemsPdfPTableCreator {
                 List<String> list = new ArrayList<String>();
                 // Art.Nr.:
                 String pNo = ri.getOrderItem().getProduct().getProductNumber();
-                list.add(pNo == null || pNo.equals(0L) ? "n.a." : pNo.toString());
+                list.add(sku(pNo));
                 // Artikel
                 list.add(ri.getOrderItem().getProduct().getName());
                 // Anzahl

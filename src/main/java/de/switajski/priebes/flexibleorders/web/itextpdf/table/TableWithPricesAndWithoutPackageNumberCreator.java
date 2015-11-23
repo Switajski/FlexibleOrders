@@ -27,7 +27,7 @@ public class TableWithPricesAndWithoutPackageNumberCreator extends ReportItemsPd
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
             Product product = he.getOrderItem().getProduct();
-            list.add(product.hasProductNo() ? product.getProductNumber() : "n.a.");
+            list.add(sku(product.getProductNumber()));
             // Artikel
             list.add(product.getName());
             // Anzahl

@@ -25,6 +25,9 @@ public class DeliveryNotesToDtoConversionService {
     @Transactional(readOnly = true)
     public ReportDto toDto(DeliveryNotes report) {
         ReportDto dto = reportToDtoConversionService.toDto(report);
+        dto.shippingSpecific_trackNumber = report.getTrackNumber();
+        dto.shippingSpecific_packageNumber = report.getPackageNumber();
+        dto.showPricesInDeliveryNotes = report.isShowPrices();
         return dto;
     }
 

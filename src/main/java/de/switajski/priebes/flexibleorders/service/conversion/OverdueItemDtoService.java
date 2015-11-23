@@ -3,7 +3,6 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
@@ -50,11 +49,9 @@ public class OverdueItemDtoService {
         }
         if (ri.getReport() instanceof Invoice) {
             item.invoiceNumber = ri.getReport().getDocumentNumber();
-            item.shareHistory = (DeliveryHistory.of(ri).getInvoiceNumbers().size() > 1) ? true : false;
         }
         if (ri.getReport() instanceof DeliveryNotes) {
             item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
-            item.shareHistory = (DeliveryHistory.of(ri).getDeliveryNotesNumbers().size() > 1) ? true : false;
         }
         if (ri.getReport() instanceof Receipt) {
             item.receiptNumber = ri.getReport().getDocumentNumber();

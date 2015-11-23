@@ -29,6 +29,8 @@ public class DeliveryNotes extends Report {
 
     private Amount shippingCosts;
 
+    private String packageNumber, trackNumber;
+
     @Embedded
     private DeliveryMethod deliveryMethod;
 
@@ -96,6 +98,22 @@ public class DeliveryNotes extends Report {
         }
         return pis;
 
+    }
+
+    public String getPackageNumber() {
+        return packageNumber;
+    }
+
+    public void setPackageNumber(String packageNumber) {
+        this.packageNumber = packageNumber;
+    }
+
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
     }
 
 }

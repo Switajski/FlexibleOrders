@@ -35,7 +35,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
 
         String date = "Lieferdatum: "
                 + dateFormat.format(report.created);
-        String packageNo = "Pakete: " + report.documentNumber;
+        String packageNo = "Paket: " + report.shippingSpecific_packageNumber;
         String customerNo = "Kundennummer: " + report.customerNumber;
         Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;

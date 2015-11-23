@@ -153,6 +153,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
      */
     protected Document newDocument() {
         Document doc = new Document(PageSize.A4);
+        pageNumber = 1;
         doc.setMargins(
                 PAGE_MARGIN_LEFT,
                 PAGE_MARGIN_RIGHT,

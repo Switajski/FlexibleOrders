@@ -59,6 +59,7 @@ public class ShippingService {
     public Set<DeliveryNotes> shipMany(DeliverParameter deliverParameter) {
         Set<DeliveryNotes> savedDeliveryNotes = new HashSet<DeliveryNotes>();
         String originalDeliveryNotesNumber = deliverParameter.deliveryNotesNumber;
+        deliverParameter.packageNumber = null;
 
         Map<String, List<ItemDto>> packages = new HashMap<String, List<ItemDto>>();
         for (ItemDto itemToBeShipped : deliverParameter.itemsToBeShipped) {
@@ -74,6 +75,7 @@ public class ShippingService {
             deliverParameter.itemsToBeShipped = packages.get(packageNumber);
             if (packageNumber == null) packageNumber = "";
             deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat(packageNumber);
+            deliverParameter.packageNumber = packageNumber;
             savedDeliveryNotes.add(ship(deliverParameter));
         }
         return savedDeliveryNotes;
@@ -86,6 +88,8 @@ public class ShippingService {
         deliveryNotes.setShippingCosts(deliverParameter.shipment);
         deliveryNotes.setDeliveryMethod(deliverParameter.deliveryMethod);
         deliveryNotes.setShowPrices(deliverParameter.showPricesInDeliveryNotes);
+        deliveryNotes.setPackageNumber(deliverParameter.packageNumber);
+        deliveryNotes.setTrackNumber(deliverParameter.trackNumber);
         return deliveryNotes;
     }
 

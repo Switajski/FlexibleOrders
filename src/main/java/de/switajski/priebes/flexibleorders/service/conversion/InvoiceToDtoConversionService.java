@@ -18,11 +18,13 @@ public class InvoiceToDtoConversionService {
     PurchaseAgreementService purchaseAgreementService;
 
     @Transactional(readOnly = true)
-    public ReportDto toDto(Invoice report) {
-        ReportDto dto = reportToDtoConversionService.toDto(report);
-        dto.shippingSpecific_shippingCosts = report.getShippingCosts();
-        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(report).getPaymentConditions();
-        dto.invoiceSpecific_billing = report.getBilling();
+    public ReportDto toDto(Invoice invoice) {
+        ReportDto dto = reportToDtoConversionService.toDto(invoice);
+        dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
+        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice).getPaymentConditions();
+        dto.invoiceSpecific_billing = invoice.getBilling();
+        dto.invoiceSpecific_discountText = invoice.getDiscountText();
+        dto.invoiceSpecific_discountRate = invoice.getDiscountRate();
         return dto;
     }
 

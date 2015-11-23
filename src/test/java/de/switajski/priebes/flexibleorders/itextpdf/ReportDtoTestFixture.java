@@ -69,7 +69,7 @@ public class ReportDtoTestFixture {
         r.related_invoiceNumbers = new HashSet<String>(Arrays.asList("R11", "R13"));
 
         r.items = new HashSet<ReportItem>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 35; i++) {
             new OrderItemBuilder();
             Amount price = new Amount(BigDecimal.valueOf(14.5d), Currency.EUR);
             Amount priceNegotiated = new Amount(BigDecimal.valueOf(12.5d), Currency.EUR);

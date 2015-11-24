@@ -55,7 +55,7 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.OverdueItemDtoService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
@@ -86,7 +86,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private ItemDtoToReportItemConversionService converterService;
 
     @Autowired
-    private OverdueItemDtoService riToItemConversionService;
+    private ReportItemToItemDtoConverterService riToItemConversionService;
 
     @Autowired
     private ShippingService shippingService;

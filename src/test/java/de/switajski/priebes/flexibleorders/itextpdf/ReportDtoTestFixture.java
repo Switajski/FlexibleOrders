@@ -10,6 +10,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -24,6 +25,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirm
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 public class ReportDtoTestFixture {
 
@@ -69,22 +71,23 @@ public class ReportDtoTestFixture {
         r.related_invoiceNumbers = new HashSet<String>(Arrays.asList("R11", "R13"));
 
         r.items = new HashSet<ReportItem>();
-        for (int i = 0; i < 35; i++) {
+        for (int i = 0; i < 57; i++) {
             new OrderItemBuilder();
             Amount price = new Amount(BigDecimal.valueOf(14.5d), Currency.EUR);
             Amount priceNegotiated = new Amount(BigDecimal.valueOf(12.5d), Currency.EUR);
             OrderItem orderItem = givenOrderItem(i, price, priceNegotiated);
-            r.items.add(
-                    new ShippingItemBuilder()
+            ShippingItem shippingItem = new ShippingItemBuilder()
+                    .setItem(orderItem)
+                    .setQuantity(i + 1)
+                    .setReport(new DeliveryNotesBuilder().build())
+                    .setPredecessor(new ConfirmationItemBuilder()
+                            .setReport(new OrderConfirmationBuilder().setDocumentNumber("Vorgaenger Doknr").build())
                             .setItem(orderItem)
-                            .setQuantity(i + 1)
-                            .setReport(new DeliveryNotesBuilder().build())
-                            .setPredecessor(new ConfirmationItemBuilder()
-                                    .setReport(new OrderConfirmationBuilder().setDocumentNumber("Vorgaenger Doknr").build())
-                                    .setItem(orderItem)
-                                    .setQuantity(2)
-                                    .build())
-                            .build());
+                            .setQuantity(2)
+                            .build())
+                    .build();
+            r.items.add(shippingItem);
+            r.itemDtos.add(new ReportItemInPdf(shippingItem));
         }
 
         return r;
@@ -96,7 +99,7 @@ public class ReportDtoTestFixture {
                 .setOrderedQuantity(i)
                 .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
                 .setProduct(
-                        new CatalogProductBuilder("some productname ", "0", ProductType.PRODUCT)
+                        new CatalogProductBuilder("some productname ", "65187", ProductType.PRODUCT)
                                 .setRecommendedPriceNet(priceNegotiated)
                                 .build()
                                 .toProduct())

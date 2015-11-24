@@ -109,7 +109,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
     /**
      * other properties
      */
-    private static final boolean SHOW_PAGE_NUMBERS = true;
+    protected static final boolean SHOW_PAGE_NUMBERS = false;
 
     private String logoPath = null;
 
@@ -153,13 +153,17 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
      */
     protected Document newDocument() {
         Document doc = new Document(PageSize.A4);
-        pageNumber = 1;
+        resetPageNumber();
         doc.setMargins(
                 PAGE_MARGIN_LEFT,
                 PAGE_MARGIN_RIGHT,
                 PAGE_MARGIN_TOP,
                 PAGE_MARGIN_BOTTOM);
         return doc;
+    }
+
+    protected void resetPageNumber() {
+        pageNumber = 1;
     }
 
     protected PdfWriter newWriter(Document document, OutputStream os)
@@ -358,7 +362,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
         pageNumber++;
     }
 
-    private void addPageNumber(PdfWriter writer, Document document) {
+    protected void addPageNumber(PdfWriter writer, Document document) {
         Image img2;
         int x = 550;
         int y = 20;

@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,13 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.OverdueItemDtoService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoPageConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 @Service
 public class ReportingService {
@@ -29,15 +34,15 @@ public class ReportingService {
     @Autowired
     private OrderRepository orderRepo;
     @Autowired
+    private ReportItemToItemDtoConverterService reportItemToItemDtoConversionService;
+    @Autowired
     private ReportRepository reportRepo;
     @Autowired
     private ReportItemRepository reportItemRepo;
     @Autowired
-    private ReportItemToItemDtoPageConverterService pageConverterService;
-    @Autowired
     private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
-    private OverdueItemDtoService ri2ItemDtoConversionService;
+    private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
 
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
@@ -45,7 +50,7 @@ public class ReportingService {
         Page<Order> toBeConfirmed = orderRepo.findAllToBeConfirmedByCustomer(
                 customer,
                 pageable);
-        return pageConverterService.createPage(
+        return createPage(
                 toBeConfirmed.getTotalElements(),
                 pageable,
                 itemDtoConverterService.convertOrders(toBeConfirmed
@@ -61,7 +66,7 @@ public class ReportingService {
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmed(PageRequest pageable) {
         Page<Order> toBeConfirmed = orderRepo.findAllToBeConfirmed(pageable);
-        return pageConverterService.createPage(
+        return createPage(
                 toBeConfirmed.getTotalElements(),
                 pageable,
                 itemDtoConverterService.convertOrders(toBeConfirmed
@@ -111,7 +116,55 @@ public class ReportingService {
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveOverdue(PageRequest pageRequest, Specification<ReportItem> spec) {
         Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
-        return pageConverterService.createOverdueReports(pageRequest, openReportItems);
+        return createOverdueReports(pageRequest, openReportItems);
     }
 
+    @Transactional(readOnly = true)
+    public PageImpl<ItemDto> createOverdueReports(
+            PageRequest pageable,
+            Page<ReportItem> reportItems) {
+        List<ItemDto> overdueItemDtos = createOverdueItems(reportItems.getContent());
+
+        PageImpl<ItemDto> reportItemPage = createPage(
+                reportItems.getTotalElements(),
+                pageable,
+                overdueItemDtos);
+        return reportItemPage;
+    }
+
+    public List<ItemDto> createOverdueItems(List<ReportItem> content) {
+        List<ItemDto> ris = new ArrayList<ItemDto>();
+        for (ReportItem ri : content) {
+            if (ri.overdue() > 0) {
+                ris.add(reportItemToItemDtoConversionService.convert(ri, ri.getQuantity()));
+            }
+        }
+        return ris;
+    }
+
+    public PageImpl<ItemDto> createPage(Long totalElements,
+            Pageable pageable, List<ItemDto> ris) {
+        return new PageImpl<ItemDto>(ris, pageable, totalElements);
+    }
+
+    @Transactional(readOnly = true)
+    public ReportDto retrieveAllToBeShipped(Customer customer) {
+        ReportDto report = new ReportDto();
+        report.items = new HashSet<ReportItem>();
+        Specifications<ReportItem> specs = Specifications
+                .where(new AgreedItemsToBeShippedSpec());
+        if (customer != null) specs.and(new HasCustomerSpec(customer));
+        for (ReportItem ri : reportItemRepo.findAll(
+                specs
+                // , new Sort(new
+                // org.springframework.data.domain.Sort.Order("orderItem.order.customerOrder.customerNumber"))
+                )) {
+            System.out.println("");
+            if (ri.overdue() > 0) {
+                report.itemDtos.add(new ReportItemInPdf(ri));
+            }
+        }
+        report.customerFirstName = "Alle Kunden";
+        return report;
+    }
 }

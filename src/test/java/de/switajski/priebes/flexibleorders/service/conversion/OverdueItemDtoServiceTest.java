@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class OverdueItemDtoServiceTest {
 
     // SUT
-    OverdueItemDtoService overdueItemDtoCreator;
+    ReportItemToItemDtoConverterService overdueItemDtoCreator;
 
     // Input use cases from "test data.ods"
     Order b11;
@@ -59,7 +59,7 @@ public class OverdueItemDtoServiceTest {
 
     @Before
     public void setup() {
-        overdueItemDtoCreator = new OverdueItemDtoService();
+        overdueItemDtoCreator = new ReportItemToItemDtoConverterService();
     }
 
     @Test

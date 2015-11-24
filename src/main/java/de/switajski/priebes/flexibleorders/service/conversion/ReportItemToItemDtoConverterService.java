@@ -13,12 +13,12 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
-public class OverdueItemDtoService {
+public class ReportItemToItemDtoConverterService {
 
     /**
      * @deprecated this method was used before successor / predecessor in
      *             reporItem mapping. use
-     *             {@link #createOverdue(ReportItem, int)}
+     *             {@link #convert(ReportItem, int)}
      * @param ri
      * @return
      */
@@ -29,11 +29,11 @@ public class OverdueItemDtoService {
         if (toBeProcessed == 0) {
             return null;
         }
-        return createOverdue(ri, toBeProcessed);
+        return convert(ri, toBeProcessed);
     }
 
     @Transactional(readOnly = true)
-    public ItemDto createOverdue(ReportItem ri, int toBeProcessed) {
+    public ItemDto convert(ReportItem ri, int toBeProcessed) {
         ItemDto item = new ItemDto();
         item.quantity = toBeProcessed;
         item.quantityLeft = toBeProcessed;

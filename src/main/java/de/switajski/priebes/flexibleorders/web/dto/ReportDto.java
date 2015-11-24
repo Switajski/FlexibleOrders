@@ -26,7 +26,13 @@ public class ReportDto {
 
     public Date created;
 
+    /**
+     * @deprecated due to uncecessary dependency to ReportItem. use
+     *             {@link #itemDtos} instead.
+     */
     public Set<ReportItem> items = new HashSet<ReportItem>();
+
+    public List<ReportItemInPdf> itemDtos = new ArrayList<ReportItemInPdf>();
 
     public Long customerNumber;
 

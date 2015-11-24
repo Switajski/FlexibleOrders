@@ -42,6 +42,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.ToBeShippedPdfView;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs
@@ -51,7 +52,6 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
  */
 @CrossOrigin
 @Controller
-@RequestMapping("/reports")
 public class ReportController {
 
     private static Logger log = Logger.getLogger(ReportController.class);
@@ -79,8 +79,10 @@ public class ReportController {
     OrderToDtoConversionService orderDtoConversionService;
     @Autowired
     OrderConfirmationRepository orderConfirmationRepo;
+    @Autowired
+    CustomerRepository customerRepo;
 
-    @RequestMapping(value = "/{id}.pdf", headers = "Accept=application/pdf")
+    @RequestMapping(value = "/reports/{id}.pdf", headers = "Accept=application/pdf")
     public ModelAndView showReportPdf(@PathVariable("id") String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
@@ -97,6 +99,29 @@ public class ReportController {
                     ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
+    }
+
+    @RequestMapping(value = "/kunden/{customerNumber}/ausstehendeArtikel.pdf", headers = "Accept=application/pdf")
+    public ModelAndView showToBeShippedByCustomerPdf(@PathVariable("customerNumber") Long customerNumber) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/pdf; charset=utf-8");
+        Customer customer = customerRepo.findByCustomerNumber(customerNumber);
+        if (customer == null) {
+            throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
+        }
+        ReportDto report = reportingService.retrieveAllToBeShipped(customer);
+        return new ModelAndView(ToBeShippedPdfView.class.getSimpleName(),
+                ReportDto.class.getSimpleName(), report);
+    }
+
+    @RequestMapping(value = "/ausstehendeArtikel.pdf", headers = "Accept=application/pdf")
+    public ModelAndView showAllToBeShippedPdf() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/pdf; charset=utf-8");
+
+        ReportDto report = reportingService.retrieveAllToBeShipped(null);
+        return new ModelAndView(ToBeShippedPdfView.class.getSimpleName(),
+                ReportDto.class.getSimpleName(), report);
     }
 
     private ModelAndView createReportSpecificModelAndView(Report report) {
@@ -121,10 +146,10 @@ public class ReportController {
                 "Could not find view handler for given Document");
     }
 
-    @RequestMapping(value = "/listDocumentNumbersLike", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports/listDocumentNumbersLike", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse listInvoiceNumbers(
             @RequestParam(value = "query", required = false) Long orderNumberObject)
-                    throws Exception {
+            throws Exception {
 
         log.debug("listOrderNumbers request:" + orderNumberObject);
         // TODO unify docNumbers
@@ -163,7 +188,7 @@ public class ReportController {
     public @ResponseBody JsonObjectResponse listOrderNumbers(
             @RequestParam(value = "orderNumber", required = false) String orderNumber,
             @RequestParam(value = "customerId", required = false) Long customerId)
-                    throws Exception {
+            throws Exception {
         // FIXME: find by customer and orderNumber
         log.debug("listOrderNumbers request:" + orderNumber);
         JsonObjectResponse response = new JsonObjectResponse();

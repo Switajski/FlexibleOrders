@@ -153,18 +153,22 @@ public class ReportingService {
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
                 .where(new AgreedItemsToBeShippedSpec());
-        if (customer != null) specs.and(new HasCustomerSpec(customer));
+        if (customer != null) specs = specs.and(new HasCustomerSpec(customer));
         for (ReportItem ri : reportItemRepo.findAll(
                 specs
                 // , new Sort(new
                 // org.springframework.data.domain.Sort.Order("orderItem.order.customerOrder.customerNumber"))
                 )) {
-            System.out.println("");
             if (ri.overdue() > 0) {
                 report.itemDtos.add(new ReportItemInPdf(ri));
             }
+            if (customer != null) {
+                report.customerNumber = customer.getCustomerNumber();
+                report.customerFirstName = customer.getFirstName();
+                report.customerLastName = customer.getLastName();
+            }
+            else report.customerFirstName = "Alle Kunden";
         }
-        report.customerFirstName = "Alle Kunden";
         return report;
     }
 }

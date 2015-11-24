@@ -1,7 +1,9 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf.table;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -24,7 +26,8 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         String customerNumber = "";
         for (ReportItemInPdf ri : cReport.itemDtos) {
             if (!ri.customerNumber.equals(customerNumber)) {
-                customerNumber = addBreak(builder, ri);
+                if (hasManyCustomers(cReport)) addBreak(builder, ri);
+                customerNumber = ri.customerNumber;
             }
             List<String> row = createRow(ri);
             builder.addBodyRow(row);
@@ -33,15 +36,20 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         return builder.withFooter(false).build();
     }
 
-    private String addBreak(PdfPTableBuilder builder, ReportItemInPdf ri) {
-        String customerNumber;
+    private boolean hasManyCustomers(ReportDto report) {
+        Set<String> customerNumbers = new HashSet<String>();
+        for (ReportItemInPdf item : report.itemDtos) {
+            customerNumbers.add(item.customerNumber);
+        }
+        return customerNumbers.size() > 1;
+    }
+
+    private void addBreak(PdfPTableBuilder builder, ReportItemInPdf ri) {
         String companyName = ri.companyName;
         if (companyName == null) companyName = "";
 
         String breakText = new StringBuilder().append(ri.customerNumber).append(" ").append(companyName).toString();
         builder.addBreak(breakText);
-        customerNumber = ri.customerNumber;
-        return customerNumber;
     }
 
     private ArrayList<ColumnFormat> tableProperties() {

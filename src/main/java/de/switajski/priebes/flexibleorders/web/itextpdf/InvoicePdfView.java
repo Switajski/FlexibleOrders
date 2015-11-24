@@ -42,6 +42,10 @@ public class InvoicePdfView extends PriebesIText5PdfView {
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
+        document.add(new ParagraphBuilder("Rechnungsdatum gleich Lieferdatum")
+                .withFont(PriebesIText5PdfView.eightSizeFont)
+                .withAlignment(Element.ALIGN_RIGHT)
+                .build());
 
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);

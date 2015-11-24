@@ -136,7 +136,7 @@ public class ReportingService {
         List<ItemDto> ris = new ArrayList<ItemDto>();
         for (ReportItem ri : content) {
             if (ri.overdue() > 0) {
-                ris.add(reportItemToItemDtoConversionService.convert(ri, ri.getQuantity()));
+                ris.add(reportItemToItemDtoConversionService.convert(ri, ri.overdue()));
             }
         }
         return ris;

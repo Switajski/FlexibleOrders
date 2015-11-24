@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,13 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         if (report.orderConfirmationNumber != null) heading += " - best" + Unicode.A_UML + "tigt mit " + report.orderConfirmationNumber;
 
         String date = "AB-Datum: " + dateFormat.format(report.created);
+        Date oldestOrderDate = report.orderConfirmationSpecific_oldestOrderDate;
+        if (oldestOrderDate != null) {
+            date = new StringBuilder(date).append("\n")
+                    .append("Bestelldatum: ")
+                    .append(dateFormat.format(oldestOrderDate))
+                    .toString();
+        }
         String customerNo = "Kundennummer: " + report.customerNumber;
 
         Amount netGoods = report.netGoods;

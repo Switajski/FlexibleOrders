@@ -55,6 +55,7 @@ public class ReportDto {
     // order agreement specific
     public String orderConfirmationNumber;
     public String orderConfirmationSpecific_paymentConditions;
+    public Date orderConfirmationSpecific_oldestOrderDate;
 
     public String shippingSpecific_trackNumber, shippingSpecific_packageNumber;
     public Amount shippingSpecific_shippingCosts;

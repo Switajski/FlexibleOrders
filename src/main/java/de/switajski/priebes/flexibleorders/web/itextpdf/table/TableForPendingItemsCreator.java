@@ -21,16 +21,27 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());
         // Refactor - see #71
-        String customerNumber = cReport.itemDtos.iterator().next().customerNumber;
+        String customerNumber = "";
         for (ReportItemInPdf ri : cReport.itemDtos) {
-            if (!ri.customerNumber.equals(customerNumber)) builder.addBreak(ri.customerNumber);
+            if (!ri.customerNumber.equals(customerNumber)) {
+                customerNumber = addBreak(builder, ri);
+            }
             List<String> row = createRow(ri);
             builder.addBodyRow(row);
         }
 
-        builder.addBreak("naechster Kunde");
-
         return builder.withFooter(false).build();
+    }
+
+    private String addBreak(PdfPTableBuilder builder, ReportItemInPdf ri) {
+        String customerNumber;
+        String companyName = ri.companyName;
+        if (companyName == null) companyName = "";
+
+        String breakText = new StringBuilder().append(ri.customerNumber).append(" ").append(companyName).toString();
+        builder.addBreak(breakText);
+        customerNumber = ri.customerNumber;
+        return customerNumber;
     }
 
     private ArrayList<ColumnFormat> tableProperties() {
@@ -39,7 +50,6 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         rowProperties.add(new ColumnFormat("Art. Nr.", Element.ALIGN_LEFT, 10));
         rowProperties.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 50));
         rowProperties.add(new ColumnFormat("Kundennr", Element.ALIGN_LEFT, 10));
-        rowProperties.add(new ColumnFormat("Name", Element.ALIGN_LEFT, 10));
         rowProperties.add(new ColumnFormat("Bestellnr.", Element.ALIGN_RIGHT, 10));
         return rowProperties;
     }
@@ -55,9 +65,6 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         row.add(ri.productName);
         // Kundennr.
         row.add(ri.customerNumber);
-        // Name
-        if (ri.companyName != null) row.add(ri.companyName);
-        else row.add("");
         // Bestellnr
         row.add(ri.orderNumber);
         return row;

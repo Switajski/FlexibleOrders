@@ -1,7 +1,9 @@
 package de.switajski.priebes.flexibleorders.itextpdf.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -22,7 +24,7 @@ public class PdfPTableBuilder {
 
     private ArrayList<ColumnFormat> tableProperties;
     private boolean createHeader = true;
-    private Integer breakIndex;
+    private Map<Integer, String> breaks;
     private String breakHeading;
 
     /**
@@ -32,6 +34,7 @@ public class PdfPTableBuilder {
      */
     public PdfPTableBuilder(ArrayList<ColumnFormat> rowProperties) {
         this.tableProperties = rowProperties;
+        breaks = new HashMap<Integer, String>();
     }
 
     public static ArrayList<ColumnFormat> createPropertiesWithFourCols() {
@@ -198,8 +201,8 @@ public class PdfPTableBuilder {
 
     private void createBody(PdfPTable pdfPTable) {
         for (int i = 0; i < bodyList.size(); i++) {
-            if (breakIndex != null && breakIndex == i) {
-                Phrase phrase = new PhraseBuilder(breakHeading).size12().build();
+            if (breaks != null && breaks.containsKey(i)) {
+                Phrase phrase = new PhraseBuilder(breaks.get(i)).size12().build();
                 PdfPCell cell = new PdfPCell();
                 cell.addElement(phrase);
                 cell.setBorder(Rectangle.BOTTOM);
@@ -262,8 +265,7 @@ public class PdfPTableBuilder {
     }
 
     public void addBreak(String heading) {
-        breakIndex = bodyList.size();
-        breakHeading = heading;
+        breaks.put(bodyList.size(), heading);
     }
 
 }

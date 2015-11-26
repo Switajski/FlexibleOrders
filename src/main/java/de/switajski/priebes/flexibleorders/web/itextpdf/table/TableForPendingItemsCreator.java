@@ -1,9 +1,7 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf.table;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -13,6 +11,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
+import de.switajski.priebes.flexibleorders.web.itextpdf.ReportViewHelper;
 
 public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
 
@@ -22,11 +21,10 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());
-        // Refactor - see #71
         String customerNumber = "";
         for (ReportItemInPdf ri : cReport.itemDtos) {
             if (!ri.customerNumber.equals(customerNumber)) {
-                if (hasManyCustomers(cReport)) addBreak(builder, ri);
+                if (ReportViewHelper.hasManyCustomers(cReport)) addBreak(builder, ri);
                 customerNumber = ri.customerNumber;
             }
             List<String> row = createRow(ri);
@@ -34,14 +32,6 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         }
 
         return builder.withFooter(false).build();
-    }
-
-    private boolean hasManyCustomers(ReportDto report) {
-        Set<String> customerNumbers = new HashSet<String>();
-        for (ReportItemInPdf item : report.itemDtos) {
-            customerNumbers.add(item.customerNumber);
-        }
-        return customerNumbers.size() > 1;
     }
 
     private void addBreak(PdfPTableBuilder builder, ReportItemInPdf ri) {

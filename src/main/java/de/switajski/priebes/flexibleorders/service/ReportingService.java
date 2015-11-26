@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
@@ -37,6 +39,8 @@ public class ReportingService {
     private ReportItemToItemDtoConverterService reportItemToItemDtoConversionService;
     @Autowired
     private ReportRepository reportRepo;
+    @Autowired
+    private ShippingAddressService shippingAddressService;
     @Autowired
     private ReportItemRepository reportItemRepo;
     @Autowired
@@ -154,11 +158,12 @@ public class ReportingService {
         Specifications<ReportItem> specs = Specifications
                 .where(new AgreedItemsToBeShippedSpec());
         if (customer != null) specs = specs.and(new HasCustomerSpec(customer));
-        for (ReportItem ri : reportItemRepo.findAll(
-                specs
-                // , new Sort(new
-                // org.springframework.data.domain.Sort.Order("orderItem.order.customerOrder.customerNumber"))
-                )) {
+
+        List<ReportItem> reportItems = reportItemRepo.findAll(
+                specs // , new Sort(new
+                      // org.springframework.data.domain.Sort.Order("orderItem.order.customerOrder.customerNumber"))
+                );
+        for (ReportItem ri : reportItems) {
             if (ri.overdue() > 0) {
                 report.itemDtos.add(new ReportItemInPdf(ri));
             }
@@ -168,7 +173,20 @@ public class ReportingService {
                 report.customerLastName = customer.getLastName();
             }
             else report.customerFirstName = "Alle Kunden";
+
+        }
+        if (customer != null) {
+            Collection<Address> sAddresses = shippingAddressService.retrieve(reportItems);
+            if (sAddresses.size() > 0) {
+                report.shippingSpecific_shippingAddress = sAddresses.iterator().next();
+            }
         }
         return report;
     }
+
+    @Transactional(readOnly = true)
+    public ReportDto retrieveAllToBeShipped() {
+        return retrieveAllToBeShipped(null);
+    }
+
 }

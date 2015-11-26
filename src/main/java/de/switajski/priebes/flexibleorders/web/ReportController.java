@@ -43,6 +43,7 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.ToBeShippedPdfView;
+import de.switajski.priebes.flexibleorders.web.itextpdf.ToBeShippedToOneCustomerPdfView;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs
@@ -110,7 +111,7 @@ public class ReportController {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
         ReportDto report = reportingService.retrieveAllToBeShipped(customer);
-        return new ModelAndView(ToBeShippedPdfView.class.getSimpleName(),
+        return new ModelAndView(ToBeShippedToOneCustomerPdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(), report);
     }
 
@@ -119,7 +120,7 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
 
-        ReportDto report = reportingService.retrieveAllToBeShipped(null);
+        ReportDto report = reportingService.retrieveAllToBeShipped();
         return new ModelAndView(ToBeShippedPdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(), report);
     }

@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,9 +22,11 @@ public abstract class AddressFromPurchaseAgreementRetriever {
         Set<Address> addresses = new HashSet<Address>();
         if (reportItem.getReport() instanceof OrderConfirmation) {
             // a purchase agreement only exists after OrderAgreement
-            addresses.add(getAddress(getPurchaseAgreementFromOrderConfirmation(reportItem)));
+            PurchaseAgreement pa = ((OrderConfirmation) reportItem.getReport()).getPurchaseAgreement();
+            addresses.add(getAddress(pa));
         }
-        else {
+        else {// TODO: deprecated and buggy retrieval method, after successors
+              // and predecessors of an report item were introduced...
             DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
             for (ConfirmationItem ai : dh.reportItems(ConfirmationItem.class)) {
                 try {
@@ -38,12 +41,8 @@ public abstract class AddressFromPurchaseAgreementRetriever {
         return addresses;
     }
 
-    private PurchaseAgreement getPurchaseAgreementFromOrderConfirmation(ReportItem reportItem) {
-        return ((OrderConfirmation) reportItem.getReport()).getPurchaseAgreement();
-    }
-
     @Transactional(readOnly = true)
-    public Set<Address> retrieve(Set<ReportItem> reportItems) {
+    public Set<Address> retrieve(Collection<ReportItem> reportItems) {
         Set<Address> addresses = new HashSet<Address>();
         for (ReportItem ri : reportItems) {
             addresses.addAll(retrieve(ri));

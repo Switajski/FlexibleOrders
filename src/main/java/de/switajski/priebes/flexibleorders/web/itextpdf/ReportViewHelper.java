@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,8 @@ import com.itextpdf.text.Paragraph;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 public class ReportViewHelper {
 
@@ -75,6 +78,14 @@ public class ReportViewHelper {
         paragraphs.add(ParagraphBuilder.createEmptyLine());
 
         return paragraphs;
+    }
+
+    public static boolean hasManyCustomers(ReportDto report) {
+        Set<String> customerNumbers = new HashSet<String>();
+        for (ReportItemInPdf item : report.itemDtos) {
+            customerNumbers.add(item.customerNumber);
+        }
+        return customerNumbers.size() > 1;
     }
 
     public static Paragraph createDate(String date) {

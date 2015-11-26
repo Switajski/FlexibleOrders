@@ -31,7 +31,6 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-        String customerNo = report.customerNumber.toString();
         String date = "Rechnungsdatum: "
                 + dateFormat.format(report.created);
         String heading = "Rechnung " + report.documentNumber;
@@ -50,17 +49,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        ExtInfoTableParameter param = new ExtInfoTableParameter();
-        param.orderNumbers = report.related_orderNumbers;
-        param.orderConfirmationNumbers = report.related_orderConfirmationNumbers;
-        param.deliveryNotesNumbers = report.related_deliveryNotesNumbers;
-
-        param.vendorNumber = report.customerSpecific_vendorNumber;
-        param.contactInformation = report.customerSpecific_contactInformation;
-        param.mark = report.customerSpecific_mark;
-        param.vatIdNo = report.customerSpecific_vatIdNo;
-        param.date = date;
-        param.customerNo = customerNo;
+        ExtInfoTableParameter param = new ExtInfoTableParameter(report);
         param.billing = StringUtils.isEmpty(report.invoiceSpecific_billing) ? "" : "Abrechnung: " + report.invoiceSpecific_billing;
 
         document.add(new ExtendedTableHeaderCreator().create(param));

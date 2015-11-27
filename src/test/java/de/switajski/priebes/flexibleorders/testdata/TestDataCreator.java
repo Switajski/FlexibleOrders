@@ -33,7 +33,6 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -103,7 +102,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     // @Ignore("This test is to initialize test data for GUI testing")
     @Test
-    @Rollback(false)
+    // @Rollback(false)
     public void run() {
         createTestData();
     }

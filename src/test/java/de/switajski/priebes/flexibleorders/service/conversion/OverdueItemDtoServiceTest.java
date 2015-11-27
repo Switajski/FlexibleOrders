@@ -2,11 +2,7 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +23,6 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.InvoiceItemB
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OverdueItemDtoServiceTest {
 
@@ -55,99 +50,88 @@ public class OverdueItemDtoServiceTest {
     Invoice r21;
 
     // Output
-    ItemDto itemDto;
+    int overdue;
 
     @Before
     public void setup() {
         overdueItemDtoCreator = new ReportItemToItemDtoConverterService();
     }
 
-    @Test
-    public void shouldCreateItemToBeShippedIfQtyOfConfirmationItemIsNotCoveredByShippingItems() {
+    /**
+     * extracted case "Paul" from test data.ods
+     */
+    private void givenTestData() {
         givenB11();
         givenB15();
         givenAB11();
         givenAB15();
         givenL14();
         givenL15();
+    }
 
-        whenCreatingOverdue(ab11.getItems().iterator().next());
+    @Test
+    public void shouldCreateItemToBeShippedIfQtyOfConfirmationItemIsNotCoveredByShippingItems() {
+        givenTestData();
 
-        assertThat(itemDto.quantity, equalTo(10));
+        whenDeterminingOverdue(l14.getItems().iterator().next());
+
+        assertThat(overdue, equalTo(5));
     }
 
     @Test
     public void shouldNotCreateItemToBeShippedIfQtyOfConfirmationItemIsCoveredByShippingItems() {
-        givenB11();
-        givenB15();
-        givenAB15();
-        givenL15();
+        givenTestData();
 
-        whenCreatingOverdue(ab15.getItems().iterator().next());
+        whenDeterminingOverdue(ab15.getItems().iterator().next());
 
-        assertThat(itemDto, is(nullValue()));
+        assertThat(overdue, is(equalTo(0)));
     }
 
     @Test
     public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists() {
-        givenB11();
-        givenB15();
-        givenL14();
-        givenL15();
+        givenTestData();
 
-        whenCreatingOverdue(l14.getItems().iterator().next());
+        whenDeterminingOverdue(l14.getItems().iterator().next());
 
-        assertThat(itemDto.quantity, equalTo(5));
+        assertThat(overdue, equalTo(5));
     }
 
     @Test
     public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists2() {
-        givenB11();
-        givenB15();
-        givenL14();
-        givenL15();
+        givenTestData();
 
-        whenCreatingOverdue(l15_si_b11);
+        whenDeterminingOverdue(l15_si_b11);
 
-        assertThat(itemDto.quantity, equalTo(15));
+        assertThat(overdue, equalTo(15));
     }
 
     @Test
     public void shouldCreateItemToBeInvoicedIfNoInvoiceItemExists3() {
-        givenB11();
-        givenB15();
-        givenL14();
-        givenL15();
+        givenTestData();
 
-        whenCreatingOverdue(l15_si_b15);
+        whenDeterminingOverdue(l15_si_b15);
 
-        assertThat(itemDto.quantity, equalTo(8));
+        assertThat(overdue, equalTo(8));
     }
 
     @Test
     public void shouldNotCreateItemToBeInvoicedIfInvoiceItemWithSameQtyExists() {
-        givenB11();
-        givenB15();
-        givenL14();
-        givenL15();
+        givenTestData();
         givenR15();
 
-        whenCreatingOverdue(l15_si_b11);
+        whenDeterminingOverdue(l15_si_b11);
 
-        assertThat(itemDto, is(nullValue()));
+        assertThat(overdue, is(equalTo(0)));
     }
 
     @Test
     public void shouldCreateItemToBeInvoicedIfQtyOfShippingItemsAreNotCoveredByInvoiceItem() {
-        givenB11();
-        givenB15();
-        givenL14();
-        givenL15();
+        givenTestData();
         givenR15();
 
-        whenCreatingOverdue(l14.getItems().iterator().next());
+        whenDeterminingOverdue(l14.getItems().iterator().next());
 
-        assertThat(itemDto.quantity, is(equalTo(5)));
+        assertThat(overdue, is(equalTo(5)));
     }
 
     @Test
@@ -156,15 +140,15 @@ public class OverdueItemDtoServiceTest {
         givenL2xs();
         givenR21();
 
-        Set<ItemDto> itemDtos = new HashSet<ItemDto>();
-        whenCreatingOverdue(l21.getItems().iterator().next());
-        itemDtos.add(itemDto);
-        whenCreatingOverdue(l22.getItems().iterator().next());
-        itemDtos.add(itemDto);
-        whenCreatingOverdue(l23.getItems().iterator().next());
-        itemDtos.add(itemDto);
+        int sumOverdue = 0;
+        whenDeterminingOverdue(l21.getItems().iterator().next());
+        sumOverdue += overdue;
+        whenDeterminingOverdue(l22.getItems().iterator().next());
+        sumOverdue += overdue;
+        whenDeterminingOverdue(l23.getItems().iterator().next());
+        sumOverdue += overdue;
 
-        assertThat(itemDtos.size(), is(equalTo(2)));
+        assertThat(sumOverdue, is(equalTo(2)));
 
     }
 
@@ -183,6 +167,7 @@ public class OverdueItemDtoServiceTest {
                 .addItem(new ShippingItemBuilder()
                         .setQuantity(5)
                         .setItem(orderItemOfB11())
+                        .setPredecessor(ab11.getItems().iterator().next())
                         .build())
                 .build();
     }
@@ -233,6 +218,7 @@ public class OverdueItemDtoServiceTest {
                 .setDocumentNumber("R15")
                 .addItem(new InvoiceItemBuilder()
                         .setItem(orderItemOfB11())
+                        .setPredecessor(l21.getItems().iterator().next())
                         .setQuantity(1)
                         .build())
                 .build();
@@ -242,6 +228,7 @@ public class OverdueItemDtoServiceTest {
         DeliveryNotes createSingleDeliveryNotesForB11 = new DeliveryNotesBuilder()
                 .addItem(new ShippingItemBuilder()
                         .setItem(orderItemOfB11())
+                        .setPredecessor(l15_si_b11)
                         .setQuantity(1)
                         .build())
                 .build();
@@ -254,6 +241,7 @@ public class OverdueItemDtoServiceTest {
         l15_si_b15 = new ShippingItemBuilder()
                 .setReport(l15)
                 .setItem(orderItemOfB15())
+                .setPredecessor(ab15.getItems().iterator().next())
                 .setQuantity(8)
                 .build();
         l15.addItem(l15_si_b15);
@@ -261,6 +249,7 @@ public class OverdueItemDtoServiceTest {
         l15_si_b11 = new ShippingItemBuilder()
                 .setReport(l15)
                 .setItem(orderItemOfB11())
+                .setPredecessor(ab11.getItems().iterator().next())
                 .setQuantity(15)
                 .build();
         l15.addItem(l15_si_b11);
@@ -272,6 +261,7 @@ public class OverdueItemDtoServiceTest {
                 .setDocumentNumber("R15")
                 .addItem(new InvoiceItemBuilder()
                         .setItem(orderItemOfB11())
+                        .setPredecessor(l15_si_b11)
                         .setQuantity(15)
                         .build())
                 .build();
@@ -281,7 +271,7 @@ public class OverdueItemDtoServiceTest {
         return b15.getItems().iterator().next();
     }
 
-    void whenCreatingOverdue(ReportItem reportItem) {
-        itemDto = overdueItemDtoCreator.createOverdue(reportItem);
+    void whenDeterminingOverdue(ReportItem reportItem) {
+        overdue = reportItem.overdue();
     }
 }

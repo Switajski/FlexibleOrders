@@ -64,6 +64,10 @@ public class DeliveryHistory {
         return cis;
     }
 
+    /**
+     * @deprecated, use methods ReportItem
+     * @return
+     */
     public Set<ConfirmationItem> notAgreedConfirmationItems() {
         Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
         for (ConfirmationItem ci : reportItems(ConfirmationItem.class))

@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -22,6 +23,14 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
         bean.setOrderItem(item);
         bean.setCreated(created);
         bean.setPredecessor(predecessor);
+        if (predecessor != null) {
+            if (predecessor.getSuccessors() == null) {
+                predecessor.setSuccessors(new HashSet<ReportItem>());
+            }
+            if (!predecessor.getSuccessors().contains(predecessor)) {
+                predecessor.getSuccessors().add(predecessor);
+            }
+        }
         bean.setSuccessors(successors);
         return bean;
     }

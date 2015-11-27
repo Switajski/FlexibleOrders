@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Rollback;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
@@ -47,7 +46,6 @@ public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest 
     @Autowired
     private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
-    @Rollback(false)
     @Test
     public void shouldDisplayWholeDocuments() {
 

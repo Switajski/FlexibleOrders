@@ -18,7 +18,7 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
 
     public DeliveryHistoryDto(DeliveryHistory deliveryHistory) {
         this.add(createChild(
-                StringUtil.concatWithCommas(deliveryHistory.getOrderNumbers()),
+                StringUtil.concatWithCommas(deliveryHistory.relatedOrderNumbers()),
                 createOrderString(deliveryHistory),
                 true));
         for (ReportItem ri : deliveryHistory.getItemsSorted()) {
@@ -41,7 +41,7 @@ public class DeliveryHistoryDto extends ArrayList<Map<String, Object>> {
 
     public String createOrderString(DeliveryHistory dh) {
         OrderItem oi = dh.getItems().iterator().next().getOrderItem();
-        return StringUtil.concatWithCommas(dh.getOrderNumbers()) +
+        return StringUtil.concatWithCommas(dh.relatedOrderNumbers()) +
                 ": " + oi.getOrderedQuantity() + " x " + oi.getProduct().getName();
     }
 

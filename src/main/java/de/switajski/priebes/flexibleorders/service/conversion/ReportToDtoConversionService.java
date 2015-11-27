@@ -51,12 +51,12 @@ public class ReportToDtoConversionService {
         dto.items = report.getItems();
 
         DeliveryHistory dh = DeliveryHistory.of(report);
-        dto.related_creditNoteNumbers = dh.getCreditNoteNumbers();
-        dto.related_deliveryNotesNumbers = dh.getDeliveryNotesNumbers();
-        dto.related_invoiceNumbers = dh.getInvoiceNumbers();
-        dto.related_orderAgreementNumbers = dh.getOrderAgreementNumbers();
-        dto.related_orderNumbers = dh.getOrderNumbers();
-        dto.related_orderConfirmationNumbers = dh.getOrderConfirmationNumbers();
+        dto.related_creditNoteNumbers = dh.relatedCreditNoteNumbers();
+        dto.related_deliveryNotesNumbers = dh.relatedDeliveryNotesNumbers();
+        dto.related_invoiceNumbers = dh.relatedInvoiceNumbers();
+        dto.related_orderAgreementNumbers = dh.relatedOrderAgreementNumbers();
+        dto.related_orderNumbers = dh.relatedOrderNumbers();
+        dto.related_orderConfirmationNumbers = dh.relatedOrderConfirmationNumbers();
 
         Collection<Customer> customers = report.getCustomers();
         if (report.getCustomers().size() > 1) {

@@ -57,24 +57,6 @@ public class DeliveryHistory {
         return new DeliveryHistory(orderItem.getReportItems());
     }
 
-    public Set<ConfirmationItem> agreedConfirmationItems() {
-        Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
-        for (ConfirmationItem ci : reportItems(ConfirmationItem.class))
-            if (ci.isAgreed()) cis.add(ci);
-        return cis;
-    }
-
-    /**
-     * @deprecated, use methods ReportItem
-     * @return
-     */
-    public Set<ConfirmationItem> notAgreedConfirmationItems() {
-        Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
-        for (ConfirmationItem ci : reportItems(ConfirmationItem.class))
-            if (!ci.isAgreed()) cis.add(ci);
-        return cis;
-    }
-
     public <T extends ReportItem> Set<T> reportItems(Class<T> type) {
         Set<T> riToReturn = new HashSet<T>();
         for (ReportItem ri : reportItems) {
@@ -110,52 +92,45 @@ public class DeliveryHistory {
         return reportItems.isEmpty();
     }
 
-    public ShippingItem getShippingItemOf(InvoiceItem ii) {
-        Set<ShippingItem> sis = this.reportItems(ShippingItem.class);
-        if (sis.size() > 1) throw new IllegalStateException("Mehr als eine zutreffende Lieferscheinposition gefunden");
-        else return sis.iterator().next();
-    }
-
-    public Set<String> getOrderNumbers() {
+    public Set<String> relatedOrderNumbers() {
         Set<String> orders = new HashSet<String>();
-        for (ReportItem ri : this.reportItems)
+        for (ReportItem ri : reportItems)
             orders.add(ri.getOrderItem().getOrder().getOrderNumber());
         return orders;
 
     }
 
-    public Set<String> getOrderConfirmationNumbers() {
-        return getReportNumbers(ConfirmationItem.class);
+    public Set<String> relatedOrderConfirmationNumbers() {
+        return relatedReportNumbers(ConfirmationItem.class);
     }
 
-    public Set<String> getDeliveryNotesNumbers() {
-        return getReportNumbers(ShippingItem.class);
+    public Set<String> relatedDeliveryNotesNumbers() {
+        return relatedReportNumbers(ShippingItem.class);
     }
 
-    public Set<String> getInvoiceNumbers() {
-        return getReportNumbers(InvoiceItem.class);
+    public Set<String> relatedInvoiceNumbers() {
+        return relatedReportNumbers(InvoiceItem.class);
     }
 
-    public Set<String> getOrderAgreementNumbers() {
+    public Set<String> relatedOrderAgreementNumbers() {
         Set<String> nos = new HashSet<String>();
         for (ReportItem ci : reportItems(ConfirmationItem.class)) {
-            ConfirmationItem cis = (ConfirmationItem) ci;
             OrderConfirmation oc = (OrderConfirmation) ci.getReport();
             if (oc.isAgreed()) nos.add(oc.getOrderAgreementNumber());
         }
         return nos;
     }
 
-    public Set<String> getCreditNoteNumbers() {
-        return getReportNumbers(CreditNoteItem.class);
+    public Set<String> relatedCreditNoteNumbers() {
+        return relatedReportNumbers(CreditNoteItem.class);
     }
 
-    public <T extends ReportItem> Set<String> getReportNumbers(Class<? extends ReportItem> clazz) {
-        Set<String> nos = new HashSet<String>();
-        for (ReportItem ci : reportItems(clazz)) {
-            nos.add(ci.getReport().getDocumentNumber());
+    public <T extends ReportItem> Set<String> relatedReportNumbers(Class<? extends ReportItem> clazz) {
+        Set<String> numbers = new HashSet<String>();
+        for (ReportItem ri : reportItems(clazz)) {
+            numbers.add(ri.getReport().getDocumentNumber());
         }
-        return nos;
+        return numbers;
     }
 
     public String provideStatus() {

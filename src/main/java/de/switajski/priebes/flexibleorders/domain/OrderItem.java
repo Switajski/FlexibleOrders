@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -81,11 +80,13 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
     }
 
     public int toBeConfirmed() {
-        DeliveryHistory deliveryHistory = DeliveryHistory.of(this);
-        if (deliveryHistory.isEmpty()) {
-            return orderedQuantity;
-        }
-        return orderedQuantity - QuantityUtility.sumQty(deliveryHistory.notAgreedConfirmationItems());
+        if (reportItems == null || reportItems.isEmpty()) return orderedQuantity;
+
+        Set<ConfirmationItem> cis = new HashSet<ConfirmationItem>();
+        for (ConfirmationItem ci : getReportItems(ConfirmationItem.class))
+            if (!ci.isAgreed()) cis.add(ci);
+
+        return orderedQuantity - QuantityUtility.sumQty(cis);
     }
 
     @Override

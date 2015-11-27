@@ -6,7 +6,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculatorTest;
 import de.switajski.priebes.flexibleorders.application.PurchaseAgreementServiceTest;
-import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculatorTest;
 import de.switajski.priebes.flexibleorders.domain.ProductTest;
 import de.switajski.priebes.flexibleorders.itextpdf.DeliveryNotesPdfFileTest;
 import de.switajski.priebes.flexibleorders.itextpdf.InvoicePdfFileTest;
@@ -26,7 +25,6 @@ import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
         JacksonDeserializationTest.class,
         OrderingServiceTest.class,
         ProductTest.class,
-        ShippingCostsCalculatorTest.class,
         PurchaseAgreementServiceTest.class,
         InvoicingServiceTest.class,
         ShippingServiceTest.class,

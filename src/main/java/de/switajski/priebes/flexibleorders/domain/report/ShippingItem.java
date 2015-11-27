@@ -20,6 +20,7 @@ public class ShippingItem extends ReportItem {
                 quantityToDeliver,
                 date);
         report = deliveryNotes;
+        report.addItem(this);
     }
 
     @Override

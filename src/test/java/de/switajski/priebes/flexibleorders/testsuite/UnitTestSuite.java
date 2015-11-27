@@ -8,6 +8,10 @@ import de.switajski.priebes.flexibleorders.application.AmountCalculatorTest;
 import de.switajski.priebes.flexibleorders.application.PurchaseAgreementServiceTest;
 import de.switajski.priebes.flexibleorders.application.ShippingCostsCalculatorTest;
 import de.switajski.priebes.flexibleorders.domain.ProductTest;
+import de.switajski.priebes.flexibleorders.itextpdf.DeliveryNotesPdfFileTest;
+import de.switajski.priebes.flexibleorders.itextpdf.InvoicePdfFileTest;
+import de.switajski.priebes.flexibleorders.itextpdf.OrderConfirmationPdfFileTest;
+import de.switajski.priebes.flexibleorders.itextpdf.OrderPdfFileTest;
 import de.switajski.priebes.flexibleorders.service.OrderingServiceTest;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingServiceTest;
 import de.switajski.priebes.flexibleorders.service.api.OrderNumberGeneratorServiceTest;
@@ -28,7 +32,11 @@ import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
         ShippingServiceTest.class,
         ProcessStepTest.class,
         StatusFilterDispatcherTest.class,
-        OrderNumberGeneratorServiceTest.class
+        OrderNumberGeneratorServiceTest.class,
+        DeliveryNotesPdfFileTest.class,
+        InvoicePdfFileTest.class,
+        OrderPdfFileTest.class,
+        OrderConfirmationPdfFileTest.class,
 })
 public class UnitTestSuite {
 

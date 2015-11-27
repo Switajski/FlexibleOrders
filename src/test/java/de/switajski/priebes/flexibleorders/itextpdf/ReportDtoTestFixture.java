@@ -97,7 +97,10 @@ public class ReportDtoTestFixture {
         return new OrderItemBuilder()
                 .setNegotiatedPriceNet(price)
                 .setOrderedQuantity(i)
-                .setOrder(new OrderBuilder().setOrderNumber("AB151231001-2").build())
+                .setOrder(new OrderBuilder()
+                        .setCustomer(customer)
+                        .setOrderNumber("AB151231001-2")
+                        .build())
                 .setProduct(
                         new CatalogProductBuilder("some productname ", "65187", ProductType.PRODUCT)
                                 .setRecommendedPriceNet(priceNegotiated)

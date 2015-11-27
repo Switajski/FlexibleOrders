@@ -74,7 +74,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator {
 
         whenListingItemsToBeProcessed();
 
-        assertThat(filterReport("R11").size(), equalTo(2));
+        assertThat(filterReport("R11").size(), equalTo(4));
     }
 
     private List<ItemDto> filterReport(String string) {

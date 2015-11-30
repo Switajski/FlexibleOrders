@@ -162,7 +162,9 @@ public class ReportingService {
         List<ReportItem> reportItems = reportItemRepo.findAll(specs);
         for (ReportItem ri : reportItems) {
             if (ri.overdue() > 0) {
-                report.itemDtos.add(new ReportItemInPdf(ri));
+                ReportItemInPdf reportItemInPdf = new ReportItemInPdf(ri);
+                reportItemInPdf.quantity = ri.overdue();
+                report.itemDtos.add(reportItemInPdf);
             }
             if (customer != null) {
                 report.customerNumber = customer.getCustomerNumber();

@@ -32,7 +32,7 @@ public class ToBeShippedPdfView extends PriebesIText5PdfView {
         String stringWithoutNull = toStringWithoutNull(report.customerNumber);
         if (!stringWithoutNull.equals("")) stringWithoutNull = "Kundennr.: " + stringWithoutNull;
         document.add(new SimpleTableHeaderCreator().create(
-                report.customerFirstName + " " + toStringWithoutNull(report.customerLastName),
+                toStringWithoutNull(report.customerFirstName) + " " + toStringWithoutNull(report.customerLastName),
                 stringWithoutNull, "", ""));
 
         document.add(ParagraphBuilder.createEmptyLine());

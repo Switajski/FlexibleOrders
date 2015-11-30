@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,12 +33,14 @@ public class CatalogProductServiceByMagento {
 
     public Page<CatalogProduct> findByKeyword(Pageable pageable, String query) {
 
-        StringBuilder urlBuilder;
-        urlBuilder = new StringBuilder(URL)
-        .append("?limit=").append(pageable.getPageSize())
-        .append("&page=").append(pageable.getPageNumber())
-        .append("&filter[1][attribute]=name&filter[1][like]=%")
-        .append(query).append("%");
+        String attribute = "name";
+        if (StringUtils.isNumeric(query)) attribute = "sku";
+
+        StringBuilder urlBuilder = new StringBuilder(URL)
+                .append("?limit=").append(pageable.getPageSize())
+                .append("&page=").append(pageable.getPageNumber())
+                .append("&filter[1][attribute]=").append(attribute).append("&filter[1][like]=%")
+                .append(query).append("%");
 
         MagentoApiProductResponseObject productMap = new MagentoApiProductResponseObject();
         try {

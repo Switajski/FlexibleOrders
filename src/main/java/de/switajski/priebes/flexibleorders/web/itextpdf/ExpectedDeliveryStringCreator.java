@@ -12,6 +12,7 @@ public class ExpectedDeliveryStringCreator {
     }
 
     public static String createDeliveryWeekString(LocalDate expectedDelivery, boolean expectedDeliveryDateDeviates) {
+        // FIXME:very buggy - and the first phrse should be bold. But isn't
         String description;
         if (expectedDelivery == null) description = "vorauss. Lieferwoche: ";
         else if (expectedDeliveryDateDeviates) description = "Von Bestellung abweichende Lieferwoche: ";

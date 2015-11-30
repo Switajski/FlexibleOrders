@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.web.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -10,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
@@ -76,7 +76,12 @@ public class ReportDto {
 
     public boolean showPricesInDeliveryNotes;
 
-    public Collection<ReportItem> getItemsByOrder() {
+    /**
+     * @deprecated because of uneccessary dependencies to ReportItem use
+     *             {@link #getReportItemsInPdfByOrder()} instead
+     * @return
+     */
+    public List<ReportItem> getItemsByOrder() {
         List<ReportItem> ris = new ArrayList<ReportItem>(items);
         Collections.sort(ris, new Comparator<ReportItem>() {
 
@@ -106,9 +111,53 @@ public class ReportDto {
             }
 
         });
-        return Collections.unmodifiableCollection(ris);
+        return Collections.unmodifiableList(ris);
     }
 
+    public List<ReportItemInPdf> getReportItemsInPdfByOrder() {
+        List<ReportItemInPdf> ris = new ArrayList<ReportItemInPdf>(itemDtos);
+        Collections.sort(ris, new Comparator<ReportItemInPdf>() {
+
+            @Override
+            public int compare(ReportItemInPdf arg0, ReportItemInPdf arg1) {
+                if (!arg0.customerNumber.equals(arg1.customerNumber)) {
+                    return arg0.customerNumber.compareTo(arg1.customerNumber);
+                }
+                String productName1 = arg0.productName;
+                String productName2 = arg1.productName;
+                if (hasProductNo(arg0) && hasProductNo(arg1))
+                return productName1.compareTo(productName2);
+                else if (!hasProductNo(arg0) && !hasProductNo(arg1)) {
+                    if (productName1 != null && productName2 != null)
+                    return productName1.compareTo(productName2);
+                    else
+                    return 0;
+                }
+                else if (hasProductNo(arg0)) {
+                    return -1;
+                }
+                else if (hasProductNo(arg1)) {
+                    return 1;
+                }
+
+                else
+                return 0;
+            }
+
+            private boolean hasProductNo(ReportItemInPdf arg0) {
+                return !StringUtils.isEmpty(arg0.productName);
+            }
+
+        });
+
+        return Collections.unmodifiableList(ris);
+    }
+
+    /**
+     * @deprecated because of uneccessary dependencies use
+     *             {@link #getReportItemsInPdfByOrder()} instead
+     * @return
+     */
     public List<OrderItem> getOrderItemsByOrder() {
         List<OrderItem> ris = new ArrayList<OrderItem>(orderItems);
         Collections.sort(ris, new Comparator<OrderItem>() {

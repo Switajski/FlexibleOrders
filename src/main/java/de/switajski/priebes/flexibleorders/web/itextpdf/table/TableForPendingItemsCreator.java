@@ -18,11 +18,10 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
     @Override
     public PdfPTable create(ReportDto cReport)
             throws DocumentException {
-
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());
         String customerNumber = "";
-        for (ReportItemInPdf ri : cReport.itemDtos) {
+        for (ReportItemInPdf ri : cReport.getReportItemsInPdfByOrder()) {
             if (!ri.customerNumber.equals(customerNumber)) {
                 if (ReportViewHelper.hasManyCustomers(cReport)) addBreak(builder, ri);
                 customerNumber = ri.customerNumber;

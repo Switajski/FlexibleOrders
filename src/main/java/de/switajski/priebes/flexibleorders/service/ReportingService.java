@@ -159,10 +159,7 @@ public class ReportingService {
                 .where(new AgreedItemsToBeShippedSpec());
         if (customer != null) specs = specs.and(new HasCustomerSpec(customer));
 
-        List<ReportItem> reportItems = reportItemRepo.findAll(
-                specs // , new Sort(new
-                      // org.springframework.data.domain.Sort.Order("orderItem.order.customerOrder.customerNumber"))
-                );
+        List<ReportItem> reportItems = reportItemRepo.findAll(specs);
         for (ReportItem ri : reportItems) {
             if (ri.overdue() > 0) {
                 report.itemDtos.add(new ReportItemInPdf(ri));

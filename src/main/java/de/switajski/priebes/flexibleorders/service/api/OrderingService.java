@@ -117,6 +117,7 @@ public class OrderingService {
             CatalogProduct cProduct = cProductService.findByProductNumber(ri.product);
             if (cProduct == null) throw new IllegalArgumentException("Artikelnr nicht gefunden");
             product = cProduct.toProduct();
+            product.setName(ri.productName);
             return product;
         }
         catch (Exception e) {

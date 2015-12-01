@@ -58,7 +58,7 @@ public abstract class PriebesIText5PdfView extends AbstractView implements
     /**
      * font settings
      */
-    public static final String ENCODING = BaseFont.CP1252;
+    public static final String ENCODING = BaseFont.IDENTITY_H;
     public static final String FONT = BaseFont.HELVETICA;
     public static final float FONT_SIZE = 10;
     public static final Font font = FontFactory.getFont(

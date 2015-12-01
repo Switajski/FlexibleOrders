@@ -1,6 +1,9 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf.table;
 
 import static com.itextpdf.text.Chunk.NEWLINE;
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.cellWithMixedFont;
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.cellWithSmallBoldFont;
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.cellWithSmallFont;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.util.ArrayList;
@@ -9,11 +12,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
@@ -24,7 +24,6 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.reference.DeliveryType;
-import de.switajski.priebes.flexibleorders.web.itextpdf.PriebesIText5PdfView;
 import de.switajski.priebes.flexibleorders.web.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
@@ -95,27 +94,6 @@ public class ExtendedTableHeaderCreator {
         }
 
         return wrapInCell(table);
-    }
-
-    private PdfPCell cellWithSmallFont(String createString) {
-        return wrapInCell(new PhraseBuilder(createString).size8().build());
-    }
-
-    private PdfPCell cellWithSmallBoldFont(String text) {
-        return wrapInCell(new PhraseBuilder(text).size8Bold().build());
-    }
-
-    private PdfPCell cellWithMixedFont(String bold, String normal) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(new Chunk(bold, PriebesIText5PdfView.eightSizeBoldFont));
-        paragraph.add(new Chunk(normal, PriebesIText5PdfView.eightSizeFont));
-        return wrapInCell(paragraph);
-    }
-
-    private PdfPCell wrapInCell(Phrase build) {
-        PdfPCell cell = new PdfPCell(build);
-        PdfPCellUtility.noBorder(cell);
-        return cell;
     }
 
     private PdfPCell createCellFor3rdColumn(ExtInfoTableParameter p) {

@@ -26,7 +26,7 @@ public class ToBeShippedToOneCustomerPdfView extends PriebesIText5PdfView {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
-        for (Element p : ReportViewHelper.createAddress(report.shippingSpecific_shippingAddress, this.createLogo()))
+        for (Element p : ReportViewHelper.createHeaderWithAddress(report.shippingSpecific_shippingAddress, this.createLogo()))
             document.add(p);
 
         for (Paragraph p : ReportViewHelper.createHeading("Ausstehende Artikel"))

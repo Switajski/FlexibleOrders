@@ -54,7 +54,7 @@ public class OrderConfirmationPdfView extends PriebesIText5PdfView {
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
 
-        for (Element p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, createLogo()))
+        for (Element p : ReportViewHelper.createHeaderWithAddress(report.invoiceSpecific_headerAddress, createLogo()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));

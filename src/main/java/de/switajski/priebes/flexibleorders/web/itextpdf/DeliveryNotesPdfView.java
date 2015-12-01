@@ -40,7 +40,7 @@ public class DeliveryNotesPdfView extends PriebesIText5PdfView {
         Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;
 
-        for (Element p : ReportViewHelper.createAddress(adresse, createLogo()))
+        for (Element p : ReportViewHelper.createHeaderWithAddress(adresse, createLogo()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));

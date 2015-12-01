@@ -37,7 +37,7 @@ public class InvoicePdfView extends PriebesIText5PdfView {
 
         InvoiceCalculation calculation = new InvoiceCalculation(report);
 
-        for (Element p : ReportViewHelper.createAddress(report.invoiceSpecific_headerAddress, this.createLogo()))
+        for (Element p : ReportViewHelper.createHeaderWithAddress(report.invoiceSpecific_headerAddress, this.createLogo()))
             document.add(p);
 
         document.add(ReportViewHelper.createDate(date));

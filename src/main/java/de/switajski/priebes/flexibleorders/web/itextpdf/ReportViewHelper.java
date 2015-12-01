@@ -1,5 +1,9 @@
 package de.switajski.priebes.flexibleorders.web.itextpdf;
 
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.emptyCell;
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.noBorder;
+import static de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility.wrapInCell;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,72 +28,28 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
-import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
 public class ReportViewHelper {
 
     public static List<Element> createAddress(Address adresse) throws DocumentException {
-        return createAddress(adresse, null);
+        return createHeaderWithAddress(adresse, null);
     }
 
-    public static List<Element> createAddress(Address adresse, Image image)
+    public static List<Element> createHeaderWithAddress(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();
 
-        float indentationLeftForAddress = 36f;
-        elements.add(ParagraphBuilder.createEmptyLine());
-        elements.add(ParagraphBuilder.createEmptyLine());
-        elements.add(ParagraphBuilder.createEmptyLine());
+        PdfPTable table = new PdfPTableBuilder(tableProperties()).withHeader(false).build();
         if (image != null) {
-            Image img = Image.getInstance(image);
-            img.setAlignment(Image.LEFT);
-            img.setIndentationLeft(indentationLeftForAddress);
-            img.scaleToFit(50, 20);
-            elements.add(img);
-        }
-        else {
-            elements.add(ParagraphBuilder.createEmptyLine());
-        }
-
-        if (adresse == null) {
-            elements.add(ParagraphBuilder.createEmptyLine());
-            elements.add(ParagraphBuilder.createEmptyLine());
-            elements.add(ParagraphBuilder.createEmptyLine());
-        }
-        else {
-            boolean name2Empty = StringUtils.isEmpty(adresse.getName2());
-
-            ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
-                    .withIndentationLeft(indentationLeftForAddress)
-                    .withLineSpacing(12f);
-            if (!name2Empty) paragraphBuilder.addTextLine(adresse.getName2());
-            paragraphBuilder.addTextLine(adresse.getStreet())
-                    .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
-                    .addTextLine(adresse.getCountry().getName());
-            if (name2Empty) paragraphBuilder.addTextLine("");
-
-            elements.add(paragraphBuilder.build());
-        }
-        elements.add(ParagraphBuilder.createEmptyLine());
-        return elements;
-    }
-
-    public static List<Element> createAddress_new(Address adresse, Image image)
-            throws DocumentException {
-        List<Element> elements = new ArrayList<Element>();
-
-        PdfPTable table = new PdfPTableBuilder(tableProperties()).build();
-        if (image != null) {
-            table.addCell(" ");
+            table.addCell(emptyCell());
 
             Image img = Image.getInstance(image);
             img.setAlignment(Image.LEFT);
             img.scaleToFit(50, 20);
-            PdfPCell cell = PdfPCellUtility.noBorder();
-            cell.setFixedHeight(20);
-            cell.setBorder(0);
-
-            cell.addElement(img);
+            PdfPCell cell = new PdfPCell(img, false);
+            cell.setFixedHeight(70f);
+            noBorder(cell);
+            cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
             table.addCell(cell);
         }
 
@@ -97,10 +57,10 @@ public class ReportViewHelper {
             PdfPCell pdfPCell = new PdfPCell();
             pdfPCell.setFixedHeight(20f);
             table.addCell(pdfPCell);
-            table.addCell(" ");
+            table.addCell(emptyCell());
         }
         else {
-            table.addCell(" ");
+            table.addCell(emptyCell());
             ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
                     .withLineSpacing(12f);
             if (!StringUtils.isEmpty(adresse.getName2())) {
@@ -110,7 +70,9 @@ public class ReportViewHelper {
                     .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
                     .addTextLine(adresse.getCountry().getName());
 
-            table.addCell(paragraphBuilder.build());
+            PdfPCell cell = wrapInCell(paragraphBuilder.build());
+            cell.setFixedHeight(70f);
+            table.addCell(cell);
         }
         elements.add(table);
         // TODO: return Table
@@ -119,8 +81,8 @@ public class ReportViewHelper {
 
     private static ArrayList<ColumnFormat> tableProperties() {
         ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
-        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 15));
-        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 85));
+        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 8));
+        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 100));
         return rowProperties;
     }
 

@@ -14,20 +14,25 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
+import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtility;
 
 public class ReportViewHelper {
 
     public static List<Element> createAddress(Address adresse) throws DocumentException {
-        return createAddress(adresse, null);
+        return createAddress_old(adresse, null);
     }
 
-    public static List<Element> createAddress(Address adresse, Image image)
+    public static List<Element> createAddress_old(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();
 
@@ -67,6 +72,56 @@ public class ReportViewHelper {
         }
         elements.add(ParagraphBuilder.createEmptyLine());
         return elements;
+    }
+
+    public static List<Element> createAddress(Address adresse, Image image)
+            throws DocumentException {
+        List<Element> elements = new ArrayList<Element>();
+
+        PdfPTable table = new PdfPTableBuilder(tableProperties()).build();
+        if (image != null) {
+            table.addCell(" ");
+
+            Image img = Image.getInstance(image);
+            img.setAlignment(Image.LEFT);
+            img.scaleToFit(50, 20);
+            PdfPCell cell = PdfPCellUtility.noBorder();
+            cell.setFixedHeight(20);
+            cell.setBorder(0);
+
+            cell.addElement(img);
+            table.addCell(cell);
+        }
+
+        if (adresse == null) {
+            PdfPCell pdfPCell = new PdfPCell();
+            pdfPCell.setFixedHeight(20f);
+            table.addCell(pdfPCell);
+            table.addCell(" ");
+        }
+        else {
+            table.addCell(" ");
+            ParagraphBuilder paragraphBuilder = new ParagraphBuilder(adresse.getName1())
+                    .withLineSpacing(12f);
+            if (!StringUtils.isEmpty(adresse.getName2())) {
+                paragraphBuilder.addTextLine(adresse.getName2());
+            }
+            paragraphBuilder.addTextLine(adresse.getStreet())
+                    .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
+                    .addTextLine(adresse.getCountry().getName());
+
+            table.addCell(paragraphBuilder.build());
+        }
+        elements.add(table);
+        // TODO: return Table
+        return elements;
+    }
+
+    private static ArrayList<ColumnFormat> tableProperties() {
+        ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 15));
+        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 85));
+        return rowProperties;
     }
 
     public static List<Paragraph> createHeading(String heading)

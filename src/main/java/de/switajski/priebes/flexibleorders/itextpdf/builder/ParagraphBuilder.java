@@ -59,7 +59,7 @@ public class ParagraphBuilder {
     }
 
     public ParagraphBuilder addTextLine(String text) {
-        this.texts.add(text);
+        texts.add(text);
         return this;
     }
 

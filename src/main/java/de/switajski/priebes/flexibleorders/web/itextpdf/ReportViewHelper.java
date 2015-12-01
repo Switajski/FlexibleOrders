@@ -31,10 +31,6 @@ import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 public class ReportViewHelper {
 
-    public static List<Element> createAddress(Address adresse) throws DocumentException {
-        return createHeaderWithAddress(adresse, null);
-    }
-
     public static List<Element> createHeaderWithAddress(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();

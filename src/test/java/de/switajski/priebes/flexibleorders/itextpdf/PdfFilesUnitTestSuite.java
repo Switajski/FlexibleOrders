@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
         DeliveryNotesPdfFileTest.class,
         InvoicePdfFileTest.class,
         OrderConfirmationPdfFileTest.class,
-        OrderPdfFileTest.class
+        OrderPdfFileTest.class,
+        ToBeShippedPdfFileTest.class
 })
 public class PdfFilesUnitTestSuite {
 

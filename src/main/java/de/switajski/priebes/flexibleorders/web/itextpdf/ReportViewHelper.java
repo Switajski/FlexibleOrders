@@ -29,10 +29,10 @@ import de.switajski.priebes.flexibleorders.web.itextpdf.shorthand.PdfPCellUtilit
 public class ReportViewHelper {
 
     public static List<Element> createAddress(Address adresse) throws DocumentException {
-        return createAddress_old(adresse, null);
+        return createAddress(adresse, null);
     }
 
-    public static List<Element> createAddress_old(Address adresse, Image image)
+    public static List<Element> createAddress(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();
 
@@ -74,7 +74,7 @@ public class ReportViewHelper {
         return elements;
     }
 
-    public static List<Element> createAddress(Address adresse, Image image)
+    public static List<Element> createAddress_new(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();
 

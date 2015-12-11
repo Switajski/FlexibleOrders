@@ -3,7 +3,7 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
 import java.math.BigDecimal;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 
 public class InvoiceCalculation {
     private Amount netGoods, discountAmount, shipping, net, vat, gross;

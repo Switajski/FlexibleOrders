@@ -19,11 +19,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.report.CreditNote;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.itextpdf.OrderPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderConfirmationRepository;
@@ -31,19 +33,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
-import de.switajski.priebes.flexibleorders.service.conversion.DeliveryNotesToDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.InvoiceToDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.OrderConfirmationToDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.web.itextpdf.CreditNotePdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.InvoicePdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.OrderPdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.ToBeShippedPdfView;
-import de.switajski.priebes.flexibleorders.web.itextpdf.ToBeShippedToOneCustomerPdfView;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs
@@ -67,15 +57,7 @@ public class ReportController {
     @Autowired
     OrderingService orderService;
     @Autowired
-    ReportToDtoConversionService reportDtoConversionService;
-    @Autowired
-    ReportToDtoConversionService creditNoteDtoConversionService;
-    @Autowired
-    InvoiceToDtoConversionService invoiceDtoConversionService;
-    @Autowired
-    DeliveryNotesToDtoConversionService deliveryNotesDtoConversionService;
-    @Autowired
-    OrderConfirmationToDtoConversionService orderConfirmationDtoConversionService;
+    ReportToDtoConversionService report2DtoConversionService;
     @Autowired
     OrderToDtoConversionService orderDtoConversionService;
     @Autowired
@@ -96,7 +78,7 @@ public class ReportController {
         }
         else {
             Order order = orderRepo.findByOrderNumber(id);
-            if (order != null) return new ModelAndView(OrderPdfView.class.getSimpleName(),
+            if (order != null) return new ModelAndView(OrderPdf.class.getSimpleName(),
                     ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
@@ -111,7 +93,7 @@ public class ReportController {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
         ReportDto report = reportingService.retrieveAllToBeShipped(customer);
-        return new ModelAndView(ToBeShippedToOneCustomerPdfView.class.getSimpleName(),
+        return new ModelAndView(PdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(), report);
     }
 
@@ -121,27 +103,23 @@ public class ReportController {
         headers.add("Content-Type", "application/pdf; charset=utf-8");
 
         ReportDto report = reportingService.retrieveAllToBeShipped();
-        return new ModelAndView(ToBeShippedPdfView.class.getSimpleName(),
+        return new ModelAndView(PdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(), report);
     }
 
     private ModelAndView createReportSpecificModelAndView(Report report) {
         String model = ReportDto.class.getSimpleName();
         if (report instanceof OrderConfirmation) {
-            return new ModelAndView(OrderConfirmationPdfView.class.getSimpleName(),
-                    model, orderConfirmationDtoConversionService.toDto((OrderConfirmation) report));
+            return new ModelAndView(PdfView.class.getSimpleName(),
+                    model, report2DtoConversionService.toDto((OrderConfirmation) report));
         }
         if (report instanceof DeliveryNotes) {
-            return new ModelAndView(DeliveryNotesPdfView.class.getSimpleName(),
-                    model, deliveryNotesDtoConversionService.toDto((DeliveryNotes) report));
+            return new ModelAndView(PdfView.class.getSimpleName(),
+                    model, report2DtoConversionService.toDto((DeliveryNotes) report));
         }
         if (report instanceof Invoice) {
-            return new ModelAndView(InvoicePdfView.class.getSimpleName(),
-                    model, invoiceDtoConversionService.toDto((Invoice) report));
-        }
-        if (report instanceof CreditNote) {
-            return new ModelAndView(CreditNotePdfView.class.getSimpleName(),
-                    model, creditNoteDtoConversionService.toDto(report));
+            return new ModelAndView(PdfView.class.getSimpleName(),
+                    model, report2DtoConversionService.toDto((Invoice) report));
         }
         throw new IllegalStateException(
                 "Could not find view handler for given Document");

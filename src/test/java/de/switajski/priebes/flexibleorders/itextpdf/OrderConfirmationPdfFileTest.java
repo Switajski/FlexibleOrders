@@ -1,34 +1,23 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.web.itextpdf.OrderConfirmationPdfFile;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationDto;
 
 public class OrderConfirmationPdfFileTest {
 
-    private static final String OC_PDF_FILE = "src/test/resources/ConfirmationReportPdfFileTest.pdf";
+    private OrderConfirmationDto reportDto;
 
     @Test
     public void shouldGenerateOrderConfirmation() throws Exception {
 
-        OrderConfirmationPdfFile bpf = new OrderConfirmationPdfFile();
-        bpf.setFilePathAndName(OC_PDF_FILE);
-        bpf.setLogoPath("src/main/webapp/images/LogoGross.jpg");
+        reportDto = new OrderConfirmationDto();
+        ReportDtoTestFixture.amendTestData(reportDto);
 
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put(ReportDto.class.getSimpleName(), ReportDtoTestFixture.givenReportDto());
-
-        bpf.render(
-                model,
-                new MockHttpServletRequest(),
-                new MockHttpServletResponse());
-
+        whenCreatingPdfFile("OrderConfirmationPdfFile.pdf");
     }
 
+    private void whenCreatingPdfFile(String fileName) throws Exception {
+        new ItextPdfTestHelper().createPdfFile(fileName, reportDto);
+    }
 }

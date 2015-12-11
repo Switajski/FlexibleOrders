@@ -19,6 +19,9 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -27,8 +30,6 @@ import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerS
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 @Service
 public class ReportingService {
@@ -153,7 +154,7 @@ public class ReportingService {
 
     @Transactional(readOnly = true)
     public ReportDto retrieveAllToBeShipped(Customer customer) {
-        ReportDto report = new ReportDto();
+        ToBeShippedDto report = new ToBeShippedDto();
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
                 .where(new AgreedItemsToBeShippedSpec());

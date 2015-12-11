@@ -12,6 +12,8 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
@@ -24,8 +26,6 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.web.dto.ReportItemInPdf;
 
 public class ReportDtoTestFixture {
 
@@ -33,12 +33,15 @@ public class ReportDtoTestFixture {
     private static final Customer customer = new CustomerBuilder().yvonne().build();
 
     public static ReportDto givenReportDto() {
+        return amendTestData(new ReportDto());
+    }
+
+    public static ReportDto amendTestData(ReportDto r) {
         DeliveryMethod deliveryMethod = new DeliveryMethod();
         deliveryMethod.setAddress(AddressBuilder.createDefault());
         deliveryMethod.setName("DEUTSCHE POST");
         deliveryMethod.setPhone("+4940786876");
 
-        ReportDto r = new ReportDto();
         r.invoiceSpecific_headerAddress = customer.getInvoiceAddress();
         r.shippingSpecific_shippingAddress = customer.getShippingAddress();
         r.shippingSpecific_deliveryMethod = deliveryMethod;

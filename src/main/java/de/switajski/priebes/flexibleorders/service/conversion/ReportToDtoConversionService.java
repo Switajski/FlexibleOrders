@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
@@ -14,16 +15,23 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
 import de.switajski.priebes.flexibleorders.service.DeliveryMethodService;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
 
 @Service
 public class ReportToDtoConversionService {
@@ -46,6 +54,59 @@ public class ReportToDtoConversionService {
     @Transactional(readOnly = true)
     public ReportDto toDto(Report report) {
         ReportDto dto = new ReportDto();
+        amendCommonAttributes(report, dto);
+        return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public ReportDto toDto(DeliveryNotes report) {
+        DeliveryNotesDto dto = new DeliveryNotesDto();
+        amendCommonAttributes(report, dto);
+        dto.shippingSpecific_trackNumber = report.getTrackNumber();
+        dto.shippingSpecific_packageNumber = report.getPackageNumber();
+        dto.showPricesInDeliveryNotes = report.isShowPrices();
+        return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public ReportDto toDto(Invoice invoice) {
+        InvoiceDto dto = new InvoiceDto();
+        amendCommonAttributes(invoice, dto);
+        dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
+        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice).getPaymentConditions();
+        dto.invoiceSpecific_billing = invoice.getBilling();
+        dto.invoiceSpecific_discountText = invoice.getDiscountText();
+        dto.invoiceSpecific_discountRate = invoice.getDiscountRate();
+        return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public ReportDto toDto(OrderConfirmation orderConfirmation) {
+        OrderConfirmationDto dto = new OrderConfirmationDto();
+        amendCommonAttributes(orderConfirmation, dto);
+        if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
+        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
+        dto.orderConfirmationSpecific_oldestOrderDate = oldestOrderDate(orderConfirmation.getItems());
+        return dto;
+    }
+
+    private Date oldestOrderDate(Set<ReportItem> items) {
+        Date oldestOrderDate = null;
+        for (ReportItem item : items) {
+            Date created = item.getOrderItem().getOrder().getCreated();
+            if (oldestOrderDate == null) {
+                oldestOrderDate = created;
+            }
+            else {
+                if (oldestOrderDate.after(created)) {
+                    oldestOrderDate = created;
+                }
+            }
+        }
+        return oldestOrderDate;
+    }
+
+    private void amendCommonAttributes(Report report, ReportDto dto) {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -82,7 +143,6 @@ public class ReportToDtoConversionService {
         dto.netGoods = AmountCalculator.sum(AmountCalculator
                 .getAmountsTimesQuantity(report.getItems()));
 
-        return dto;
     }
 
     private DeliveryMethod retrieveDeliveryMethod(Report report) {
@@ -144,4 +204,5 @@ public class ReportToDtoConversionService {
         }
         return null;
     }
+
 }

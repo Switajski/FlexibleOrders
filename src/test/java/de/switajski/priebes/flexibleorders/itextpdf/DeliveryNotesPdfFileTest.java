@@ -3,41 +3,30 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
-import de.switajski.priebes.flexibleorders.web.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.web.itextpdf.DeliveryNotesPdfFile;
 
 public class DeliveryNotesPdfFileTest {
 
-    String pdfPath = "src/test/resources/";
-
-    DeliveryNotesPdfFile deliveryNotesPdfFile;
+    DeliveryNotesPdf deliveryNotesPdfFile;
     ReportDto reportDto;
     Map<String, Object> model;
 
-    @Before
-    public void setup() {
-        deliveryNotesPdfFile = new DeliveryNotesPdfFile();
-        deliveryNotesPdfFile.setLogoPath("src/main/webapp/images/LogoGross.jpg");
-    }
-
     @Test
     public void shouldGenerateDeliveryNotesWithPendingItems() throws Exception {
-        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPendingItems.pdf");
         givenReportDtoModel();
+
         reportDto.items.add(givenPendingItem());
 
-        whenCreatingPdfFile();
+        whenCreatingPdfFile("DeliveryNotesWithPendingItems.pdf");
     }
 
     private PendingItem givenPendingItem() {
@@ -53,38 +42,33 @@ public class DeliveryNotesPdfFileTest {
 
     @Test
     public void shouldGenerateDeliveryNotesWithoutPrices() throws Exception {
-        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithoutPrices.pdf");
         givenReportDtoModel();
 
-        whenCreatingPdfFile();
+        whenCreatingPdfFile("DeliveryNotesWithoutPrices.pdf");
     }
 
     @Test
     public void shouldGenerateDeliveryNotesWithPackageNumbers() throws Exception {
-        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPackageNumbers.pdf");
         givenReportDtoModel();
         addPackageNumbers();
 
-        whenCreatingPdfFile();
+        whenCreatingPdfFile("DeliveryNotesWithPackageNumbers.pdf");
     }
 
     @Test
     public void shouldGenerateDeliveryNotesWithPackageNumbersAndPrices() throws Exception {
-        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPackageNumbersAndPrices.pdf");
         givenReportDtoModel();
         reportDto.showPricesInDeliveryNotes = true;
         addPackageNumbers();
 
-        whenCreatingPdfFile();
+        whenCreatingPdfFile("DeliveryNotesWithPackageNumbersAndPrices.pdf");
     }
 
     @Test
     public void shouldGenerateDeliveryNotesWithPrices() throws Exception {
-        deliveryNotesPdfFile.setFilePathAndName(pdfPath + "DeliveryNotesWithPrices.pdf");
         givenReportDtoModel();
         reportDto.showPricesInDeliveryNotes = true;
 
-        whenCreatingPdfFile();
     }
 
     private void addPackageNumbers() {
@@ -95,19 +79,16 @@ public class DeliveryNotesPdfFileTest {
         }
     }
 
+    private void whenCreatingPdfFile(String fileName) throws Exception {
+        new ItextPdfTestHelper().createPdfFile(fileName, reportDto);
+    }
+
     private void givenReportDtoModel() {
-        reportDto = ReportDtoTestFixture.givenReportDto();
+        reportDto = ReportDtoTestFixture.amendTestData(new DeliveryNotesDto());
         reportDto.shippingSpecific_packageNumber = "1";
 
         model = new HashMap<String, Object>();
         model.put(reportDto.getClass().getSimpleName(), reportDto);
-    }
-
-    private void whenCreatingPdfFile() throws Exception {
-        deliveryNotesPdfFile.render(
-                model,
-                new MockHttpServletRequest(),
-                new MockHttpServletResponse());
     }
 
 }

@@ -9,14 +9,20 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerDto;
 
 public class PdfDocumentAppenderFactory {
 
-    PdfDocumentAppender pdfDocumentAppender;
-    Image logo;
+    private Image logo;
+    private PdfWriter writer;
 
-    public PdfDocumentAppenderFactory(ReportDto reportDto, Image logo, PdfWriter writer) {
+    public PdfDocumentAppenderFactory(Image logo, PdfWriter writer) {
         this.logo = logo;
+        this.writer = writer;
+    }
+
+    public PdfDocumentAppender create(ReportDto reportDto) {
+        PdfDocumentAppender pdfDocumentAppender = null;
         if (reportDto instanceof DeliveryNotesDto) {
             pdfDocumentAppender = new DeliveryNotesPdf(logo, reportDto);
         }
@@ -32,9 +38,7 @@ public class PdfDocumentAppenderFactory {
         else if (reportDto instanceof ToBeShippedDto) {
             pdfDocumentAppender = new ToBeShippedPdf(reportDto);
         }
-    }
-
-    public PdfDocumentAppender create() {
+        else if (reportDto instanceof ToBeShippedToOneCustomerDto) pdfDocumentAppender = new ToBeShippedToOneCustomerPdf(logo, reportDto);
         return pdfDocumentAppender;
     }
 

@@ -22,7 +22,7 @@ public class ReportDtoToPdfFileWriter {
         PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pathAndFileName));
         pdfWriter.setPageEvent(new BusinessLetterPdfTemplate(logo));
         document.open();
-        new PdfDocumentAppenderFactory(reportDto, logo, pdfWriter).create().append(document);
+        new PdfDocumentAppenderFactory(logo, pdfWriter).create(reportDto).append(document);
         document.close();
     }
 

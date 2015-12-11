@@ -51,15 +51,23 @@ public class ReportToDtoConversionService {
     @Autowired
     CustomerDetailsService customerService;
 
+    /**
+     *
+     * @param report
+     * @return if no converter for given report is defined.
+     * 
+     */
     @Transactional(readOnly = true)
-    public ReportDto toDto(Report report) {
-        ReportDto dto = new ReportDto();
-        amendCommonAttributes(report, dto);
-        return dto;
+    public ReportDto convert(Report report) {
+
+        if (report instanceof DeliveryNotes) return toDto((DeliveryNotes) report);
+        else if (report instanceof Invoice) return toDto((Invoice) report);
+        else if (report instanceof OrderConfirmation) return toDto((OrderConfirmation) report);
+
+        return null;
     }
 
-    @Transactional(readOnly = true)
-    public ReportDto toDto(DeliveryNotes report) {
+    private DeliveryNotesDto toDto(DeliveryNotes report) {
         DeliveryNotesDto dto = new DeliveryNotesDto();
         amendCommonAttributes(report, dto);
         dto.shippingSpecific_trackNumber = report.getTrackNumber();
@@ -68,8 +76,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    @Transactional(readOnly = true)
-    public ReportDto toDto(Invoice invoice) {
+    private InvoiceDto toDto(Invoice invoice) {
         InvoiceDto dto = new InvoiceDto();
         amendCommonAttributes(invoice, dto);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
@@ -80,8 +87,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    @Transactional(readOnly = true)
-    public ReportDto toDto(OrderConfirmation orderConfirmation) {
+    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) {
         OrderConfirmationDto dto = new OrderConfirmationDto();
         amendCommonAttributes(orderConfirmation, dto);
         if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();

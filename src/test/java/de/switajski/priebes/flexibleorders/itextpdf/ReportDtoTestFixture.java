@@ -32,10 +32,6 @@ public class ReportDtoTestFixture {
     private static final String O_NR = "3465897";
     private static final Customer customer = new CustomerBuilder().yvonne().build();
 
-    public static ReportDto givenReportDto() {
-        return amendTestData(new ReportDto());
-    }
-
     public static ReportDto amendTestData(ReportDto r) {
         DeliveryMethod deliveryMethod = new DeliveryMethod();
         deliveryMethod.setAddress(AddressBuilder.createDefault());

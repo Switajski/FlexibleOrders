@@ -75,7 +75,7 @@ public class BusinessLetterPdfTemplate implements PdfPageEvent {
     private Image logo;
 
     public BusinessLetterPdfTemplate(Image logo) {
-        this.logo = logo;
+        logo = new PdfConfiguration().logo();
     }
 
     @Override
@@ -215,7 +215,8 @@ public class BusinessLetterPdfTemplate implements PdfPageEvent {
 
     public void insertBigLogo(PdfWriter writer) {
         try {
-            Image img = Image.getInstance(logo);
+            if (logo == null) logo = new PdfConfiguration().logo();
+            Image img = logo;
             img.setAlignment(Image.RIGHT);
             img.scaleToFit(180, 75);
 

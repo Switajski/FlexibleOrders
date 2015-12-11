@@ -17,10 +17,10 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppender;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppenderFactory;
+import de.switajski.priebes.flexibleorders.itextpdf.PdfTemplateFactory;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 
@@ -41,18 +41,18 @@ public class PdfView extends AbstractView {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
+        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
+
         // IE workaround: write into byte array first.
         ByteArrayOutputStream baos = createTemporaryOutputStream();
 
         // Apply preferences and build metadata.
         Document document = new PdfUtils().newDocument();
         PdfWriter writer = newWriter(document, baos);
-        prepareWriter(model, writer, request);
+        prepareWriter(report, writer, request);
         buildPdfMetadata(model, document, request);
 
-        // Choose ReportTemplate
-        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
-        PdfDocumentAppender appender = new PdfDocumentAppenderFactory(report, config.logo(), writer).create();
+        PdfDocumentAppender appender = new PdfDocumentAppenderFactory(config.logo(), writer).create(report);
 
         // Build PDF document.
         document.open();
@@ -71,10 +71,10 @@ public class PdfView extends AbstractView {
         return PdfWriter.getInstance(document, os);
     }
 
-    protected void prepareWriter(Map<String, Object> model, PdfWriter writer,
+    protected void prepareWriter(ReportDto report, PdfWriter writer,
             HttpServletRequest request) throws DocumentException, MalformedURLException, IOException {
         writer.setViewerPreferences(getViewerPreferences());
-        writer.setPageEvent(new BusinessLetterPdfTemplate(config.logo()));
+        writer.setPageEvent(new PdfTemplateFactory(config.logo()).create(report));
     }
 
     protected int getViewerPreferences() {

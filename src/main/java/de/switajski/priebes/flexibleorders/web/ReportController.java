@@ -19,11 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.report.Invoice;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
-import de.switajski.priebes.flexibleorders.itextpdf.OrderPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -78,7 +74,7 @@ public class ReportController {
         }
         else {
             Order order = orderRepo.findByOrderNumber(id);
-            if (order != null) return new ModelAndView(OrderPdf.class.getSimpleName(),
+            if (order != null) return new ModelAndView(PdfView.class.getSimpleName(),
                     ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
@@ -92,7 +88,7 @@ public class ReportController {
         if (customer == null) {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
-        ReportDto report = reportingService.retrieveAllToBeShipped(customer);
+        ReportDto report = reportingService.retrieveAllToBeShippedToCustomer(customer);
         return new ModelAndView(PdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(), report);
     }
@@ -107,32 +103,24 @@ public class ReportController {
                 ReportDto.class.getSimpleName(), report);
     }
 
+    /**
+     * TODO: dynamic method overloading is not supported by Java. Find
+     * alternative. (http://skeletoncoder
+     * .blogspot.de/2006/09/java-tutorials-overloading-is-compile.html)
+     * 
+     * @param report
+     * @return
+     */
     private ModelAndView createReportSpecificModelAndView(Report report) {
         String model = ReportDto.class.getSimpleName();
-        if (report instanceof OrderConfirmation) {
-            return new ModelAndView(PdfView.class.getSimpleName(),
-                    model, report2DtoConversionService.toDto((OrderConfirmation) report));
-        }
-        if (report instanceof DeliveryNotes) {
-            return new ModelAndView(PdfView.class.getSimpleName(),
-                    model, report2DtoConversionService.toDto((DeliveryNotes) report));
-        }
-        if (report instanceof Invoice) {
-            return new ModelAndView(PdfView.class.getSimpleName(),
-                    model, report2DtoConversionService.toDto((Invoice) report));
-        }
-        throw new IllegalStateException(
+        ReportDto reportDto = report2DtoConversionService.convert(report);
+
+        if (reportDto == null) throw new IllegalStateException(
                 "Could not find view handler for given Document");
-    }
 
-    @RequestMapping(value = "/reports/listDocumentNumbersLike", method = RequestMethod.GET)
-    public @ResponseBody JsonObjectResponse listInvoiceNumbers(
-            @RequestParam(value = "query", required = false) Long orderNumberObject)
-            throws Exception {
+        return new ModelAndView(PdfView.class.getSimpleName(),
+                model, reportDto);
 
-        log.debug("listOrderNumbers request:" + orderNumberObject);
-        // TODO unify docNumbers
-        throw new RuntimeException("Not implemented yet");
     }
 
     public class invoiceNumber {

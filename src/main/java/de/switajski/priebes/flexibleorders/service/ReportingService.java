@@ -22,6 +22,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerDto;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -153,8 +154,16 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public ReportDto retrieveAllToBeShipped(Customer customer) {
-        ToBeShippedDto report = new ToBeShippedDto();
+    public ReportDto retrieveAllToBeShippedToCustomer(Customer customer) {
+        return createToBeShippedDto(customer, new ToBeShippedDto());
+    }
+
+    @Transactional(readOnly = true)
+    public ReportDto retrieveAllToBeShipped() {
+        return createToBeShippedDto(null, new ToBeShippedToOneCustomerDto());
+    }
+
+    private ReportDto createToBeShippedDto(Customer customer, ReportDto report) {
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
                 .where(new AgreedItemsToBeShippedSpec());
@@ -182,11 +191,6 @@ public class ReportingService {
             }
         }
         return report;
-    }
-
-    @Transactional(readOnly = true)
-    public ReportDto retrieveAllToBeShipped() {
-        return retrieveAllToBeShipped(null);
     }
 
 }

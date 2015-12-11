@@ -5,7 +5,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 
 public class PdfPCellUtility {
@@ -31,8 +31,8 @@ public class PdfPCellUtility {
 
     public static PdfPCell cellWithMixedFont(String bold, String normal) {
         Paragraph paragraph = new Paragraph();
-        paragraph.add(new Chunk(bold, PriebesIText5PdfView.eightSizeBoldFont));
-        paragraph.add(new Chunk(normal, PriebesIText5PdfView.eightSizeFont));
+        paragraph.add(new Chunk(bold, BusinessLetterPdfTemplate.eightSizeBoldFont));
+        paragraph.add(new Chunk(normal, BusinessLetterPdfTemplate.eightSizeFont));
         return wrapInCell(paragraph);
     }
 

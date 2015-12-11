@@ -17,7 +17,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.itextpdf.CustomPdfTemplate;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppender;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppenderFactory;
@@ -74,7 +74,7 @@ public class PdfView extends AbstractView {
     protected void prepareWriter(Map<String, Object> model, PdfWriter writer,
             HttpServletRequest request) throws DocumentException, MalformedURLException, IOException {
         writer.setViewerPreferences(getViewerPreferences());
-        writer.setPageEvent(new CustomPdfTemplate(config.logo()));
+        writer.setPageEvent(new BusinessLetterPdfTemplate(config.logo()));
     }
 
     protected int getViewerPreferences() {

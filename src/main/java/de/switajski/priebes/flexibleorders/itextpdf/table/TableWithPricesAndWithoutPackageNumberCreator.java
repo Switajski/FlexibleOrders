@@ -9,7 +9,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -64,7 +64,7 @@ public class TableWithPricesAndWithoutPackageNumberCreator extends ReportItemsPd
                 "Bestellnr.",
                 Element.ALIGN_LEFT,
                 18,
-                PriebesIText5PdfView.eightSizeFont));
+                BusinessLetterPdfTemplate.eightSizeFont));
         rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
         return rowProperties;
     }

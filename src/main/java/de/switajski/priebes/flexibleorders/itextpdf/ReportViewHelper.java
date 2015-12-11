@@ -86,7 +86,7 @@ public class ReportViewHelper {
             throws DocumentException {
         List<Paragraph> paragraphs = new ArrayList<Paragraph>();
         paragraphs.add(new ParagraphBuilder(heading).withFont(
-                FontFactory.getFont(PriebesIText5PdfView.FONT, 12, Font.BOLD))
+                FontFactory.getFont(BusinessLetterPdfTemplate.FONT, 12, Font.BOLD))
                 .build());
         paragraphs.add(ParagraphBuilder.createEmptyLine());
 
@@ -111,7 +111,7 @@ public class ReportViewHelper {
         Iterator<ShippingItem> itr = sis.iterator();
         while (itr.hasNext()) {
             ShippingItem si = itr.next();
-            createdDates += PriebesIText5PdfView.dateFormat.format(si
+            createdDates += PdfUtils.dateFormat.format(si
                     .getReport().getCreated());
             if (itr.hasNext()) createdDates += " ";
 

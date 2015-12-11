@@ -4,7 +4,7 @@ import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 public class PhraseBuilder {
 
@@ -12,12 +12,12 @@ public class PhraseBuilder {
     private Font font;
 
     public PhraseBuilder(String text) {
-        font = PriebesIText5PdfView.font;
+        font = BusinessLetterPdfTemplate.font;
         this.text = new StringBuilder(text);
     }
 
     public PhraseBuilder() {
-        font = PriebesIText5PdfView.font;
+        font = BusinessLetterPdfTemplate.font;
     }
 
     public Phrase build() {
@@ -47,19 +47,19 @@ public class PhraseBuilder {
     }
 
     public PhraseBuilder bold() {
-        return withFont(PriebesIText5PdfView.boldFont);
+        return withFont(BusinessLetterPdfTemplate.boldFont);
     }
 
     public PhraseBuilder size12() {
-        return withFont(PriebesIText5PdfView.twelveSizefont);
+        return withFont(BusinessLetterPdfTemplate.twelveSizefont);
     }
 
     public PhraseBuilder size8() {
-        return withFont(PriebesIText5PdfView.eightSizeFont);
+        return withFont(BusinessLetterPdfTemplate.eightSizeFont);
     }
 
     public PhraseBuilder size8Bold() {
-        return withFont(PriebesIText5PdfView.eightSizeBoldFont);
+        return withFont(BusinessLetterPdfTemplate.eightSizeBoldFont);
     }
 
 }

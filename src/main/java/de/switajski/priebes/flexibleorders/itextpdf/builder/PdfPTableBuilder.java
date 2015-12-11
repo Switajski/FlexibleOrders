@@ -14,7 +14,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 public class PdfPTableBuilder {
 
@@ -72,7 +72,7 @@ public class PdfPTableBuilder {
                 "Bestellnr.",
                 Element.ALIGN_LEFT,
                 18,
-                PriebesIText5PdfView.eightSizeFont));
+                BusinessLetterPdfTemplate.eightSizeFont));
         rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
         return rowProperties;
     }
@@ -183,8 +183,8 @@ public class PdfPTableBuilder {
         for (String string : footerList) {
             Phrase phrase = new Phrase(string,
                     FontFactory.getFont(
-                            PriebesIText5PdfView.FONT,
-                            PriebesIText5PdfView.FONT_SIZE,
+                            BusinessLetterPdfTemplate.FONT,
+                            BusinessLetterPdfTemplate.FONT_SIZE,
                             Font.BOLD));
             PdfPCellBuilder builder = new PdfPCellBuilder(phrase)
                     .setColspan(tableProperties.size())
@@ -229,7 +229,7 @@ public class PdfPTableBuilder {
             bposHeader.setFixedHeight(12f);
             bposHeader.setHorizontalAlignment(prop.alignment);
             bposHeader.setBorder(Rectangle.TOP);
-            bposHeader.setBorderWidth(PriebesIText5PdfView.BORDER_WIDTH);
+            bposHeader.setBorderWidth(BusinessLetterPdfTemplate.BORDER_WIDTH);
             header.add(bposHeader);
         }
         return header;

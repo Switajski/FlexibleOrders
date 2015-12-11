@@ -24,7 +24,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 
-public class CustomPdfTemplate implements PdfPageEvent {
+public class BusinessLetterPdfTemplate implements PdfPageEvent {
 
     protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
     protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
@@ -54,19 +54,27 @@ public class CustomPdfTemplate implements PdfPageEvent {
             12,
             Font.BOLD);
     public static Font eightSizeFont = FontFactory.getFont(
-            PriebesIText5PdfView.FONT,
+            BusinessLetterPdfTemplate.FONT,
             8,
             Font.NORMAL);
     public static Font eightSizeBoldFont = FontFactory.getFont(
-            PriebesIText5PdfView.FONT,
+            BusinessLetterPdfTemplate.FONT,
             8,
             Font.BOLD);
+
+    public static final float WIDTH = 464f;
+    public static final int PAGE_MARGIN_BOTTOM = /* bottom */190;
+    public static final int PAGE_MARGIN_TOP = /* top */80;
+    public static final int PAGE_MARGIN_RIGHT = /* right */72;
+    public static final int PAGE_MARGIN_LEFT = /* left */60;
+    public static final int FOOTER_MARGIN_BOTTOM = 5;
+    public static final float BORDER_WIDTH = 0.15f;
 
     PdfTemplate total;
     private int pageNumber = 1;
     private Image logo;
 
-    public CustomPdfTemplate(Image logo) {
+    public BusinessLetterPdfTemplate(Image logo) {
         this.logo = logo;
     }
 
@@ -134,12 +142,12 @@ public class CustomPdfTemplate implements PdfPageEvent {
     private static void absText(PdfWriter writer, String text, int x, int y) {
         PdfContentByte cb = writer.getDirectContent();
         try {
-            BaseFont bf = BaseFont.createFont(PriebesIText5PdfView.FONT,
+            BaseFont bf = BaseFont.createFont(BusinessLetterPdfTemplate.FONT,
                     ENCODING, BaseFont.NOT_EMBEDDED);
             cb.saveState();
             cb.beginText();
             cb.moveText(x, y);
-            cb.setFontAndSize(bf, PriebesIText5PdfView.FONT_SIZE);
+            cb.setFontAndSize(bf, BusinessLetterPdfTemplate.FONT_SIZE);
             cb.showText(text);
             cb.endText();
             cb.restoreState();

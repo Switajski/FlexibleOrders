@@ -82,7 +82,7 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
         // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
                 .createFooterBuilder(netGoods.toString(), vat.toString(), gross.toString())
-                .withTotalWidth(PriebesIText5PdfView.WIDTH);
+                .withTotalWidth(BusinessLetterPdfTemplate.WIDTH);
 
         if (report.orderConfirmationSpecific_paymentConditions != null) {
             pdfUtils.addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
@@ -91,9 +91,9 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
         PdfPTable footer = footerBuilder.build();
 
         footer.writeSelectedRows(0, -1,
-                /* xPos */PriebesIText5PdfView.PAGE_MARGIN_LEFT,
-                /* yPos */PriebesIText5PdfView.PAGE_MARGIN_BOTTOM
-                        + PriebesIText5PdfView.FOOTER_MARGIN_BOTTOM,
+                /* xPos */BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT,
+                /* yPos */BusinessLetterPdfTemplate.PAGE_MARGIN_BOTTOM
+                        + BusinessLetterPdfTemplate.FOOTER_MARGIN_BOTTOM,
                 writer.getDirectContent());
     }
 

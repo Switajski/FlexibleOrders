@@ -5,7 +5,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 public class PdfPCellBuilder {
 
@@ -24,7 +24,7 @@ public class PdfPCellBuilder {
     public PdfPCell build() {
         PdfPCell cell = new PdfPCell(phrase);
         cell.setBorder(border);
-        cell.setBorderWidth(PriebesIText5PdfView.BORDER_WIDTH);
+        cell.setBorderWidth(BusinessLetterPdfTemplate.BORDER_WIDTH);
         cell.setColspan(colspan);
         cell.setHorizontalAlignment(horizontalAlignment);
         cell.setColspan(colSpan);

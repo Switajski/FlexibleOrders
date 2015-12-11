@@ -18,12 +18,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 
 public class PdfUtils {
 
-    private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-    public static final int PAGE_MARGIN_BOTTOM = /* bottom */190;
-    public static final int PAGE_MARGIN_TOP = /* top */80;
-    public static final int PAGE_MARGIN_RIGHT = /* right */72;
-    public static final int PAGE_MARGIN_LEFT = /* left */60;
+    public static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     public boolean hasPackageNumbers(ReportDto cReport) {
         boolean hasPackageNumbers = false;
@@ -39,8 +34,8 @@ public class PdfUtils {
     public void addPaymentConditions(String paymentConditions,
             CustomPdfPTableBuilder footerBuilder) {
         PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
-                .getFont(PriebesIText5PdfView.FONT,
-                        PriebesIText5PdfView.FONT_SIZE,
+                .getFont(BusinessLetterPdfTemplate.FONT,
+                        BusinessLetterPdfTemplate.FONT_SIZE,
                         Font.BOLD));
         footerBuilder.addCell(new PdfPCellBuilder(bold.build())
                 .withPhrase(new PhraseBuilder().withText("Zahlungskonditionen: " + paymentConditions).size8().build())
@@ -61,10 +56,10 @@ public class PdfUtils {
     public Document newDocument() {
         Document doc = new Document(PageSize.A4);
         doc.setMargins(
-                PAGE_MARGIN_LEFT,
-                PAGE_MARGIN_RIGHT,
-                PAGE_MARGIN_TOP,
-                PAGE_MARGIN_BOTTOM);
+                BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT,
+                BusinessLetterPdfTemplate.PAGE_MARGIN_RIGHT,
+                BusinessLetterPdfTemplate.PAGE_MARGIN_TOP,
+                BusinessLetterPdfTemplate.PAGE_MARGIN_BOTTOM);
         return doc;
     }
 

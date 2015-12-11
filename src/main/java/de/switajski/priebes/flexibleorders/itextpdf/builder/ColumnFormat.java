@@ -4,7 +4,7 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 public class ColumnFormat {
 
@@ -28,7 +28,7 @@ public class ColumnFormat {
 
     public PdfPCell createCell(String content) {
         PhraseBuilder phraseB = new PhraseBuilder(content);
-        if (font == null) phraseB.withFont(PriebesIText5PdfView.font);
+        if (font == null) phraseB.withFont(BusinessLetterPdfTemplate.font);
         else phraseB.withFont(font);
         Phrase phrase = phraseB.build();
 

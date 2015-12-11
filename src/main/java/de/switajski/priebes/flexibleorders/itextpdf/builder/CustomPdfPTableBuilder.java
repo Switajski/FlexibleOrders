@@ -9,7 +9,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 //TODO make this default builder and let PdfPTableBuilder extend this
 public class CustomPdfPTableBuilder {
@@ -75,12 +75,12 @@ public class CustomPdfPTableBuilder {
             String vat,
             String gross) {
         PhraseBuilder bold = new PhraseBuilder("").withFont(FontFactory
-                .getFont(PriebesIText5PdfView.FONT,
-                        PriebesIText5PdfView.FONT_SIZE,
+                .getFont(BusinessLetterPdfTemplate.FONT,
+                        BusinessLetterPdfTemplate.FONT_SIZE,
                         Font.BOLD));
         PhraseBuilder normal = new PhraseBuilder("").withFont(FontFactory
-                .getFont(PriebesIText5PdfView.FONT,
-                        PriebesIText5PdfView.FONT_SIZE,
+                .getFont(BusinessLetterPdfTemplate.FONT,
+                        BusinessLetterPdfTemplate.FONT_SIZE,
                         Font.NORMAL));
         PdfPCellBuilder leftAlign = new PdfPCellBuilder(bold.build());
         PdfPCellBuilder rightAlign = new PdfPCellBuilder(bold.build())

@@ -8,7 +8,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -58,7 +58,7 @@ public class TableForInvoiceCreator extends ReportItemsPdfPTableCreator {
         rowProperties.add(new ColumnFormat("Artikel", Element.ALIGN_LEFT, 40));
         rowProperties.add(new ColumnFormat("Anzahl", Element.ALIGN_LEFT, 7));
         rowProperties.add(new ColumnFormat("EK per St" + Unicode.U_UML + "ck", Element.ALIGN_LEFT, 13));
-        rowProperties.add(new ColumnFormat("Lieferscheinnr.", Element.ALIGN_LEFT, 18, PriebesIText5PdfView.eightSizeFont));
+        rowProperties.add(new ColumnFormat("Lieferscheinnr.", Element.ALIGN_LEFT, 18, BusinessLetterPdfTemplate.eightSizeFont));
         rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
         return rowProperties;
     }

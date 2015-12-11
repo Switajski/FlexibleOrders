@@ -3,7 +3,7 @@ package de.switajski.priebes.flexibleorders.itextpdf.table;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 
@@ -17,7 +17,7 @@ public class SimpleTableHeaderCreator {
                 + report.customerNumber;
         leftTop = "Bestellnummer: " + report.documentNumber.toString();
         leftBottom = "Bestelldatum: "
-                + PriebesIText5PdfView.dateFormat.format(report.created);
+                + PdfUtils.dateFormat.format(report.created);
 
         CustomPdfPTableBuilder infoTableBuilder = CustomPdfPTableBuilder
                 .createInfoTable(leftTop, leftBottom, rightTop, rightBottom);

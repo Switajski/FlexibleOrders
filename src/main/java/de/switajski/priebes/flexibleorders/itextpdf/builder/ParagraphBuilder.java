@@ -9,7 +9,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 
 /**
  * Builder to ease creation of IText's {@link Paragraph}
@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
  */
 public class ParagraphBuilder {
 
-    private Font font = PriebesIText5PdfView.font;
+    private Font font = BusinessLetterPdfTemplate.font;
     private int alignment = Element.ALIGN_LEFT;
     private List<String> texts = new ArrayList<String>();
     private float lineSpacing = 13f;

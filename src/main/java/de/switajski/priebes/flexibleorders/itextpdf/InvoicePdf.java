@@ -46,7 +46,7 @@ public class InvoicePdf implements PdfDocumentAppender {
 
         document.add(ReportViewHelper.createDate(date));
         document.add(new ParagraphBuilder("Rechnungsdatum gleich Lieferdatum")
-                .withFont(PriebesIText5PdfView.eightSizeFont)
+                .withFont(BusinessLetterPdfTemplate.eightSizeFont)
                 .withAlignment(Element.ALIGN_RIGHT)
                 .build());
 
@@ -66,7 +66,7 @@ public class InvoicePdf implements PdfDocumentAppender {
         // insert footer table
         CustomPdfPTableBuilder footerBuilder = CustomPdfPTableBuilder
                 .createFooterBuilder(calculation, report.orderConfirmationSpecific_paymentConditions)
-                .withTotalWidth(PriebesIText5PdfView.WIDTH);
+                .withTotalWidth(BusinessLetterPdfTemplate.WIDTH);
 
         if (report.orderConfirmationSpecific_paymentConditions != null) {
             pdfUtils.addPaymentConditions(report.orderConfirmationSpecific_paymentConditions, footerBuilder);
@@ -75,14 +75,14 @@ public class InvoicePdf implements PdfDocumentAppender {
         PdfPTable footer = footerBuilder.build();
 
         footer.writeSelectedRows(0, -1,
-                PriebesIText5PdfView.PAGE_MARGIN_LEFT, // xPos
+                BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT, // xPos
                 footerYPos(), // yPos
                 writer.getDirectContent());
 
     }
 
     protected int footerYPos() {
-        return PriebesIText5PdfView.PAGE_MARGIN_BOTTOM + PriebesIText5PdfView.FOOTER_MARGIN_BOTTOM;
+        return BusinessLetterPdfTemplate.PAGE_MARGIN_BOTTOM + BusinessLetterPdfTemplate.FOOTER_MARGIN_BOTTOM;
     }
 
 }

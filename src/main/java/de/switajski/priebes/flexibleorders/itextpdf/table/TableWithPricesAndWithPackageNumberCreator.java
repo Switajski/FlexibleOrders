@@ -10,7 +10,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.PriebesIText5PdfView;
+import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
@@ -60,7 +60,7 @@ public class TableWithPricesAndWithPackageNumberCreator extends ReportItemsPdfPT
         rowProperties.add(new ColumnFormat("Paketnr.", Element.ALIGN_CENTER, 8));
         rowProperties.add(new ColumnFormat("Anzahl", Element.ALIGN_CENTER, 7));
         rowProperties.add(new ColumnFormat("EK/Stk.", Element.ALIGN_LEFT, 10));
-        rowProperties.add(new ColumnFormat("Bestellnr.", Element.ALIGN_LEFT, 18, PriebesIText5PdfView.eightSizeFont));
+        rowProperties.add(new ColumnFormat("Bestellnr.", Element.ALIGN_LEFT, 18, BusinessLetterPdfTemplate.eightSizeFont));
         rowProperties.add(new ColumnFormat("gesamt", Element.ALIGN_RIGHT, 12));
         return rowProperties;
     }

@@ -1,3 +1,0 @@
-{
-  "access_token" : "47vdhzrlJREAAAAAAAAA4jBA8_AwW_4lfeWKFTyssZ4oyxXgtzaKzKof_FCLcAh4"
-}

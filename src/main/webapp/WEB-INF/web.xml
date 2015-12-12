@@ -68,6 +68,11 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     
+    <!-- Exposes the current user session -->
+    <listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+    
     <!-- Handles Spring requests -->
     <servlet>
         <servlet-name>FlexibleOrders</servlet-name>

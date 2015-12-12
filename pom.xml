@@ -373,6 +373,11 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.dropbox.core</groupId>
+			<artifactId>dropbox-core-sdk</artifactId>
+			<version>1.8.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

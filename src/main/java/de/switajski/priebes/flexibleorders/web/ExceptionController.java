@@ -59,11 +59,11 @@ public class ExceptionController {
 
     private String stringifyWithStackTrace(Exception ex, String message) {
         StringBuilder builder = new StringBuilder("<b>")
-        .append(message)
-        .append(ex.getClass().getSimpleName())
-        .append("</b>");
+                .append(message)
+                .append(ex.getClass().getSimpleName())
+                .append("</b>");
         if (ex.getMessage() != null) builder.append("</b> :</br> ")
-        .append(ex.getMessage());
+                .append(ex.getMessage());
         builder.append("</br></br>Stack Trace:</br>");
         for (StackTraceElement line : ex.getStackTrace())
             builder.append(line.toString()).append("</br>");

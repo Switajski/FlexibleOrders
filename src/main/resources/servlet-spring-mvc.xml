@@ -24,6 +24,13 @@
 
 	<!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
 	<mvc:default-servlet-handler />
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/dropbox/**" />
+			<bean class="de.switajski.priebes.flexibleorders.integration.DropboxAuthorizationInterceptor" />
+		</mvc:interceptor> 
+	</mvc:interceptors>
 
 	<!-- Selects a static view for rendering without the need for an explicit controller -->
 	<mvc:view-controller path="/login" />

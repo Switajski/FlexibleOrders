@@ -64,10 +64,9 @@ public class DropboxController extends ExceptionController {
 
         reportDtoToPdfFileWriter.writeFile(fileAndPathName, config.logo(), reportDto);
 
-        // String accessToken =
-        // "47vdhzrlJREAAAAAAAAA4jBA8_AwW_4lfeWKFTyssZ4oyxXgtzaKzKof_FCLcAh4";
-
-        uploadToDropbox(new File(fileAndPathName), fileAndPathName, accessTokenHolder.getAccessToken());
+        String accessToken = accessTokenHolder.getAccessToken();
+        accessToken = "47vdhzrlJREAAAAAAAAA7qJ5Yf-Yunbut3FIiJe_NIYjPLDTqgHbQ0CYEquN02Lt";
+        uploadToDropbox(new File(fileAndPathName), fileAndPathName, accessToken);
 
         JsonObjectResponse jsonObjectResponse = new JsonObjectResponse();
         jsonObjectResponse.setSuccess(true);
@@ -80,7 +79,7 @@ public class DropboxController extends ExceptionController {
 
         // Create a DbxClientV2, which is what you use to make API calls.
         String userLocale = Locale.getDefault().toString();
-        DbxRequestConfig requestConfig = new DbxRequestConfig("examples-upload-file", userLocale);
+        DbxRequestConfig requestConfig = new DbxRequestConfig("FlexibleOrders", userLocale);
 
         DbxClient dbxClient = new DbxClient(requestConfig, accessToken, DbxHost.Default);
 

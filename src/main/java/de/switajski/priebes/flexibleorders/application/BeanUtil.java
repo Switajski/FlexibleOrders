@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.application;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanMap;
@@ -41,7 +42,7 @@ public class BeanUtil {
                 else {
                     differences.add(property1 == null ?
                             intro + "null != \"" + property2 + "\")" :
-                                intro + "\"" + property1 + "\" != null)");
+                            intro + "\"" + property1 + "\" != null)");
                 }
             }
             else if (!property1.equals(property2)) {
@@ -57,7 +58,15 @@ public class BeanUtil {
         Object pa1 = pas.iterator().next();
         Object pa2 = findDiffering(pas, pa1);
         try {
-            return BeanUtil.getDifferencesOfObjects(pa1, pa2).toString();
+            List<String> differencesOfObjects = BeanUtil.getDifferencesOfObjects(pa1, pa2);
+            StringBuilder strb = new StringBuilder();
+            Iterator<String> lItr = differencesOfObjects.iterator();
+            while (lItr.hasNext()) {
+                String difference = lItr.next();
+                strb.append(difference);
+                if (lItr.hasNext()) strb.append("<br />");
+            }
+            return strb.toString();
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException("Exception when comparing generic objects.", e);

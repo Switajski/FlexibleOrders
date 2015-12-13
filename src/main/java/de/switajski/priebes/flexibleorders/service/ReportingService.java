@@ -29,6 +29,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -49,6 +50,8 @@ public class ReportingService {
     private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
     private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
+    @Autowired
+    private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
@@ -59,7 +62,7 @@ public class ReportingService {
         return createPage(
                 toBeConfirmed.getTotalElements(),
                 pageable,
-                itemDtoConverterService.convertOrders(toBeConfirmed
+                oi2ItemDtoConversionService.convertOrders(toBeConfirmed
                         .getContent()));
     }
 
@@ -75,8 +78,7 @@ public class ReportingService {
         return createPage(
                 toBeConfirmed.getTotalElements(),
                 pageable,
-                itemDtoConverterService.convertOrders(toBeConfirmed
-                        .getContent()));
+                oi2ItemDtoConversionService.convertOrders(toBeConfirmed.getContent()));
     }
 
     @Transactional(readOnly = true)

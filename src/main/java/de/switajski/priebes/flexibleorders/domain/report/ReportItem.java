@@ -1,6 +1,8 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -147,6 +149,21 @@ public abstract class ReportItem extends GenericEntity implements
 
     public ReportItem getPredecessor() {
         return predecessor;
+    }
+
+    /**
+     * Retrieves all predecessors of this report item.
+     * 
+     * @return
+     */
+    public List<ReportItem> predecessors() {
+        List<ReportItem> ris = new ArrayList<ReportItem>();
+        ReportItem lPredecessor = predecessor;
+        while (lPredecessor != null) {
+            ris.add(lPredecessor);
+            lPredecessor = lPredecessor.getPredecessor();
+        }
+        return ris;
     }
 
     public void setPredecessor(ReportItem predecessor) {

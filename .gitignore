@@ -4,3 +4,5 @@
 .project
 target
 bin
+src/main/resources/org/flexible/order/dropbox.properties
+src/test/java/de/switajski/priebes/flexibleorders/integration/DropBoxSdkTest.java

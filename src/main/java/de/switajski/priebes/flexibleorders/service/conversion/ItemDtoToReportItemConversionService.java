@@ -1,19 +1,15 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
@@ -30,13 +26,6 @@ public class ItemDtoToReportItemConversionService {
 
     @Autowired
     private ReportItemRepository reportItemRepo;
-
-    public List<ItemDto> convertOrderItems(Collection<OrderItem> orderItems) {
-        List<ItemDto> items = new ArrayList<ItemDto>();
-        for (OrderItem oi : orderItems)
-            items.add(convert(oi));
-        return items;
-    }
 
     public ItemDto createShippingCosts(final DeliveryNotes deliveryNotes) {
         ItemDto item = new ItemDto();
@@ -55,30 +44,6 @@ public class ItemDtoToReportItemConversionService {
         item.customerName = customer.getCompanyName();
         item.productType = ProductType.SHIPPING;
 
-        return item;
-    }
-
-    @Transactional(readOnly = true)
-    public ItemDto convert(OrderItem orderItem) {
-        ItemDto item = new ItemDto();
-        Order order = orderItem.getOrder();
-        if (order != null) {
-            item.customer = order.getCustomer().getId();
-            item.customerNumber = order
-                    .getCustomer()
-                    .getCustomerNumber();
-            item.customerName = order.getCustomer().getCompanyName();
-            item.orderNumber = order.getOrderNumber();
-        }
-        item.created = orderItem.getCreated();
-        item.id = orderItem.getId();
-        if (orderItem.getNegotiatedPriceNet() != null) item.priceNet = orderItem.getNegotiatedPriceNet().getValue();
-        item.product = orderItem.getProduct().getProductNumber();
-        item.productName = orderItem.getProduct().getName();
-        item.productType = orderItem.getProduct().getProductType();
-        item.status = DeliveryHistory.of(orderItem).provideStatus();
-        item.quantity = orderItem.getOrderedQuantity();
-        item.quantityLeft = orderItem.toBeConfirmed();
         return item;
     }
 
@@ -127,23 +92,6 @@ public class ItemDtoToReportItemConversionService {
             }
         }
         return risWithQty;
-    }
-
-    @Transactional(readOnly = true)
-    public List<ItemDto> convert(Order order) {
-        List<ItemDto> ois = new ArrayList<ItemDto>();
-        for (OrderItem orderItem : order.getItems()) {
-            ois.add(convert(orderItem));
-        }
-        return ois;
-    }
-
-    public List<ItemDto> convertOrders(Collection<Order> orders) {
-        List<ItemDto> items = new ArrayList<ItemDto>();
-        for (Order order : orders) {
-            items.addAll(convert(order));
-        }
-        return items;
     }
 
 }

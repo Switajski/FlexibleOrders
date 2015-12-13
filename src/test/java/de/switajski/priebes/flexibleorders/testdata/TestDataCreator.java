@@ -55,6 +55,7 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -84,6 +85,9 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     @Autowired
     private ItemDtoToReportItemConversionService converterService;
+
+    @Autowired
+    private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
     @Autowired
     private ReportItemToItemDtoConverterService riToItemConversionService;
@@ -141,7 +145,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 null,
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
-                converterService.convert(b22));
+                oi2ItemDtoConversionService.convert(b22));
         confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
         OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
         return ab22;

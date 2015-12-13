@@ -80,7 +80,7 @@ public class ReportToDtoConversionService {
         InvoiceDto dto = new InvoiceDto();
         amendCommonAttributes(invoice, dto);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
-        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice).getPaymentConditions();
+        dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice.getItems()).getPaymentConditions();
         dto.invoiceSpecific_billing = invoice.getBilling();
         dto.invoiceSpecific_discountText = invoice.getDiscountText();
         dto.invoiceSpecific_discountRate = invoice.getDiscountRate();

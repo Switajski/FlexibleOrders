@@ -29,6 +29,7 @@ import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -58,6 +59,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
 
     @Autowired
     private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
+
+    @Autowired
+    private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
     @Autowired
     private ReportItemRepository reportItemRepository;
@@ -259,8 +263,8 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
         b12.setCustomer(yvonne);
         orderRepo.save(b12);
 
-        List<ItemDto> b11AndB12 = itemDtoConverterService.convert(b11);
-        b11AndB12.addAll(itemDtoConverterService.convert(b12));
+        List<ItemDto> b11AndB12 = oi2ItemDtoConversionService.convert(b11);
+        b11AndB12.addAll(oi2ItemDtoConversionService.convert(b12));
 
         OrderConfirmation confirmationReport = confirmingService.confirm(
                 new ConfirmParameter(

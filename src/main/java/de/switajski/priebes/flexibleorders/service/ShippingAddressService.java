@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 public class ShippingAddressService extends AddressFromPurchaseAgreementRetriever {
 
     @Override
-    Address getAddress(PurchaseAgreement purchaseAgreement) {
+    Address chooseAddressOf(PurchaseAgreement purchaseAgreement) {
         return purchaseAgreement.getShippingAddress();
     }
 
@@ -29,9 +29,11 @@ public class ShippingAddressService extends AddressFromPurchaseAgreementRetrieve
     @Transactional(readOnly = true)
     public Address retrieveShippingAddressOrFail(Set<ReportItem> reportItems) {
         Set<Address> ias = retrieve(reportItems);
-        if (ias.size() > 1) throw new ContradictoryPurchaseAgreementException(
-                "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
-                        + BeanUtil.createStringOfDifferingAttributes(ias));
+        if (ias.size() > 1) {
+            throw new ContradictoryPurchaseAgreementException(
+                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: <br />"
+                            + BeanUtil.createStringOfDifferingAttributes(ias));
+        }
         else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
         Address shippingAddress = ias.iterator().next();
         return shippingAddress;

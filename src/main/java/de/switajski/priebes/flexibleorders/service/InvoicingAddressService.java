@@ -9,7 +9,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 public class InvoicingAddressService extends AddressFromPurchaseAgreementRetriever {
 
     @Override
-    Address getAddress(PurchaseAgreement purchaseAgreement) {
+    Address chooseAddressOf(PurchaseAgreement purchaseAgreement) {
         return purchaseAgreement.getInvoiceAddress();
     }
 

@@ -7,11 +7,9 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 @Service
@@ -40,25 +38,28 @@ public class PurchaseAgreementService {
     /**
      * 
      * @param reportItems
-     *            works with confirmation items only
      * @param agreedOnly
      * @return
      */
     private Set<PurchaseAgreement> retrieve(Collection<ReportItem> reportItems,
             boolean agreedOnly) {
-        DeliveryHistory dh = new DeliveryHistory(reportItems);
-        Set<PurchaseAgreement> ocs = new HashSet<PurchaseAgreement>();
-        for (ConfirmationItem cis : dh.reportItems(ConfirmationItem.class)) {
-            OrderConfirmation orderConfirmation = (OrderConfirmation) cis
-                    .getReport();
-            if (agreedOnly) {
-                if (orderConfirmation.isAgreed()) ocs.add(orderConfirmation.getPurchaseAgreement());
-            }
-            else {
-                ocs.add(orderConfirmation.getPurchaseAgreement());
+
+        Set<ReportItem> allRis = new HashSet<ReportItem>();
+        for (ReportItem reportItem : reportItems) {
+            allRis.add(reportItem);
+            allRis.addAll(reportItem.predecessors());
+        }
+
+        Set<PurchaseAgreement> pas = new HashSet<PurchaseAgreement>();
+        for (ReportItem reportItem : allRis) {
+            if (reportItem instanceof ConfirmationItem) {
+                OrderConfirmation orderConfirmation = (OrderConfirmation) reportItem.getReport();
+                if (agreedOnly && !orderConfirmation.isAgreed()) continue;
+                pas.add(orderConfirmation.getPurchaseAgreement());
             }
         }
-        return ocs;
+
+        return pas;
     }
 
     /**
@@ -83,41 +84,6 @@ public class PurchaseAgreementService {
         else {
             throw new IllegalStateException("Mehere AB#s vorhanden - kann keinen einzelnen Kaufvertrag ausmachen");
         }
-    }
-
-    public PurchaseAgreement retrieveSingle(Report report) {
-        DeliveryHistory dh = retrieveFromService(report);
-        Set<PurchaseAgreement> pas = retrievePurchaseAgreements(dh);
-
-        return extractOneOrFail(pas);
-    }
-
-    /**
-     * FIXME: won't work - it will also retrieve weird order confirmations, that
-     * have nothing to do with a invoice. Report item needs predecessors
-     * 
-     * @param report
-     * @return
-     */
-    private DeliveryHistory retrieveFromService(Report report) {
-        // in eine DeliveryHistoryService mit create(Report)
-        Set<ReportItem> ris = new HashSet<ReportItem>();
-        for (ReportItem ri : report.getItems()) {
-            ris.addAll(ri.getOrderItem().getReportItems());
-        }
-        DeliveryHistory dh = new DeliveryHistory(ris);
-        return dh;
-    }
-
-    public Set<PurchaseAgreement> retrievePurchaseAgreements(DeliveryHistory dh) {
-        Set<PurchaseAgreement> pas = new HashSet<PurchaseAgreement>();
-
-        Set<OrderConfirmation> cis = dh.getReports(OrderConfirmation.class);
-        for (OrderConfirmation oc : cis) {
-            pas.add(oc.getPurchaseAgreement());
-        }
-
-        return pas;
     }
 
 }

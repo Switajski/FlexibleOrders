@@ -20,11 +20,14 @@ import com.dropbox.core.DbxHost;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWriteMode;
 
+import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDtoToPdfFileWriter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
 import de.switajski.priebes.flexibleorders.web.ExceptionController;
@@ -40,7 +43,13 @@ public class DropboxController extends ExceptionController {
     ReportRepository reportRepo;
 
     @Autowired
+    OrderRepository orderRepo;
+
+    @Autowired
     ReportToDtoConversionService reportToDtoConversionService;
+
+    @Autowired
+    OrderToDtoConversionService orderToDtoConversionService;
 
     @Autowired
     ReportDtoToPdfFileWriter reportDtoToPdfFileWriter;
@@ -53,15 +62,10 @@ public class DropboxController extends ExceptionController {
 
     @RequestMapping(value = "/sendReport/{documentNumber}", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse sendReport(@PathVariable("documentNumber") String documentNumber) throws Exception {
-        log.error("starting sendReport with docnr.:" + documentNumber);
-        Report report = reportRepo.findByDocumentNumber(documentNumber);
-        if (report == null) {
-            throw new IllegalArgumentException("Konnte Dokument mit angegebener Dokumentennummer " + documentNumber + " nicht finden");
-        }
+
+        ReportDto reportDto = retrieveReportDtoOrFail(documentNumber);
 
         String fileAndPathName = documentNumber + ".pdf";
-        ReportDto reportDto = reportToDtoConversionService.convert(report);
-
         reportDtoToPdfFileWriter.writeFile(fileAndPathName, config.logo(), reportDto);
 
         String accessToken = accessTokenHolder.getAccessToken();
@@ -72,6 +76,24 @@ public class DropboxController extends ExceptionController {
         jsonObjectResponse.setSuccess(true);
 
         return jsonObjectResponse;
+    }
+
+    private ReportDto retrieveReportDtoOrFail(String documentNumber) {
+        ReportDto reportDto = null;
+        Report report = reportRepo.findByDocumentNumber(documentNumber);
+        if (report != null) {
+            reportDto = reportToDtoConversionService.convert(report);
+        }
+        else {
+            Order order = orderRepo.findByOrderNumber(documentNumber);
+            if (order == null) {
+                throw new IllegalArgumentException("Konnte Dokument mit angegebener Dokumentennummer " + documentNumber + " nicht finden");
+            }
+            else {
+                reportDto = orderToDtoConversionService.toDto(order);
+            }
+        }
+        return reportDto;
     }
 
     private void uploadToDropbox(File file, String fileName, String accessToken) {

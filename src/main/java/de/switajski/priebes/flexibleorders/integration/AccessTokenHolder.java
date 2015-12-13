@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxWebAuth;
 
 @Component
@@ -13,15 +12,14 @@ public class AccessTokenHolder {
 
     private DbxWebAuth auth;
 
-    private DbxAuthFinish authFinish;
+    private String accessToken;
 
     public String getAccessToken() {
-        if (authFinish == null) return null;
-        return authFinish.accessToken;
+        return accessToken;
     }
 
-    public void setAuthFinish(DbxAuthFinish authFinish) {
-        this.authFinish = authFinish;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public DbxWebAuth getAuth() {

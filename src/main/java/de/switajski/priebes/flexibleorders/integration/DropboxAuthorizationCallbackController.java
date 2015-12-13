@@ -36,7 +36,7 @@ public class DropboxAuthorizationCallbackController extends ExceptionController 
         DbxAuthFinish authFinish;
         try {
             authFinish = accessTokenHolder.getAuth().finish(request.getParameterMap());
-            accessTokenHolder.setAuthFinish(authFinish);
+            accessTokenHolder.setAccessToken(authFinish.accessToken);
         }
         catch (DbxWebAuth.BadRequestException ex) {
             log.error("On /dropbox-auth-finish: Bad request: " + ex.getMessage());

@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.integration;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,12 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
     @Autowired
     DropboxConfiguration config;
 
+    // TODO: get it dynamically from web config
+    private static final String APP_NAME = "FlexibleOrders";
+
+    // TODO: redundant code
+    private static final String REDIRECT_MAPPING = "dropbox-auth-finish";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (accessTokenHolder.getAccessToken() == null) {
@@ -45,7 +52,7 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
             DbxSessionStore csrfStore = new DbxStandardSessionStore(session, key_csrf_token);
             DbxAppInfo appInfo = new DbxAppInfo(config.getKey(), config.getSecret());
 
-            DbxWebAuth auth = new DbxWebAuth(requestConfig, appInfo, "http://localhost:8080/FlexibleOrders/dropbox-auth-finish", csrfStore);
+            DbxWebAuth auth = new DbxWebAuth(requestConfig, appInfo, callbackUrl(request), csrfStore);
             accessTokenHolder.setAuth(auth);
 
             // Start authorization.
@@ -56,6 +63,11 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
         }
         log.error("DropboxAuthorizationInterceptor Prehandle");
         return true;
+    }
+
+    private String callbackUrl(HttpServletRequest request) throws MalformedURLException {
+        return String.format("%s://%s:%d/" + APP_NAME + "/" + REDIRECT_MAPPING,
+                request.getScheme(), request.getServerName(), request.getServerPort());
     }
 
     /**

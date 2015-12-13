@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -62,7 +62,7 @@ public class OrderingServiceTest {
     @Mock
     private OrderItemRepository orderItemRepo;
     @InjectMocks
-    private OrderingService orderingService = new OrderingService();
+    private TransitionsService orderingService = new TransitionsService();
 
     @Test
     public void shouldOrder() {

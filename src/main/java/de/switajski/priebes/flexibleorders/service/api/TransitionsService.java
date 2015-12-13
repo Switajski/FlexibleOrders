@@ -43,9 +43,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  *
  */
 @Service
-public class OrderingService {
+public class TransitionsService {
 
-    private static Logger log = Logger.getLogger(OrderingService.class);
+    private static Logger log = Logger.getLogger(TransitionsService.class);
 
     @Autowired
     private CatalogDeliveryMethodRepository deliveryMethodRepo;

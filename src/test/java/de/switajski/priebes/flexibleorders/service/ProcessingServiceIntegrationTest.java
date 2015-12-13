@@ -29,14 +29,14 @@ import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepos
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
-import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ProcessingServiceIntegrationTest extends AbstractSpringContextTest {
 
     @Autowired
-    private OrderingService orderingService;
+    private TransitionsService orderingService;
     @Autowired
     private ConfirmingService confirmingService;
     @Autowired

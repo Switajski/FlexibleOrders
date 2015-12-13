@@ -52,7 +52,7 @@ import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
@@ -78,7 +78,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private CustomerRepository cRepo;
 
     @Autowired
-    private OrderingService orderingService;
+    private TransitionsService orderingService;
 
     @Autowired
     private ConfirmingService confirmingService;

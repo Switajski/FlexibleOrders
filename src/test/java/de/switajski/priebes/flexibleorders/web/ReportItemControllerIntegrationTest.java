@@ -16,7 +16,7 @@ import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepos
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
-import de.switajski.priebes.flexibleorders.service.api.OrderingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ReportItemControllerIntegrationTest extends TestDataCreator {
 
     @Autowired
-    private OrderingService orderingService;
+    private TransitionsService orderingService;
     @Autowired
     private ConfirmingService confirmingService;
     @Autowired

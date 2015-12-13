@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,8 +30,8 @@ import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkingPaidService;
-import de.switajski.priebes.flexibleorders.service.api.OrderingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -45,7 +46,7 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 public class TransitionsController extends ExceptionController {
 
     @Autowired
-    private OrderingService orderingService;
+    private TransitionsService transistionsService;
     @Autowired
     private InvoicingService invoicingService;
     @Autowired
@@ -112,7 +113,7 @@ public class TransitionsController extends ExceptionController {
                 orderRequest.items);
         orderParameter.expectedDelivery = orderRequest.expectedDelivery;
 
-        Order order = orderingService.order(
+        Order order = transistionsService.order(
                 orderParameter);
 
         return ExtJsResponseCreator.createResponse(order);
@@ -177,15 +178,15 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse deleteOrder(
             @RequestParam(value = "orderNumber", required = true) String orderNumber) {
-        orderingService.deleteOrder(orderNumber);
+        transistionsService.deleteOrder(orderNumber);
         return ExtJsResponseCreator.createResponse(orderNumber);
     }
 
-    @RequestMapping(value = "/deleteReport", method = RequestMethod.POST)
+    @RequestMapping(value = "/Report/{documentNumber}", method = RequestMethod.DELETE)
     public @ResponseBody JsonObjectResponse deleteReport(
-            @RequestParam(value = "documentNumber", required = true) String documentNumber)
+            @PathVariable(value = "documentNumber") String documentNumber)
             throws Exception {
-        orderingService.deleteReport(documentNumber);
+        transistionsService.deleteReport(documentNumber);
         return ExtJsResponseCreator.createResponse(documentNumber);
     }
 
@@ -193,8 +194,7 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody JsonObjectResponse cancelConfirmationReport(
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
             throws Exception {
-        CancelReport cr = orderingService
-                .cancelReport(orderConfirmationNumber);
+        CancelReport cr = transistionsService.cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createResponse(cr);
     }
 

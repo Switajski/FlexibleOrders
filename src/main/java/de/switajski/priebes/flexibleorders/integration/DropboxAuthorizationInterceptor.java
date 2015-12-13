@@ -51,7 +51,7 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
             // Start authorization.
             String authorizePageUrl = auth.start();
 
-            redirect(response, authorizePageUrl);
+            redirect(response, authorizePageUrl, request.getHeader("origin"));
             return false;
         }
         log.error("DropboxAuthorizationInterceptor Prehandle");
@@ -72,14 +72,17 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
      * @throws JsonGenerationException
      * @throws JsonMappingException
      */
-    private void redirect(HttpServletResponse response, String authorizePageUrl) throws IOException, JsonGenerationException, JsonMappingException {
+    private void redirect(HttpServletResponse response, String authorizePageUrl, String origin)
+            throws IOException,
+            JsonGenerationException,
+            JsonMappingException {
 
         PrintWriter out = response.getWriter();
         JsonObjectResponse jsonResponse = new JsonObjectResponse();
         jsonResponse.setSuccess(true);
         jsonResponse.setData(authorizePageUrl);
 
-        addCorsHeaders(response);
+        addCorsHeaders(response, origin);
         response.setStatus(210);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -88,11 +91,11 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
         mapper.writeValue(out, jsonResponse);
     }
 
-    private void addCorsHeaders(HttpServletResponse response) {
+    private void addCorsHeaders(HttpServletResponse response, String origin) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Headers", "accept, x-requested-with");
         response.setHeader("Access-Control-Allow-Methods", "GET");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost");
+        response.setHeader("Access-Control-Allow-Origin", origin);
         response.setHeader("Access-Control-Max-Age", "1800");
         response.setHeader("Allow", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
     }

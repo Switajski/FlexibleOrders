@@ -46,13 +46,13 @@ public class ExceptionController {
         return handleExceptionAsError(ex);
     }
 
-    private String handleExceptionAsError(Exception ex) {
+    public String handleExceptionAsError(Exception ex) {
         log.error(ex.getMessage(), ex);
         if (ex.getMessage() == null) return stringifyWithStackTrace(ex, "Fehler beim Server: ");
         return stringify(ex);
     }
 
-    private String handleExceptionAsNotification(Exception ex, String messageToUser) {
+    public String handleExceptionAsNotification(Exception ex, String messageToUser) {
         if (ex.getMessage() == null) return messageToUser;
         return stringify(ex);
     }

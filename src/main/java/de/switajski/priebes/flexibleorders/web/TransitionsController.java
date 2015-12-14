@@ -1,7 +1,10 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
@@ -140,7 +144,8 @@ public class TransitionsController extends ExceptionController {
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse deliver(
-            @RequestBody JsonCreateReportRequest deliverRequest)
+            @RequestBody JsonCreateReportRequest deliverRequest,
+            HttpServletResponse response)
             throws Exception {
         deliverRequest.validate();
 
@@ -156,13 +161,28 @@ public class TransitionsController extends ExceptionController {
         deliverParameter.ignoreContradictoryExpectedDeliveryDates = deliverRequest.ignoreContradictoryExpectedDeliveryDates;
 
         deliverParameter.customerNumber = deliverRequest.customerId;
-        if (deliverParameter.singleDeliveryNotes) {
-            DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);
-            return ExtJsResponseCreator.createResponse(deliveryNotes);
+        try {
+            if (deliverParameter.singleDeliveryNotes) {
+                DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);
+                return ExtJsResponseCreator.createResponse(deliveryNotes);
+            }
+            else {
+                Set<DeliveryNotes> dns = shippingService.shipMany(deliverParameter);
+                return ExtJsResponseCreator.createResponse(dns);
+            }
         }
-        else {
-            Set<DeliveryNotes> dns = shippingService.shipMany(deliverParameter);
-            return ExtJsResponseCreator.createResponse(dns);
+        catch (ContradictoryPurchaseAgreementException e) {
+            // response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+            JsonObjectResponse resp = new JsonObjectResponse();
+            resp.setErrors(new HashMap<String, String>() {
+                {
+                    put("ignoreContradictoryExpectedDeliveryDates", e.getMessage());
+                }
+            });
+            resp.setSuccess(false);
+            response.setStatus(422);
+            return resp;
         }
 
     }

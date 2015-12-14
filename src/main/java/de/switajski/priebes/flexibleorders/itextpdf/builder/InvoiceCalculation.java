@@ -12,7 +12,10 @@ public class InvoiceCalculation {
     public InvoiceCalculation(ReportDto report) {
         netGoods = report.netGoods;
 
-        if (report.shippingSpecific_shippingCosts != null) shipping = report.shippingSpecific_shippingCosts;
+        if (report.shippingSpecific_shippingCosts != null
+                && report.shippingSpecific_shippingCosts.isGreaterZero()) {
+            shipping = report.shippingSpecific_shippingCosts;
+        }
 
         discountText = null;
         discountAmount = null;

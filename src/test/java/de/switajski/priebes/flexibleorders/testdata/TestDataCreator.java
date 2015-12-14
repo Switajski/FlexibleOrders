@@ -22,6 +22,7 @@ import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.UPS;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.WYOMING;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +32,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -52,8 +54,8 @@ import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
-import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
@@ -104,9 +106,13 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreeingService agreeingService;
 
-    // @Ignore("This test is to initialize test data for GUI testing")
-    @Test
-    // @Rollback(false)
+    public static void main(String[] args)
+            throws IOException
+    {
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("classpath*:/META-INF/org/flexible/order/application-context*.xml");
+    }
+
     public void run() {
         createTestData();
     }

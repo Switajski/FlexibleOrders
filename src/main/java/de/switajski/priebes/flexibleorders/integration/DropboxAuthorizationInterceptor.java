@@ -14,11 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.dropbox.core.DbxAppInfo;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxSessionStore;
-import com.dropbox.core.DbxStandardSessionStore;
-import com.dropbox.core.DbxWebAuth;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +25,7 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
     private static Logger log = Logger.getLogger(DropboxAuthorizationInterceptor.class);
 
     @Autowired
-    AccessTokenHolder accessTokenHolder;
-
-    @Autowired
-    DropboxConfiguration config;
+    DropboxClientWrapper dropboxClientWrapper;
 
     // TODO: get it dynamically from web config
     private static final String APP_NAME = "FlexibleOrders";
@@ -43,20 +35,12 @@ public class DropboxAuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (accessTokenHolder.getAccessToken() == null) {
+        if (!dropboxClientWrapper.hasAccess()) {
+            String callbackUrl = callbackUrl(request);
             String userLocale = Locale.getDefault().toString();
-
-            DbxRequestConfig requestConfig = new DbxRequestConfig(config.getClientId(), userLocale);
             HttpSession session = request.getSession(true);
-            String key_csrf_token = "dropbox-auth-csrf-token";
-            DbxSessionStore csrfStore = new DbxStandardSessionStore(session, key_csrf_token);
-            DbxAppInfo appInfo = new DbxAppInfo(config.getKey(), config.getSecret());
 
-            DbxWebAuth auth = new DbxWebAuth(requestConfig, appInfo, callbackUrl(request), csrfStore);
-            accessTokenHolder.setAuth(auth);
-
-            // Start authorization.
-            String authorizePageUrl = auth.start();
+            String authorizePageUrl = dropboxClientWrapper.startAuthorization(callbackUrl, userLocale, session);
 
             redirect(response, authorizePageUrl, request.getHeader("origin"));
             return false;

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWebAuth;
 
@@ -22,7 +21,7 @@ public class DropboxAuthorizationCallbackController extends ExceptionController 
     private static Logger log = Logger.getLogger(DropboxAuthorizationCallbackController.class);
 
     @Autowired
-    AccessTokenHolder accessTokenHolder;
+    DropboxClientWrapper accessTokenHolder;
 
     @RequestMapping(value = "/dropbox-auth-finish", method = RequestMethod.GET, params = { "state", "code" })
     public String sendReport(
@@ -33,10 +32,8 @@ public class DropboxAuthorizationCallbackController extends ExceptionController 
         String successSite = "resources/dropbox-auth-success.html";
         String refusedSite = "resources/dropbox-auth-refused.html";
 
-        DbxAuthFinish authFinish;
         try {
-            authFinish = accessTokenHolder.getAuth().finish(request.getParameterMap());
-            accessTokenHolder.setAccessToken(authFinish.accessToken);
+            accessTokenHolder.finish(request.getParameterMap());
         }
         catch (DbxWebAuth.BadRequestException ex) {
             log.error("On /dropbox-auth-finish: Bad request: " + ex.getMessage());

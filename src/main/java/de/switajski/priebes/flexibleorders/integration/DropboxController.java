@@ -3,9 +3,7 @@ package de.switajski.priebes.flexibleorders.integration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Locale;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxHost;
-import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWriteMode;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
@@ -36,8 +31,6 @@ import de.switajski.priebes.flexibleorders.web.ExceptionController;
 @Controller
 @RequestMapping("/dropbox")
 public class DropboxController extends ExceptionController {
-
-    private static Logger log = Logger.getLogger(DropboxController.class);
 
     @Autowired
     ReportRepository reportRepo;
@@ -58,7 +51,7 @@ public class DropboxController extends ExceptionController {
     PdfConfiguration config;
 
     @Autowired
-    AccessTokenHolder accessTokenHolder;
+    DropboxClientWrapper dropboxClient;
 
     @RequestMapping(value = "/sendReport/{documentNumber}", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse sendReport(@PathVariable("documentNumber") String documentNumber) throws Exception {
@@ -68,9 +61,7 @@ public class DropboxController extends ExceptionController {
         String fileAndPathName = documentNumber + ".pdf";
         reportDtoToPdfFileWriter.writeFile(fileAndPathName, config.logo(), reportDto);
 
-        String accessToken = accessTokenHolder.getAccessToken();
-        accessToken = "47vdhzrlJREAAAAAAAAA7qJ5Yf-Yunbut3FIiJe_NIYjPLDTqgHbQ0CYEquN02Lt";
-        uploadToDropbox(new File(fileAndPathName), fileAndPathName, accessToken);
+        uploadToDropbox(new File(fileAndPathName), fileAndPathName);
 
         JsonObjectResponse jsonObjectResponse = new JsonObjectResponse();
         jsonObjectResponse.setSuccess(true);
@@ -96,20 +87,14 @@ public class DropboxController extends ExceptionController {
         return reportDto;
     }
 
-    private void uploadToDropbox(File file, String fileName, String accessToken) {
+    private void uploadToDropbox(File file, String fileName) {
         String dropboxPath = "/FlexibleOrders";
-
-        // Create a DbxClientV2, which is what you use to make API calls.
-        String userLocale = Locale.getDefault().toString();
-        DbxRequestConfig requestConfig = new DbxRequestConfig("FlexibleOrders", userLocale);
-
-        DbxClient dbxClient = new DbxClient(requestConfig, accessToken, DbxHost.Default);
 
         // Make the API call to upload the file.
         try {
             FileInputStream in = new FileInputStream(file);
             try {
-                dbxClient.uploadFile(dropboxPath + "/" + fileName, DbxWriteMode.add(), file.length(), in);
+                dropboxClient.client().uploadFile(dropboxPath + "/" + fileName, DbxWriteMode.add(), file.length(), in);
 
             }
             finally {

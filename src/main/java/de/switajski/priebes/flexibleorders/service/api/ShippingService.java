@@ -80,8 +80,8 @@ public class ShippingService {
 
         for (String packageNumber : packages.keySet()) {
             deliverParameter.itemsToBeShipped = packages.get(packageNumber);
-            if (packageNumber == null) packageNumber = "";
-            deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat("-" + packageNumber);
+            String suffix = packageNumber == null ? "" : "-" + packageNumber;
+            deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat(suffix);
             deliverParameter.packageNumber = packageNumber;
             savedDeliveryNotes.add(ship(deliverParameter));
         }

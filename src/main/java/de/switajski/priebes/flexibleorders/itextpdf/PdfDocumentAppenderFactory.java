@@ -38,7 +38,9 @@ public class PdfDocumentAppenderFactory {
         else if (reportDto instanceof ToBeShippedDto) {
             pdfDocumentAppender = new ToBeShippedPdf(reportDto);
         }
-        else if (reportDto instanceof ToBeShippedToOneCustomerDto) pdfDocumentAppender = new ToBeShippedToOneCustomerPdf(logo, reportDto);
+        else if (reportDto instanceof ToBeShippedToOneCustomerDto) {
+            pdfDocumentAppender = new ToBeShippedToOneCustomerPdf(logo, reportDto);
+        }
         return pdfDocumentAppender;
     }
 

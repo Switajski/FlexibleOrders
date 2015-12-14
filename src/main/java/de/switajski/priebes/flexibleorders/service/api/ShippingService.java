@@ -74,7 +74,7 @@ public class ShippingService {
         for (String packageNumber : packages.keySet()) {
             deliverParameter.itemsToBeShipped = packages.get(packageNumber);
             if (packageNumber == null) packageNumber = "";
-            deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat(packageNumber);
+            deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat("-" + packageNumber);
             deliverParameter.packageNumber = packageNumber;
             savedDeliveryNotes.add(ship(deliverParameter));
         }

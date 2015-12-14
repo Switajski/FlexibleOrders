@@ -126,7 +126,7 @@ public class DropboxController extends ExceptionController {
     private DbxEntry.File metaDataOfLatest(DbxClient client, DbxEntry fileToUpdate) throws DbxException {
         List<DbxEntry.File> metadatas = client.getRevisions(fileToUpdate.path);
         DbxEntry.File metadata = metadatas.stream()
-                .sorted((DbxEntry.File o1, DbxEntry.File o2) -> o1.clientMtime.compareTo(o2.clientMtime))
+                .sorted((DbxEntry.File o1, DbxEntry.File o2) -> o2.clientMtime.compareTo(o1.clientMtime))
                 .findFirst().get();
         return metadata;
     }

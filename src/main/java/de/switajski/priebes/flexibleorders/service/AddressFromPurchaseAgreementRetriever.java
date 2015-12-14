@@ -23,7 +23,7 @@ public abstract class AddressFromPurchaseAgreementRetriever {
     @Transactional(readOnly = true)
     public Set<Address> retrieve(Collection<ReportItem> reportItems) {
         Set<Address> addresses = new HashSet<Address>();
-        for (PurchaseAgreement pa : paService.retrieveLegal(reportItems)) {
+        for (PurchaseAgreement pa : paService.retrieve(reportItems)) {
             addresses.add(chooseAddressOf(pa));
         }
         return addresses;

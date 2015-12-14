@@ -157,12 +157,12 @@ public class ReportingService {
 
     @Transactional(readOnly = true)
     public ReportDto retrieveAllToBeShippedToCustomer(Customer customer) {
-        return createToBeShippedDto(customer, new ToBeShippedDto());
+        return createToBeShippedDto(customer, new ToBeShippedToOneCustomerDto());
     }
 
     @Transactional(readOnly = true)
     public ReportDto retrieveAllToBeShipped() {
-        return createToBeShippedDto(null, new ToBeShippedToOneCustomerDto());
+        return createToBeShippedDto(null, new ToBeShippedDto());
     }
 
     private ReportDto createToBeShippedDto(Customer customer, ReportDto report) {

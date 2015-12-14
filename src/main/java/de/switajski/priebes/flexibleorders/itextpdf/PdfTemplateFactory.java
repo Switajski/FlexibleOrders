@@ -4,7 +4,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfPageEvent;
 
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
 
 public class PdfTemplateFactory {
 
@@ -15,7 +15,7 @@ public class PdfTemplateFactory {
     }
 
     public PdfPageEvent create(ReportDto reportDto) {
-        if (reportDto instanceof ToBeShippedToOneCustomerDto) {
+        if (reportDto instanceof ToBeShippedDto) {
             return new BlankPdfTemplate();
         }
         return new BusinessLetterPdfTemplate(logo);

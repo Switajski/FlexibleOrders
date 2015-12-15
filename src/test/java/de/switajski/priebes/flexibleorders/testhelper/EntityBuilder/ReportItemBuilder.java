@@ -10,7 +10,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
 public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends Builder<BEAN>> implements Builder<BEAN> {
 
-    protected Integer quantity;
+    protected int quantity;
     protected Report report = null;
     protected ReportItem predecessor;
     protected Set<ReportItem> successors;
@@ -20,7 +20,7 @@ public abstract class ReportItemBuilder<BEAN extends ReportItem, BUILDER extends
     public BEAN build(BEAN bean) {
         bean.setQuantity(quantity);
         if (report != null) report.addItem(bean);
-        bean.setOrderItem(item);
+        if (item != null) bean.setOrderItem(item);
         bean.setCreated(created);
         bean.setPredecessor(predecessor);
         if (predecessor != null) {

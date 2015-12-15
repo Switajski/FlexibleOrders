@@ -18,7 +18,7 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgree
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -33,7 +33,7 @@ public class ShippingService {
     @Autowired
     private ItemDtoToReportItemConversionService convService;
     @Autowired
-    private ShippingAddressService shippingAddressService;
+    private PurchaseAgreementService purchaseAgreementService;
     @Autowired
     private ExpectedDeliveryService expectedDeliveryService;
 
@@ -57,7 +57,7 @@ public class ShippingService {
         if (!deliverParameter.ignoreContradictoryExpectedDeliveryDates) {
             expectedDeliveryService.validateExpectedDeliveryDates(deliveryNotes.getItems(), deliveryNotes.getCreated());
         }
-        Address shippingAddress = shippingAddressService.retrieveShippingAddressOrFail(deliveryNotes.getItems());
+        Address shippingAddress = purchaseAgreementService.retrieveShippingAddressOrFail(deliveryNotes.getItems());
         deliveryNotes.setShippedAddress(shippingAddress);
         return reportRepo.save(deliveryNotes);
     }

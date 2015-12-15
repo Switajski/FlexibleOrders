@@ -11,9 +11,11 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
@@ -31,10 +33,15 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
 
         // WHEN
-        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieve(agreementItems);
+        Set<PurchaseAgreement> purchaseAgreements = whenRetrievingPurchaseAgreements(agreementItems);
 
         // THEN
         assertThat(purchaseAgreements.size(), is(greaterThan(1)));
+    }
+
+    private Set<PurchaseAgreement> whenRetrievingPurchaseAgreements(List<ReportItem> agreementItems) {
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieve(agreementItems);
+        return purchaseAgreements;
     }
 
     @Test
@@ -45,25 +52,54 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
 
         // WHEN
-        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegal(agreementItems);
+        Set<PurchaseAgreement> purchaseAgreements = whenRetrievingLegalPurchaseAgreements(agreementItems);
 
         // THEN
         assertThat(purchaseAgreements.size(), is(0));
     }
 
+    private Set<PurchaseAgreement> whenRetrievingLegalPurchaseAgreements(List<ReportItem> agreementItems) {
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegal(agreementItems);
+        return purchaseAgreements;
+    }
+
+    @Test
+    public void shouldRetrieveTwoShippingAddress() {
+        // GIVEN
+        List<ReportItem> agreementItems = Arrays.asList(
+                givenAgreementItemWith(givenPurchaseAgreement()),
+                givenAgreementItemWith(changeShippingAddressDate(givenPurchaseAgreement())));
+
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(agreementItems);
+
+        assertThat(shippingAddresses.size(), is(2));
+    }
+
+    @Test
+    public void shouldRetrieveOneShippingAddress() {
+        // GIVEN
+        List<ReportItem> agreementItems = Arrays.asList(
+                givenAgreementItemWith(givenPurchaseAgreement()),
+                givenAgreementItemWith(givenPurchaseAgreement()));
+
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(agreementItems);
+
+        assertThat(shippingAddresses.size(), is(1));
+    }
+
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
         return new ConfirmationItemBuilder()
-        .setItem(
-                new OrderItemBuilder()
-                .setProduct(new ProductBuilder().build())
-                .setOrderedQuantity(12)
-                .build())
+                .setItem(
+                        new OrderItemBuilder()
+                                .setProduct(new ProductBuilder().build())
+                                .setOrderedQuantity(12)
+                                .build())
                 .setQuantity(6)
                 .setReport(
                         new OrderConfirmationBuilder()
-                        .setAgreementDetails(purchaseAgreement)
-                        .build())
-                        .build();
+                                .setAgreementDetails(purchaseAgreement)
+                                .build())
+                .build();
     }
 
     private PurchaseAgreement changeExpectedDeliveryDate(PurchaseAgreement ad) {
@@ -71,10 +107,16 @@ public class PurchaseAgreementServiceTest {
         return ad;
     }
 
+    private PurchaseAgreement changeShippingAddressDate(PurchaseAgreement ad) {
+        ad.setShippingAddress(AddressBuilder.buildWithGeneratedAttributes(2));
+        return ad;
+    }
+
     private PurchaseAgreement givenPurchaseAgreement() {
         PurchaseAgreement pa = new PurchaseAgreement();
         pa.setExpectedDelivery(new LocalDate());
         pa.setCustomerNumber(123L);
+        pa.setShippingAddress(AddressBuilder.buildWithGeneratedAttributes(1));
         return pa;
     }
 

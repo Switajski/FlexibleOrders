@@ -29,19 +29,13 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
 import de.switajski.priebes.flexibleorders.service.DeliveryMethodService;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
-import de.switajski.priebes.flexibleorders.service.ShippingAddressService;
 
 @Service
 public class ReportToDtoConversionService {
 
     @Autowired
     ExpectedDeliveryService expectedDeliveryService;
-    @Autowired
-    InvoicingAddressService invoicingAddressService;
-    @Autowired
-    ShippingAddressService shippingAddressService;
     @Autowired
     CustomerDetailsService customerDetailsService;
     @Autowired
@@ -194,7 +188,7 @@ public class ReportToDtoConversionService {
 
     private Address retrieveShippingAddress(Report report) {
         Address shippingAddress = null;
-        Set<Address> shippingAddresses = shippingAddressService.retrieve(report.getItems());
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(report.getItems());
         if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
         else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
@@ -202,7 +196,7 @@ public class ReportToDtoConversionService {
     }
 
     private Address retrieveInvoicingAddress(Report report) {
-        Set<Address> invoicingAddresses = invoicingAddressService.retrieve(report.getItems());
+        Set<Address> invoicingAddresses = purchaseAgreementService.invoiceAddresses(report.getItems());
         if (invoicingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
         else if (invoicingAddresses.size() == 1) {

@@ -43,8 +43,6 @@ public class ReportingService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private ShippingAddressService shippingAddressService;
-    @Autowired
     private ReportItemRepository reportItemRepo;
     @Autowired
     private ItemDtoToReportItemConversionService itemDtoConverterService;
@@ -52,6 +50,8 @@ public class ReportingService {
     private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
     @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
+    @Autowired
+    private PurchaseAgreementService purchaseAgreementService;
 
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
@@ -187,7 +187,7 @@ public class ReportingService {
 
         }
         if (customer != null) {
-            Collection<Address> sAddresses = shippingAddressService.retrieve(reportItems);
+            Collection<Address> sAddresses = purchaseAgreementService.shippingAddresses(reportItems);
             if (sAddresses.size() > 0) {
                 report.shippingSpecific_shippingAddress = sAddresses.iterator().next();
             }

@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
+import de.switajski.priebes.flexibleorders.tools.TestDataCreator;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Transactional

@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.InvoicingAddressService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -32,7 +32,7 @@ public class InvoicingService {
     @Autowired
     private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
-    private InvoicingAddressService invoicingAddressService;
+    private PurchaseAgreementService purchaseAgreementService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
@@ -70,7 +70,7 @@ public class InvoicingService {
     }
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
-        Set<Address> ias = invoicingAddressService.retrieve(reportItems);
+        Set<Address> ias = purchaseAgreementService.invoiceAddresses(reportItems);
         if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
                 + BeanUtil.createStringOfDifferingAttributes(ias));
         else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");

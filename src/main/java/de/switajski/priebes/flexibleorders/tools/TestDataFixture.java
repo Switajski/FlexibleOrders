@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.testdata;
+package de.switajski.priebes.flexibleorders.tools;
 
 import static de.switajski.priebes.flexibleorders.testdata.ConfirmParameterShorthand.confirm;
 import static de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand.item;

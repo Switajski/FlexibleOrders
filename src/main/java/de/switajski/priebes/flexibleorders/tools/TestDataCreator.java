@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.testdata;
+package de.switajski.priebes.flexibleorders.tools;
 
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB11;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB13;

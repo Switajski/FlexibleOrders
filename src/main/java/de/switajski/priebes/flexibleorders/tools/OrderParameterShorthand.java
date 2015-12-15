@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.testdata;
+package de.switajski.priebes.flexibleorders.tools;
 
 import java.util.Arrays;
 

@@ -1,8 +1,8 @@
 package de.switajski.priebes.flexibleorders.tools;
 
-import static de.switajski.priebes.flexibleorders.testdata.ConfirmParameterShorthand.confirm;
-import static de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand.item;
-import static de.switajski.priebes.flexibleorders.testdata.OrderParameterShorthand.orderParam;
+import static de.switajski.priebes.flexibleorders.tools.ConfirmParameterShorthand.confirm;
+import static de.switajski.priebes.flexibleorders.tools.ItemDtoShorthand.item;
+import static de.switajski.priebes.flexibleorders.tools.OrderParameterShorthand.orderParam;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

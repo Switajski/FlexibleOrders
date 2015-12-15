@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,8 @@ public class ReportItemController extends ExceptionController {
 
         Customer customer = null;
         PageRequest pageable = new PageRequest((page - 1), limit);
-        HashMap<String, String> filterMap = JsonSerializationHelper
+        Map<String, String> filterMap = new HashMap<String, String>();
+        if (filters != null) filterMap = JsonSerializationHelper
                 .deserializeFiltersJson(filters);
         Page<ItemDto> ordered;
 
@@ -98,7 +100,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
-            @RequestParam(value = "filter", required = false) String filters)
+            @RequestParam(value = "filter", required = true) String filters)
             throws Exception {
 
         PageRequest pageable = new PageRequest((page - 1), limit);
@@ -194,7 +196,7 @@ public class ReportItemController extends ExceptionController {
         return customer;
     }
 
-    private boolean containsFilter(HashMap<String, String> filterMap, String key) {
+    private boolean containsFilter(Map<String, String> filterMap, String key) {
         return filterMap != null && filterMap.containsKey(key)
                 && filterMap.get(key) != null;
     }

@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,8 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration(value = "src/main/webapp")
-@ContextConfiguration(locations = { "classpath*:org/flexible/order/application-context*.xml" })
+@WebAppConfiguration
+@ContextConfiguration(locations = { "classpath*:org/flexible/order/application-context*.xml", "classpath*:servlet*.xml" })
 public class LinksAvailableTest {
 
     @Autowired
@@ -41,20 +40,23 @@ public class LinksAvailableTest {
     @Test
     public void shouldBeForbidden() throws Exception {
         mvcWithSecurity
-        .perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnauthorized());
+                .perform(get("/reportitems/ordered").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void urlShouldBeAvailable() throws Exception {
-        mvc.perform(get("/FlexibleOrders/ordered").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().is2xxSuccessful());
+    public void shouldReturnBadRequestOnInvalidRequest() throws Exception {
+        mvc.perform(get("/reportitems/ordered").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
-    public void shouldLogin() throws Exception {
-        mvcWithSecurity.perform(get("/admin").with(user("admin").password("pass").roles("USER", "ADMIN")))
-                .andExpect(status().is2xxSuccessful());
+    public void shouldReturnSuccess() throws Exception {
+        mvc.perform(get("/reportitems/ordered")
+                .param("page", "1")
+                .param("limit", "50")
+                ).andExpect(
+                        status().isOk());
     }
 
 }

@@ -1,15 +1,15 @@
 package de.switajski.priebes.flexibleorders.service;
 
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.AB11;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.AMY;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.B11;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.B12;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.DHL;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.JUREK;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.MILADKA;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.PAUL;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.SALOME;
-import static de.switajski.priebes.flexibleorders.tools.TestDataFixture.YVONNE;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AB11;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AMY;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B11;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.B12;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.DHL;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.JUREK;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.MILADKA;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.PAUL;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.SALOME;
+import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

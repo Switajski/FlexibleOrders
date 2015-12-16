@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.tools;
+package de.switajski.priebes.flexibleorders.testdata;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;

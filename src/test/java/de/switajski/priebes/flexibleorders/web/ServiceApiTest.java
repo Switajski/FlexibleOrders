@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
-public class ServiceApiTest extends SpringMvcTest {
+public class ServiceApiTest extends SpringMvcTestConfiguration {
 
     @Test
     public void shouldBeRejectedByValidation() throws Exception {
@@ -24,9 +24,8 @@ public class ServiceApiTest extends SpringMvcTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("\"errors\":{\"items\":\"NotEmpty\"}")))
+                .andExpect(content().string(containsString("\"errors\":{\"items\":")))
                 .andExpect(status().is4xxClientError());
 
     }
-
 }

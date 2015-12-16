@@ -120,8 +120,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
     }
 
     /**
-     * This test is to fix maven exception in test phase. Maven throws an
-     * exception, that this method has no runnable tests.
+     * Maven throws an exception, that this class has no runnable tests. This
+     * test is to fix maven that exception in test phase.
      */
     @Ignore
     @Test

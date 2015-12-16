@@ -155,6 +155,8 @@ public class TransitionsController extends ExceptionController {
             }
         }
         catch (ContradictoryPurchaseAgreementException e) {
+            // TODO: use custom validator:
+            // http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html#validation-beanvalidation-spring-constraints
             JsonObjectResponse resp = new JsonObjectResponse();
             resp.setErrors(new HashMap<String, String>() {
                 {

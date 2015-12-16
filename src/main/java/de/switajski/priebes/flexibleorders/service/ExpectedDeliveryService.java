@@ -1,11 +1,9 @@
 package de.switajski.priebes.flexibleorders.service;
 
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +33,7 @@ public class ExpectedDeliveryService {
     public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
         Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
         for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
-            WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            expectedDeliveryWeekOfYear.add(pa.getExpectedDelivery().get(weekFields.weekOfWeekBasedYear()));
+            expectedDeliveryWeekOfYear.add(DateUtils.weekOf(pa.getExpectedDelivery()));
         }
         return expectedDeliveryWeekOfYear;
     }

@@ -66,7 +66,7 @@ public class ShippingServiceTest {
 
         // THEN
         DeliveryNotes deliveryNotes = captureSavedDeliveryNotes();
-        assertThat(deliveryNotes.getShippingCosts(), is(equalTo(SHIPPING_COSTS)));
+        assertThat(deliveryNotes.getShippingCosts().getValue(), is(equalTo(SHIPPING_COSTS)));
         assertThat(deliveryNotes.getDeliveryMethod(), is(equalTo(DELIVERY_METHOD)));
 
     }

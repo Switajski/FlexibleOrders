@@ -150,7 +150,7 @@ public class ReportItemController extends ExceptionController {
     private HashSet<String> getDocumentNumbersOf(Page<ItemDto> openItems) {
         HashSet<String> documentNumbers = new HashSet<String>();
         for (ItemDto item : openItems) {
-            documentNumbers.add(item.deliveryNotesNumber);
+            documentNumbers.add(item.getDeliveryNotesNumber());
         }
         return documentNumbers;
     }
@@ -162,7 +162,7 @@ public class ReportItemController extends ExceptionController {
     private void removeAgreed(Page<ItemDto> openItems) {
         for (Iterator<ItemDto> iterator = openItems.iterator(); iterator.hasNext();) {
             ItemDto item = iterator.next();
-            if (!item.agreed) {
+            if (!item.isAgreed()) {
                 iterator.remove();
             }
         }

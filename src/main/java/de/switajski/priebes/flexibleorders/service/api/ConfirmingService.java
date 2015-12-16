@@ -88,14 +88,14 @@ public class ConfirmingService {
         Set<ReportItem> cis = new HashSet<ReportItem>();
         for (ItemDto entry : itemDtos) {
             boolean added = false;
-            Integer qtyToBeConfirmed = entry.quantityLeft;
-            if (entry.id != null) {
-                cis.add(createConfirmationItemById(orderConfirmation, entry.id, qtyToBeConfirmed));
+            Integer qtyToBeConfirmed = entry.getQuantityLeft();
+            if (entry.getId() != null) {
+                cis.add(createConfirmationItemById(orderConfirmation, entry.getId(), qtyToBeConfirmed));
                 added = true;
 
             }
-            else if (!StringUtils.isEmpty(entry.product) && !entry.product.equals("0")) {
-                Set<OrderItem> notConfirmed = matchNotConfirmed(entry.product, entry.orderNumber);
+            else if (!StringUtils.isEmpty(entry.getProduct()) && !entry.getProduct().equals("0")) {
+                Set<OrderItem> notConfirmed = matchNotConfirmed(entry.getProduct(), entry.getOrderNumber());
                 if (notConfirmed.size() == 1) {
                     OrderItem match = notConfirmed.iterator().next();
                     if (match.toBeConfirmed() <= qtyToBeConfirmed) {

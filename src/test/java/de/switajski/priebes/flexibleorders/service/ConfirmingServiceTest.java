@@ -77,10 +77,10 @@ public class ConfirmingServiceTest {
 
         Order b11 = new OrderBuilder().withB11().build();
         Order b12 = new OrderBuilder().withB12().build();
-        when(orderRepo.findByOrderNumber(B11.orderNumber)).thenReturn(b11);
-        when(orderRepo.findByOrderNumber(B11.orderNumber)).thenReturn(b12);
-        when(orderItemRepo.findByOrderNumber(B11.orderNumber)).thenReturn(new ArrayList<OrderItem>(b11.getItems()));
-        when(orderItemRepo.findByOrderNumber(B12.orderNumber)).thenReturn(new ArrayList<OrderItem>(b12.getItems()));
+        when(orderRepo.findByOrderNumber(B11.getOrderNumber())).thenReturn(b11);
+        when(orderRepo.findByOrderNumber(B11.getOrderNumber())).thenReturn(b12);
+        when(orderItemRepo.findByOrderNumber(B11.getOrderNumber())).thenReturn(new ArrayList<OrderItem>(b11.getItems()));
+        when(orderItemRepo.findByOrderNumber(B12.getOrderNumber())).thenReturn(new ArrayList<OrderItem>(b12.getItems()));
 
         setupProducts(MILADKA, SALOME, PAUL, JUREK, AMY);
 
@@ -117,7 +117,7 @@ public class ConfirmingServiceTest {
         public ProductNumbersMatcher(Collection<ItemDto> items) {
             productNumbersShouldBe = new HashSet<String>();
             for (ItemDto item : items)
-                productNumbersShouldBe.add(item.product);
+                productNumbersShouldBe.add(item.getProduct());
         }
 
         private HashSet<String> createProductNumbers(OrderConfirmation oc) {

@@ -12,10 +12,10 @@ public class OrderParameterShorthand {
 
     public static OrderParameter orderParam(String orderNumber, Customer customer, LocalDate expectedDelivery, ItemDto... items) {
         OrderParameter op = new OrderParameter();
-        op.customerNumber = customer.getCustomerNumber();
-        op.orderNumber = orderNumber;
-        op.expectedDelivery = expectedDelivery;
-        op.reportItems = Arrays.asList(items);
+        op.setCustomerNumber(customer.getCustomerNumber());
+        op.setOrderNumber(orderNumber);
+        op.setExpectedDelivery(expectedDelivery);
+        op.setReportItems(Arrays.asList(items));
         return op;
     }
 

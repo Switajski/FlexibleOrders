@@ -103,7 +103,7 @@ public class TransitionsController extends ExceptionController {
     private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
         if (confirmRequest.items.isEmpty()) throw new IllegalArgumentException(
                 "Liste der Auftragspositionen ist leer");
-        return confirmRequest.items.iterator().next().orderNumber;
+        return confirmRequest.items.iterator().next().getOrderNumber();
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
@@ -116,7 +116,7 @@ public class TransitionsController extends ExceptionController {
                 orderRequest.orderNumber,
                 orderRequest.created,
                 orderRequest.items);
-        orderParameter.expectedDelivery = orderRequest.expectedDelivery;
+        orderParameter.setExpectedDelivery(orderRequest.expectedDelivery);
 
         Order order = transistionsService.order(
                 orderParameter);

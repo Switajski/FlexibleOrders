@@ -28,18 +28,18 @@ import de.switajski.priebes.flexibleorders.reference.ProductType;
 @JsonAutoDetect
 public class ItemDto {
 
-    public Long id;
+    private Long id;
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
-    public Date created;
-    public String product;
-    public Long
+    private Date created;
+    private String product;
+    private Long
             customer,
             customerNumber;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    public String productName,
+    private String productName,
             customerName,
             orderNumber,
             documentNumber,
@@ -52,26 +52,26 @@ public class ItemDto {
             packageNumber,
             paymentConditions;
 
-    public Integer quantity,
+    private Integer quantity,
             quantityLeft;
 
     @JsonDeserialize(using = ProductTypeDeserializer.class)
-    public ProductType productType;
+    private ProductType productType;
 
     @JsonDeserialize(using = BigDecimalDeserializer.class)
-    public BigDecimal priceNet;
+    private BigDecimal priceNet;
 
-    public boolean shareHistory;
+    private boolean shareHistory;
 
-    public String status;
+    private String status;
 
     @JsonSerialize(using = JsonJodaLocalDateSerializer.class)
     @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
-    public LocalDate expectedDelivery;
+    private LocalDate expectedDelivery;
 
-    public boolean agreed = true;
+    private boolean agreed = true;
 
-    public boolean pending = false;
+    private boolean pending = false;
 
     @Override
     public int hashCode() {
@@ -97,6 +97,214 @@ public class ItemDto {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + ": " + quantityLeft + " x " + productName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public Long getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Long customer) {
+        this.customer = customer;
+    }
+
+    public Long getCustomerNumber() {
+        return customerNumber;
+    }
+
+    public void setCustomerNumber(Long customerNumber) {
+        this.customerNumber = customerNumber;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getDocumentNumber() {
+        return documentNumber;
+    }
+
+    public void setDocumentNumber(String documentNumber) {
+        this.documentNumber = documentNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getReceiptNumber() {
+        return receiptNumber;
+    }
+
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
+    }
+
+    public String getDeliveryNotesNumber() {
+        return deliveryNotesNumber;
+    }
+
+    public void setDeliveryNotesNumber(String deliveryNotesNumber) {
+        this.deliveryNotesNumber = deliveryNotesNumber;
+    }
+
+    public String getOrderConfirmationNumber() {
+        return orderConfirmationNumber;
+    }
+
+    public void setOrderConfirmationNumber(String orderConfirmationNumber) {
+        this.orderConfirmationNumber = orderConfirmationNumber;
+    }
+
+    public String getOrderAgreementNumber() {
+        return orderAgreementNumber;
+    }
+
+    public void setOrderAgreementNumber(String orderAgreementNumber) {
+        this.orderAgreementNumber = orderAgreementNumber;
+    }
+
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+    }
+
+    public String getPackageNumber() {
+        return packageNumber;
+    }
+
+    public void setPackageNumber(String packageNumber) {
+        this.packageNumber = packageNumber;
+    }
+
+    public String getPaymentConditions() {
+        return paymentConditions;
+    }
+
+    public void setPaymentConditions(String paymentConditions) {
+        this.paymentConditions = paymentConditions;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getQuantityLeft() {
+        return quantityLeft;
+    }
+
+    public void setQuantityLeft(Integer quantityLeft) {
+        this.quantityLeft = quantityLeft;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
+
+    public BigDecimal getPriceNet() {
+        return priceNet;
+    }
+
+    public void setPriceNet(BigDecimal priceNet) {
+        this.priceNet = priceNet;
+    }
+
+    public boolean isShareHistory() {
+        return shareHistory;
+    }
+
+    public void setShareHistory(boolean shareHistory) {
+        this.shareHistory = shareHistory;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDate getExpectedDelivery() {
+        return expectedDelivery;
+    }
+
+    public void setExpectedDelivery(LocalDate expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+    }
+
+    public boolean isAgreed() {
+        return agreed;
+    }
+
+    public void setAgreed(boolean agreed) {
+        this.agreed = agreed;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
     }
 
 }

@@ -7,21 +7,21 @@ public class ItemDtoShorthand {
 
     public static ItemDto item(CatalogProduct product, int qty) {
         ItemDto item = new ItemDto();
-        item.priceNet = product.getRecommendedPriceNet().getValue();
-        item.product = product.toProduct().getProductNumber();
-        item.productName = product.getName();
-        item.quantity = qty;
+        item.setPriceNet(product.getRecommendedPriceNet().getValue());
+        item.setProduct(product.toProduct().getProductNumber());
+        item.setProductName(product.getName());
+        item.setQuantity(qty);
         return item;
     }
 
     public static ItemDto item(CatalogProduct product, int qty, String reportNo) {
         ItemDto item = item(product, qty);
         // TODO: qtyLeft is really nonsense
-        item.quantityLeft = qty;
-        if (reportNo.startsWith("B")) item.orderNumber = reportNo;
-        else if (reportNo.startsWith("AB")) item.orderConfirmationNumber = reportNo;
-        else if (reportNo.startsWith("L")) item.deliveryNotesNumber = reportNo;
-        else if (reportNo.startsWith("R")) item.invoiceNumber = reportNo;
+        item.setQuantityLeft(qty);
+        if (reportNo.startsWith("B")) item.setOrderNumber(reportNo);
+        else if (reportNo.startsWith("AB")) item.setOrderConfirmationNumber(reportNo);
+        else if (reportNo.startsWith("L")) item.setDeliveryNotesNumber(reportNo);
+        else if (reportNo.startsWith("R")) item.setInvoiceNumber(reportNo);
         return item;
     }
 

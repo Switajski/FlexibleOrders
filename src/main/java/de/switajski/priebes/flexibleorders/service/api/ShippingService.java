@@ -70,7 +70,7 @@ public class ShippingService {
 
         Map<String, List<ItemDto>> packages = new HashMap<String, List<ItemDto>>();
         for (ItemDto itemToBeShipped : deliverParameter.itemsToBeShipped) {
-            String packageNumber = itemToBeShipped.packageNumber;
+            String packageNumber = itemToBeShipped.getPackageNumber();
             if (packageNumber == null) packageNumber = "";
             if (packages.get(packageNumber) == null) {
                 packages.put(packageNumber, new ArrayList<ItemDto>());

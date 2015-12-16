@@ -84,7 +84,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator {
     private List<ItemDto> filterReport(String string) {
         List<ItemDto> filteredItems = new ArrayList<ItemDto>();
         for (ItemDto item : retrievedItems) {
-            if (item.documentNumber.equals(string)) {
+            if (item.getDocumentNumber().equals(string)) {
                 filteredItems.add(item);
             }
         }

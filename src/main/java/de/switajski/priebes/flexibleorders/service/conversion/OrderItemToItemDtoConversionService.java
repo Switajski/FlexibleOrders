@@ -19,24 +19,24 @@ public class OrderItemToItemDtoConversionService {
     public ItemDto convert(OrderItem orderItem) {
         ItemDto item = new ItemDto();
         Order order = orderItem.getOrder();
-        item.documentNumber = order.getOrderNumber();
+        item.setDocumentNumber(order.getOrderNumber());
         if (order != null) {
-            item.customer = order.getCustomer().getId();
-            item.customerNumber = order
+            item.setCustomer(order.getCustomer().getId());
+            item.setCustomerNumber(order
                     .getCustomer()
-                    .getCustomerNumber();
-            item.customerName = order.getCustomer().getCompanyName();
-            item.orderNumber = order.getOrderNumber();
+                    .getCustomerNumber());
+            item.setCustomerName(order.getCustomer().getCompanyName());
+            item.setOrderNumber(order.getOrderNumber());
         }
-        item.created = orderItem.getCreated();
-        item.id = orderItem.getId();
-        if (orderItem.getNegotiatedPriceNet() != null) item.priceNet = orderItem.getNegotiatedPriceNet().getValue();
-        item.product = orderItem.getProduct().getProductNumber();
-        item.productName = orderItem.getProduct().getName();
-        item.productType = orderItem.getProduct().getProductType();
-        item.status = DeliveryHistory.of(orderItem).provideStatus();
-        item.quantity = orderItem.getOrderedQuantity();
-        item.quantityLeft = orderItem.toBeConfirmed();
+        item.setCreated(orderItem.getCreated());
+        item.setId(orderItem.getId());
+        if (orderItem.getNegotiatedPriceNet() != null) item.setPriceNet(orderItem.getNegotiatedPriceNet().getValue());
+        item.setProduct(orderItem.getProduct().getProductNumber());
+        item.setProductName(orderItem.getProduct().getName());
+        item.setProductType(orderItem.getProduct().getProductType());
+        item.setStatus(DeliveryHistory.of(orderItem).provideStatus());
+        item.setQuantity(orderItem.getOrderedQuantity());
+        item.setQuantityLeft(orderItem.toBeConfirmed());
         return item;
     }
 

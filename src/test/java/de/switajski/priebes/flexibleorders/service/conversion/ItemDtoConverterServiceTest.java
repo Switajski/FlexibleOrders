@@ -61,7 +61,7 @@ public class ItemDtoConverterServiceTest {
     @Test
     public void shouldMapPendingItem() {
         givenTestData();
-        itemDto.pending = true;
+        itemDto.setPending(true);
 
         whenMappingItemDtoToDeliveryNotes();
 
@@ -71,7 +71,7 @@ public class ItemDtoConverterServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWithTooMuchQty() {
         givenTestData();
-        itemDto.quantityLeft = 2;
+        itemDto.setQuantityLeft(2);
 
         whenMappingItemDtoToDeliveryNotes();
 
@@ -80,9 +80,9 @@ public class ItemDtoConverterServiceTest {
 
     private void givenItemDtoForInput() {
         itemDto = new ItemDto();
-        itemDto.productType = ProductType.PRODUCT;
-        itemDto.id = 1L;
-        itemDto.quantityLeft = 1;
+        itemDto.setProductType(ProductType.PRODUCT);
+        itemDto.setId(1L);
+        itemDto.setQuantityLeft(1);
     }
 
     private void givenMappedConfirmationItem() {

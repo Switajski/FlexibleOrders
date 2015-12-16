@@ -78,9 +78,9 @@ public class OrderingServiceTest {
     private void givenMocks() {
         MockitoAnnotations.initMocks(this);
         Mockito.when(customerRepo.findByCustomerNumber(CUSTOMER_ID))
-        .thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
+                .thenReturn(CustomerBuilder.buildWithGeneratedAttributes(2));
         Mockito.when(catalogProductService.findByProductNumber(PRODUCT_NO))
-        .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NO)));
+                .thenReturn(CatalogProductBuilder.buildWithGeneratedAttributes(Integer.valueOf(PRODUCT_NO)));
     }
 
     private void assertSavedAsExpected(Order orderToBeSaved) {
@@ -95,11 +95,11 @@ public class OrderingServiceTest {
     private List<ItemDto> givenReportItems() {
         List<ItemDto> reportItems = new ArrayList<ItemDto>();
         ItemDto itemDto = new ItemDto();
-        itemDto.customer = CUSTOMER_ID;
-        itemDto.product = PRODUCT_NO;
-        itemDto.priceNet = PRICE_NET;
-        itemDto.productName = "productName";
-        itemDto.quantity = ORDERED_QUANTITY;
+        itemDto.setCustomer(CUSTOMER_ID);
+        itemDto.setProduct(PRODUCT_NO);
+        itemDto.setPriceNet(PRICE_NET);
+        itemDto.setProductName("productName");
+        itemDto.setQuantity(ORDERED_QUANTITY);
         reportItems.add(itemDto);
         return reportItems;
     }

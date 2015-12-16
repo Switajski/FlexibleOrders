@@ -17,8 +17,7 @@ public class ReportItemToItemDtoConverterService {
 
     /**
      * @deprecated this method was used before successor / predecessor in
-     *             reporItem mapping. use
-     *             {@link #convert(ReportItem, int)}
+     *             reporItem mapping. use {@link #convert(ReportItem, int)}
      * @param ri
      * @return
      */
@@ -35,42 +34,42 @@ public class ReportItemToItemDtoConverterService {
     @Transactional(readOnly = true)
     public ItemDto convert(ReportItem ri, int toBeProcessed) {
         ItemDto item = new ItemDto();
-        item.quantity = toBeProcessed;
-        item.quantityLeft = toBeProcessed;
-        item.documentNumber = ri.getReport().getDocumentNumber();
+        item.setQuantity(toBeProcessed);
+        item.setQuantityLeft(toBeProcessed);
+        item.setDocumentNumber(ri.getReport().getDocumentNumber());
         if (ri.getReport() instanceof OrderConfirmation) {
-            item.orderConfirmationNumber = ri.getReport().getDocumentNumber();
+            item.setOrderConfirmationNumber(ri.getReport().getDocumentNumber());
             OrderConfirmation orderConfirmation = (OrderConfirmation) ri.getReport();
-            item.agreed = orderConfirmation.isAgreed();
+            item.setAgreed(orderConfirmation.isAgreed());
             PurchaseAgreement pa = orderConfirmation.getPurchaseAgreement();
             if (pa != null) {
-                item.expectedDelivery = pa.getExpectedDelivery();
+                item.setExpectedDelivery(pa.getExpectedDelivery());
             }
         }
         if (ri.getReport() instanceof Invoice) {
-            item.invoiceNumber = ri.getReport().getDocumentNumber();
+            item.setInvoiceNumber(ri.getReport().getDocumentNumber());
         }
         if (ri.getReport() instanceof DeliveryNotes) {
-            item.deliveryNotesNumber = ri.getReport().getDocumentNumber();
+            item.setDeliveryNotesNumber(ri.getReport().getDocumentNumber());
         }
         if (ri.getReport() instanceof Receipt) {
-            item.receiptNumber = ri.getReport().getDocumentNumber();
+            item.setReceiptNumber(ri.getReport().getDocumentNumber());
         }
-        item.created = ri.getCreated();
+        item.setCreated(ri.getCreated());
         Order order = ri.getOrderItem().getOrder();
-        item.customer = order.getCustomer().getId();
-        item.customerNumber = order.getCustomer().getCustomerNumber();
-        item.customerName = order.getCustomer().getCompanyName();
-        item.documentNumber = ri.getReport().getDocumentNumber();
-        item.id = ri.getId();
-        item.orderNumber = order.getOrderNumber();
+        item.setCustomer(order.getCustomer().getId());
+        item.setCustomerNumber(order.getCustomer().getCustomerNumber());
+        item.setCustomerName(order.getCustomer().getCompanyName());
+        item.setDocumentNumber(ri.getReport().getDocumentNumber());
+        item.setId(ri.getId());
+        item.setOrderNumber(order.getOrderNumber());
         if (ri.getOrderItem().getNegotiatedPriceNet() != null) {
-            item.priceNet = ri.getOrderItem().getNegotiatedPriceNet().getValue();
+            item.setPriceNet(ri.getOrderItem().getNegotiatedPriceNet().getValue());
         }
-        item.product = ri.getOrderItem().getProduct().getProductNumber();
-        item.productType = ri.getOrderItem().getProduct().getProductType();
-        item.productName = ri.getOrderItem().getProduct().getName();
-        item.status = ri.provideStatus();
+        item.setProduct(ri.getOrderItem().getProduct().getProductNumber());
+        item.setProductType(ri.getOrderItem().getProduct().getProductType());
+        item.setProductName(ri.getOrderItem().getProduct().getName());
+        item.setStatus(ri.provideStatus());
         return item;
     }
 

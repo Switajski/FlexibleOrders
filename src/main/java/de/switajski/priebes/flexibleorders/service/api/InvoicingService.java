@@ -60,8 +60,8 @@ public class InvoicingService {
         // TODO Currency Handling
         Amount shippingCosts = Amount.ZERO_EURO;
         for (ItemDto item : invoicingParameter.shippingItemDtos) {
-            if (item.productType == ProductType.SHIPPING) {
-                shippingCosts = shippingCosts.add(new Amount(item.priceNet, Currency.EUR));
+            if (item.getProductType() == ProductType.SHIPPING) {
+                shippingCosts = shippingCosts.add(new Amount(item.getPriceNet(), Currency.EUR));
             }
         }
         invoice.setShippingCosts(shippingCosts);

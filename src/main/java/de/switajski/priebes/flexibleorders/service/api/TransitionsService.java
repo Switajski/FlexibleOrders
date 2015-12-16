@@ -2,6 +2,8 @@ package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,11 +36,6 @@ import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParame
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
- * TODO: Add validation to service layer:</br> see <a href=
- * "http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html">
- * http://docs.spring.io/spring/docs/3.0.0.RC3/reference/html/ch05s07.html</a>
- * </br> and converters from request object to ItemDto
- *
  * @author Marek Switajski
  *
  */
@@ -72,33 +69,34 @@ public class TransitionsService {
      * @return created order, when successfully persisted
      */
     @Transactional
-    public Order order(OrderParameter orderParameter) {
-        if (orderParameter.customerNumber == null || orderParameter.orderNumber == null || orderParameter.reportItems.isEmpty()) throw new IllegalArgumentException(
-                "Parameter sind nicht vollst" + Unicode.A_UML + "ndig");
-        if (orderRepo.findByOrderNumber(orderParameter.orderNumber) != null) throw new IllegalArgumentException("Bestellnr existiert bereits");
+    public Order order(@Valid OrderParameter orderParameter) {
+        // TODO Custom validator!
+        if (orderRepo.findByOrderNumber(orderParameter.getOrderNumber()) != null) {
+            throw new IllegalArgumentException("Bestellnr existiert bereits");
+        }
         // TODO: Customer entity has nothing to do here!
-        Customer customer = customerRepo.findByCustomerNumber(orderParameter.customerNumber);
+        Customer customer = customerRepo.findByCustomerNumber(orderParameter.getCustomerNumber());
         if (customer == null) throw new IllegalArgumentException(
                 "Keinen Kunden mit gegebener Kundennr. gefunden");
 
         Order order = new Order(
                 customer,
                 OriginSystem.FLEXIBLE_ORDERS,
-                orderParameter.orderNumber);
-        order.setCreated((orderParameter.created == null) ? new Date() : orderParameter.created);
+                orderParameter.getOrderNumber());
+        order.setCreated((orderParameter.getCreated() == null) ? new Date() : orderParameter.getCreated());
         PurchaseAgreement purchaseAgreement = new PurchaseAgreement();
         purchaseAgreement.setCustomerNumber(customer.getCustomerNumber());
-        purchaseAgreement.setExpectedDelivery(orderParameter.expectedDelivery);
+        purchaseAgreement.setExpectedDelivery(orderParameter.getExpectedDelivery());
 
-        for (ItemDto ri : orderParameter.reportItems) {
+        for (ItemDto ri : orderParameter.getReportItems()) {
             validate(ri);
-            Product product = (ri.product.equals("0")) ? createCustomProduct(ri) : createProductFromCatalog(ri);
+            Product product = (ri.getProduct().equals("0")) ? createCustomProduct(ri) : createProductFromCatalog(ri);
             OrderItem oi = new OrderItem(
                     order,
                     product,
-                    ri.quantity);
+                    ri.getQuantity());
             oi.setNegotiatedPriceNet(new Amount(
-                    ri.priceNet,
+                    ri.getPriceNet(),
                     Currency.EUR));
             order.addOrderItem(oi);
         }
@@ -107,33 +105,33 @@ public class TransitionsService {
     }
 
     private void validate(ItemDto ri) {
-        if (ri.productName == null) throw new IllegalArgumentException("Produktnamen nicht angegeben");
+        if (ri.getProductName() == null) throw new IllegalArgumentException("Produktnamen nicht angegeben");
     }
 
     private Product createProductFromCatalog(ItemDto ri) {
         Product product;
 
         try {
-            CatalogProduct cProduct = cProductService.findByProductNumber(ri.product);
+            CatalogProduct cProduct = cProductService.findByProductNumber(ri.getProduct());
             if (cProduct == null) throw new IllegalArgumentException("Artikelnr nicht gefunden");
             product = cProduct.toProduct();
-            product.setName(ri.productName);
+            product.setName(ri.getProductName());
             return product;
         }
         catch (Exception e) {
-            log.warn("Could not find ProductNumber " + ri.product + " in Catalog");
+            log.warn("Could not find ProductNumber " + ri.getProduct() + " in Catalog");
 
             Product p = new Product();
-            p.setName((ri.productName));
+            p.setName((ri.getProductName()));
             p.setProductType(ProductType.PRODUCT);
-            p.setProductNumber(ri.product);
+            p.setProductNumber(ri.getProduct());
             return p;
         }
     }
 
     private Product createCustomProduct(ItemDto ri) {
         Product p = new Product();
-        p.setName(ri.productName);
+        p.setName(ri.getProductName());
         p.setProductType(ProductType.CUSTOM);
         return p;
     }

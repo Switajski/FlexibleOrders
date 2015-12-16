@@ -197,8 +197,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     private void createR11(List<ItemDto> l11, List<ItemDto> l12) {
         ItemDto shippingCosts = new ItemDto();
-        shippingCosts.priceNet = BigDecimal.valueOf(11d);
-        shippingCosts.productType = ProductType.SHIPPING;
+        shippingCosts.setPriceNet(BigDecimal.valueOf(11d));
+        shippingCosts.setProductType(ProductType.SHIPPING);
         InvoicingParameter invoicingParameter = new InvoicingParameter("R11", new Date(), Arrays.asList(
                 extract(l11, AMY.getProductNumber(), 2),
                 extract(l11, MILADKA.getProductNumber(), 2),
@@ -276,8 +276,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     private ItemDto extract(List<ItemDto> itemDtos, String productNumber, int i) {
         for (ItemDto item : itemDtos) {
-            if (item.product.equals(productNumber)) {
-                item.quantityLeft = i;
+            if (item.getProduct().equals(productNumber)) {
+                item.setQuantityLeft(i);
                 return item;
             }
         }

@@ -26,8 +26,8 @@ import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsT
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
-import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
+import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
@@ -212,7 +212,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
                 getFirstItemOf(
                         product,
                         agreement));
-        item.quantityLeft = qty;
+        item.setQuantityLeft(qty);
         return item;
     }
 

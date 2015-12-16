@@ -29,44 +29,44 @@ public class ItemDtoToReportItemConversionService {
 
     public ItemDto createShippingCosts(final DeliveryNotes deliveryNotes) {
         ItemDto item = new ItemDto();
-        item.created = deliveryNotes.getCreated();
-        item.documentNumber = deliveryNotes.getDocumentNumber();
-        item.deliveryNotesNumber = deliveryNotes.getDocumentNumber();
-        item.priceNet = deliveryNotes.getShippingCosts().getValue();
-        item.quantity = 1;
-        item.quantityLeft = 1;
+        item.setCreated(deliveryNotes.getCreated());
+        item.setDocumentNumber(deliveryNotes.getDocumentNumber());
+        item.setDeliveryNotesNumber(deliveryNotes.getDocumentNumber());
+        item.setPriceNet(deliveryNotes.getShippingCosts().getValue());
+        item.setQuantity(1);
+        item.setQuantityLeft(1);
 
         DeliveryMethod deliveryMethod = deliveryNotes.getDeliveryMethod();
-        if (deliveryMethod != null && deliveryMethod.getName() != null) item.productName = deliveryMethod.getName();
-        else item.productName = "Versandkosten";
+        if (deliveryMethod != null && deliveryMethod.getName() != null) item.setProductName(deliveryMethod.getName());
+        else item.setProductName("Versandkosten");
         Customer customer = deliveryNotes.getCustomerSafely();
-        item.customerNumber = customer.getCustomerNumber();
-        item.customerName = customer.getCompanyName();
-        item.productType = ProductType.SHIPPING;
+        item.setCustomerNumber(customer.getCustomerNumber());
+        item.setCustomerName(customer.getCompanyName());
+        item.setProductType(ProductType.SHIPPING);
 
         return item;
     }
 
     @Transactional
     public void mapItemDtos(DeliveryNotes deliveryNotes, ItemDto itemDto) {
-        if (itemDto.productType != ProductType.SHIPPING) {
-            int qty = itemDto.quantityLeft;
-            ReportItem itemToBeShipped = reportItemRepo.findOne(itemDto.id);
+        if (itemDto.getProductType() != ProductType.SHIPPING) {
+            int qty = itemDto.getQuantityLeft();
+            ReportItem itemToBeShipped = reportItemRepo.findOne(itemDto.getId());
             if (itemToBeShipped == null) {
                 throw new IllegalArgumentException("Angegebene Position nicht gefunden");
             }
 
             OrderItem orderItemToBeDelivered = itemToBeShipped.getOrderItem();
             QuantityUtility.validateQuantity(qty, itemToBeShipped);
-            if (itemDto.pending == false) {
+            if (itemDto.isPending() == false) {
                 ShippingItem shippingItem = new ShippingItem(
                         deliveryNotes,
                         orderItemToBeDelivered,
                         qty,
                         new Date());
                 shippingItem.setPredecessor(itemToBeShipped);
-                shippingItem.setPackageNumber(itemDto.packageNumber);
-                shippingItem.setTrackNumber(itemDto.trackNumber);
+                shippingItem.setPackageNumber(itemDto.getPackageNumber());
+                shippingItem.setTrackNumber(itemDto.getTrackNumber());
                 deliveryNotes.addItem(shippingItem);
             }
             else {
@@ -83,15 +83,14 @@ public class ItemDtoToReportItemConversionService {
     public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
         Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
         for (ItemDto itemDtoToBeProcessed : itemDtos) {
-            if (itemDtoToBeProcessed.productType != ProductType.SHIPPING) {
-                ReportItem agreementItem = reportItemRepo.findOne(itemDtoToBeProcessed.id);
+            if (itemDtoToBeProcessed.getProductType() != ProductType.SHIPPING) {
+                ReportItem agreementItem = reportItemRepo.findOne(itemDtoToBeProcessed.getId());
                 if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
                 risWithQty.put(
                         agreementItem,
-                        itemDtoToBeProcessed.quantityLeft);
+                        itemDtoToBeProcessed.getQuantityLeft());
             }
         }
         return risWithQty;
     }
-
 }

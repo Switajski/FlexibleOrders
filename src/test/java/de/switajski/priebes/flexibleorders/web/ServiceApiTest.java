@@ -18,6 +18,7 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
     public void shouldBeRejectedByValidation() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JsonCreateReportRequest request = new JsonCreateReportRequest();
+        request.setCustomerId(45L);
 
         mvc.perform(post("/transitions/order")
                 .accept(MediaType.APPLICATION_JSON)

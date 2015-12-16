@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(locations = {
         "classpath*:org/flexible/order/application-context*.xml",
         "classpath*:servlet*.xml" })
-public class SpringMvcTest {
+public class SpringMvcTestConfiguration {
 
     @Autowired
     WebApplicationContext wac;

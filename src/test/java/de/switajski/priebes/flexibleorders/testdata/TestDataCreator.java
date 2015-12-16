@@ -24,6 +24,7 @@ import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONN
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,6 @@ import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
@@ -145,7 +144,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
     }
 
     private void createNaidasOrders() {
-        DateTime dt = new DateTime();
+        LocalDate dt = LocalDate.now();
 
         orderingService.order(B21);
         Order b22 = orderingService.order(B22);
@@ -155,11 +154,11 @@ public class TestDataCreator extends AbstractSpringContextTest {
 
     }
 
-    private OrderConfirmation createAB22(DateTime dt, Order b22) {
+    private OrderConfirmation createAB22(LocalDate dt, Order b22) {
         ConfirmParameter confirmParameter = new ConfirmParameter(
                 b22.getOrderNumber(),
                 "AB22",
-                dt.plusDays(5).toLocalDate(),
+                dt.plusDays(5),
                 null,
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
@@ -211,50 +210,50 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L15",
-                new Date(),
+                LocalDate.now(),
                 Arrays.asList(
                         extract(itemsFromAu11, PAUL.getProductNumber(), 15),
                         extract(itemsFromAu15, PAUL.getProductNumber(), 8)));
-        deliverParameter.trackNumber = "trackNumber15";
-        deliverParameter.packageNumber = "packageNumber15";
-        deliverParameter.shipment = new Amount(BigDecimal.ZERO);
+        deliverParameter.setTrackNumber("trackNumber15");
+        deliverParameter.setPackageNumber("packageNumber15");
+        deliverParameter.setShipment(BigDecimal.ZERO);
         shippingService.ship(deliverParameter);
     }
 
     private void createL14(List<ItemDto> itemsFromAu11) {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L14",
-                new Date(),
+                LocalDate.now(),
                 Arrays.asList(extract(itemsFromAu11, PAUL.getProductNumber(), 5)));
-        deliverParameter.trackNumber = "trackNumber14";
-        deliverParameter.packageNumber = "packageNumber14";
-        deliverParameter.shipment = new Amount(BigDecimal.ZERO);
+        deliverParameter.setTrackNumber("trackNumber14");
+        deliverParameter.setPackageNumber("packageNumber14");
+        deliverParameter.setShipment(BigDecimal.ZERO);
         shippingService.ship(deliverParameter);
     }
 
     private void createL13(List<ItemDto> itemsFromAu11) {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L13",
-                new Date(),
+                LocalDate.now(),
                 Arrays.asList(
                         extract(itemsFromAu11, SALOME.getProductNumber(), 1),
                         extract(itemsFromAu11, JUREK.getProductNumber(), 5)));
-        deliverParameter.trackNumber = "trackNumber13";
-        deliverParameter.packageNumber = "packageNumber13";
-        deliverParameter.shipment = new Amount(BigDecimal.ONE);
+        deliverParameter.setTrackNumber("trackNumber13");
+        deliverParameter.setPackageNumber("packageNumber13");
+        deliverParameter.setShipment(BigDecimal.ONE);
         shippingService.ship(deliverParameter);
     }
 
     private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L12",
-                new Date(),
+                LocalDate.now(),
                 Arrays.asList(
                         extract(itemsFromAu11, AMY.getProductNumber(), 3),
                         extract(itemsFromAu11, MILADKA.getProductNumber(), 3)));
-        deliverParameter.trackNumber = "trackNumber12";
-        deliverParameter.packageNumber = "packageNumber12";
-        deliverParameter.shipment = new Amount(BigDecimal.ONE);
+        deliverParameter.setTrackNumber("trackNumber12");
+        deliverParameter.setPackageNumber("packageNumber12");
+        deliverParameter.setShipment(BigDecimal.ONE);
         DeliveryNotes l12 = shippingService.ship(deliverParameter);
         return l12;
     }
@@ -262,13 +261,13 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L11",
-                new Date(),
+                LocalDate.now(),
                 Arrays.asList(
                         extract(itemsFromAu11, AMY.getProductNumber(), 2),
                         extract(itemsFromAu11, MILADKA.getProductNumber(), 2)));
-        deliverParameter.trackNumber = "trackNumber";
-        deliverParameter.packageNumber = "packageNumber";
-        deliverParameter.shipment = new Amount(BigDecimal.TEN);
+        deliverParameter.setTrackNumber("trackNumber");
+        deliverParameter.setPackageNumber("packageNumber");
+        deliverParameter.setShipment(BigDecimal.TEN);
         DeliveryNotes l11 = shippingService.ship(
                 deliverParameter);
         return l11;

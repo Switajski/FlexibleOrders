@@ -1,13 +1,15 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
+import de.switajski.priebes.flexibleorders.application.DateUtils;
 
 public class ExpectedDeliveryStringCreator {
 
     public static String createExpectedDeliveryWeekString(LocalDate expectedDelivery) {
         String expectedDeliveryString = "";
         if (expectedDelivery != null) expectedDeliveryString = "voraus. Lieferwoche: "
-                + expectedDelivery.toString("w");
+                + DateUtils.weekOf(expectedDelivery);
         return expectedDeliveryString;
     }
 
@@ -20,7 +22,7 @@ public class ExpectedDeliveryStringCreator {
 
         String expectedDeliveryString = "";
         if (expectedDelivery != null) expectedDeliveryString = description
-                + expectedDelivery.toString("w") + ". KW";
+                + DateUtils.weekOf(expectedDelivery) + ". KW";
         return expectedDeliveryString;
     }
 }

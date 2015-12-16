@@ -1,9 +1,8 @@
 package de.switajski.priebes.flexibleorders.service.process.parameter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-
-import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 

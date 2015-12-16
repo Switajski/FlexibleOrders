@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
@@ -29,7 +29,6 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
@@ -141,24 +140,12 @@ public class TransitionsController extends ExceptionController {
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse deliver(
-            @RequestBody @Valid JsonCreateReportRequest deliverRequest,
+            @RequestBody @Valid DeliverParameter deliverParameter,
             HttpServletResponse response)
             throws Exception {
 
-        DeliverParameter deliverParameter = new DeliverParameter(
-                deliverRequest.getDeliveryNotesNumber(),
-                deliverRequest.getCreated(),
-                deliverRequest.getItems());
-        deliverParameter.packageNumber = deliverRequest.getPackageNumber();
-        deliverParameter.trackNumber = deliverRequest.getTrackNumber();
-        deliverParameter.singleDeliveryNotes = deliverRequest.isSingleDeliveryNotes();
-        deliverParameter.showPricesInDeliveryNotes = deliverRequest.isShowPricesInDeliveryNotes();
-        deliverParameter.shipment = new Amount(deliverRequest.getShipment(), Currency.EUR);
-        deliverParameter.ignoreContradictoryExpectedDeliveryDates = deliverRequest.isIgnoreContradictoryExpectedDeliveryDates();
-
-        deliverParameter.customerNumber = deliverRequest.getCustomerId();
         try {
-            if (deliverParameter.singleDeliveryNotes) {
+            if (deliverParameter.isSingleDeliveryNotes()) {
                 DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);
                 return ExtJsResponseCreator.createResponse(deliveryNotes);
             }
@@ -168,8 +155,6 @@ public class TransitionsController extends ExceptionController {
             }
         }
         catch (ContradictoryPurchaseAgreementException e) {
-            // response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
-
             JsonObjectResponse resp = new JsonObjectResponse();
             resp.setErrors(new HashMap<String, String>() {
                 {
@@ -177,7 +162,7 @@ public class TransitionsController extends ExceptionController {
                 }
             });
             resp.setSuccess(false);
-            response.setStatus(422);
+            response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
             return resp;
         }
 

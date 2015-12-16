@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.testhelper.EntityBuilder;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;

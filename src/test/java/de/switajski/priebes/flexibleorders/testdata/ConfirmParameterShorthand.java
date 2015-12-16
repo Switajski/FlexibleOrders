@@ -1,8 +1,7 @@
 package de.switajski.priebes.flexibleorders.testdata;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-
-import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;

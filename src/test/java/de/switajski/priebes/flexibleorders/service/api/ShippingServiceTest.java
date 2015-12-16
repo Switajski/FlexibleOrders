@@ -15,10 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
@@ -31,7 +29,7 @@ public class ShippingServiceTest {
 
     private static final String DN_NO = "L123";
 
-    private static final Amount SHIPPING_COSTS = new Amount(BigDecimal.TEN, Currency.EUR);
+    private static final BigDecimal SHIPPING_COSTS = BigDecimal.TEN;
 
     private static final DeliveryMethod DELIVERY_METHOD = new DeliveryMethodBuilder().dhl().build();
 
@@ -58,10 +56,10 @@ public class ShippingServiceTest {
     @Test
     public void shouldCreateShippingCosts() {
         givenDeliverParameter();
-        deliverParameter.shipment = SHIPPING_COSTS;
-        deliverParameter.deliveryMethod = DELIVERY_METHOD;
-        deliverParameter.itemsToBeShipped = new ArrayList<ItemDto>();
-        deliverParameter.itemsToBeShipped.add(new ItemDto());
+        deliverParameter.setShipment(SHIPPING_COSTS);
+        deliverParameter.setDeliveryMethod(DELIVERY_METHOD);
+        deliverParameter.setItems(new ArrayList<ItemDto>());
+        deliverParameter.getItems().add(new ItemDto());
 
         // WHEN
         whenDelivering();
@@ -85,7 +83,7 @@ public class ShippingServiceTest {
 
     private void givenDeliverParameter() {
         deliverParameter = new DeliverParameter();
-        deliverParameter.deliveryNotesNumber = DN_NO;
+        deliverParameter.setDeliveryNotesNumber(DN_NO);
     }
 
 }

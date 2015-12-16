@@ -4,8 +4,7 @@ import static de.switajski.priebes.flexibleorders.testdata.ConfirmParameterShort
 import static de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand.item;
 import static de.switajski.priebes.flexibleorders.testdata.OrderParameterShorthand.orderParam;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -22,9 +21,7 @@ public class TestDataFixture {
 
     private static final String AB15_STR = "AB15", AB11_STR = "AB11", AB13_STR = "AB13";
 
-    public static final LocalDate NOW = new DateTime().toLocalDate();
-
-    public static final DateTime DT = new DateTime();
+    public static final LocalDate NOW = LocalDate.now();
 
     public static final Customer YVONNE = new CustomerBuilder().yvonne().build();
 
@@ -97,7 +94,7 @@ public class TestDataFixture {
             item(SALOME, 3, B15_STR));
 
     public static LocalDate delay(int days) {
-        return DT.plusDays(days).toLocalDate();
+        return NOW.plusDays(days);
     }
 
 }

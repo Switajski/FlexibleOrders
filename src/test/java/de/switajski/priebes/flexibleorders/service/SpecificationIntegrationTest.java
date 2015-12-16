@@ -5,11 +5,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,38 +171,34 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
      * @param orderAgreement
      */
     private void givenDeliveryReports(OrderConfirmation orderAgreement) {
-        DeliverParameter deliverParameterL11 = new DeliverParameter("L11", new Date(), Arrays.asList(
+        DeliverParameter deliverParameterL11 = new DeliverParameter("L11", LocalDate.now(), Arrays.asList(
                 createItemDto(2, AMY, orderAgreement),
                 createItemDto(2, MILADKA, orderAgreement)));
-        deliverParameterL11.trackNumber = "trackNumber";
-        deliverParameterL11.packageNumber = "packNo";
-        deliverParameterL11.showPricesInDeliveryNotes = false;
-        shippingService.ship(
-                deliverParameterL11);
+        amendStandardValues(deliverParameterL11);
+        shippingService.ship(deliverParameterL11);
 
-        DeliverParameter deliverParameterL12 = new DeliverParameter("L12", new Date(), Arrays.asList(
+        DeliverParameter deliverParameterL12 = new DeliverParameter("L12", LocalDate.now(), Arrays.asList(
                 createItemDto(3, AMY, orderAgreement),
                 createItemDto(3, MILADKA, orderAgreement)));
-        deliverParameterL12.trackNumber = "trackNumber";
-        deliverParameterL12.packageNumber = "packNo";
-        deliverParameterL12.showPricesInDeliveryNotes = false;
-        shippingService.ship(
-                deliverParameterL12);
+        amendStandardValues(deliverParameterL12);
+        shippingService.ship(deliverParameterL12);
 
-        DeliverParameter deliverParameterL13 = new DeliverParameter("L13", new Date(), Arrays.asList(
+        DeliverParameter deliverParameterL13 = new DeliverParameter("L13", LocalDate.now(), Arrays.asList(
                 createItemDto(1, SALOME, orderAgreement),
                 createItemDto(JUREK_QTY, JUREK, orderAgreement)));
-        deliverParameterL13.trackNumber = "trackNumber";
-        deliverParameterL13.packageNumber = "packNo";
-        deliverParameterL13.showPricesInDeliveryNotes = false;
+        amendStandardValues(deliverParameterL13);
         shippingService.ship(deliverParameterL13);
 
-        DeliverParameter deliverParameter14 = new DeliverParameter("L14", new Date(), Arrays.asList(
+        DeliverParameter deliverParameter14 = new DeliverParameter("L14", LocalDate.now(), Arrays.asList(
                 createItemDto(5, PAUL, orderAgreement)));
-        deliverParameter14.trackNumber = "trackNumber";
-        deliverParameter14.packageNumber = "packNo";
-        deliverParameter14.showPricesInDeliveryNotes = false;
+        amendStandardValues(deliverParameter14);
         shippingService.ship(deliverParameter14);
+    }
+
+    private void amendStandardValues(DeliverParameter deliverParameterL11) {
+        deliverParameterL11.setTrackNumber("trackNumber");
+        deliverParameterL11.setPackageNumber("packNo");
+        deliverParameterL11.setShowPricesInDeliveryNotes(false);
     }
 
     private ItemDto createItemDto(int qty, Product product,
@@ -270,7 +265,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTest {
                 new ConfirmParameter(
                         b11.getOrderNumber(),
                         "AB11",
-                        new LocalDate(),
+                        LocalDate.now(),
                         null,
                         AddressBuilder.createDefault(),
                         AddressBuilder.createDefault(),

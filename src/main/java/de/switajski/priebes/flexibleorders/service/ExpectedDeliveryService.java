@@ -1,15 +1,18 @@
 package de.switajski.priebes.flexibleorders.service;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
@@ -32,7 +35,8 @@ public class ExpectedDeliveryService {
     public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
         Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
         for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
-            expectedDeliveryWeekOfYear.add(new LocalDate(pa.getExpectedDelivery()).getWeekOfWeekyear());
+            WeekFields weekFields = WeekFields.of(Locale.getDefault());
+            expectedDeliveryWeekOfYear.add(pa.getExpectedDelivery().get(weekFields.weekOfWeekBasedYear()));
         }
         return expectedDeliveryWeekOfYear;
     }
@@ -63,20 +67,12 @@ public class ExpectedDeliveryService {
         }
         else if (expectedDeliveryDates.size() == 1) {
             int expectedWeek = expectedDeliveryDates.iterator().next();
-            int isWeek = weekOf(actualDeliveryDate);
+            int isWeek = DateUtils.weekOf(actualDeliveryDate);
             if (expectedWeek != isWeek) {
                 throw new ContradictoryPurchaseAgreementException("Widerr" + Unicode.U_UML + "chliche Liefertermine: KW aus AB ist " + expectedWeek
                         + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
             }
         }
-    }
-
-    private int weekOf(Date created) {
-        return weekOf(new LocalDate(created));
-    }
-
-    private int weekOf(LocalDate next) {
-        return next.weekOfWeekyear().get();
     }
 
 }

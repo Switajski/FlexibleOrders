@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.embeddable;
 
+import java.time.LocalDate;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -10,35 +12,35 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateDeserializer;
-import de.switajski.priebes.flexibleorders.json.JsonJodaLocalDateSerializer;
+import de.switajski.priebes.flexibleorders.application.DateUtils;
+import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 
 @Embeddable
 public class PurchaseAgreement {
 
     @AttributeOverrides({
-        @AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
-        @AttributeOverride(name = "name2", column = @Column(name = "invoice_name2")),
-        @AttributeOverride(name = "street", column = @Column(name = "invoice_street")),
-        @AttributeOverride(name = "postalCode", column = @Column(name = "invoice_postal_code")),
-        @AttributeOverride(name = "city", column = @Column(name = "invoice_city")),
-        @AttributeOverride(name = "country", column = @Column(name = "invoice_country"))
+            @AttributeOverride(name = "name1", column = @Column(name = "invoice_name1")),
+            @AttributeOverride(name = "name2", column = @Column(name = "invoice_name2")),
+            @AttributeOverride(name = "street", column = @Column(name = "invoice_street")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "invoice_postal_code")),
+            @AttributeOverride(name = "city", column = @Column(name = "invoice_city")),
+            @AttributeOverride(name = "country", column = @Column(name = "invoice_country"))
     })
     private Address invoiceAddress;
 
     @AttributeOverrides({
-        @AttributeOverride(name = "name1", column = @Column(name = "shipping_name1")),
-        @AttributeOverride(name = "name2", column = @Column(name = "shipping_name2")),
-        @AttributeOverride(name = "street", column = @Column(name = "shipping_street")),
-        @AttributeOverride(name = "postalCode", column = @Column(name = "shipping_postal_code")),
-        @AttributeOverride(name = "city", column = @Column(name = "shipping_city")),
-        @AttributeOverride(name = "country", column = @Column(name = "shipping_country"))
+            @AttributeOverride(name = "name1", column = @Column(name = "shipping_name1")),
+            @AttributeOverride(name = "name2", column = @Column(name = "shipping_name2")),
+            @AttributeOverride(name = "street", column = @Column(name = "shipping_street")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "shipping_postal_code")),
+            @AttributeOverride(name = "city", column = @Column(name = "shipping_city")),
+            @AttributeOverride(name = "country", column = @Column(name = "shipping_country"))
     })
     private Address shippingAddress;
 
@@ -78,15 +80,15 @@ public class PurchaseAgreement {
         this.shippingAddress = shippingAddress;
     }
 
-    @JsonSerialize(using = JsonJodaLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     public LocalDate getExpectedDelivery() {
-        return new LocalDate(expectedDelivery);
+        return DateUtils.asLocalDate(expectedDelivery);
     }
 
-    @JsonDeserialize(using = JsonJodaLocalDateDeserializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     public void setExpectedDelivery(LocalDate expectedDelivery) {
         if (expectedDelivery == null) this.expectedDelivery = null;
-        else this.expectedDelivery = new java.sql.Date(expectedDelivery.toDateTimeAtStartOfDay().toDate().getTime());
+        else this.expectedDelivery = java.sql.Date.valueOf(expectedDelivery);
     }
 
     public DeliveryMethod getDeliveryMethod() {

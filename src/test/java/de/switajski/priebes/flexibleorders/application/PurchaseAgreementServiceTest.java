@@ -4,11 +4,11 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
@@ -114,7 +114,7 @@ public class PurchaseAgreementServiceTest {
 
     private PurchaseAgreement givenPurchaseAgreement() {
         PurchaseAgreement pa = new PurchaseAgreement();
-        pa.setExpectedDelivery(new LocalDate());
+        pa.setExpectedDelivery(LocalDate.now());
         pa.setCustomerNumber(123L);
         pa.setShippingAddress(AddressBuilder.buildWithGeneratedAttributes(1));
         return pa;

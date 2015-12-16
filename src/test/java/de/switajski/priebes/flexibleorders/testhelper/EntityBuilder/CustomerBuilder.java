@@ -22,6 +22,7 @@ public class CustomerBuilder implements Builder<Customer> {
     @Override
     public Customer build() {
         Customer c = new Customer();
+        c.setId(id);
         c.setCustomerNumber(customerNumber);
         c.setInvoiceAddress(invoiceAddress);
         c.setShippingAddress(shippingAddress);

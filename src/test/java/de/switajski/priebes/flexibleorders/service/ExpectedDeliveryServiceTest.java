@@ -3,17 +3,18 @@ package de.switajski.priebes.flexibleorders.service;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
@@ -31,12 +32,12 @@ public class ExpectedDeliveryServiceTest {
 
     Date actualDeliveryDate;
 
-    LocalDate now = new LocalDate();
+    LocalDate now = LocalDate.now();
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        now = new LocalDate();
+        now = LocalDate.now();
     }
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
@@ -49,7 +50,7 @@ public class ExpectedDeliveryServiceTest {
     @Test
     public void shouldPassIfActualDeliveryDateIsInSameWeekAsExpectedDeliveryDates() {
         givenPurchaseAgreements(now, now);
-        actualDeliveryDate = now.toDateTimeAtStartOfDay().toDate();
+        actualDeliveryDate = DateUtils.asDate(now);
 
         whenValidatingExpectedDeliveryDates();
     }
@@ -57,7 +58,7 @@ public class ExpectedDeliveryServiceTest {
     @Test(expected = ContradictoryPurchaseAgreementException.class)
     public void shouldFailIfActualDeliveryDateIsNotExpectedDeliveryDates() {
         givenPurchaseAgreements(now, now);
-        actualDeliveryDate = now.plusWeeks(1).toDateTimeAtStartOfDay().toDate();
+        actualDeliveryDate = DateUtils.asDate(now.plusWeeks(1));
 
         whenValidatingExpectedDeliveryDates();
     }

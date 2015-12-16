@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
@@ -46,15 +49,15 @@ public class ShippingService {
      */
     @Transactional
     public DeliveryNotes ship(DeliverParameter deliverParameter) {
-        if (reportRepo.findByDocumentNumber(deliverParameter.deliveryNotesNumber) != null) throw new IllegalArgumentException(
+        if (reportRepo.findByDocumentNumber(deliverParameter.getDeliveryNotesNumber()) != null) throw new IllegalArgumentException(
                 "Lieferscheinnummer existiert bereits");
 
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
-        for (ItemDto itemDto : deliverParameter.itemsToBeShipped) {
+        for (ItemDto itemDto : deliverParameter.getItems()) {
             convService.mapItemDtos(deliveryNotes, itemDto);
         }
 
-        if (!deliverParameter.ignoreContradictoryExpectedDeliveryDates) {
+        if (!deliverParameter.isIgnoreContradictoryExpectedDeliveryDates()) {
             expectedDeliveryService.validateExpectedDeliveryDates(deliveryNotes.getItems(), deliveryNotes.getCreated());
         }
         Address shippingAddress = purchaseAgreementService.retrieveShippingAddressOrFail(deliveryNotes.getItems());
@@ -65,11 +68,11 @@ public class ShippingService {
     @Transactional
     public Set<DeliveryNotes> shipMany(DeliverParameter deliverParameter) {
         Set<DeliveryNotes> savedDeliveryNotes = new HashSet<DeliveryNotes>();
-        String originalDeliveryNotesNumber = deliverParameter.deliveryNotesNumber;
-        deliverParameter.packageNumber = null;
+        String originalDeliveryNotesNumber = deliverParameter.getDeliveryNotesNumber();
+        deliverParameter.setPackageNumber(null);
 
         Map<String, List<ItemDto>> packages = new HashMap<String, List<ItemDto>>();
-        for (ItemDto itemToBeShipped : deliverParameter.itemsToBeShipped) {
+        for (ItemDto itemToBeShipped : deliverParameter.getItems()) {
             String packageNumber = itemToBeShipped.getPackageNumber();
             if (packageNumber == null) packageNumber = "";
             if (packages.get(packageNumber) == null) {
@@ -79,10 +82,10 @@ public class ShippingService {
         }
 
         for (String packageNumber : packages.keySet()) {
-            deliverParameter.itemsToBeShipped = packages.get(packageNumber);
+            deliverParameter.setItems(packages.get(packageNumber));
             String suffix = packageNumber.equals("") ? "" : "-" + packageNumber;
-            deliverParameter.deliveryNotesNumber = originalDeliveryNotesNumber.concat(suffix);
-            deliverParameter.packageNumber = packageNumber;
+            deliverParameter.setDeliveryNotesNumber(originalDeliveryNotesNumber.concat(suffix));
+            deliverParameter.setPackageNumber(packageNumber);
             savedDeliveryNotes.add(ship(deliverParameter));
         }
         return savedDeliveryNotes;
@@ -90,13 +93,14 @@ public class ShippingService {
 
     private DeliveryNotes createDeliveryNotes(DeliverParameter deliverParameter) {
         DeliveryNotes deliveryNotes = new DeliveryNotes();
-        deliveryNotes.setDocumentNumber(deliverParameter.deliveryNotesNumber);
-        deliveryNotes.setCreated(deliverParameter.created == null ? new Date() : deliverParameter.created);
-        deliveryNotes.setShippingCosts(deliverParameter.shipment);
-        deliveryNotes.setDeliveryMethod(deliverParameter.deliveryMethod);
-        deliveryNotes.setShowPrices(deliverParameter.showPricesInDeliveryNotes);
-        deliveryNotes.setPackageNumber(deliverParameter.packageNumber);
-        deliveryNotes.setTrackNumber(deliverParameter.trackNumber);
+        deliveryNotes.setDocumentNumber(deliverParameter.getDeliveryNotesNumber());
+        deliveryNotes.setCreated(deliverParameter.getCreated() == null ? new Date() : Date.from(deliverParameter.getCreated().atStartOfDay().atZone(
+                ZoneId.systemDefault()).toInstant()));
+        deliveryNotes.setShippingCosts(new Amount(deliverParameter.getShipment(), Currency.EUR));
+        deliveryNotes.setDeliveryMethod(deliverParameter.getDeliveryMethod());
+        deliveryNotes.setShowPrices(deliverParameter.isShowPricesInDeliveryNotes());
+        deliveryNotes.setPackageNumber(deliverParameter.getPackageNumber());
+        deliveryNotes.setTrackNumber(deliverParameter.getTrackNumber());
         return deliveryNotes;
     }
 

@@ -1,8 +1,13 @@
 package de.switajski.priebes.flexibleorders.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
+import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 
 @CrossOrigin
 @Controller
@@ -30,6 +36,20 @@ public class ExceptionController {
     @ResponseBody
     public String handleIllegalArgumentException(IllegalArgumentException ex) {
         return handleExceptionAsNotification(ex, "Funktion mit falschen Parameter aufgerufen");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    public @ResponseBody JsonObjectResponse handleValidationErrors(MethodArgumentNotValidException ex) {
+        JsonObjectResponse response = new JsonObjectResponse();
+        response.setSuccess(false);
+        response.setMessage("Validation error");
+        Map<String, String> errors = new HashMap<String, String>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getCode());
+        }
+        response.setErrors(errors);
+        return response;
     }
 
     @ExceptionHandler(NotFoundException.class)

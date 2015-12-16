@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -65,6 +66,7 @@ public class JsonCreateReportRequest {
 
     public Integer dpostalCode;
 
+    @NotEmpty
     public List<ItemDto> items;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)

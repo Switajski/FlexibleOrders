@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,7 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public @ResponseBody JsonObjectResponse order(@RequestBody JsonCreateReportRequest orderRequest)
+    public @ResponseBody JsonObjectResponse order(@RequestBody @Valid JsonCreateReportRequest orderRequest)
             throws Exception {
         orderRequest.validate();
 

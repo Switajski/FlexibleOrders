@@ -25,7 +25,6 @@ public class DeliverParameter {
     @NotNull
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private String deliveryNotesNumber;
-    @NotNull
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private Long customerId;
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)

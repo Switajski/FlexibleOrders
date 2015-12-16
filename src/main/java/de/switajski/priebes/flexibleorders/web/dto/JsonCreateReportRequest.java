@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -33,7 +32,6 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 @JsonAutoDetect
 public class JsonCreateReportRequest {
 
-    @NotNull
     private Long customerId;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)

@@ -3,6 +3,10 @@ package de.switajski.priebes.flexibleorders.web.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -33,6 +37,7 @@ public class ItemDto {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private Date created;
+    @NotNull
     private String product;
     private Long
             customer,
@@ -52,12 +57,15 @@ public class ItemDto {
             packageNumber,
             paymentConditions;
 
-    private Integer quantity,
-            quantityLeft;
+    private Integer quantity;
+    @Min(1)
+    private Integer quantityLeft;
 
     @JsonDeserialize(using = ProductTypeDeserializer.class)
     private ProductType productType;
 
+    @DecimalMin("0")
+    @NotNull
     @JsonDeserialize(using = BigDecimalDeserializer.class)
     private BigDecimal priceNet;
 

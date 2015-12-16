@@ -3,24 +3,15 @@ package de.switajski.priebes.flexibleorders.service.process.parameter;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderParameter {
-    @NotNull
     private Long customerNumber;
-    @NotNull
     private String orderNumber;
-    @NotNull
     private Date created;
     private LocalDate expectedDelivery;
-    @Valid
-    @NotEmpty
     private List<ItemDto> reportItems;
 
     public OrderParameter() {

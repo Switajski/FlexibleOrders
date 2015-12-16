@@ -7,9 +7,9 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
-import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,10 +47,9 @@ public class OrderNumberGeneratorServiceTest {
                 );
 
         // WHEN
-        String orderNumber = orderNumberGeneratorService.generate(new LocalDate(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        String orderNumber = orderNumberGeneratorService.generate(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
 
         // THEN
         assertThat(orderNumber, is(equalTo("B" + year + month + consecutiveNo)));
     }
-
 }

@@ -2,7 +2,8 @@ package de.switajski.priebes.flexibleorders.service;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ public class YyMmGggOrderNoGeneratorService implements OrderNumberGeneratorServi
     @Override
     public String generate(LocalDate date) {
         Integer year = date.getYear();
-        Integer month = date.getMonthOfYear();
+        Integer month = date.getMonthValue();
         Specification<Order> spec =
                 where(OrderCreatedBetweenSpecification.inMonth(date))
                         .and(new OrderNumberStartsWith("B"));

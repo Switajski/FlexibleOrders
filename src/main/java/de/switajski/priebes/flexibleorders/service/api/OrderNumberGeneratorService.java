@@ -1,6 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 public interface OrderNumberGeneratorService {
 

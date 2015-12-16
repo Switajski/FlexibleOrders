@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class OrderNumberGeneratorController extends ExceptionController {
     @RequestMapping(value = "/order/generateOrderNumber", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse generate() {
         JsonObjectResponse response = new JsonObjectResponse();
-        response.setData(service.generate(new LocalDate()));
+        response.setData(service.generate(LocalDate.now()));
         response.setSuccess(true);
         response.setMessage("Order number generated");
         return response;

@@ -63,9 +63,6 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody JsonObjectResponse confirm(
             @RequestBody @Valid ConfirmParameter confirmRequest)
             throws Exception {
-        // TODO: see if Conversion factory / Jackson serializer has a strip to
-        // null method
-
         confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
         OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
         return ExtJsResponseCreator.createSuccessResponse(confirmationReport);

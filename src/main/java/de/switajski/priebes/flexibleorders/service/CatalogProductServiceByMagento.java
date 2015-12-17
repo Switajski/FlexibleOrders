@@ -79,7 +79,6 @@ public class CatalogProductServiceByMagento {
         for (MagentoProductDto mProduct : magentoProducts) {
             CatalogProduct product = new CatalogProduct();
             product.setName(mProduct.name);
-            // TODO: setProductNumber to string
             product.setProductNumber(mProduct.sku);
             product.setProductType(ProductType.PRODUCT);
             product.setRecommendedPriceNet(new Amount(new BigDecimal(mProduct.regular_price_without_tax), Currency.EUR));

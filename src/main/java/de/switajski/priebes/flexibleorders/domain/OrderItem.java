@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 
 @Entity
 @JsonAutoDetect
-public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
+public class OrderItem extends GenericEntity {
 
     @JsonIgnore
     @NotNull
@@ -87,12 +87,6 @@ public class OrderItem extends GenericEntity implements Comparable<OrderItem> {
             if (!ci.isAgreed()) cis.add(ci);
 
         return orderedQuantity - QuantityUtility.sumQty(cis);
-    }
-
-    @Override
-    public int compareTo(OrderItem o) {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     public Set<ReportItem> getReportItems() {

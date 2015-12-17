@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
+    @NotNull
     private String invoiceNumber;
     private Date created;
     private List<ItemDto> items;

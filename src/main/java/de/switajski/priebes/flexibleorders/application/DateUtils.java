@@ -11,22 +11,18 @@ import java.util.Locale;
 public class DateUtils {
 
     public static Date asDate(LocalDate localDate) {
-        if (localDate == null) return null;
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static Date asDate(LocalDateTime localDateTime) {
-        if (localDateTime == null) return null;
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static LocalDate asLocalDate(Date date) {
-        if (date == null) return null;
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     public static LocalDateTime asLocalDateTime(Date date) {
-        if (date == null) return null;
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -34,8 +30,7 @@ public class DateUtils {
         return weekOf(DateUtils.asLocalDate(created));
     }
 
-    public static Integer weekOf(LocalDate next) {
-        if (next == null) return null;
+    public static int weekOf(LocalDate next) {
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         return next.get(weekFields.weekOfWeekBasedYear());
     }

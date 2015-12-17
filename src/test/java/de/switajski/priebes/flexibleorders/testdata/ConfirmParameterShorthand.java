@@ -12,13 +12,13 @@ public class ConfirmParameterShorthand {
     public static ConfirmParameter confirm(String orderNumber, String confirmNumber, Customer customer,
             LocalDate expectedDelivery, ItemDto... items) {
         ConfirmParameter cp = new ConfirmParameter();
-        cp.orderNumber = orderNumber;
-        cp.confirmNumber = confirmNumber;
-        cp.customerNumber = customer.getCustomerNumber();
-        cp.customerDetails = customer.getDetails();
-        cp.invoiceAddress = customer.getInvoiceAddress();
-        cp.shippingAddress = customer.getShippingAddress();
-        cp.itemsToBeConfirmed = Arrays.asList(items);
+        cp.setOrderNumber(orderNumber);
+        cp.setConfirmNumber(confirmNumber);
+        cp.setCustomerNumber(customer.getCustomerNumber());
+        cp.setCustomerDetails(customer.getDetails());
+        cp.setInvoiceAddress(customer.getInvoiceAddress());
+        cp.setShippingAddress(customer.getShippingAddress());
+        cp.setItems(Arrays.asList(items));
         return cp;
     }
 }

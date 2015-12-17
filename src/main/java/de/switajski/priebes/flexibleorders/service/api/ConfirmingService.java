@@ -41,11 +41,11 @@ public class ConfirmingService {
 
     @Transactional
     public OrderConfirmation confirm(ConfirmParameter confirmParameter) {
-        Address invoiceAddress = confirmParameter.invoiceAddress;
-        Address shippingAddress = confirmParameter.shippingAddress;
-        validateConfirm(confirmParameter.orderNumber, confirmParameter.confirmNumber, confirmParameter.itemsToBeConfirmed, shippingAddress);
+        Address invoiceAddress = confirmParameter.getInvoiceAddress();
+        Address shippingAddress = confirmParameter.getShippingAddress();
+        validateConfirm(confirmParameter.getOrderNumber(), confirmParameter.getConfirmNumber(), confirmParameter.getItems(), shippingAddress);
 
-        Order order = orderRepo.findByOrderNumber(confirmParameter.orderNumber);
+        Order order = orderRepo.findByOrderNumber(confirmParameter.getOrderNumber());
         if (order == null) throw new IllegalArgumentException("Bestellnr. nicht gefunden");
 
         Customer cust = order.getCustomer();
@@ -56,20 +56,20 @@ public class ConfirmingService {
         PurchaseAgreement pAgree = new PurchaseAgreement();
         pAgree.setShippingAddress(shippingAddress);
         pAgree.setInvoiceAddress(invoiceAddress);
-        pAgree.setExpectedDelivery(confirmParameter.expectedDelivery);
-        pAgree.setCustomerNumber(confirmParameter.customerNumber);
-        pAgree.setPaymentConditions(confirmParameter.paymentConditions);
-        if (confirmParameter.deliveryMethodNo != null) {
-            CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findOne(confirmParameter.deliveryMethodNo);
+        pAgree.setExpectedDelivery(confirmParameter.getExpectedDelivery());
+        pAgree.setCustomerNumber(confirmParameter.getCustomerNumber());
+        pAgree.setPaymentConditions(confirmParameter.getPaymentConditions());
+        if (confirmParameter.getDeliveryMethodNo() != null) {
+            CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findOne(confirmParameter.getDeliveryMethodNo());
             pAgree.setDeliveryMethod(catalogDeliveryMethod.getDeliveryMethod());
         }
 
         OrderConfirmation cr = new OrderConfirmation();
-        cr.setDocumentNumber(confirmParameter.confirmNumber);
+        cr.setDocumentNumber(confirmParameter.getConfirmNumber());
         cr.setPurchaseAgreement(pAgree);
-        cr.setCustomerDetails(confirmParameter.customerDetails);
+        cr.setCustomerDetails(confirmParameter.getCustomerDetails());
 
-        addConfirmationItemsSafely(confirmParameter.itemsToBeConfirmed, cr);
+        addConfirmationItemsSafely(confirmParameter.getItems(), cr);
 
         return reportRepo.save(cr);
     }

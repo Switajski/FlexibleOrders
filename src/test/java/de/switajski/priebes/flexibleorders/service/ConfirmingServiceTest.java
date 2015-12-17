@@ -73,7 +73,7 @@ public class ConfirmingServiceTest {
         // GIVEN
         MockitoAnnotations.initMocks(this);
         when(customerRepo.findByCustomerNumber(YVONNE.getCustomerNumber())).thenReturn(YVONNE);
-        when(catalogDeliveryMethod.findOne(AB11.deliveryMethodNo)).thenReturn(new CatalogDeliveryMethod(DHL));
+        when(catalogDeliveryMethod.findOne(AB11.getDeliveryMethodNo())).thenReturn(new CatalogDeliveryMethod(DHL));
 
         Order b11 = new OrderBuilder().withB11().build();
         Order b12 = new OrderBuilder().withB12().build();
@@ -88,7 +88,7 @@ public class ConfirmingServiceTest {
         confirmingService.confirm(AB11);
 
         // THEN
-        verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.itemsToBeConfirmed)));
+        verify(reportRepository).save(argThat(hasSameProductNumbersAs(AB11.getItems())));
     }
 
     private void setupProducts(CatalogProduct... products) {

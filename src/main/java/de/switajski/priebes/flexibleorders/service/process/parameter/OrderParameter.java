@@ -4,12 +4,23 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
+import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderParameter {
     private Long customerNumber;
     private String orderNumber;
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
     private Date created;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate expectedDelivery;
     private List<ItemDto> reportItems;
 

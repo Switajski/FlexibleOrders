@@ -16,7 +16,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Embeddable
 public class CustomerDetails {
 
-    private String vendorNumber, vatIdNo, paymentConditions;
+    private String vendorNumber;
+    private String vatIdNo;
+    private String paymentConditions;
     private String saleRepresentative, mark;
     @Embedded
     private ContactInformation contactInformation;

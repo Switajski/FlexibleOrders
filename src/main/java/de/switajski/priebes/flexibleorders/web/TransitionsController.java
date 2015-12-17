@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
-import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
@@ -64,38 +61,13 @@ public class TransitionsController extends ExceptionController {
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse confirm(
-            @RequestBody JsonCreateReportRequest confirmRequest)
+            @RequestBody @Valid ConfirmParameter confirmRequest)
             throws Exception {
         // TODO: see if Conversion factory / Jackson serializer has a strip to
         // null method
-        ContactInformation contactInformation = new ContactInformation();
-        contactInformation.setContact1(confirmRequest.getContact1());
-        contactInformation.setContact2(confirmRequest.getContact2());
-        contactInformation.setContact3(confirmRequest.getContact3());
-        contactInformation.setContact4(confirmRequest.getContact4());
 
-        CustomerDetails customerDetails = new CustomerDetails();
-        customerDetails.setContactInformation(contactInformation);
-        customerDetails.setMark(confirmRequest.getMark());
-        customerDetails.setPaymentConditions(confirmRequest.getPaymentConditions());
-        customerDetails.setSaleRepresentative(confirmRequest.getSaleRepresentative());
-        customerDetails.setVatIdNo(confirmRequest.getValueAddedTaxIdNo());
-        customerDetails.setVendorNumber(confirmRequest.getVendorNumber());
-
-        ConfirmParameter confirmParameter = new ConfirmParameter(
-                extractOrderNumber(confirmRequest),
-                StringUtils.stripToNull(confirmRequest.getOrderConfirmationNumber()),
-                confirmRequest.getExpectedDelivery(),
-                confirmRequest.getDeliveryMethodNo(),
-                confirmRequest.createDeliveryAddress(),
-                confirmRequest.createInvoiceAddress(),
-                confirmRequest.getItems());
-        confirmParameter.customerDetails = customerDetails;
-        confirmParameter.customerNumber = confirmRequest.getCustomerId();
-        confirmParameter.paymentConditions = confirmRequest.getPaymentConditions();
-
-        OrderConfirmation confirmationReport = confirmService.confirm(
-                confirmParameter);
+        confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
+        OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
         return ExtJsResponseCreator.createResponse(confirmationReport);
     }
 

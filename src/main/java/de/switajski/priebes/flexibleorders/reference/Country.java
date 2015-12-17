@@ -26,4 +26,11 @@ public enum Country {
     public String getName() {
         return text;
     }
+
+    public static Country map(String name) {
+        for (Country c : Country.values()) {
+            if (c.equals(name)) return c;
+        }
+        return null;
+    }
 }

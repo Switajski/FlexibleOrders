@@ -163,7 +163,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
                 oi2ItemDtoConversionService.convert(b22));
-        confirmParameter.paymentConditions = "5 % Skonto, wenn innerhalb 5 Tagen";
+        confirmParameter.setPaymentConditions("5 % Skonto, wenn innerhalb 5 Tagen");
         OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
         return ab22;
     }

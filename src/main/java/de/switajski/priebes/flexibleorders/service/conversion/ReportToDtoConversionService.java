@@ -159,8 +159,8 @@ public class ReportToDtoConversionService {
     private LocalDate retrieveExpectedDelivery(Report report) {
         Set<LocalDate> eDates = expectedDeliveryService.retrieve(report.getItems());
         LocalDate expectedDelivery = null;
-        if (eDates.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als ein Lieferdatum f" + Unicode.U_UML
-                + "r gegebene Positionen gefunden");
+        // FIXME: shouldn't happen
+        if (eDates.size() > 1) expectedDelivery = eDates.iterator().next();
         else if (eDates.size() == 1) expectedDelivery = eDates.iterator().next();
         return expectedDelivery;
     }

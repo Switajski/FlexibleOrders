@@ -26,7 +26,7 @@ public class CountryController extends ExceptionController {
             dto.country = c.getName();
             countries.add(dto);
         }
-        JsonObjectResponse response = ExtJsResponseCreator.createResponse(countries);
+        JsonObjectResponse response = ExtJsResponseCreator.createSuccessResponse(countries);
         response.setTotal(Country.values().length);
         return response;
     }

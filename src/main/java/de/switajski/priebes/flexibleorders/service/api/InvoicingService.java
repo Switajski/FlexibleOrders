@@ -36,9 +36,12 @@ public class InvoicingService {
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
-        if (reportRepo.findByDocumentNumber(invoicingParameter.invoiceNumber) != null) throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+        // TODO: custom constraint!
+        if (reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()) != null) {
+            throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
+        }
 
-        Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.shippingItemDtos);
+        Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);
         invoice.setInvoiceAddress(retrieveInvoicingAddress(risWithQty.keySet()));
 
@@ -59,7 +62,7 @@ public class InvoicingService {
 
         // TODO Currency Handling
         Amount shippingCosts = Amount.ZERO_EURO;
-        for (ItemDto item : invoicingParameter.shippingItemDtos) {
+        for (ItemDto item : invoicingParameter.getItems()) {
             if (item.getProductType() == ProductType.SHIPPING) {
                 shippingCosts = shippingCosts.add(new Amount(item.getPriceNet(), Currency.EUR));
             }
@@ -79,11 +82,11 @@ public class InvoicingService {
     }
 
     private Invoice createInvoice(InvoicingParameter invoicingParameter) {
-        Invoice invoice = new Invoice(invoicingParameter.invoiceNumber, null);
-        invoice.setBilling(invoicingParameter.billing);
-        invoice.setCreated((invoicingParameter.created == null) ? new Date() : invoicingParameter.created);
-        invoice.setDiscountRate(invoicingParameter.discountRate);
-        invoice.setDiscountText(invoicingParameter.discountText);
+        Invoice invoice = new Invoice(invoicingParameter.getInvoiceNumber(), null);
+        invoice.setBilling(invoicingParameter.getBilling());
+        invoice.setCreated((invoicingParameter.getCreated() == null) ? new Date() : invoicingParameter.getCreated());
+        invoice.setDiscountRate(invoicingParameter.getDiscountRate());
+        invoice.setDiscountText(invoicingParameter.getDiscountText());
         return invoice;
     }
 

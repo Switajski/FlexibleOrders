@@ -49,7 +49,7 @@ public class CustomerController extends ExceptionController {
             customers = customerRepo.search(pageable, query);
         }
         else customers = customerRepo.findAll(pageable);
-        JsonObjectResponse response = ExtJsResponseCreator.createResponse(
+        JsonObjectResponse response = ExtJsResponseCreator.createSuccessResponse(
                 CustomerDtoConverterServiceImpl.convertToJsonCustomers(customers
                         .getContent()));
         response.setTotal(customers.getTotalElements());
@@ -72,7 +72,7 @@ public class CustomerController extends ExceptionController {
             throw new IllegalArgumentException("Kundennummer besteht bereits");
         }
         customerRepo.save(c);
-        return ExtJsResponseCreator.createResponse(c);
+        return ExtJsResponseCreator.createSuccessResponse(c);
     }
 
     @RequestMapping(value = "/udpate", method = RequestMethod.POST)
@@ -82,7 +82,7 @@ public class CustomerController extends ExceptionController {
                 cDto,
                 customerRepo.findByCustomerNumber(cDto.customerNumber));
         customerRepo.save(c);
-        return ExtJsResponseCreator.createResponse(c);
+        return ExtJsResponseCreator.createSuccessResponse(c);
     }
 
 }

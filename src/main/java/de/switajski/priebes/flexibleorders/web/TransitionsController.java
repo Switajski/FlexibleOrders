@@ -68,11 +68,7 @@ public class TransitionsController extends ExceptionController {
 
         confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
         OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
-        return ExtJsResponseCreator.createResponse(confirmationReport);
-    }
-
-    private String extractOrderNumber(JsonCreateReportRequest confirmRequest) {
-        return confirmRequest.getItems().iterator().next().getOrderNumber();
+        return ExtJsResponseCreator.createSuccessResponse(confirmationReport);
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
@@ -89,25 +85,16 @@ public class TransitionsController extends ExceptionController {
         Order order = transistionsService.order(
                 orderParameter);
 
-        return ExtJsResponseCreator.createResponse(order);
+        return ExtJsResponseCreator.createSuccessResponse(order);
     }
 
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse invoice(
-            @RequestBody @Valid JsonCreateReportRequest invoicingRequest)
+            @RequestBody @Valid InvoicingParameter invoicingRequest)
             throws Exception {
 
-        InvoicingParameter invoicingParameter = new InvoicingParameter(
-                invoicingRequest.getInvoiceNumber(),
-                invoicingRequest.getCreated(),
-                invoicingRequest.getItems());
-        invoicingParameter.billing = invoicingRequest.getBilling();
-        invoicingParameter.discountRate = invoicingRequest.getDiscountRate();
-        invoicingParameter.discountText = invoicingRequest.getDiscountText();
-        invoicingParameter.customerNumber = invoicingRequest.getCustomerId();
-        Invoice invoice = invoicingService.invoice(
-                invoicingParameter);
-        return ExtJsResponseCreator.createResponse(invoice);
+        Invoice invoice = invoicingService.invoice(invoicingRequest);
+        return ExtJsResponseCreator.createSuccessResponse(invoice);
     }
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
@@ -119,11 +106,11 @@ public class TransitionsController extends ExceptionController {
         try {
             if (deliverParameter.isSingleDeliveryNotes()) {
                 DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);
-                return ExtJsResponseCreator.createResponse(deliveryNotes);
+                return ExtJsResponseCreator.createSuccessResponse(deliveryNotes);
             }
             else {
                 Set<DeliveryNotes> dns = shippingService.shipMany(deliverParameter);
-                return ExtJsResponseCreator.createResponse(dns);
+                return ExtJsResponseCreator.createSuccessResponse(dns);
             }
         }
         catch (ContradictoryPurchaseAgreementException e) {
@@ -147,14 +134,14 @@ public class TransitionsController extends ExceptionController {
             @RequestParam(value = "orderAgreementNumber", required = true) String orderAgreementNumber,
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
         OrderConfirmation orderAgreement = agreeingService.agree(orderConfirmationNumber, orderAgreementNumber);
-        return ExtJsResponseCreator.createResponse(orderAgreement);
+        return ExtJsResponseCreator.createSuccessResponse(orderAgreement);
     }
 
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse deleteOrder(
             @RequestParam(value = "orderNumber", required = true) String orderNumber) {
         transistionsService.deleteOrder(orderNumber);
-        return ExtJsResponseCreator.createResponse(orderNumber);
+        return ExtJsResponseCreator.createSuccessResponse(orderNumber);
     }
 
     @RequestMapping(value = "/Report/{documentNumber}", method = RequestMethod.DELETE)
@@ -162,7 +149,7 @@ public class TransitionsController extends ExceptionController {
             @PathVariable(value = "documentNumber") String documentNumber)
             throws Exception {
         transistionsService.deleteReport(documentNumber);
-        return ExtJsResponseCreator.createResponse(documentNumber);
+        return ExtJsResponseCreator.createSuccessResponse(documentNumber);
     }
 
     @RequestMapping(value = "/cancelReport", method = RequestMethod.POST)
@@ -170,7 +157,7 @@ public class TransitionsController extends ExceptionController {
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
             throws Exception {
         CancelReport cr = transistionsService.cancelReport(orderConfirmationNumber);
-        return ExtJsResponseCreator.createResponse(cr);
+        return ExtJsResponseCreator.createSuccessResponse(cr);
     }
 
     @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
@@ -179,7 +166,7 @@ public class TransitionsController extends ExceptionController {
             throws Exception {
         Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
-        return ExtJsResponseCreator.createResponse(receipt);
+        return ExtJsResponseCreator.createSuccessResponse(receipt);
     }
 
 }

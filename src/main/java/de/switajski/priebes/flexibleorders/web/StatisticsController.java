@@ -21,6 +21,6 @@ public class StatisticsController extends ExceptionController {
     @RequestMapping(value = "/openAmount", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse shippedAmount(
             @RequestParam String state) throws Exception {
-        return ExtJsResponseCreator.createResponse(statisticsService.calculateOpenAmount(state));
+        return ExtJsResponseCreator.createSuccessResponse(statisticsService.calculateOpenAmount(state));
     }
 }

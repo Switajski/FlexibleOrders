@@ -33,7 +33,7 @@ public class DeliveryHistoryController extends ExceptionController {
             @RequestParam(value = "sort", required = false) String sorts) {
         // TODO: extjs must not call deliveryhistory on application load
         if (id.equals(0L)) return ExtJsResponseCreator.createResponse(Collections.emptyList());
-        return ExtJsResponseCreator.createResponse(
+        return ExtJsResponseCreator.createSuccessResponse(
                 deliveryHistoryService.retrieveByReportItemId(id));
     }
 

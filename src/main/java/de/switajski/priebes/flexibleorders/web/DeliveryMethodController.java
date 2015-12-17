@@ -46,7 +46,7 @@ public class DeliveryMethodController extends ExceptionController {
             @RequestParam(value = "sort", required = false) String sorts) {
         PageRequest pageRequest = createPageRequest(page, limit);
         Page<DeliveryMethod> dMethods = convertToDeliveryMethod(deliveryMethodRepo.findAll(pageRequest), pageRequest);
-        JsonObjectResponse response = ExtJsResponseCreator.createResponse(
+        JsonObjectResponse response = ExtJsResponseCreator.createSuccessResponse(
                 JsonSerializationHelper.convertToJsonDeliveryMethodDtos(dMethods
                         .getContent()));
         response.setTotal(dMethods.getTotalElements());
@@ -71,7 +71,7 @@ public class DeliveryMethodController extends ExceptionController {
                 cDto,
                 new CatalogDeliveryMethod());
         deliveryMethodRepo.save(c);
-        return ExtJsResponseCreator.createResponse(c);
+        return ExtJsResponseCreator.createSuccessResponse(c);
     }
 
     @RequestMapping(value = "/udpate", method = RequestMethod.POST)
@@ -81,7 +81,7 @@ public class DeliveryMethodController extends ExceptionController {
                 cDto,
                 deliveryMethodRepo.findOne(cDto.getId()));
         deliveryMethodRepo.save(c);
-        return ExtJsResponseCreator.createResponse(c);
+        return ExtJsResponseCreator.createSuccessResponse(c);
     }
 
 }

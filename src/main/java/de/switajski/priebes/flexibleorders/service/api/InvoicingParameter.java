@@ -4,16 +4,19 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
-    public String invoiceNumber;
-    public Date created;
-    public List<ItemDto> shippingItemDtos;
-    public String billing;
-    public Long customerNumber;
-    public BigDecimal discountRate;
-    public String discountText;
+    private String invoiceNumber;
+    private Date created;
+    private List<ItemDto> items;
+    private String billing;
+    @JsonProperty("customerId")
+    private Long customerNumber;
+    private BigDecimal discountRate;
+    private String discountText;
 
     /**
      * Constructor with mandatory fields.
@@ -28,8 +31,64 @@ public class InvoicingParameter {
             List<ItemDto> shippingItemDtos) {
         this.invoiceNumber = invoiceNumber;
         this.created = created;
-        this.shippingItemDtos = shippingItemDtos;
+        this.items = shippingItemDtos;
     }
 
     public InvoicingParameter() {}
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public List<ItemDto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemDto> items) {
+        this.items = items;
+    }
+
+    public String getBilling() {
+        return billing;
+    }
+
+    public void setBilling(String billing) {
+        this.billing = billing;
+    }
+
+    public Long getCustomerNumber() {
+        return customerNumber;
+    }
+
+    public void setCustomerNumber(Long customerNumber) {
+        this.customerNumber = customerNumber;
+    }
+
+    public BigDecimal getDiscountRate() {
+        return discountRate;
+    }
+
+    public void setDiscountRate(BigDecimal discountRate) {
+        this.discountRate = discountRate;
+    }
+
+    public String getDiscountText() {
+        return discountText;
+    }
+
+    public void setDiscountText(String discountText) {
+        this.discountText = discountText;
+    }
 }

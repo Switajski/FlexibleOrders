@@ -45,7 +45,7 @@ public class InvoicingServiceTest {
         when(itemDtoConverterService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class))).thenReturn(givenShippingItemMap());
         when(purchaseAgreementService.invoiceAddresses(Matchers.anySetOf(ReportItem.class))).thenReturn(givenInvoicingAddresses());
         InvoicingParameter invoicingParameter = new InvoicingParameter();
-        invoicingParameter.invoiceNumber = "L123";
+        invoicingParameter.setInvoiceNumber("L123");
 
         // WHEN / THEN
         invoicingService.invoice(invoicingParameter);

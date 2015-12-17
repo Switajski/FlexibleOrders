@@ -36,7 +36,7 @@ public class ExtJsResponseCreator {
         return response;
     }
 
-    public static JsonObjectResponse createResponse(Object entity) {
+    public static JsonObjectResponse createSuccessResponse(Object entity) {
         JsonObjectResponse response = new JsonObjectResponse();
         response.setData(entity);
         response.setMessage("Report items successfully handled");

@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.service.process.parameter;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -52,6 +53,7 @@ public class ConfirmParameter {
     private Integer postalCode;
 
     @NotEmpty
+    @Valid
     private List<ItemDto> items;
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private String paymentConditions;

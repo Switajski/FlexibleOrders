@@ -82,6 +82,7 @@ public class PurchaseAgreement {
 
     @JsonSerialize(using = LocalDateSerializer.class)
     public LocalDate getExpectedDelivery() {
+        if (expectedDelivery == null) return null;
         return DateUtils.asLocalDate(expectedDelivery);
     }
 

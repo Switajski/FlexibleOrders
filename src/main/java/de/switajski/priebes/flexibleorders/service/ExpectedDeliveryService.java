@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,10 @@ public class ExpectedDeliveryService {
     }
 
     public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
-        Set<Integer> expectedDeliveryWeekOfYear = new HashSet<Integer>();
-        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
-            expectedDeliveryWeekOfYear.add(DateUtils.weekOf(pa.getExpectedDelivery()));
-        }
-        return expectedDeliveryWeekOfYear;
+        return purchaseAgreementService.retrieve(items).stream()
+                .filter(p -> p.getExpectedDelivery() != null)
+                .map(s -> DateUtils.weekOf(s.getExpectedDelivery()))
+                .collect(Collectors.toSet());
     }
 
     /**

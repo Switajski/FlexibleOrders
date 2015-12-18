@@ -15,12 +15,12 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 public class DeliveryMethodService {
 
     @Autowired
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional(readOnly = true)
     public Set<DeliveryMethod> retrieve(Set<ReportItem> reportItems) {
         Set<DeliveryMethod> deliveryMethods = new HashSet<DeliveryMethod>();
-        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(reportItems))
+        for (PurchaseAgreement pa : purchaseAgreementService.withoutDeviations(reportItems))
             deliveryMethods.add(pa.getDeliveryMethod());
         return deliveryMethods;
     }

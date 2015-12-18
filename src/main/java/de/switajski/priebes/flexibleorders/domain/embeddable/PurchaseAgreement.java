@@ -44,10 +44,6 @@ public class PurchaseAgreement {
     })
     private Address shippingAddress;
 
-    public void setExpectedDelivery(java.sql.Date expectedDelivery) {
-        this.expectedDelivery = expectedDelivery;
-    }
-
     @Embedded
     private DeliveryMethod deliveryMethod;
 
@@ -59,6 +55,26 @@ public class PurchaseAgreement {
 
     @Column(name = "pa_paymentConditions")
     private String paymentConditions;
+
+    /**
+     * Copy constructor
+     * 
+     * @param pa
+     */
+    public PurchaseAgreement(PurchaseAgreement pa) {
+        this.invoiceAddress = pa.getInvoiceAddress();
+        this.shippingAddress = pa.getShippingAddress();
+        this.setExpectedDelivery(pa.getExpectedDelivery());
+        this.deliveryMethod = pa.getDeliveryMethod();
+        this.paymentConditions = pa.getPaymentConditions();
+        this.customerNumber = pa.getCustomerNumber();
+    }
+
+    public PurchaseAgreement() {}
+
+    public void setExpectedDelivery(java.sql.Date expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+    }
 
     public String getPaymentConditions() {
         return paymentConditions;

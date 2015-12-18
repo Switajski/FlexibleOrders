@@ -119,6 +119,7 @@ public class TransitionsController extends ExceptionController {
                     put("ignoreContradictoryExpectedDeliveryDates", e.getMessage());
                 }
             });
+            resp.setMessage(e.getMessage());
             resp.setSuccess(false);
             response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
             return resp;

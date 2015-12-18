@@ -51,7 +51,7 @@ public class ReportingService {
     @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
     @Autowired
-    private PurchaseAgreementService purchaseAgreementService;
+    private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional(readOnly = true)
     public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
@@ -187,7 +187,7 @@ public class ReportingService {
 
         }
         if (customer != null) {
-            Collection<Address> sAddresses = purchaseAgreementService.shippingAddresses(reportItems);
+            Collection<Address> sAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(reportItems);
             if (sAddresses.size() > 0) {
                 report.shippingSpecific_shippingAddress = sAddresses.iterator().next();
             }

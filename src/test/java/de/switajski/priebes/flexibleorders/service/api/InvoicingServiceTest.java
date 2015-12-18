@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
@@ -35,7 +35,7 @@ public class InvoicingServiceTest {
     @Mock
     ItemDtoToReportItemConversionService itemDtoConverterService;
     @Mock
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldRejectInvoicingIfDifferentInvoicingAddressesExist() {
@@ -43,7 +43,7 @@ public class InvoicingServiceTest {
         MockitoAnnotations.initMocks(this);
         when(reportRepo.findByDocumentNumber(Matchers.anyString())).thenReturn(null);
         when(itemDtoConverterService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class))).thenReturn(givenShippingItemMap());
-        when(purchaseAgreementService.invoiceAddresses(Matchers.anySetOf(ReportItem.class))).thenReturn(givenInvoicingAddresses());
+        when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(givenInvoicingAddresses());
         InvoicingParameter invoicingParameter = new InvoicingParameter();
         invoicingParameter.setInvoiceNumber("L123");
 

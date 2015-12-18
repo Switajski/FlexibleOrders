@@ -63,8 +63,9 @@ public class ReportViewHelper {
                 paragraphBuilder.addTextLine(adresse.getName2());
             }
             paragraphBuilder.addTextLine(adresse.getStreet())
-                    .addTextLine(adresse.getPostalCode() + " " + adresse.getCity())
-                    .addTextLine(adresse.getCountry().getName());
+                    .addTextLine(adresse.getPostalCode() + " " + adresse.getCity());
+            // FIXME: data saving error #101
+            if (adresse.getCountry() != null) paragraphBuilder.addTextLine(adresse.getCountry().getName());
 
             PdfPCell cell = wrapInCell(paragraphBuilder.build());
             cell.setFixedHeight(70f);

@@ -21,18 +21,18 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 public class ExpectedDeliveryService {
 
     @Autowired
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
 
     public Set<LocalDate> retrieve(Set<ReportItem> items) {
         Set<LocalDate> expectedDeliveryDates = new HashSet<LocalDate>();
-        for (PurchaseAgreement pa : purchaseAgreementService.retrieve(items)) {
+        for (PurchaseAgreement pa : purchaseAgreementService.withoutDeviations(items)) {
             expectedDeliveryDates.add(pa.getExpectedDelivery());
         }
         return expectedDeliveryDates;
     }
 
     public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
-        return purchaseAgreementService.retrieve(items).stream()
+        return purchaseAgreementService.withoutDeviations(items).stream()
                 .filter(p -> p.getExpectedDelivery() != null)
                 .map(s -> DateUtils.weekOf(s.getExpectedDelivery()))
                 .collect(Collectors.toSet());

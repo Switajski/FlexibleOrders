@@ -25,7 +25,6 @@ public class CustomerServiceImpl {
     }
 
     public List<Customer> findAll() {
-        // TODO Auto-generated method stub
         throw new RuntimeException("Not implemented yet");
     }
 

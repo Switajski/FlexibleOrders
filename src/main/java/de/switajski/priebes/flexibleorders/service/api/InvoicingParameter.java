@@ -1,19 +1,30 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
+import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
     @NotNull
     private String invoiceNumber;
-    private Date created;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate created;
+    @Valid
+    @NotEmpty
     private List<ItemDto> items;
     private String billing;
     @JsonProperty("customerId")
@@ -30,7 +41,7 @@ public class InvoicingParameter {
      * @param shippingItemDtos
      */
     public InvoicingParameter(String invoiceNumber,
-            Date created,
+            LocalDate created,
             List<ItemDto> shippingItemDtos) {
         this.invoiceNumber = invoiceNumber;
         this.created = created;
@@ -47,11 +58,11 @@ public class InvoicingParameter {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public Date getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 

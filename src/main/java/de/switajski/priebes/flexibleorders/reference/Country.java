@@ -29,7 +29,7 @@ public enum Country {
 
     public static Country map(String name) {
         for (Country c : Country.values()) {
-            if (c.equals(name)) return c;
+            if (c.toString().equals(name)) return c;
         }
         return null;
     }

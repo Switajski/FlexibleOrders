@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -198,7 +197,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.setPriceNet(BigDecimal.valueOf(11d));
         shippingCosts.setProductType(ProductType.SHIPPING);
-        InvoicingParameter invoicingParameter = new InvoicingParameter("R11", new Date(), Arrays.asList(
+        InvoicingParameter invoicingParameter = new InvoicingParameter("R11", LocalDate.now(), Arrays.asList(
                 extract(l11, AMY.getProductNumber(), 2),
                 extract(l11, MILADKA.getProductNumber(), 2),
                 extract(l12, AMY.getProductNumber(), 3),

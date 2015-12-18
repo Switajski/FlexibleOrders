@@ -165,7 +165,8 @@ public class ExtendedTableHeaderCreator {
             cib.append(a.getPostalCode().toString() + " ");
             cib.append(a.getCity()).append(NEWLINE);
 
-            if (!isEmpty(a.getCountry().getName())) cib.append(a.getCountry().getName());
+            // FIXME: #101 NPE
+            if (a.getCountry() != null && !isEmpty(a.getCountry().getName())) cib.append(a.getCountry().getName());
         }
         return cib.toString();
     }

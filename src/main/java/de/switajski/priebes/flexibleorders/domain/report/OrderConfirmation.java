@@ -1,7 +1,14 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
@@ -20,6 +27,10 @@ public class OrderConfirmation extends Report {
 
     @Embedded
     private PurchaseAgreement purchaseAgreement;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderConfirmation")
+    private List<PurchaseAgreementDeviation> deviations;
 
     private String orderAgreementNumber;
 
@@ -69,6 +80,41 @@ public class OrderConfirmation extends Report {
 
     public void setPurchaseAgreement(PurchaseAgreement purchaseAgreement) {
         this.purchaseAgreement = purchaseAgreement;
+    }
+
+    /**
+     * Latest first
+     * 
+     * @return
+     */
+    public List<PurchaseAgreementDeviation> getDeviations() {
+        return deviations.stream()
+                .sorted((pa1, pa2) -> pa2.getCreated().compareTo(pa1.getCreated()))
+                .collect(Collectors.toList());
+    }
+
+    public void setDeviations(List<PurchaseAgreementDeviation> deviations) {
+        this.deviations = deviations;
+    }
+
+    public void addDeviation(PurchaseAgreement pa) {
+        PurchaseAgreementDeviation pad = new PurchaseAgreementDeviation();
+        pad.setOrderConfirmation(this);
+        pad.setPurchaseAgreement(pa);
+        deviations.add(pad);
+    }
+
+    public PurchaseAgreement actualPurchaseAgreement() {
+        return getDeviations().stream()
+                .map(pa -> pa.getPurchaseAgreement())
+                .findFirst()
+                .orElse(purchaseAgreement);
+    }
+
+    public void changeShippingAddress(Address shippingAddress) {
+        PurchaseAgreement pa = new PurchaseAgreement(actualPurchaseAgreement());
+        pa.setShippingAddress(shippingAddress);
+        addDeviation(pa);
     }
 
 }

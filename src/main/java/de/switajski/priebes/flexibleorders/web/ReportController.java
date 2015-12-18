@@ -3,6 +3,8 @@ package de.switajski.priebes.flexibleorders.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -78,6 +80,20 @@ public class ReportController {
                     ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
+    }
+
+    @RequestMapping(value = "/reports/{id}.html", produces = "text/html")
+    public @ResponseBody String showReportWrappedInHtml(@PathVariable("id") String id,
+            HttpServletRequest request) {
+        String link = request.getRequestURL().toString().replace("html", "pdf");
+        return new StringBuilder()
+                .append("<html><body>")
+                .append("<object type=\"application/pdf\" ")
+                .append("data=\"").append(link).append("\" ")
+                .append("width=\"100%\" height=\"100%\" >")
+                .append("<embed type=\"application/pdf\" src=\"" + link + "\" />")
+                .append("</object></body></html>")
+                .toString();
     }
 
     @RequestMapping(value = "/kunden/{customerNumber}/ausstehendeArtikel.pdf", headers = "Accept=application/pdf")

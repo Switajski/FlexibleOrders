@@ -14,7 +14,7 @@ import org.junit.Test;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuild
 
 public class PurchaseAgreementServiceTest {
 
-    private PurchaseAgreementService purchaseAgreementService = new PurchaseAgreementService();
+    private PurchaseAgreementReadService purchaseAgreementService = new PurchaseAgreementReadService();
 
     @Test
     public void shouldRetrieveContradictoryPurchaseAgreementsFromSimilarItems() {
@@ -40,7 +40,7 @@ public class PurchaseAgreementServiceTest {
     }
 
     private Set<PurchaseAgreement> whenRetrievingPurchaseAgreements(List<ReportItem> agreementItems) {
-        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieve(agreementItems);
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.withoutDeviations(agreementItems);
         return purchaseAgreements;
     }
 
@@ -59,7 +59,7 @@ public class PurchaseAgreementServiceTest {
     }
 
     private Set<PurchaseAgreement> whenRetrievingLegalPurchaseAgreements(List<ReportItem> agreementItems) {
-        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegal(agreementItems);
+        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegalWithoutDeviations(agreementItems);
         return purchaseAgreements;
     }
 
@@ -70,7 +70,7 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(givenPurchaseAgreement()),
                 givenAgreementItemWith(changeShippingAddressDate(givenPurchaseAgreement())));
 
-        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(agreementItems);
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(agreementItems);
 
         assertThat(shippingAddresses.size(), is(2));
     }
@@ -82,7 +82,7 @@ public class PurchaseAgreementServiceTest {
                 givenAgreementItemWith(givenPurchaseAgreement()),
                 givenAgreementItemWith(givenPurchaseAgreement()));
 
-        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(agreementItems);
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(agreementItems);
 
         assertThat(shippingAddresses.size(), is(1));
     }

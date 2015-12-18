@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.PurchaseAgre
 public class ExpectedDeliveryServiceTest {
 
     @Mock
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
 
     @InjectMocks
     ExpectedDeliveryService service = new ExpectedDeliveryService();
@@ -78,6 +78,6 @@ public class ExpectedDeliveryServiceTest {
         purchaseAgreements = new HashSet<PurchaseAgreement>();
         purchaseAgreements.add(new PurchaseAgreementBuilder().setExpectedDelivery(firstDate).build());
         purchaseAgreements.add(new PurchaseAgreementBuilder().setExpectedDelivery(secondDate).build());
-        when(purchaseAgreementService.retrieve(anyCollectionOf(ReportItem.class))).thenReturn(purchaseAgreements);
+        when(purchaseAgreementService.withoutDeviations(anyCollectionOf(ReportItem.class))).thenReturn(purchaseAgreements);
     }
 }

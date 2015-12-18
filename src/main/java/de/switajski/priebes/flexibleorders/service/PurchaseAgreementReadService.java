@@ -19,12 +19,12 @@ import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Service
-public class PurchaseAgreementService {
+public class PurchaseAgreementReadService {
 
     @Transactional(readOnly = true)
-    public Set<PurchaseAgreement> retrieve(Collection<ReportItem> reportItems) {
+    public Set<PurchaseAgreement> withoutDeviations(Collection<ReportItem> reportItems) {
         boolean agreedOnly = false;
-        return retrieve(reportItems, agreedOnly);
+        return retrieveWithoutDeviations(reportItems, agreedOnly);
     }
 
     /**
@@ -35,23 +35,48 @@ public class PurchaseAgreementService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Set<PurchaseAgreement> retrieveLegal(
+    public Set<PurchaseAgreement> retrieveLegalWithoutDeviations(
             Collection<ReportItem> reportItems) {
         boolean agreedOnly = true;
-        return retrieve(reportItems, agreedOnly);
+        return retrieveWithoutDeviations(reportItems, agreedOnly);
     }
 
     @Transactional(readOnly = true)
-    public Set<Address> shippingAddresses(Collection<ReportItem> reportItems) {
-        return retrieve(reportItems)
+    public Set<Address> shippingAddressesWithoutDeviations(Collection<ReportItem> reportItems) {
+        return withoutDeviations(reportItems)
                 .stream()
                 .map(s -> s.getShippingAddress())
                 .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)
-    public Set<Address> invoiceAddresses(Collection<ReportItem> reportItems) {
-        return retrieve(reportItems)
+    public Set<Address> shippingAddresses(Collection<ReportItem> reportItems) {
+        Collection<PurchaseAgreement> actual = actual(reportItems);
+        return actual
+                .stream()
+                .map(s -> s.getShippingAddress())
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    public Collection<PurchaseAgreement> actual(Collection<ReportItem> reportItems) {
+        Set<ReportItem> withPredecessors = new HashSet<ReportItem>();
+        for (ReportItem ri : reportItems) {
+            withPredecessors.addAll(ri.predecessors());
+            withPredecessors.add(ri);
+        }
+        Set<OrderConfirmation> ocs = withPredecessors.stream()
+                .map(ri -> ri.getReport())
+                .filter(r -> r instanceof OrderConfirmation)
+                .map(OrderConfirmation.class::cast).collect(Collectors.toSet());
+        return ocs.stream().filter(oc -> oc.isAgreed())
+                .map(oc -> oc.actualPurchaseAgreement())
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Address> invoiceAddressesWithoutDeviation(Collection<ReportItem> reportItems) {
+        return withoutDeviations(reportItems)
                 .stream()
                 .map(s -> s.getInvoiceAddress())
                 .collect(Collectors.toSet());
@@ -68,7 +93,7 @@ public class PurchaseAgreementService {
         Set<Address> ias = shippingAddresses(reportItems);
         if (ias.size() > 1) {
             throw new ContradictoryPurchaseAgreementException(
-                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: <br />"
+                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: #CPA-DA<br />"
                             + BeanUtil.createStringOfDifferingAttributes(ias));
         }
         else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
@@ -82,7 +107,7 @@ public class PurchaseAgreementService {
      * @param agreedOnly
      * @return
      */
-    private Set<PurchaseAgreement> retrieve(Collection<ReportItem> reportItems,
+    private Set<PurchaseAgreement> retrieveWithoutDeviations(Collection<ReportItem> reportItems,
             boolean agreedOnly) {
 
         Set<ReportItem> allRis = new HashSet<ReportItem>();
@@ -111,7 +136,7 @@ public class PurchaseAgreementService {
      *             if retrieved purchase agreement is not one
      */
     public PurchaseAgreement retrieveSingle(Collection<ReportItem> reportItems) {
-        Set<PurchaseAgreement> pas = retrieve(reportItems);
+        Set<PurchaseAgreement> pas = withoutDeviations(reportItems);
         return extractOneOrFail(pas);
     }
 

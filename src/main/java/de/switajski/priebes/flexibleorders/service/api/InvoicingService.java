@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.BeanUtil;
+import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
@@ -19,7 +21,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -32,7 +34,7 @@ public class InvoicingService {
     @Autowired
     private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
-    private PurchaseAgreementService purchaseAgreementService;
+    private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
@@ -73,7 +75,7 @@ public class InvoicingService {
     }
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
-        Set<Address> ias = purchaseAgreementService.invoiceAddresses(reportItems);
+        Set<Address> ias = purchaseAgreementService.invoiceAddressesWithoutDeviation(reportItems);
         if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
                 + BeanUtil.createStringOfDifferingAttributes(ias));
         else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
@@ -84,7 +86,8 @@ public class InvoicingService {
     private Invoice createInvoice(InvoicingParameter invoicingParameter) {
         Invoice invoice = new Invoice(invoicingParameter.getInvoiceNumber(), null);
         invoice.setBilling(invoicingParameter.getBilling());
-        invoice.setCreated((invoicingParameter.getCreated() == null) ? new Date() : invoicingParameter.getCreated());
+        LocalDate created = (invoicingParameter.getCreated() == null) ? LocalDate.now() : invoicingParameter.getCreated();
+        invoice.setCreated(DateUtils.asDate(created));
         invoice.setDiscountRate(invoicingParameter.getDiscountRate());
         invoice.setDiscountText(invoicingParameter.getDiscountText());
         return invoice;

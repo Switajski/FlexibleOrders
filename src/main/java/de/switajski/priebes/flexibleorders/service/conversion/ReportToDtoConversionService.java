@@ -29,7 +29,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
 import de.switajski.priebes.flexibleorders.service.DeliveryMethodService;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 
 @Service
 public class ReportToDtoConversionService {
@@ -39,7 +39,7 @@ public class ReportToDtoConversionService {
     @Autowired
     CustomerDetailsService customerDetailsService;
     @Autowired
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
     @Autowired
     DeliveryMethodService deliveryMethodService;
     @Autowired
@@ -63,7 +63,9 @@ public class ReportToDtoConversionService {
 
     private DeliveryNotesDto toDto(DeliveryNotes report) {
         DeliveryNotesDto dto = new DeliveryNotesDto();
-        amendCommonAttributes(report, dto);
+        amendCommonAttributes(report, dto, false);
+        dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
+
         dto.shippingSpecific_trackNumber = report.getTrackNumber();
         dto.shippingSpecific_packageNumber = report.getPackageNumber();
         dto.showPricesInDeliveryNotes = report.isShowPrices();
@@ -72,7 +74,7 @@ public class ReportToDtoConversionService {
 
     private InvoiceDto toDto(Invoice invoice) {
         InvoiceDto dto = new InvoiceDto();
-        amendCommonAttributes(invoice, dto);
+        amendCommonAttributes(invoice, dto, true);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice.getItems()).getPaymentConditions();
         dto.invoiceSpecific_billing = invoice.getBilling();
@@ -83,7 +85,7 @@ public class ReportToDtoConversionService {
 
     private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) {
         OrderConfirmationDto dto = new OrderConfirmationDto();
-        amendCommonAttributes(orderConfirmation, dto);
+        amendCommonAttributes(orderConfirmation, dto, true);
         if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
         dto.orderConfirmationSpecific_oldestOrderDate = oldestOrderDate(orderConfirmation.getItems());
@@ -106,7 +108,8 @@ public class ReportToDtoConversionService {
         return oldestOrderDate;
     }
 
-    private void amendCommonAttributes(Report report, ReportDto dto) {
+    // TODO: mapShippingAddress is a dirty hack in order to not refactor yet
+    private void amendCommonAttributes(Report report, ReportDto dto, boolean mapShippingAddress) {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -133,7 +136,7 @@ public class ReportToDtoConversionService {
         }
 
         dto.invoiceSpecific_headerAddress = retrieveInvoicingAddress(report);
-        dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
+        if (mapShippingAddress) dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
         mapCustomerDetails(dto, retrieveCustomerDetails(report));
         dto.shippingSpecific_expectedDelivery = retrieveExpectedDelivery(report);
         dto.shippingSpecific_deliveryMethod = retrieveDeliveryMethod(report);
@@ -188,6 +191,15 @@ public class ReportToDtoConversionService {
 
     private Address retrieveShippingAddress(Report report) {
         Address shippingAddress = null;
+        Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(report.getItems());
+        if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
+                + "r gegebene Positionen gefunden");
+        else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
+        return shippingAddress;
+    }
+
+    private Address retrieveActualShippingAddress(Report report) {
+        Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(report.getItems());
         if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
@@ -196,7 +208,7 @@ public class ReportToDtoConversionService {
     }
 
     private Address retrieveInvoicingAddress(Report report) {
-        Set<Address> invoicingAddresses = purchaseAgreementService.invoiceAddresses(report.getItems());
+        Set<Address> invoicingAddresses = purchaseAgreementService.invoiceAddressesWithoutDeviation(report.getItems());
         if (invoicingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
         else if (invoicingAddresses.size() == 1) {

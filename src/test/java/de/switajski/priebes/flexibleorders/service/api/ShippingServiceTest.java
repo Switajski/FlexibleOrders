@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
-import de.switajski.priebes.flexibleorders.service.PurchaseAgreementService;
+import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMethodBuilder;
@@ -42,7 +42,7 @@ public class ShippingServiceTest {
     @Mock
     ExpectedDeliveryService expectedDeliveryService;
     @Mock
-    PurchaseAgreementService purchaseAgreementService;
+    PurchaseAgreementReadService purchaseAgreementService;
 
     DeliverParameter deliverParameter;
 

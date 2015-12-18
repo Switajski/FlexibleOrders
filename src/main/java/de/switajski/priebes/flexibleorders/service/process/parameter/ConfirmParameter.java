@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
+import de.switajski.priebes.flexibleorders.json.CountryDeserializer;
+import de.switajski.priebes.flexibleorders.json.CountrySerializer;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
@@ -40,16 +42,20 @@ public class ConfirmParameter {
             dname1,
             dname2,
             dstreet,
-            dcity,
-            dcountry;
+            dcity;
+    @JsonDeserialize(using = CountryDeserializer.class)
+    @JsonSerialize(using = CountrySerializer.class)
+    private Country dcountry;
     private Integer dpostalCode;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private String name1,
             name2,
             street,
-            city,
-            country;
+            city;
+    @JsonDeserialize(using = CountryDeserializer.class)
+    @JsonSerialize(using = CountrySerializer.class)
+    private Country country;
     private Integer postalCode;
 
     @NotEmpty
@@ -128,7 +134,7 @@ public class ConfirmParameter {
         dname1 = sa.getName1();
         dname2 = sa.getName2();
         dcity = sa.getCity();
-        dcountry = sa.getCountry().getName();
+        dcountry = sa.getCountry();
         dstreet = sa.getStreet();
         dpostalCode = sa.getPostalCode();
     }
@@ -137,7 +143,7 @@ public class ConfirmParameter {
         name1 = sa.getName1();
         name2 = sa.getName2();
         city = sa.getCity();
-        country = sa.getCountry().getName();
+        country = sa.getCountry();
         street = sa.getStreet();
         postalCode = sa.getPostalCode();
     }
@@ -145,7 +151,7 @@ public class ConfirmParameter {
     public Address getShippingAddress() {
         Address a = new Address();
         a.setCity(dcity);
-        a.setCountry(Country.map(dcountry));
+        a.setCountry(dcountry);
         a.setName1(dname1);
         a.setName2(dname2);
         a.setPostalCode(dpostalCode);
@@ -156,7 +162,7 @@ public class ConfirmParameter {
     public Address getInvoiceAddress() {
         Address a = new Address();
         a.setCity(city);
-        a.setCountry(Country.map(country));
+        a.setCountry(country);
         a.setName1(name1);
         a.setName2(name2);
         a.setPostalCode(postalCode);
@@ -326,11 +332,11 @@ public class ConfirmParameter {
         this.dcity = dcity;
     }
 
-    public String getDcountry() {
+    public Country getDcountry() {
         return dcountry;
     }
 
-    public void setDcountry(String dcountry) {
+    public void setDcountry(Country dcountry) {
         this.dcountry = dcountry;
     }
 
@@ -366,11 +372,11 @@ public class ConfirmParameter {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 

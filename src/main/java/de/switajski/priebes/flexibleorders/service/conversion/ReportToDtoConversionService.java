@@ -64,7 +64,7 @@ public class ReportToDtoConversionService {
     private DeliveryNotesDto toDto(DeliveryNotes report) {
         DeliveryNotesDto dto = new DeliveryNotesDto();
         amendCommonAttributes(report, dto, false);
-        dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
+        dto.shippingSpecific_shippingAddress = retrieveActualShippingAddress(report);
 
         dto.shippingSpecific_trackNumber = report.getTrackNumber();
         dto.shippingSpecific_packageNumber = report.getPackageNumber();

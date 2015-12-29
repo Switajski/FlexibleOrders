@@ -11,7 +11,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 @Entity
 public class ConfirmationItem extends ReportItem {
 
-    public Boolean pending = false;
+    private Boolean pending = false;
 
     public Boolean isPending() {
         return pending;

@@ -23,9 +23,6 @@ import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 /**
- * TODO: try Jackson serializer with public attributes - anyhow this is a data
- * structure Can have several orders
- * 
  * @author Marek Switajski
  *
  */

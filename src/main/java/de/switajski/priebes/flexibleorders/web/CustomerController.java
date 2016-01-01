@@ -2,6 +2,8 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.io.IOException;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,7 +45,9 @@ public class CustomerController extends ExceptionController {
                 page - 1,
                 limit,
                 Direction.ASC,
-                "companyName", "lastName", "firstName");
+                "companyName",
+                "lastName",
+                "firstName");
         Page<Customer> customers;
         if (!StringUtils.isEmpty(StringUtils.stripToEmpty(query))) {
             customers = customerRepo.search(pageable, query);
@@ -62,8 +66,10 @@ public class CustomerController extends ExceptionController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public @ResponseBody JsonObjectResponse create(@RequestBody CustomerDto cDto)
-            throws JsonParseException, JsonMappingException, IOException {
+    public @ResponseBody JsonObjectResponse create(@RequestBody @Valid CustomerDto cDto)
+            throws JsonParseException,
+            JsonMappingException,
+            IOException {
         Customer c = CustomerDtoConverterServiceImpl.toCustomer(
                 cDto,
                 new Customer());
@@ -77,7 +83,9 @@ public class CustomerController extends ExceptionController {
 
     @RequestMapping(value = "/udpate", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse udpate(@RequestBody CustomerDto cDto)
-            throws JsonParseException, JsonMappingException, IOException {
+            throws JsonParseException,
+            JsonMappingException,
+            IOException {
         Customer c = CustomerDtoConverterServiceImpl.toCustomer(
                 cDto,
                 customerRepo.findByCustomerNumber(cDto.customerNumber));

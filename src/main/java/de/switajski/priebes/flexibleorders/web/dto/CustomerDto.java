@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.web.dto;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -7,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 
 /**
- * TODO this object is disposable by good serialization
  * 
  * @author Marek Switajski
  *
@@ -19,7 +20,11 @@ public class CustomerDto {
     public Long customerNumber;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    public String email, password, companyName, firstName, lastName, phone, fax, notes;
+    public String email, password, firstName, lastName, phone, fax, notes;
+
+    @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
+    @NotNull
+    public String companyName;
 
     // *********************
     // invoice address attributes

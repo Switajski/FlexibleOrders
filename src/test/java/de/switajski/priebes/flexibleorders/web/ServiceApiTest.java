@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
 public class ServiceApiTest extends SpringMvcTestConfiguration {
@@ -26,6 +27,22 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
                 .content(mapper.writeValueAsString(request)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(containsString("\"errors\":{\"items\":")))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void shouldValidateCustomer() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        CustomerDto customer = new CustomerDto();
+        customer.customerNumber = 123L;
+
+        mvc.perform(post("/customers/create")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(customer)))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString("errors")))
+                .andExpect(content().string(containsString("companyName")))
                 .andExpect(status().is4xxClientError());
 
     }

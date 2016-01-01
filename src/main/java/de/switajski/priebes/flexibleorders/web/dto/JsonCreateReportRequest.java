@@ -23,6 +23,8 @@ import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 /**
+ * @deprecated use a parameter class for each type of request. The parameter
+ *             class can then be annotated with validation annotations.
  * @author Marek Switajski
  *
  */
@@ -47,8 +49,7 @@ public class JsonCreateReportRequest {
             country;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    private String
-            contact1,
+    private String contact1,
             contact2,
             contact3,
             contact4;
@@ -56,8 +57,7 @@ public class JsonCreateReportRequest {
     private Integer postalCode;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    private String
-            dname1,
+    private String dname1,
             dname2,
             dstreet,
             dcity,
@@ -110,12 +110,22 @@ public class JsonCreateReportRequest {
     private boolean singleDeliveryNotes;
 
     public Address createInvoiceAddress() {
-        return new Address(name1, name2, street, postalCode, city,
+        return new Address(
+                name1,
+                name2,
+                street,
+                postalCode,
+                city,
                 Country.DE);
     }
 
     public Address createDeliveryAddress() {
-        return new Address(dname1, dname2, dstreet, dpostalCode, dcity,
+        return new Address(
+                dname1,
+                dname2,
+                dstreet,
+                dpostalCode,
+                dcity,
                 Country.DE);
     }
 

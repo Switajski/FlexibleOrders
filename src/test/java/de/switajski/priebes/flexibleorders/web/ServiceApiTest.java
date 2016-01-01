@@ -43,7 +43,20 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
                 .andExpect(content().string(containsString("errors")))
                 .andExpect(content().string(containsString("companyName")))
                 .andExpect(status().is4xxClientError());
+    }
 
+    @Test
+    public void shouldCreateCustomer() throws Exception {
+        CustomerDto customer = new CustomerDto();
+        customer.customerNumber = 1234L;
+        customer.companyName = "Flexible Inc.";
+
+        mvc.perform(post("/customers/create")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createStringRequest(customer)))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
     }
 
     private String createStringRequest(Object o) throws JsonProcessingException {

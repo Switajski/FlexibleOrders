@@ -9,8 +9,12 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ConfirmParameterShorthand {
 
-    public static ConfirmParameter confirm(String orderNumber, String confirmNumber, Customer customer,
-            LocalDate expectedDelivery, ItemDto... items) {
+    public static ConfirmParameter confirm(
+            String orderNumber,
+            String confirmNumber,
+            Customer customer,
+            LocalDate expectedDelivery,
+            ItemDto... items) {
         ConfirmParameter cp = new ConfirmParameter();
         cp.setOrderNumber(orderNumber);
         cp.setConfirmNumber(confirmNumber);
@@ -18,6 +22,7 @@ public class ConfirmParameterShorthand {
         cp.setCustomerDetails(customer.getDetails());
         cp.setInvoiceAddress(customer.getInvoiceAddress());
         cp.setShippingAddress(customer.getShippingAddress());
+        cp.setExpectedDelivery(expectedDelivery);
         cp.setItems(Arrays.asList(items));
         return cp;
     }

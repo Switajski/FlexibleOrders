@@ -22,7 +22,6 @@ import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.UPS;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.WYOMING;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.YVONNE;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,11 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -106,25 +103,10 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreeingService agreeingService;
 
-    public static void main(String[] args)
-            throws IOException
-    {
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath*:/META-INF/org/flexible/order/application-context*.xml");
-    }
-
+    @Rollback(value = false)
+    @Test
     public void run() {
         createTestData();
-    }
-
-    /**
-     * Maven throws an exception, that this class has no runnable tests. This
-     * test is to fix maven that exception in test phase.
-     */
-    @Ignore
-    @Test
-    public void dummy() {
-
     }
 
     public void createTestData() {
@@ -216,6 +198,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.setTrackNumber("trackNumber15");
         deliverParameter.setPackageNumber("packageNumber15");
         deliverParameter.setShipment(BigDecimal.ZERO);
+        deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         shippingService.ship(deliverParameter);
     }
 
@@ -227,6 +210,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.setTrackNumber("trackNumber14");
         deliverParameter.setPackageNumber("packageNumber14");
         deliverParameter.setShipment(BigDecimal.ZERO);
+        deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         shippingService.ship(deliverParameter);
     }
 
@@ -239,6 +223,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
                         extract(itemsFromAu11, JUREK.getProductNumber(), 5)));
         deliverParameter.setTrackNumber("trackNumber13");
         deliverParameter.setPackageNumber("packageNumber13");
+        deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         deliverParameter.setShipment(BigDecimal.ONE);
         shippingService.ship(deliverParameter);
     }
@@ -253,6 +238,7 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.setTrackNumber("trackNumber12");
         deliverParameter.setPackageNumber("packageNumber12");
         deliverParameter.setShipment(BigDecimal.ONE);
+        deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         DeliveryNotes l12 = shippingService.ship(deliverParameter);
         return l12;
     }
@@ -267,8 +253,8 @@ public class TestDataCreator extends AbstractSpringContextTest {
         deliverParameter.setTrackNumber("trackNumber");
         deliverParameter.setPackageNumber("packageNumber");
         deliverParameter.setShipment(BigDecimal.TEN);
-        DeliveryNotes l11 = shippingService.ship(
-                deliverParameter);
+        deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
+        DeliveryNotes l11 = shippingService.ship(deliverParameter);
         return l11;
     }
 
@@ -309,6 +295,11 @@ public class TestDataCreator extends AbstractSpringContextTest {
             ris.add(riToItemConversionService.createOverdue(ri));
         }
         return ris;
+    }
+
+    public boolean isTestDataPersisted() {
+        Customer c = cRepo.findByCustomerNumber(EDWARD.getCustomerNumber());
+        return c != null;
     }
 
 }

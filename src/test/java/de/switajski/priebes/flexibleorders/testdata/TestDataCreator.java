@@ -30,9 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
@@ -55,7 +52,6 @@ import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDto
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -64,37 +60,26 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  * @author Marek Switajski
  *
  */
-@Transactional
-public class TestDataCreator extends AbstractSpringContextTest {
+public class TestDataCreator {
 
-    @Autowired
     private CatalogProductRepository cpRepo;
 
-    @Autowired
     private CustomerRepository cRepo;
 
-    @Autowired
     private TransitionsService orderingService;
 
-    @Autowired
     private ConfirmingService confirmingService;
 
-    @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
-    @Autowired
     private ReportItemToItemDtoConverterService riToItemConversionService;
 
-    @Autowired
     private ShippingService shippingService;
 
-    @Autowired
     private InvoicingService invoicingService;
 
-    @Autowired
     private CatalogDeliveryMethodRepository deliveryMethodRepo;
 
-    @Autowired
     private AgreeingService agreeingService;
 
     public TestDataCreator(

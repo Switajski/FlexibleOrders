@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,6 +89,7 @@ public class OrderConfirmation extends Report {
      * @return
      */
     public List<PurchaseAgreementDeviation> getDeviations() {
+        if (deviations == null) return Collections.emptyList();
         return deviations.stream()
                 .sorted((pa1, pa2) -> pa2.getCreated().compareTo(pa1.getCreated()))
                 .collect(Collectors.toList());

@@ -24,11 +24,8 @@ public class LinksAvailableTest extends SpringMvcTestConfiguration {
 
     @Test
     public void shouldReturnSuccess() throws Exception {
-        mvc.perform(get("/reportitems/ordered")
-                .param("page", "1")
-                .param("limit", "50")
-                ).andExpect(
-                        status().isOk());
+        mvc.perform(get("/country"))
+                .andExpect(status().isOk());
     }
 
 }

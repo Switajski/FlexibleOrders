@@ -5,16 +5,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
 public class ServiceApiTest extends SpringMvcTestConfiguration {
+
+    @Rule
+    @Autowired
+    public StandardTestDataRule rule;
 
     @Test
     public void shouldBeRejectedByValidation() throws Exception {
@@ -55,7 +62,6 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(createStringRequest(customer)))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
 

@@ -30,9 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
@@ -53,7 +51,6 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -83,9 +80,6 @@ public class TestDataCreator extends AbstractSpringContextTest {
     private ConfirmingService confirmingService;
 
     @Autowired
-    private ItemDtoToReportItemConversionService converterService;
-
-    @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
     @Autowired
@@ -103,8 +97,31 @@ public class TestDataCreator extends AbstractSpringContextTest {
     @Autowired
     private AgreeingService agreeingService;
 
-    @Rollback(value = false)
-    @Test
+    public TestDataCreator(
+            CatalogProductRepository cpRepo,
+            CustomerRepository cRepo,
+            TransitionsService orderingService,
+            ConfirmingService confirmingService,
+            OrderItemToItemDtoConversionService oi2ItemDtoConversionService,
+            ReportItemToItemDtoConverterService riToItemConversionService,
+            ShippingService shippingService,
+            InvoicingService invoicingService,
+            CatalogDeliveryMethodRepository deliveryMethodRepo,
+            AgreeingService agreeingService) {
+        this.cpRepo = cpRepo;
+        this.cRepo = cRepo;
+        this.orderingService = orderingService;
+        this.confirmingService = confirmingService;
+        this.oi2ItemDtoConversionService = oi2ItemDtoConversionService;
+        this.riToItemConversionService = riToItemConversionService;
+        this.shippingService = shippingService;
+        this.invoicingService = invoicingService;
+        this.deliveryMethodRepo = deliveryMethodRepo;
+        this.agreeingService = agreeingService;
+    }
+
+    public TestDataCreator() {}
+
     public void run() {
         createTestData();
     }

@@ -6,35 +6,25 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
-import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.service.ReportingService;
-import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
-import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.testdata.TestDataCreator;
+import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Transactional
-public class ReportItemControllerIntegrationTest extends TestDataCreator {
+public class ReportItemControllerIntegrationTest extends AbstractSpringContextTest {
 
     @Autowired
-    private TransitionsService orderingService;
-    @Autowired
-    private ConfirmingService confirmingService;
-    @Autowired
-    private ReportingService reportingService;
-    @Autowired
-    private CustomerRepository cRepo;
-    @Autowired
-    private CatalogDeliveryMethodRepository deliveryMethodRepo;
-    @Autowired
     private ReportItemController riController;
+
+    @Rule
+    @Autowired
+    public StandardTestDataRule rule;
 
     String filters;
 
@@ -42,9 +32,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator {
     List<ItemDto> retrievedItems;
 
     @Test
-    @Ignore("just failing on Travis CI")
     public void shouldRetrieveSpecifiedAgreedItemsToBeShipped() throws Exception {
-        super.createTestData();
         givenFilterOnAgreedItems();
 
         whenListingItemsToBeProcessed();
@@ -56,9 +44,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator {
     }
 
     @Test
-    @Ignore("just failing on Travis CI")
     public void shouldRetrieveSpecifiedShippedItemsToBeInvoiced() throws Exception {
-        super.createTestData();
         givenFilterOnShippedItems();
 
         whenListingItemsToBeProcessed();
@@ -71,9 +57,7 @@ public class ReportItemControllerIntegrationTest extends TestDataCreator {
     }
 
     @Test
-    @Ignore("just failing on Travis CI")
     public void shouldRetrieveSpecifiedInvoicedItemsToBeMarkedAsPayed() throws Exception {
-        super.createTestData();
         givenFilterOnInvoicedItems();
 
         whenListingItemsToBeProcessed();

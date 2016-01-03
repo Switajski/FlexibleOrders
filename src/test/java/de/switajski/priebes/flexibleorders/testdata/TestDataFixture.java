@@ -47,54 +47,89 @@ public class TestDataFixture {
 
     public static final DeliveryMethod DHL = new DeliveryMethodBuilder().dhl().build();
 
-    public static OrderParameter B11 = orderParam(B11_STR, YVONNE, NOW,
+    public static OrderParameter B11 = orderParam(
+            B11_STR,
+            YVONNE,
+            NOW,
             item(AMY, 10),
             item(MILADKA, 15),
             item(PAUL, 30));
 
-    public static OrderParameter B12 = orderParam(B12_STR, YVONNE, NOW,
+    public static OrderParameter B12 = orderParam(
+            B12_STR,
+            YVONNE,
+            NOW,
             item(SALOME, 12),
             item(JUREK, 5));
 
-    public static OrderParameter B13 = orderParam(B13_STR, YVONNE, NOW,
+    public static OrderParameter B13 = orderParam(
+            B13_STR,
+            YVONNE,
+            NOW,
             item(PAUL, 4),
             item(JUREK, 27),
             item(SALOME, 8),
             item(MILADKA, 6));
 
-    public static OrderParameter B15 = orderParam(B15_STR, YVONNE, delay(2),
+    public static OrderParameter B15 = orderParam(
+            B15_STR,
+            YVONNE,
+            delay(2),
             item(MILADKA, 5),
             item(PAUL, 8),
             item(SALOME, 3));
 
-    public static OrderParameter B21 = orderParam(B21_STR, NAIDA, NOW,
+    public static OrderParameter B21 = orderParam(
+            B21_STR,
+            NAIDA,
+            NOW,
             item(SALOME, 17),
             item(AMY, 3));
 
-    public static OrderParameter B22 = orderParam(B22_STR, NAIDA, NOW,
+    public static OrderParameter B22 = orderParam(
+            B22_STR,
+            NAIDA,
+            NOW,
             item(JUREK, 13),
             item(PAUL, 6));
 
-    public static ConfirmParameter AB11 = confirm(B11_STR, AB11_STR, YVONNE, delay(10),
+    public static ConfirmParameter AB11 = confirm(
+            B11_STR,
+            AB11_STR,
+            YVONNE,
+            delay(10),
             item(AMY, 10, B11_STR),
             item(MILADKA, 15, B11_STR),
             item(PAUL, 30, B11_STR),
             item(SALOME, 12, B12_STR),
             item(JUREK, 5, B12_STR));
 
-    public static ConfirmParameter AB13 = confirm(B13_STR, AB13_STR, YVONNE, delay(2),
+    public static ConfirmParameter AB13 = changeShippingCity(confirm(
+            B13_STR,
+            AB13_STR,
+            YVONNE,
+            delay(2),
             item(PAUL, 4, B13_STR),
             item(JUREK, 27, B13_STR),
             item(SALOME, 8, B13_STR),
-            item(MILADKA, 6, B13_STR));
+            item(MILADKA, 6, B13_STR)));
 
-    public static ConfirmParameter AB15 = confirm(B15_STR, AB15_STR, YVONNE, delay(10),
+    public static ConfirmParameter AB15 = confirm(
+            B15_STR,
+            AB15_STR,
+            YVONNE,
+            delay(20),
             item(MILADKA, 5, B15_STR),
             item(PAUL, 8, B15_STR),
             item(SALOME, 3, B15_STR));
 
     public static LocalDate delay(int days) {
         return NOW.plusDays(days);
+    }
+
+    private static ConfirmParameter changeShippingCity(ConfirmParameter confirm) {
+        confirm.setDcity("changed City");
+        return confirm;
     }
 
 }

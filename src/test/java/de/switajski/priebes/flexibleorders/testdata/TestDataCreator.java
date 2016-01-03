@@ -159,10 +159,11 @@ public class TestDataCreator {
         orderingService.order(B15);
 
         OrderConfirmation ab11 = confirmingService.confirm(AB11);
-        confirmingService.confirm(AB13);
+        OrderConfirmation ab13 = confirmingService.confirm(AB13);
         OrderConfirmation ab15 = confirmingService.confirm(AB15);
 
         ab11 = agreeingService.agree(ab11.getDocumentNumber(), "AU11");
+        ab13 = agreeingService.agree(ab13.getDocumentNumber(), "AU13");
         ab15 = agreeingService.agree(ab15.getDocumentNumber(), "AU15");
 
         List<ItemDto> itemsFromAu11 = convertReport(ab11);

@@ -68,8 +68,10 @@ public class PurchaseAgreementReadService {
         Set<OrderConfirmation> ocs = withPredecessors.stream()
                 .map(ri -> ri.getReport())
                 .filter(r -> r instanceof OrderConfirmation)
-                .map(OrderConfirmation.class::cast).collect(Collectors.toSet());
-        return ocs.stream().filter(oc -> oc.isAgreed())
+                .map(OrderConfirmation.class::cast)
+                .collect(Collectors.toSet());
+        return ocs.stream()
+                .filter(oc -> oc.isAgreed())
                 .map(oc -> oc.actualPurchaseAgreement())
                 .collect(Collectors.toSet());
     }
@@ -83,7 +85,6 @@ public class PurchaseAgreementReadService {
     }
 
     /**
-     * TODO: use validator instead
      * 
      * @param reportItems
      * @return
@@ -107,7 +108,8 @@ public class PurchaseAgreementReadService {
      * @param agreedOnly
      * @return
      */
-    private Set<PurchaseAgreement> retrieveWithoutDeviations(Collection<ReportItem> reportItems,
+    private Set<PurchaseAgreement> retrieveWithoutDeviations(
+            Collection<ReportItem> reportItems,
             boolean agreedOnly) {
 
         Set<ReportItem> allRis = new HashSet<ReportItem>();

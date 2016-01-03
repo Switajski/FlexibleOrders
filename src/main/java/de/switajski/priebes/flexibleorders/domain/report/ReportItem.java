@@ -124,14 +124,20 @@ public abstract class ReportItem extends GenericEntity implements
         if (sum() > orderItem.getOrderedQuantity()) {
             String word = LanguageTranslator.translate(this);
             StringBuilder messageBuilder = new StringBuilder()
-                    .append(this.quantity).append(" Stk. wurde eingegeben.<br>")
-                    .append(orderItem.getOrderedQuantity()).append(" ")
+                    .append(this.quantity)
+                    .append(" Stk. wurde eingegeben.<br>")
+                    .append(orderItem.getOrderedQuantity())
+                    .append(" ")
                     .append(orderItem.getProduct().getName())
-                    .append(" wurden in ").append(orderItem.getOrder().getOrderNumber())
+                    .append(" wurden in ")
+                    .append(orderItem.getOrder().getOrderNumber())
                     .append(" bestellt.<br>");
             if (sum() != quantity) {
-                messageBuilder.append(sum() - quantity).append(" Stk. haben bereits andere ")
-                        .append(word).append("(en)").append("<br>");
+                messageBuilder.append(sum() - quantity)
+                        .append(" Stk. haben bereits andere ")
+                        .append(word)
+                        .append("(en)")
+                        .append("<br>");
             }
             throw new IllegalStateException(
                     messageBuilder.append("<br>").toString());
@@ -188,6 +194,10 @@ public abstract class ReportItem extends GenericEntity implements
         for (ReportItem ri : successors)
             sum += ri.getQuantity();
         return quantity - sum;
+    }
+
+    public boolean isOverdue() {
+        return 0 < overdue();
     }
 
 }

@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
@@ -39,15 +38,12 @@ public class ShippingService {
 
     /**
      * 
-     * @param deliverParameter
-     * @return
-     * @throws ContradictoryPurchaseAgreementException
-     *             if saved purchase agreements are contradictory
+     * @param valid
+     *            deliverParameter
+     * @return created delivery notes if successful
      */
     @Transactional
     public DeliveryNotes ship(DeliverParameter deliverParameter) {
-        if (reportRepo.findByDocumentNumber(deliverParameter.getDeliveryNotesNumber()) != null) throw new IllegalArgumentException(
-                "Lieferscheinnummer existiert bereits");
 
         DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
         for (ItemDto itemDto : deliverParameter.getItems()) {

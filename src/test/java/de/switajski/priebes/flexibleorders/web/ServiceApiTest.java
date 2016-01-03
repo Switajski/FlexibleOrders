@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
@@ -34,6 +35,20 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
                 .content(createStringRequest(request)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(containsString("\"errors\":{\"items\":")))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void shouldRejectDuplicateDeliveryNotesNumber() throws Exception {
+        DeliverParameter dr = new DeliverParameter();
+        dr.setDeliveryNotesNumber("L13");
+
+        mvc.perform(post("/transitions/deliver")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createStringRequest(dr)))
+                .andExpect(content().string(containsString("errors")))
+                .andExpect(content().string(containsString("deliveryNotesNumber")))
                 .andExpect(status().is4xxClientError());
     }
 

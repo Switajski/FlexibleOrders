@@ -166,8 +166,8 @@ public class TestDataCreator {
         ab13 = agreeingService.agree(ab13.getDocumentNumber(), "AU13");
         ab15 = agreeingService.agree(ab15.getDocumentNumber(), "AU15");
 
-        List<ItemDto> itemsFromAu11 = convertReport(ab11);
-        List<ItemDto> itemsFromAu15 = convertReport(ab15);
+        List<ItemDto> itemsFromAu11 = convertToItemDtos(ab11);
+        List<ItemDto> itemsFromAu15 = convertToItemDtos(ab15);
 
         DeliveryNotes l11 = createL11(itemsFromAu11);
         DeliveryNotes l12 = createL12(itemsFromAu11);
@@ -175,7 +175,7 @@ public class TestDataCreator {
         createL14(itemsFromAu11);
         createL15(itemsFromAu11, itemsFromAu15);
 
-        createR11(convertReport(l11), convertReport(l12));
+        createR11(convertToItemDtos(l11), convertToItemDtos(l12));
     }
 
     private void createR11(List<ItemDto> l11, List<ItemDto> l12) {
@@ -292,7 +292,7 @@ public class TestDataCreator {
         cRepo.flush();
     }
 
-    public List<ItemDto> convertReport(Report report) {
+    public List<ItemDto> convertToItemDtos(Report report) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
         for (ReportItem ri : report.getItems()) {
             ris.add(riToItemConversionService.createOverdue(ri));

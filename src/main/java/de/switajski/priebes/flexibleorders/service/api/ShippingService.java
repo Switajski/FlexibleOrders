@@ -18,7 +18,6 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.reference.Currency;
-import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
@@ -31,8 +30,6 @@ public class ShippingService {
 
     @Autowired
     private ReportRepository reportRepo;
-    @Autowired
-    private ReportItemRepository reportItemRepo;
     @Autowired
     private ItemDtoToReportItemConversionService convService;
     @Autowired

@@ -76,20 +76,25 @@ public class ReportController {
         }
         else {
             Order order = orderRepo.findByOrderNumber(id);
-            if (order != null) return new ModelAndView(PdfView.class.getSimpleName(),
-                    ReportDto.class.getSimpleName(), orderDtoConversionService.toDto(order));
+            if (order != null) return new ModelAndView(
+                    PdfView.class.getSimpleName(),
+                    ReportDto.class.getSimpleName(),
+                    orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
     }
 
     @RequestMapping(value = "/reports/{id}.html", produces = "text/html")
-    public @ResponseBody String showReportWrappedInHtml(@PathVariable("id") String id,
+    public @ResponseBody String showReportWrappedInHtml(
+            @PathVariable("id") String id,
             HttpServletRequest request) {
         String link = request.getRequestURL().toString().replace("html", "pdf");
         return new StringBuilder()
                 .append("<html><body>")
                 .append("<object type=\"application/pdf\" ")
-                .append("data=\"").append(link).append("\" ")
+                .append("data=\"")
+                .append(link)
+                .append("\" ")
                 .append("width=\"100%\" height=\"100%\" >")
                 .append("<embed type=\"application/pdf\" src=\"" + link + "\" />")
                 .append("</object></body></html>")
@@ -105,8 +110,10 @@ public class ReportController {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
         ReportDto report = reportingService.retrieveAllToBeShippedToCustomer(customer);
-        return new ModelAndView(PdfView.class.getSimpleName(),
-                ReportDto.class.getSimpleName(), report);
+        return new ModelAndView(
+                PdfView.class.getSimpleName(),
+                ReportDto.class.getSimpleName(),
+                report);
     }
 
     @RequestMapping(value = "/ausstehendeArtikel.pdf", headers = "Accept=application/pdf")
@@ -115,8 +122,10 @@ public class ReportController {
         headers.add("Content-Type", "application/pdf; charset=utf-8");
 
         ReportDto report = reportingService.retrieveAllToBeShipped();
-        return new ModelAndView(PdfView.class.getSimpleName(),
-                ReportDto.class.getSimpleName(), report);
+        return new ModelAndView(
+                PdfView.class.getSimpleName(),
+                ReportDto.class.getSimpleName(),
+                report);
     }
 
     /**
@@ -134,8 +143,10 @@ public class ReportController {
         if (reportDto == null) throw new IllegalStateException(
                 "Could not find view handler for given Document");
 
-        return new ModelAndView(PdfView.class.getSimpleName(),
-                model, reportDto);
+        return new ModelAndView(
+                PdfView.class.getSimpleName(),
+                model,
+                reportDto);
 
     }
 
@@ -171,7 +182,7 @@ public class ReportController {
     public @ResponseBody JsonObjectResponse listOrderNumbers(
             @RequestParam(value = "orderNumber", required = false) String orderNumber,
             @RequestParam(value = "customerId", required = false) Long customerId)
-            throws Exception {
+                    throws Exception {
         // FIXME: find by customer and orderNumber
         log.debug("listOrderNumbers request:" + orderNumber);
         JsonObjectResponse response = new JsonObjectResponse();

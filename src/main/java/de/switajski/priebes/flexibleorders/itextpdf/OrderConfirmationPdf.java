@@ -64,9 +64,8 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
         for (Paragraph p : ReportViewHelper.createHeading(heading))
             document.add(p);
 
-        PdfPTable infoTable = report.isShowExtendedInformation() ?
-                new ExtendedTableHeaderCreator().create(new ExtInfoTableParameter(report)) :
-                new SimpleTableHeaderCreator().create(
+        PdfPTable infoTable = report.isShowExtendedInformation() ? new ExtendedTableHeaderCreator()
+                .create(new ExtInfoTableParameter(report)) : new SimpleTableHeaderCreator().create(
                         customerNo,
                         removeNull(report.customerFirstName) + " " + removeNull(report.customerLastName),
                         ExpectedDeliveryStringCreator.createExpectedDeliveryWeekString(
@@ -90,7 +89,9 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
 
         PdfPTable footer = footerBuilder.build();
 
-        footer.writeSelectedRows(0, -1,
+        footer.writeSelectedRows(
+                0,
+                -1,
                 /* xPos */BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT,
                 /* yPos */BusinessLetterPdfTemplate.PAGE_MARGIN_BOTTOM
                         + BusinessLetterPdfTemplate.FOOTER_MARGIN_BOTTOM,

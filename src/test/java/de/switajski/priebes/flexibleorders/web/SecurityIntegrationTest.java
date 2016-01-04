@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
-public class LinksAvailableTest extends SpringMvcTestConfiguration {
+public class SecurityIntegrationTest extends SpringMvcTestConfiguration {
 
     @Test
     public void shouldBeForbidden() throws Exception {

@@ -11,12 +11,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,13 +23,11 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
-@Transactional
-public class ServiceApiTest extends SpringMvcTestConfiguration {
+public class ServiceApiTest extends SpringMvcWithTestDataTestConfiguration {
 
     @Autowired
     private ReportRepository rRepo;
@@ -39,9 +35,6 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
     @Autowired
     private ReportItemToItemDtoConverterService ri2IdConverter;
 
-    @Rule
-    @Autowired
-    public StandardTestDataRule rule;
     private DeliverParameter dr;
 
     @Test

@@ -3,19 +3,9 @@ package de.switajski.priebes.flexibleorders.web;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
-
-@Transactional
-public class ReportControllerPdfIntegrationTest extends SpringMvcTestConfiguration {
-
-    @Rule
-    @Autowired
-    public StandardTestDataRule rule;
+public class ReportControllerPdfIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
 
     @Test
     public void orderConfirmationPdfShouldBeAvailable() throws Exception {

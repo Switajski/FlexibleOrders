@@ -192,8 +192,10 @@ public class ReportToDtoConversionService {
     private Address retrieveShippingAddress(Report report) {
         Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(report.getItems());
-        if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
-                + "r gegebene Positionen gefunden");
+        if (shippingAddresses.size() > 1) {
+            throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
+                    + "r gegebene Positionen gefunden");
+        }
         else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
         return shippingAddress;
     }

@@ -92,12 +92,6 @@ public class ServiceApiTest extends SpringMvcTestConfiguration {
                 .andExpect(content().string(containsString("#CPA-DA")));
     }
 
-    @Test
-    public void pdfShouldBeAvailable() throws Exception {
-        mvc.perform(post("/reports/AB11.pdf"))
-                .andExpect(content().contentTypeCompatibleWith("application/pdf"));
-    }
-
     private Set<ItemDto> overdueItemDtos() {
         Set<ReportItem> reportItems = rRepo.findByDocumentNumber("AB11").getItems();
         reportItems.addAll(rRepo.findByDocumentNumber("AB13").getItems());

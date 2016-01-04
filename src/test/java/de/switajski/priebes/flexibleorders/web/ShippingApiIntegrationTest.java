@@ -17,17 +17,27 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
-public class ServiceApiTest extends SpringMvcWithTestDataTestConfiguration {
+/**
+ * Integration test to assure functionality of common shipping use cases,
+ * e.g.: </br>
+ * <ul>
+ * <li>deliver with deviating expected delivery dates</li>
+ * <li>deliver with deviating shipping addresses</li>
+ * <li>delivery notes pdf is available</li>
+ * </ul>
+ * 
+ * @author switajski
+ *
+ */
+public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
 
     @Autowired
     private ReportRepository rRepo;
@@ -108,36 +118,4 @@ public class ServiceApiTest extends SpringMvcWithTestDataTestConfiguration {
                 .content(createStringRequest(dr)));
     }
 
-    @Test
-    public void shouldValidateCustomer() throws Exception {
-        CustomerDto customer = new CustomerDto();
-        customer.customerNumber = 123L;
-
-        mvc.perform(post("/customers/create")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(createStringRequest(customer)))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("errors")))
-                .andExpect(content().string(containsString("companyName")))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    public void shouldCreateCustomer() throws Exception {
-        CustomerDto customer = new CustomerDto();
-        customer.customerNumber = 1234L;
-        customer.companyName = "Flexible Inc.";
-
-        mvc.perform(post("/customers/create")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(createStringRequest(customer)))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    private String createStringRequest(Object o) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(o);
-    }
 }

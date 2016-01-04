@@ -1,8 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 import org.junit.Test;
 
 public class ReportControllerPdfIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
@@ -25,11 +22,6 @@ public class ReportControllerPdfIntegrationTest extends SpringMvcWithTestDataTes
     @Test
     public void invoicePdfShouldBeAvailable() throws Exception {
         expectPdfIsRendering("R11");
-    }
-
-    private void expectPdfIsRendering(String docNo) throws Exception {
-        mvc.perform(post("/reports/" + docNo + ".pdf"))
-                .andExpect(content().contentTypeCompatibleWith("application/pdf"));
     }
 
 }

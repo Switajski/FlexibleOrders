@@ -6,10 +6,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +23,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
+import de.switajski.priebes.flexibleorders.web.dto.ChangeShippingAddressParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
@@ -38,6 +44,9 @@ import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
  *
  */
 public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
+
+    @PersistenceContext
+    EntityManager em;
 
     @Autowired
     private ReportRepository rRepo;
@@ -93,6 +102,53 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         whenDelivering()
                 .andExpect(content().string(containsString("errors")))
                 .andExpect(content().string(containsString("#CPA-DA")));
+    }
+
+    @Test
+    public void orderConfirmationsWithDeviatingShippingAddressShouldBeShippableByChangingAddress()
+            throws Exception {
+
+        // Change shipping address of AB11, AB13 and AB15, because they are
+        // deviating.
+        ChangeShippingAddressParameter param = givenChangeShippingAddressParameter();
+        mvc.perform(post("/reports/shippingAddress")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createStringRequest(param)))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString("success")))
+                .andExpect(status().is2xxSuccessful());
+        em.flush();
+
+        // deliver with changed address
+        String docNo = "L_WITH_CHANGED_ADDRESSES";
+        dr = new DeliverParameter();
+        dr.setDeliveryNotesNumber(docNo);
+        dr.setIgnoreContradictoryExpectedDeliveryDates(true);
+        dr.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
+        whenDelivering().andExpect(status().is2xxSuccessful());
+        em.flush();
+
+        // assure new document is available in pdf
+        expectPdfIsRendering(docNo);
+
+        // assure old documents are available in pdf
+        em.clear();
+        expectPdfIsRendering("AB11");
+        expectPdfIsRendering("AB13");
+        expectPdfIsRendering("AB15");
+
+    }
+
+    private ChangeShippingAddressParameter givenChangeShippingAddressParameter() {
+        ChangeShippingAddressParameter param = new ChangeShippingAddressParameter();
+        param.setCity("new city");
+        param.setCountry(Country.AT);
+        param.setName1("new Name1");
+        param.setStreet("new street");
+        param.setPostalCode(123);
+        param.setDocumentNumbers(Arrays.asList(new String[] { "AB11", "AB13", "AB15" }));
+        return param;
     }
 
     private Set<ItemDto> overdueItemDtos() {

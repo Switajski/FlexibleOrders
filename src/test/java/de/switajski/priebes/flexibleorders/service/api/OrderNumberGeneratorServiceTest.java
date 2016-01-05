@@ -20,13 +20,12 @@ import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
-import de.switajski.priebes.flexibleorders.service.YyMmGggOrderNoGeneratorService;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 
 public class OrderNumberGeneratorServiceTest {
 
     @InjectMocks
-    OrderNumberGeneratorService orderNumberGeneratorService = new YyMmGggOrderNoGeneratorService();
+    OrderNumberGeneratorService orderNumberGeneratorService = new OrderNumberGeneratorService();
 
     @Mock
     OrderRepository orderRepo;
@@ -42,12 +41,10 @@ public class OrderNumberGeneratorServiceTest {
         MockitoAnnotations.initMocks(this);
         when(orderRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
                 new PageImpl<Order>(Arrays.asList(
-                        new OrderBuilder().setOrderNumber(lastSavedOrder).build()
-                        ))
-                );
+                        new OrderBuilder().setOrderNumber(lastSavedOrder).build())));
 
         // WHEN
-        String orderNumber = orderNumberGeneratorService.generate(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        String orderNumber = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
 
         // THEN
         assertThat(orderNumber, is(equalTo("B" + year + month + consecutiveNo)));

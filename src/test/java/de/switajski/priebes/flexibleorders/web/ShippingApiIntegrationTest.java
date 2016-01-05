@@ -133,7 +133,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         expectPdfIsRendering(docNo);
 
         // assure old documents are available in pdf
-        em.clear();
+        em.clear(); // items of report AB11 have 12 items, althoug db has only 5
         expectPdfIsRendering("AB11");
         expectPdfIsRendering("AB13");
         expectPdfIsRendering("AB15");

@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.service.api;
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,7 @@ public class OrderNumberGeneratorService {
     public String yymmggg(LocalDate date) {
         Integer year = date.getYear();
         Integer month = date.getMonthValue();
-        Specification<Order> spec = where(OrderCreatedBetweenSpecification.inMonth(date))
-                .and(new OrderNumberStartsWith("B"));
+        Specification<Order> spec = startsWithDocumentNumber(date);
 
         int lastOrderNumber = 0;
         Page<Order> orders = orderRepo.findAll(spec, new PageRequest(0, 1, Sort.Direction.DESC, "orderNumber"));
@@ -44,6 +44,17 @@ public class OrderNumberGeneratorService {
                 .append(("00" + month).substring(month.toString().length()))
                 .append(("000" + generated).substring(new Integer(generated).toString().length()))
                 .toString();
+    }
+
+    @SuppressWarnings("unused")
+    private Specification<Order> inMonthAndStartsWithLetterB(LocalDate date) {
+        return where(OrderCreatedBetweenSpecification.inMonth(date))
+                .and(new OrderNumberStartsWith("B"));
+    }
+
+    private Specification<Order> startsWithDocumentNumber(LocalDate localDate) {
+        String yymm = DateTimeFormatter.ofPattern("yyMM").format(localDate);
+        return where(new OrderNumberStartsWith("B" + yymm));
     }
 
 }

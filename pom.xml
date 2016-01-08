@@ -58,8 +58,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<!-- decomment in case the javascript should run on the application server --><!-- <dependency> <groupId>de.switajski</groupId> <artifactId>FlexibleOrdersGui</artifactId> 
-			<version>0.1.0-SNAPSHOT</version> <type>zip</type> </dependency> -->
+		<!-- decomment in case the javascript should run on the application server -->
+		<dependency> <groupId>de.switajski</groupId> 
+			<artifactId>FlexibleOrdersGui</artifactId> 
+			<version>0.1.0-SNAPSHOT</version> 
+			<type>zip</type> 
+		</dependency>
 		<!-- General dependencies for standard applications -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -207,11 +211,6 @@
 					<artifactId>dom4j</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
@@ -400,7 +399,7 @@
 					<version>2.2</version>
 					<executions>
 						<execution>
-							<id>unpack-javascript-files</id>
+							<id>unpack-flexible-orders-gui-files</id>
 							<phase>prepare-package</phase>
 							<goals>
 								<goal>unpack-dependencies</goal>
@@ -497,7 +496,7 @@
 						<includes>
 							<include>**/*</include>
 						</includes>
-						<repositoryName>FlexibleOrdersGui</repositoryName>      <!-- github repo name -->
+						<repositoryName>FlexibleOrders</repositoryName>      <!-- github repo name -->
 						<repositoryOwner>Switajski</repositoryOwner>    <!-- github username -->
 					</configuration>
 					<executions>

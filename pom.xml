@@ -23,6 +23,7 @@
 		<hibernate.version>4.2.2.Final</hibernate.version>
 		<spring-security.version>4.0.1.RELEASE</spring-security.version>
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
+		<github.global.server>github</github.global.server>
 	</properties>
 	<repositories>
 		<repository>
@@ -55,13 +56,25 @@
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</pluginRepository>
+		<pluginRepository>
+			<id>apache.snapshots</id>
+			<name>Apache Snapshots</name>
+			<url>https://repository.apache.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
 		<!-- decomment in case the javascript should run on the application server -->
-		<dependency> <groupId>de.switajski</groupId> 
-			<artifactId>FlexibleOrdersGui</artifactId> 
-			<version>0.1.0-SNAPSHOT</version> 
-			<type>zip</type> 
+		<dependency>
+			<groupId>de.switajski</groupId>
+			<artifactId>FlexibleOrdersGui</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<!-- General dependencies for standard applications -->
 		<dependency>
@@ -120,6 +133,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
@@ -319,22 +333,23 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>jstl-api</artifactId>
 			<version>1.2</version>
-		</dependency>
-		<dependency>
+		</dependency> -->
+		<!-- <dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jstl-impl</artifactId>
 			<version>1.2</version>
-		</dependency>
-		<dependency>
+		</dependency> -->
+		<!-- JSP 2.1 and JSF 1.2 -->
+		<!-- <dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 			<version>2.2</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -510,9 +525,9 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>tomcat-maven-plugin</artifactId>
-					<version>1.1</version>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.jetty</groupId>
@@ -528,12 +543,12 @@
 		</pluginManagement>
 	</build>
 	<reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.19</version>
-      </plugin>
-    </plugins>
-  </reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.19</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

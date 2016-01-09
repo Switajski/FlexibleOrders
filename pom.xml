@@ -69,7 +69,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<!-- decomment in case the javascript should run on the application server -->
+		<!-- dependency for webfronent - will be unpacked to a resources folder by maven -->
 		<dependency>
 			<groupId>de.switajski</groupId>
 			<artifactId>FlexibleOrdersGui</artifactId>

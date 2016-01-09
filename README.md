@@ -13,7 +13,7 @@ The usage of "Event Sourcing" as a core idea makes the order process tracebale, 
 
 Getting started
 ---------------
-FlexibleOrders is developed with Eclipse with Spring Tool Suite (STS). In order to get to the code stuff run from command line: 
+FlexibleOrders is developed with Eclipse. In order to get to the code stuff run from command line: 
 
 `git clone git@github.com:Switajski/FlexibleOrders.git`
 
@@ -24,6 +24,12 @@ and import the just created git repository as "existing project" to eclipse. The
 to 
 `<property name="hibernate.hbm2ddl.auto" value="create"/>`
 and start the application server with a running DB. PostgreSQL is preconfigured.
+
+Run application
+---------------
+After having created a postgres database with valid connection settings in database.properties, just run:
+
+`mvn tomcat7:run`
 
 Contribute
 ----------

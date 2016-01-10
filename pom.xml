@@ -69,12 +69,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<!-- dependency for webfronent - will be unpacked to a resources folder by maven -->
+		<!-- dependency for webfronent - will be unpacked to a resources folder 
+			by maven -->
 		<dependency>
 			<groupId>de.switajski</groupId>
 			<artifactId>FlexibleOrdersGui</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
-			<type>zip</type>
 		</dependency>
 		<!-- General dependencies for standard applications -->
 		<dependency>
@@ -390,26 +390,6 @@
 		</resources>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.2</version>
-					<executions>
-						<execution>
-							<id>unpack-flexible-orders-gui-files</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>unpack-dependencies</goal>
-							</goals>
-							<configuration>
-								<includeTypes>zip</includeTypes>
-								<outputDirectory>
-									${project.build.directory}/${project.build.finalName}/resources
-								</outputDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>

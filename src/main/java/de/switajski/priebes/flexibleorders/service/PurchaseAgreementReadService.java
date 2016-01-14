@@ -149,6 +149,11 @@ public class PurchaseAgreementReadService {
         else if (pas.size() == 1) {
             return pas.iterator().next();
         }
+        // FIXME: #104 workaround
+        else if (pas.size() > 1) {
+            return pas.iterator().next();
+        }
+        // END Workaround
         else {
             throw new IllegalStateException("Mehere AB#s vorhanden - kann keinen einzelnen Kaufvertrag ausmachen");
         }

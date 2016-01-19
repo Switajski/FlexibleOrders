@@ -211,8 +211,13 @@ public class ReportToDtoConversionService {
 
     private Address retrieveInvoicingAddress(Report report) {
         Set<Address> invoicingAddresses = purchaseAgreementService.invoiceAddressesWithoutDeviation(report.getItems());
-        if (invoicingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Rechungsaddresse f" + Unicode.U_UML
-                + "r gegebene Positionen gefunden");
+        if (invoicingAddresses.size() > 1) {
+            return invoicingAddresses.iterator().next();
+            // FIXME: #105
+            // throw new ContradictoryPurchaseAgreementException("Mehr als eine
+            // Rechungsaddresse f" + Unicode.U_UML
+            // + "r gegebene Positionen gefunden");
+        }
         else if (invoicingAddresses.size() == 1) {
             return invoicingAddresses.iterator().next();
         }

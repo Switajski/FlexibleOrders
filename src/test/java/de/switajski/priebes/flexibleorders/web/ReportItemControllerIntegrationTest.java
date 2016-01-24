@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTest;
+import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Transactional
-public class ReportItemControllerIntegrationTest extends AbstractSpringContextTest {
+public class ReportItemControllerIntegrationTest extends AbstractSpringContextTestConfiguration {
 
     @Autowired
     private ReportItemController riController;

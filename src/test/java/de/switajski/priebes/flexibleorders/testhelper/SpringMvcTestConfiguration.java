@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.web;
+package de.switajski.priebes.flexibleorders.testhelper;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -13,9 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {
-        "classpath*:org/flexible/order/application-context*.xml",
-        "classpath*:servlet*.xml" })
+@ContextConfiguration(locations = { "classpath*:org/flexible/order/application-context*.xml", "classpath*:servlet*.xml" })
 public class SpringMvcTestConfiguration {
 
     @Autowired
@@ -24,9 +22,9 @@ public class SpringMvcTestConfiguration {
     @Autowired
     FilterChainProxy springSecurityFilter;
 
-    MockMvc mvcWithSecurity;
+    protected MockMvc mvcWithSecurity;
 
-    MockMvc mvc;
+    protected MockMvc mvc;
 
     @Before
     public void setup() {

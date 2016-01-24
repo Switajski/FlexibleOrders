@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.web;
+package de.switajski.priebes.flexibleorders.testhelper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

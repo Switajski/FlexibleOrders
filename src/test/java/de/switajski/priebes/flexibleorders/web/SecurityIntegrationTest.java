@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import de.switajski.priebes.flexibleorders.testhelper.SpringMvcTestConfiguration;
+
 public class SecurityIntegrationTest extends SpringMvcTestConfiguration {
 
     @Test

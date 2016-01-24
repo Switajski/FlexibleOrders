@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import de.switajski.priebes.flexibleorders.testhelper.SpringMvcWithTestDataTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.CustomerDto;
 
 public class CustomerApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {

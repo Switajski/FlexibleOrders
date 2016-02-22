@@ -9,7 +9,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 /**
  * Builder to ease creation of IText's {@link Paragraph}

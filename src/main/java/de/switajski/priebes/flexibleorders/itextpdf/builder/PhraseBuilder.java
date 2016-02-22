@@ -4,7 +4,7 @@ import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class PhraseBuilder {
 

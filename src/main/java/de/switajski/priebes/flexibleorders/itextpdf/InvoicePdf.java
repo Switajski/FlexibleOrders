@@ -17,6 +17,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableForInvoiceCreator;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class InvoicePdf implements PdfDocumentAppender {
 

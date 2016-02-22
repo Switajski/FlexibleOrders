@@ -10,10 +10,10 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class TableWithPricesAndWithPackageNumberCreator extends ReportItemsPdfPTableCreator {
 

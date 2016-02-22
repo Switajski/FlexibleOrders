@@ -5,8 +5,8 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class PdfPCellUtility {
 

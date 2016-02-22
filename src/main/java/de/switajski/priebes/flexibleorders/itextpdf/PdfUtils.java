@@ -15,6 +15,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuild
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class PdfUtils {
 

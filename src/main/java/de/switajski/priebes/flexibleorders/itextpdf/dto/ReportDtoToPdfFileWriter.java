@@ -10,9 +10,9 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppenderFactory;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 @Component
 public class ReportDtoToPdfFileWriter {

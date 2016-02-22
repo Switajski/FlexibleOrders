@@ -8,11 +8,11 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 public class TableForInvoiceCreator extends ReportItemsPdfPTableCreator {

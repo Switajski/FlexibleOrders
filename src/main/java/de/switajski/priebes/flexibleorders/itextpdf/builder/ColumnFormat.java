@@ -4,7 +4,7 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.switajski.priebes.flexibleorders.itextpdf.BusinessLetterPdfTemplate;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class ColumnFormat {
 

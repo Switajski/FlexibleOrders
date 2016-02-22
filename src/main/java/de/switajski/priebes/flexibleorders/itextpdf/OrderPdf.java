@@ -17,6 +17,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableForOrderCreator;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 /**
  * Pdf view customized for the display of an order

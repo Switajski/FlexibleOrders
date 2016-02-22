@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParame
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableWithPricesAndWithoutPackageNumberCreator;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class OrderConfirmationPdf implements PdfDocumentAppender {
 

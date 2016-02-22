@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfPageEvent;
 
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class PdfTemplateFactory {
 

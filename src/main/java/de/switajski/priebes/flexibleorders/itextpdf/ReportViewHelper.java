@@ -28,6 +28,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class ReportViewHelper {
 

@@ -2,7 +2,7 @@ package de.switajski.priebes.flexibleorders.web;
 
 import org.junit.Test;
 
-import de.switajski.priebes.flexibleorders.testhelper.SpringMvcWithTestDataTestConfiguration;
+import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
 
 public class ReportControllerPdfIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
 

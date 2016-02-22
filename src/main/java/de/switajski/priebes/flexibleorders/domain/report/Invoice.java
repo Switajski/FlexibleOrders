@@ -40,7 +40,7 @@ public class Invoice extends Report {
 
     private String billing;
 
-    protected Invoice() {}
+    public Invoice() {}
 
     public Invoice(String invoiceNumber, Address invoiceAddress) {
         super(invoiceNumber);

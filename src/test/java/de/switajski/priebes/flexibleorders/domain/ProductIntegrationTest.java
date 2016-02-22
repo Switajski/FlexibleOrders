@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractIntegrationTest;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractIntegrationTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CategoryBuilder;
 

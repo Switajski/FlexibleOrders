@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractIntegrationTest;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractIntegrationTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CustomerBuilder;
 
 public class CustomerIntegrationTest extends AbstractIntegrationTest<Customer> {

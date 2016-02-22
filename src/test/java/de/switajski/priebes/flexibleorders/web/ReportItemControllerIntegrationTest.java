@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
 import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Transactional

@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDto
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractSpringContextTestConfiguration;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;

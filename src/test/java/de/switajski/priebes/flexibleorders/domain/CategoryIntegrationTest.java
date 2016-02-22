@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.switajski.priebes.flexibleorders.repository.CategoryRepository;
-import de.switajski.priebes.flexibleorders.testhelper.AbstractIntegrationTest;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractIntegrationTest;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CategoryBuilder;
 
 public class CategoryIntegrationTest extends AbstractIntegrationTest<Category> {

@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.testhelper;
+package de.switajski.priebes.flexibleorders.testconfiguration;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

@@ -93,16 +93,16 @@ public class BusinessLetterPdfTemplate implements PdfPageEvent {
         footer.getDefaultCell().setBorder(Rectangle.NO_BORDER);
         Paragraph fPara = new ParagraphBuilder(
                 "priebes OHG / Maxstrasse 1 / 71636 Ludwigsburg")
-                .addTextLine(
-                        "www.priebes.eu / info@priebes.eu / 0176 41557068 / 07141 9475640 / Fax: 07141 6421002 ")
-                .addTextLine(
-                        "KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
-                .addTextLine(
-                        "IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
-                .withAlignment(Element.ALIGN_CENTER)
-                .withFont(eightSizeFont)
-                .withLineSpacing(11f)
-                .build();
+                        .addTextLine(
+                                "www.priebes.eu / info@priebes.eu / 0176 41557068 / 07141 9475640 / Fax: 07141 6421002 ")
+                        .addTextLine(
+                                "KSK Ludwigsburg BLZ 60450050 - Kto 30055142 / HRA 725747 / Ust-IdNr.: DE275948390")
+                        .addTextLine(
+                                "IBAN: DE79604500500030055142 / BIC-/SWIFT-Code: SOLADES1LBG")
+                        .withAlignment(Element.ALIGN_CENTER)
+                        .withFont(eightSizeFont)
+                        .withLineSpacing(11f)
+                        .build();
         PdfPCell footerCell = new PdfPCell();
         footerCell.addElement(fPara);
         // footerCell.setBorder(Rectangle.TOP);
@@ -134,16 +134,21 @@ public class BusinessLetterPdfTemplate implements PdfPageEvent {
         catch (DocumentException e) {
             e.printStackTrace();
         }
-        absText(writer, String.format("S. " + pageNumber + " / ", writer.getPageNumber()),
-                x - 25, y + 2);
+        absText(
+                writer,
+                String.format("S. " + pageNumber + " / ", writer.getPageNumber()),
+                x - 25,
+                y + 2);
 
     }
 
     private static void absText(PdfWriter writer, String text, int x, int y) {
         PdfContentByte cb = writer.getDirectContent();
         try {
-            BaseFont bf = BaseFont.createFont(BusinessLetterPdfTemplate.FONT,
-                    ENCODING, BaseFont.NOT_EMBEDDED);
+            BaseFont bf = BaseFont.createFont(
+                    BusinessLetterPdfTemplate.FONT,
+                    ENCODING,
+                    BaseFont.NOT_EMBEDDED);
             cb.saveState();
             cb.beginText();
             cb.moveText(x, y);

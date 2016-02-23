@@ -32,6 +32,8 @@ public class ReportDto {
      */
     public Set<ReportItem> items = new HashSet<ReportItem>();
 
+    public Address address;
+
     public List<ReportItemInPdf> itemDtos = new ArrayList<ReportItemInPdf>();
 
     public Long customerNumber;
@@ -67,7 +69,10 @@ public class ReportDto {
     // invoice specific
     public boolean invoiceSpecific_hasItemsWithDifferentCreationDates;
     public String invoiceSpecific_billing;
-    public Address invoiceSpecific_headerAddress;
+    /**
+     * @deprecated report dto needs only to have one address - use
+     *             {@link #address} attribute instead
+     */
     public BigDecimal invoiceSpecific_discountRate;
     public String invoiceSpecific_discountText;
 
@@ -89,14 +94,11 @@ public class ReportDto {
             public int compare(ReportItem r1, ReportItem r2) {
                 Product p1 = r1.getOrderItem().getProduct();
                 Product p2 = r2.getOrderItem().getProduct();
-                if (p1.hasProductNo() && p2.hasProductNo())
-                return p1.getProductNumber().compareTo(
+                if (p1.hasProductNo() && p2.hasProductNo()) return p1.getProductNumber().compareTo(
                         p2.getProductNumber());
                 else if (!p1.hasProductNo() && !p2.hasProductNo()) {
-                    if (p1.getName() != null && p2.getName() != null)
-                    return p1.getName().compareTo(p2.getName());
-                    else
-                    return 0;
+                    if (p1.getName() != null && p2.getName() != null) return p1.getName().compareTo(p2.getName());
+                    else return 0;
                 }
                 else if (p1.hasProductNo()) {
                     return -1;
@@ -105,8 +107,7 @@ public class ReportDto {
                     return 1;
                 }
 
-                else
-                return 0;
+                else return 0;
 
             }
 
@@ -125,13 +126,10 @@ public class ReportDto {
                 }
                 String productName1 = arg0.productName;
                 String productName2 = arg1.productName;
-                if (hasProductNo(arg0) && hasProductNo(arg1))
-                return productName1.compareTo(productName2);
+                if (hasProductNo(arg0) && hasProductNo(arg1)) return productName1.compareTo(productName2);
                 else if (!hasProductNo(arg0) && !hasProductNo(arg1)) {
-                    if (productName1 != null && productName2 != null)
-                    return productName1.compareTo(productName2);
-                    else
-                    return 0;
+                    if (productName1 != null && productName2 != null) return productName1.compareTo(productName2);
+                    else return 0;
                 }
                 else if (hasProductNo(arg0)) {
                     return -1;
@@ -140,8 +138,7 @@ public class ReportDto {
                     return 1;
                 }
 
-                else
-                return 0;
+                else return 0;
             }
 
             private boolean hasProductNo(ReportItemInPdf arg0) {
@@ -166,8 +163,7 @@ public class ReportDto {
             public int compare(OrderItem r1, OrderItem r2) {
                 Product p1 = r1.getProduct();
                 Product p2 = r2.getProduct();
-                if (p1.hasProductNo() && p2.hasProductNo())
-                return p1.getProductNumber().compareTo(
+                if (p1.hasProductNo() && p2.hasProductNo()) return p1.getProductNumber().compareTo(
                         p2.getProductNumber());
                 else if (!p1.hasProductNo() && !p2.hasProductNo()) {
                     return p1.getName().compareTo(p2.getName());
@@ -179,8 +175,7 @@ public class ReportDto {
                     return 1;
                 }
 
-                else
-                return 0;
+                else return 0;
 
             }
 

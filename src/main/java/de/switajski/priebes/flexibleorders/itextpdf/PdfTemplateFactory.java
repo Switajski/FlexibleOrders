@@ -19,6 +19,6 @@ public class PdfTemplateFactory {
         if (reportDto instanceof ToBeShippedDto) {
             return new BlankPdfTemplate();
         }
-        return new BusinessLetterPdfTemplate(logo);
+        return new BusinessLetterPdfTemplate(logo, reportDto.address);
     }
 }

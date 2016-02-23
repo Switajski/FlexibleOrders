@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -22,12 +21,10 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
 public class InvoicePdf implements PdfDocumentAppender {
 
     PdfUtils pdfUtils;
-    private Image logo;
     private ReportDto report;
     private PdfWriter writer;
 
-    public InvoicePdf(Image logo, ReportDto invoiceDto, PdfWriter writer) {
-        this.logo = logo;
+    public InvoicePdf(ReportDto invoiceDto, PdfWriter writer) {
         this.report = invoiceDto;
         this.writer = writer;
         this.pdfUtils = new PdfUtils();
@@ -41,9 +38,6 @@ public class InvoicePdf implements PdfDocumentAppender {
         String heading = "Rechnung " + report.documentNumber;
 
         InvoiceCalculation calculation = new InvoiceCalculation(report);
-
-        for (Element p : ReportViewHelper.createHeaderWithAddress(report.invoiceSpecific_headerAddress, logo))
-            document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
         document.add(new ParagraphBuilder("Rechnungsdatum gleich Lieferdatum")
@@ -75,7 +69,9 @@ public class InvoicePdf implements PdfDocumentAppender {
 
         PdfPTable footer = footerBuilder.build();
 
-        footer.writeSelectedRows(0, -1,
+        footer.writeSelectedRows(
+                0,
+                -1,
                 BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT, // xPos
                 footerYPos(), // yPos
                 writer.getDirectContent());

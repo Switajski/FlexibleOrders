@@ -2,11 +2,8 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
@@ -21,11 +18,9 @@ import de.switajski.priebes.flexibleorders.itextpdf.table.TableWithoutPricesAndW
 public class DeliveryNotesPdf implements PdfDocumentAppender {
 
     private PdfUtils pdfUtils;
-    private Image logo;
     private ReportDto report;
 
-    public DeliveryNotesPdf(Image logo, ReportDto report) {
-        this.logo = logo;
+    public DeliveryNotesPdf(ReportDto report) {
         this.report = report;
         this.pdfUtils = new PdfUtils();
     }
@@ -37,11 +32,7 @@ public class DeliveryNotesPdf implements PdfDocumentAppender {
                 + pdfUtils.getDateFormat().format(report.created);
         String packageNo = "Paket: " + report.shippingSpecific_packageNumber;
         String customerNo = "Kundennummer: " + report.customerNumber;
-        Address adresse = report.shippingSpecific_shippingAddress;
         String heading = "Lieferschein " + report.documentNumber;
-
-        for (Element p : ReportViewHelper.createHeaderWithAddress(adresse, logo))
-            document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
 
@@ -59,7 +50,10 @@ public class DeliveryNotesPdf implements PdfDocumentAppender {
         }
         else {
             document.add(new SimpleTableHeaderCreator().create(
-                    packageNo, customerNo, "", ""));
+                    packageNo,
+                    customerNo,
+                    "",
+                    ""));
         }
 
         document.add(ParagraphBuilder.createEmptyLine());

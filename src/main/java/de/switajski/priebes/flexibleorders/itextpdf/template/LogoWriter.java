@@ -21,12 +21,28 @@ public class LogoWriter implements PdfPageEvent {
 
     private Image logo;
 
-    public LogoWriter(Image logo) {
+    private boolean eachPage;
+
+    public LogoWriter(Image logo, boolean eachPage) {
         this.logo = logo;
+        this.eachPage = eachPage;
     }
 
     @Override
     public void onOpenDocument(PdfWriter writer, Document document) {
+        if (!eachPage) {
+            writeLogo(writer);
+        }
+    }
+
+    @Override
+    public void onStartPage(PdfWriter writer, Document document) {
+        if (eachPage) {
+            writeLogo(writer);
+        }
+    }
+
+    private void writeLogo(PdfWriter writer) {
         try {
             if (logo == null) logo = new PdfConfiguration().logo();
             Image img = logo;
@@ -70,12 +86,6 @@ public class LogoWriter implements PdfPageEvent {
         catch (DocumentException de) {
             throw new ExceptionConverter(de);
         }
-
-    }
-
-    @Override
-    public void onStartPage(PdfWriter writer, Document document) {
-
     }
 
     @Override

@@ -63,8 +63,8 @@ public class ReportToDtoConversionService {
 
     private DeliveryNotesDto toDto(DeliveryNotes report) {
         DeliveryNotesDto dto = new DeliveryNotesDto();
-        amendCommonAttributes(report, dto, false);
-        dto.shippingSpecific_shippingAddress = retrieveActualShippingAddress(report);
+        amendCommonAttributes(report, dto);
+        dto.address = retrieveActualShippingAddress(report);
 
         dto.shippingSpecific_trackNumber = report.getTrackNumber();
         dto.shippingSpecific_packageNumber = report.getPackageNumber();
@@ -74,7 +74,8 @@ public class ReportToDtoConversionService {
 
     private InvoiceDto toDto(Invoice invoice) {
         InvoiceDto dto = new InvoiceDto();
-        amendCommonAttributes(invoice, dto, true);
+        amendCommonAttributes(invoice, dto);
+        dto.address = retrieveInvoicingAddress(invoice);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice.getItems()).getPaymentConditions();
         dto.invoiceSpecific_billing = invoice.getBilling();
@@ -85,7 +86,8 @@ public class ReportToDtoConversionService {
 
     private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) {
         OrderConfirmationDto dto = new OrderConfirmationDto();
-        amendCommonAttributes(orderConfirmation, dto, true);
+        dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
+        amendCommonAttributes(orderConfirmation, dto);
         if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
         dto.orderConfirmationSpecific_oldestOrderDate = oldestOrderDate(orderConfirmation.getItems());
@@ -109,7 +111,7 @@ public class ReportToDtoConversionService {
     }
 
     // TODO: mapShippingAddress is a dirty hack in order to not refactor yet
-    private void amendCommonAttributes(Report report, ReportDto dto, boolean mapShippingAddress) {
+    private void amendCommonAttributes(Report report, ReportDto dto) {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -135,8 +137,6 @@ public class ReportToDtoConversionService {
             dto.customerNumber = customer.getCustomerNumber();
         }
 
-        dto.invoiceSpecific_headerAddress = retrieveInvoicingAddress(report);
-        if (mapShippingAddress) dto.shippingSpecific_shippingAddress = retrieveShippingAddress(report);
         mapCustomerDetails(dto, retrieveCustomerDetails(report));
         dto.shippingSpecific_expectedDelivery = retrieveExpectedDelivery(report);
         dto.shippingSpecific_deliveryMethod = retrieveDeliveryMethod(report);

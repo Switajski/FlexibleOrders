@@ -4,8 +4,6 @@ import java.util.Date;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -27,11 +25,9 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
     public static final Double VAT_RATE = 0.19d;
     private PdfWriter writer;
     private ReportDto report;
-    private Image logo;
     private PdfUtils pdfUtils;
 
-    public OrderConfirmationPdf(Image logo, ReportDto report, PdfWriter writer) {
-        this.logo = logo;
+    public OrderConfirmationPdf(ReportDto report, PdfWriter writer) {
         this.report = report;
         this.writer = writer;
         this.pdfUtils = new PdfUtils();
@@ -56,9 +52,6 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
         Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
-
-        for (Element p : ReportViewHelper.createHeaderWithAddress(report.invoiceSpecific_headerAddress, logo))
-            document.add(p);
 
         document.add(ReportViewHelper.createDate(date));
 

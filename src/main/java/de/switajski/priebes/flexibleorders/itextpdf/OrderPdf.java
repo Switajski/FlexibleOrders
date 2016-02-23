@@ -2,15 +2,12 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
@@ -27,12 +24,10 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
  */
 public class OrderPdf implements PdfDocumentAppender {
 
-    private Image logo;
     private ReportDto report;
     private PdfWriter writer;
 
-    public OrderPdf(Image logo, ReportDto report, PdfWriter writer) {
-        this.logo = logo;
+    public OrderPdf(ReportDto report, PdfWriter writer) {
         this.report = report;
         this.writer = writer;
     }
@@ -40,16 +35,11 @@ public class OrderPdf implements PdfDocumentAppender {
     @Override
     public void append(Document document) throws DocumentException {
 
-        Address adresse = report.invoiceSpecific_headerAddress;
         String heading = "Bestellung " + report.documentNumber;
 
         Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(Order.VAT_RATE);
         Amount gross = netGoods.add(vat);
-
-        for (Element p : ReportViewHelper.createHeaderWithAddress(adresse, logo)) {
-            document.add(p);
-        }
 
         for (Paragraph p : ReportViewHelper.createHeading(heading)) {
             document.add(p);
@@ -69,7 +59,9 @@ public class OrderPdf implements PdfDocumentAppender {
 
             PdfPTable footer = footerBuilder.build();
 
-            footer.writeSelectedRows(0, -1,
+            footer.writeSelectedRows(
+                    0,
+                    -1,
                     /* xPos */BusinessLetterPdfTemplate.PAGE_MARGIN_LEFT,
                     /* yPos */BusinessLetterPdfTemplate.PAGE_MARGIN_BOTTOM
                             + BusinessLetterPdfTemplate.FOOTER_MARGIN_BOTTOM,

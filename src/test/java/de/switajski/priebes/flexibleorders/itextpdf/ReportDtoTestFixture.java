@@ -38,7 +38,7 @@ public class ReportDtoTestFixture {
         deliveryMethod.setName("DEUTSCHE POST");
         deliveryMethod.setPhone("+4940786876");
 
-        r.invoiceSpecific_headerAddress = customer.getInvoiceAddress();
+        r.address = customer.getInvoiceAddress();
         r.shippingSpecific_shippingAddress = customer.getShippingAddress();
         r.shippingSpecific_deliveryMethod = deliveryMethod;
         r.shippingSpecific_shippingCosts = new Amount(BigDecimal.valueOf(15.5d), Currency.EUR);

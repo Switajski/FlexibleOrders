@@ -23,7 +23,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
-import de.switajski.priebes.flexibleorders.service.ReportingService;
 
 @RequestMapping("/orderitems")
 @Controller
@@ -34,8 +33,6 @@ public class OrderItemsController extends ExceptionController {
     // TODO: on Controller layer only Services are allowed
     @Autowired
     private OrderRepository orderRepo;
-    @Autowired
-    private ReportingService reportingService;
 
     @RequestMapping(value = "/json", method = RequestMethod.DELETE)
     public @ResponseBody JsonObjectResponse delete(@RequestBody String json) throws JsonParseException, JsonMappingException, IOException {

@@ -14,7 +14,6 @@ import org.springframework.web.servlet.view.AbstractView;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
@@ -27,8 +26,6 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 @Component
 public class PdfView extends AbstractView {
 
-    Image logo;
-
     PdfConfiguration config;
 
     public PdfView() {
@@ -37,9 +34,11 @@ public class PdfView extends AbstractView {
     }
 
     @Override
-    protected final void renderMergedOutputModel(Map<String, Object> model,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    protected final void renderMergedOutputModel(
+            Map<String, Object> model,
+            HttpServletRequest request,
+            HttpServletResponse response)
+                    throws Exception {
 
         ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
 
@@ -52,7 +51,7 @@ public class PdfView extends AbstractView {
         prepareWriter(report, writer, request);
         buildPdfMetadata(model, document, request);
 
-        PdfDocumentAppender appender = new PdfDocumentAppenderFactory(config.logo(), writer).create(report);
+        PdfDocumentAppender appender = new PdfDocumentAppenderFactory(writer).create(report);
 
         // Build PDF document.
         document.open();
@@ -63,15 +62,19 @@ public class PdfView extends AbstractView {
         writeToResponse(response, baos);
     }
 
-    protected void buildPdfMetadata(Map<String, Object> model,
-            Document document, HttpServletRequest request) {}
+    protected void buildPdfMetadata(
+            Map<String, Object> model,
+            Document document,
+            HttpServletRequest request) {}
 
     protected PdfWriter newWriter(Document document, OutputStream os)
             throws DocumentException {
         return PdfWriter.getInstance(document, os);
     }
 
-    protected void prepareWriter(ReportDto report, PdfWriter writer,
+    protected void prepareWriter(
+            ReportDto report,
+            PdfWriter writer,
             HttpServletRequest request) throws DocumentException, MalformedURLException, IOException {
         writer.setViewerPreferences(getViewerPreferences());
         writer.setPageEvent(new PdfTemplateFactory(config.logo()).create(report));

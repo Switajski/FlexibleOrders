@@ -6,7 +6,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.events.PdfPageEventForwarder;
 
-import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
+import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 
 public class BusinessLetterPdfTemplate extends PdfPageEventForwarder {
 
@@ -54,8 +54,10 @@ public class BusinessLetterPdfTemplate extends PdfPageEventForwarder {
     public static final int FOOTER_MARGIN_BOTTOM = 5;
     public static final float BORDER_WIDTH = 0.15f;
 
-    public BusinessLetterPdfTemplate(Image logo) {
-        addPageEvent(new LogoWriter(new PdfConfiguration().logo()));
+    public BusinessLetterPdfTemplate(Image logo, Address address) {
+        boolean eachPage = true;
+        addPageEvent(new LogoWriter(logo, eachPage));
+        addPageEvent(new AddressWriter(address, logo, eachPage));
         addPageEvent(new FooterWriter());
     }
 

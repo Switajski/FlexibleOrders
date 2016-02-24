@@ -1,17 +1,13 @@
 package de.switajski.priebes.flexibleorders.itextpdf;
 
-import java.util.Date;
-
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
@@ -36,27 +32,11 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
     @Override
     public void append(Document document) throws DocumentException {
 
-        String heading = "Auftragsbest" + Unicode.A_UML + "tigung " + report.documentNumber.toString();
-        if (report.orderConfirmationNumber != null) heading += " - best" + Unicode.A_UML + "tigt mit " + report.orderConfirmationNumber;
-
-        String date = "AB-Datum: " + pdfUtils.getDateFormat().format(report.created);
-        Date oldestOrderDate = report.orderConfirmationSpecific_oldestOrderDate;
-        if (oldestOrderDate != null) {
-            date = new StringBuilder(date).append("\n")
-                    .append("Bestelldatum: ")
-                    .append(pdfUtils.getDateFormat().format(oldestOrderDate))
-                    .toString();
-        }
         String customerNo = "Kundennummer: " + report.customerNumber;
 
         Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(report.vatRate);
         Amount gross = netGoods.add(vat);
-
-        document.add(ReportViewHelper.createDate(date));
-
-        for (Paragraph p : ReportViewHelper.createHeading(heading))
-            document.add(p);
 
         PdfPTable infoTable = report.isShowExtendedInformation() ? new ExtendedTableHeaderCreator()
                 .create(new ExtInfoTableParameter(report)) : new SimpleTableHeaderCreator().create(

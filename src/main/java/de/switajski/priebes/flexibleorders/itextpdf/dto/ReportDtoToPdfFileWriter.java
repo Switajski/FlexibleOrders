@@ -20,7 +20,7 @@ public class ReportDtoToPdfFileWriter {
     public void writeFile(String pathAndFileName, Image logo, ReportDto reportDto) throws DocumentException, FileNotFoundException {
         Document document = new PdfUtils().newDocument();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pathAndFileName));
-        pdfWriter.setPageEvent(new BusinessLetterPdfTemplate(logo, reportDto.address));
+        pdfWriter.setPageEvent(new BusinessLetterPdfTemplate(logo, reportDto.address, "Datum: 22.1.2016", "das Datum stimmt eigentlich nicht", "Betreff"));
         document.open();
         new PdfDocumentAppenderFactory(pdfWriter).create(reportDto).append(document);
         document.close();

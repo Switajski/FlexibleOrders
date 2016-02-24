@@ -54,10 +54,12 @@ public class BusinessLetterPdfTemplate extends PdfPageEventForwarder {
     public static final int FOOTER_MARGIN_BOTTOM = 5;
     public static final float BORDER_WIDTH = 0.15f;
 
-    public BusinessLetterPdfTemplate(Image logo, Address address) {
+    public BusinessLetterPdfTemplate(Image logo, Address address, String date, String noteOnDate, String subject) {
         boolean eachPage = true;
         addPageEvent(new LogoWriter(logo, eachPage));
         addPageEvent(new AddressWriter(address, logo, eachPage));
+        addPageEvent(new DateOfDocumentWriter(date, noteOnDate, eachPage));
+        addPageEvent(new SubjectWriter(subject, eachPage));
         addPageEvent(new FooterWriter());
     }
 

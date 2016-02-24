@@ -54,7 +54,8 @@ public class ReportingService {
     private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional(readOnly = true)
-    public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(Customer customer,
+    public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(
+            Customer customer,
             Pageable pageable) {
         Page<Order> toBeConfirmed = orderRepo.findAllToBeConfirmedByCustomer(
                 customer,
@@ -96,7 +97,8 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public Page<String> retrieveOrderNumbersByCustomer(Customer customer,
+    public Page<String> retrieveOrderNumbersByCustomer(
+            Customer customer,
             PageRequest pageRequest) {
 
         Page<Order> orders = orderRepo.findByCustomer(customer, pageRequest);
@@ -113,11 +115,11 @@ public class ReportingService {
             ordersList.add(order.getOrderNumber());
 
         Page<String> result = new PageImpl<String>(
-                ordersList, new PageRequest(
+                ordersList,
+                new PageRequest(
                         orders.getSize(),
                         orders.getNumber() + 1),
-                orders.getTotalElements()
-                );
+                orders.getTotalElements());
         return result;
     }
 
@@ -150,8 +152,10 @@ public class ReportingService {
         return ris;
     }
 
-    public PageImpl<ItemDto> createPage(Long totalElements,
-            Pageable pageable, List<ItemDto> ris) {
+    public PageImpl<ItemDto> createPage(
+            Long totalElements,
+            Pageable pageable,
+            List<ItemDto> ris) {
         return new PageImpl<ItemDto>(ris, pageable, totalElements);
     }
 
@@ -182,6 +186,7 @@ public class ReportingService {
                 report.customerNumber = customer.getCustomerNumber();
                 report.customerFirstName = customer.getFirstName();
                 report.customerLastName = customer.getLastName();
+                report.subject = "Ausstehende Artikel";
             }
             else report.customerFirstName = "Alle Kunden";
 

@@ -25,6 +25,7 @@ public class OrderToDtoConversionService {
         dto.customerEmail = customer.getEmail();
         dto.customerPhone = customer.getPhone();
         dto.address = BusinessConstants.MY_ADDRESS;
+        dto.subject = "Bestellung " + order.getOrderNumber();
         dto.orderItems = order.getItems();
         dto.netGoods = AmountCalculator.sum(AmountCalculator
                 .getAmountsTimesQuantity2(order.getItems()));

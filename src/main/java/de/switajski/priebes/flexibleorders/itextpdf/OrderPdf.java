@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -35,15 +34,9 @@ public class OrderPdf implements PdfDocumentAppender {
     @Override
     public void append(Document document) throws DocumentException {
 
-        String heading = "Bestellung " + report.documentNumber;
-
         Amount netGoods = report.netGoods;
         Amount vat = netGoods.multiply(Order.VAT_RATE);
         Amount gross = netGoods.add(vat);
-
-        for (Paragraph p : ReportViewHelper.createHeading(heading)) {
-            document.add(p);
-        }
 
         document.add(new SimpleTableHeaderCreator().create(report));
         document.add(ParagraphBuilder.createEmptyLine());

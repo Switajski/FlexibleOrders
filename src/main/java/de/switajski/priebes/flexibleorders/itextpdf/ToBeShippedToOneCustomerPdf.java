@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
@@ -19,9 +18,6 @@ public class ToBeShippedToOneCustomerPdf implements PdfDocumentAppender {
 
     @Override
     public void append(Document document) throws DocumentException {
-
-        for (Paragraph p : ReportViewHelper.createHeading("Ausstehende Artikel"))
-            document.add(p);
 
         String stringWithoutNull = toStringWithoutNull(report.customerNumber);
         if (!stringWithoutNull.equals("")) stringWithoutNull = "Kundennr.: " + stringWithoutNull;

@@ -21,6 +21,7 @@ import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceDto;
@@ -65,6 +66,9 @@ public class ReportToDtoConversionService {
         DeliveryNotesDto dto = new DeliveryNotesDto();
         amendCommonAttributes(report, dto);
         dto.address = retrieveActualShippingAddress(report);
+        dto.subject = "Lieferschein " + report.getDocumentNumber();
+        dto.date = "Lieferdatum: "
+                + PdfUtils.dateFormat.format(report.getCreated());
 
         dto.shippingSpecific_trackNumber = report.getTrackNumber();
         dto.shippingSpecific_packageNumber = report.getPackageNumber();
@@ -77,6 +81,10 @@ public class ReportToDtoConversionService {
         amendCommonAttributes(invoice, dto);
         dto.address = retrieveInvoicingAddress(invoice);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
+        dto.subject = "Rechnung " + invoice.getDocumentNumber();
+        dto.date = "Rechnungsdatum: "
+                + PdfUtils.dateFormat.format(invoice.getCreated());
+        dto.noteOnDate = "Rechnungsdatum gleich Lieferdatum";
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(invoice.getItems()).getPaymentConditions();
         dto.invoiceSpecific_billing = invoice.getBilling();
         dto.invoiceSpecific_discountText = invoice.getDiscountText();
@@ -88,9 +96,13 @@ public class ReportToDtoConversionService {
         OrderConfirmationDto dto = new OrderConfirmationDto();
         dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
         amendCommonAttributes(orderConfirmation, dto);
+        dto.subject = "Auftragsbest" + Unicode.A_UML + "tigung " + orderConfirmation.getDocumentNumber();
+        Date oldestOrderDate = oldestOrderDate(orderConfirmation.getItems());
+        dto.date = "AB-Datum: " + PdfUtils.dateFormat.format(orderConfirmation.getCreated());
+        dto.noteOnDate = "Bestelldatum: " + PdfUtils.dateFormat.format(oldestOrderDate);
         if (orderConfirmation.isAgreed()) dto.orderConfirmationNumber = orderConfirmation.getOrderAgreementNumber();
         dto.orderConfirmationSpecific_paymentConditions = purchaseAgreementService.retrieveSingle(orderConfirmation.getItems()).getPaymentConditions();
-        dto.orderConfirmationSpecific_oldestOrderDate = oldestOrderDate(orderConfirmation.getItems());
+        dto.orderConfirmationSpecific_oldestOrderDate = oldestOrderDate;
         return dto;
     }
 

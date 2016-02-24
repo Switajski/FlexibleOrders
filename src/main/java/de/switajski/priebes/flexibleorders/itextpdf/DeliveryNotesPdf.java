@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
@@ -28,16 +27,8 @@ public class DeliveryNotesPdf implements PdfDocumentAppender {
     @Override
     public void append(Document document) throws DocumentException {
 
-        String date = "Lieferdatum: "
-                + pdfUtils.getDateFormat().format(report.created);
         String packageNo = "Paket: " + report.shippingSpecific_packageNumber;
         String customerNo = "Kundennummer: " + report.customerNumber;
-        String heading = "Lieferschein " + report.documentNumber;
-
-        document.add(ReportViewHelper.createDate(date));
-
-        for (Paragraph p : ReportViewHelper.createHeading(heading))
-            document.add(p);
 
         if (report.isShowExtendedInformation()) {
             ExtInfoTableParameter param = new ExtInfoTableParameter(report);

@@ -4,8 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -33,20 +31,7 @@ public class InvoicePdf implements PdfDocumentAppender {
     @Override
     public void append(Document document) throws DocumentException {
 
-        String date = "Rechnungsdatum: "
-                + pdfUtils.getDateFormat().format(report.created);
-        String heading = "Rechnung " + report.documentNumber;
-
         InvoiceCalculation calculation = new InvoiceCalculation(report);
-
-        document.add(ReportViewHelper.createDate(date));
-        document.add(new ParagraphBuilder("Rechnungsdatum gleich Lieferdatum")
-                .withFont(BusinessLetterPdfTemplate.eightSizeFont)
-                .withAlignment(Element.ALIGN_RIGHT)
-                .build());
-
-        for (Paragraph p : ReportViewHelper.createHeading(heading))
-            document.add(p);
 
         ExtInfoTableParameter param = new ExtInfoTableParameter(report);
         param.billing = StringUtils.isEmpty(report.invoiceSpecific_billing) ? "" : "Abrechnung: " + report.invoiceSpecific_billing;

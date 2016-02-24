@@ -32,6 +32,8 @@ public class ReportDto {
      */
     public Set<ReportItem> items = new HashSet<ReportItem>();
 
+    public String subject;
+
     public Address address;
 
     public List<ReportItemInPdf> itemDtos = new ArrayList<ReportItemInPdf>();
@@ -80,6 +82,10 @@ public class ReportDto {
     public Set<OrderItem> orderItems;
 
     public boolean showPricesInDeliveryNotes;
+
+    public String date;
+
+    public String noteOnDate;
 
     /**
      * @deprecated because of uneccessary dependencies to ReportItem use

@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
 
 public class ReportViewHelper {
 
-    public static List<Element> createHeaderWithAddress(Address adresse, Image image)
+    public static List<Element> createAddress(Address adresse, Image image)
             throws DocumentException {
         List<Element> elements = new ArrayList<Element>();
 

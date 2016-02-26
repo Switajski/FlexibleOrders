@@ -41,7 +41,7 @@ public class AddressWriter implements PdfPageEvent {
 
     private void writeAddress(Document document) {
         try {
-            for (Element p : ReportViewHelper.createHeaderWithAddress(address, logo))
+            for (Element p : ReportViewHelper.createAddress(address, logo))
                 document.add(p);
         }
         catch (DocumentException e) {

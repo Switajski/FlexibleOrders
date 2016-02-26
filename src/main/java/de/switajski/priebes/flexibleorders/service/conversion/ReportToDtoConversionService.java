@@ -94,6 +94,7 @@ public class ReportToDtoConversionService {
 
     private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) {
         OrderConfirmationDto dto = new OrderConfirmationDto();
+        dto.address = retrieveInvoicingAddress(orderConfirmation);
         dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
         amendCommonAttributes(orderConfirmation, dto);
         dto.subject = "Auftragsbest" + Unicode.A_UML + "tigung " + orderConfirmation.getDocumentNumber();

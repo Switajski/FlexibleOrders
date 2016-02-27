@@ -10,6 +10,10 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 
 public class BusinessLetterPdfTemplate extends PdfPageEventForwarder {
 
+    /**
+     * If true, shows additional layout information, e.g. borders of used tables
+     */
+    public static final boolean DEBUG = false;
     protected static final String UEBER_EMPFAENGERADRESSE = "Maxstrasse1, 71636 Ludwigsburg";
     protected static final String HEADER_ZEILE1 = "Maxstrasse 1";
     protected static final String HEADER_ZEILE2 = "71636 Ludwigsburg";

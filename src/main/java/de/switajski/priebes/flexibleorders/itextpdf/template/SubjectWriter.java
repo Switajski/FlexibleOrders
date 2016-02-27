@@ -1,14 +1,24 @@
 package de.switajski.priebes.flexibleorders.itextpdf.template;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.ExceptionConverter;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEvent;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import de.switajski.priebes.flexibleorders.itextpdf.ReportViewHelper;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
+import de.switajski.priebes.flexibleorders.itextpdf.shorthand.PdfPCellUtility;
 
 public class SubjectWriter implements PdfPageEvent {
 
@@ -27,13 +37,32 @@ public class SubjectWriter implements PdfPageEvent {
 
     private void addSubject(Document document) {
         try {
-            for (Paragraph p : ReportViewHelper.createHeading(subject)) {
-                document.add(p);
-            }
+            PdfPTable table = new PdfPTableBuilder(leftAlignTableProperties()).withHeader(false).build();
+            createHeading(subject).forEach((phrase) -> {
+                table.addCell(PdfPCellUtility.wrapInCell(phrase));
+            });
+            document.add(table);
         }
         catch (DocumentException e) {
             throw new ExceptionConverter(e);
         }
+    }
+
+    private ArrayList<ColumnFormat> leftAlignTableProperties() {
+        ArrayList<ColumnFormat> rowProperties = new ArrayList<ColumnFormat>();
+        rowProperties.add(new ColumnFormat("", Element.ALIGN_LEFT, 100));
+        return rowProperties;
+    }
+
+    private List<Paragraph> createHeading(String heading)
+            throws DocumentException {
+        List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+        paragraphs.add(new ParagraphBuilder(heading).withFont(
+                FontFactory.getFont(BusinessLetterPdfTemplate.FONT, 12, Font.BOLD))
+                .build());
+        paragraphs.add(ParagraphBuilder.createEmptyLine());
+
+        return paragraphs;
     }
 
     @Override

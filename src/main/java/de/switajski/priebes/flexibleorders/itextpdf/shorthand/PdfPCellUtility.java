@@ -11,7 +11,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
 public class PdfPCellUtility {
 
     public static PdfPCell noBorder(PdfPCell cell) {
-        cell.setBorder(0);
+        if (!BusinessLetterPdfTemplate.DEBUG) cell.setBorder(0);
         return cell;
     }
 

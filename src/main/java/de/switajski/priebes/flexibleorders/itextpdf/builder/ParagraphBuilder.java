@@ -43,14 +43,18 @@ public class ParagraphBuilder {
         ListIterator<String> itr = texts.listIterator();
         while (itr.hasNext()) {
             p.add(itr.next());
-            if (itr.hasNext()) p.add(Chunk.NEWLINE);
+            if (itr.hasNext()) {
+                if (BusinessLetterPdfTemplate.DEBUG) p.add(Chunk.NEWLINE + "EOL");
+                else p.add(Chunk.NEWLINE);
+            }
         }
         return p;
     }
 
     /**
      * 
-     * @param {@link Element} alignment
+     * @param {@link
+     *            Element} alignment
      * @return
      */
     public ParagraphBuilder withAlignment(int alignment) {
@@ -75,6 +79,7 @@ public class ParagraphBuilder {
 
     public static Paragraph createEmptyLine() {
         Paragraph p = new Paragraph();
+        if (BusinessLetterPdfTemplate.DEBUG) p.add("EOL");
         p.add(Chunk.NEWLINE);
         return p;
     }

@@ -51,7 +51,13 @@ public class InvoicingServiceTest {
         MockitoAnnotations.initMocks(this);
         invoicingParameter = new InvoicingParameter();
         invoicingParameter.setInvoiceNumber("L123");
+    }
 
+    @Test
+    public void shouldNotAcceptParameterWithEmptyItems() {
+        givenInvoicingAddresses(1);
+
+        whenValidatingAndInvoicing();
     }
 
     @Test
@@ -60,18 +66,10 @@ public class InvoicingServiceTest {
         givenInvoicingAddresses(1);
         givenItemsInParameter();
 
-        whenInvoicing();
+        whenValidatingAndInvoicing();
 
         verify(reportRepo).save(Matchers.any(Invoice.class));
 
-    }
-
-    private List<ItemDto> givenItemsInParameter(Integer... integers) {
-        List<ItemDto> items = new ArrayList<>();
-        for (Integer i : integers)
-            items.add(ItemDtoShorthand.item(CatalogProductBuilder.buildWithGeneratedAttributes(i), i, invoicingParameter.getInvoiceNumber()));
-        invoicingParameter.setItems(items);
-        return items;
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -79,7 +77,7 @@ public class InvoicingServiceTest {
         when(reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()))
                 .thenReturn(new Invoice());
 
-        whenInvoicing();
+        whenValidatingAndInvoicing();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -88,7 +86,7 @@ public class InvoicingServiceTest {
         givenShippingItemsFromParameterExist();
         givenInvoicingAddresses(1, 2);
 
-        whenInvoicing();
+        whenValidatingAndInvoicing();
     }
 
     @Test(expected = IllegalStateException.class)
@@ -96,7 +94,15 @@ public class InvoicingServiceTest {
         givenDocumentNumberDoesNotExist();
         when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(java.util.Collections.emptySet());
 
-        whenInvoicing();
+        whenValidatingAndInvoicing();
+    }
+
+    private List<ItemDto> givenItemsInParameter(Integer... integers) {
+        List<ItemDto> items = new ArrayList<>();
+        for (Integer i : integers)
+            items.add(ItemDtoShorthand.item(CatalogProductBuilder.buildWithGeneratedAttributes(i), i, invoicingParameter.getInvoiceNumber()));
+        invoicingParameter.setItems(items);
+        return items;
     }
 
     private void givenShippingItemsFromParameterExist() {
@@ -133,7 +139,7 @@ public class InvoicingServiceTest {
                 .build();
     }
 
-    private void whenInvoicing() {
+    private void whenValidatingAndInvoicing() {
         invoicingService.invoice(invoicingParameter);
     }
 

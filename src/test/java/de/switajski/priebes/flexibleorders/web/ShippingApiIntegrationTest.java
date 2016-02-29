@@ -55,7 +55,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
     @Autowired
     private ReportItemToItemDtoConverterService ri2IdConverter;
 
-    private DeliverParameter dr;
+    private DeliverParameter dr = new DeliverParameter();
 
     @Test
     public void shouldBeRejectedByValidation() throws Exception {
@@ -73,7 +73,6 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
     @Test
     public void shouldRejectDuplicateDeliveryNotesNumber() throws Exception {
-        dr = new DeliverParameter();
         dr.setDeliveryNotesNumber("L13");
 
         whenDelivering()
@@ -84,7 +83,6 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
     @Test
     public void shouldRejectContradictoryExpectedDeliveryDatesAddresses() throws Exception {
-        dr = new DeliverParameter();
         dr.setDeliveryNotesNumber("TEST-L");
         dr.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
 
@@ -95,7 +93,6 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
     @Test
     public void shouldRejectContradictoryShippingAddresses() throws Exception {
-        dr = new DeliverParameter();
         dr.setDeliveryNotesNumber("TEST-L");
         dr.setIgnoreContradictoryExpectedDeliveryDates(true);
         dr.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
@@ -123,7 +120,6 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
         // deliver with changed address
         String docNo = "L_WITH_CHANGED_ADDRESSES";
-        dr = new DeliverParameter();
         dr.setDeliveryNotesNumber(docNo);
         dr.setIgnoreContradictoryExpectedDeliveryDates(true);
         dr.setItems(new ArrayList<ItemDto>(overdueItemDtos()));

@@ -16,7 +16,7 @@ public class QuantityUtility {
         return summed;
     }
 
-    // TODO: move to validator
+    // TODO: move to validator see #103
     /**
      * @deprecated use custom validator like @link {@link UniqueDocumentNumber}
      * @param qty

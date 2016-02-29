@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -153,9 +152,9 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         reportItems.addAll(rRepo.findByDocumentNumber("AB13").getItems());
         reportItems.addAll(rRepo.findByDocumentNumber("AB15").getItems());
 
-        List<ReportItem> overdueRis = reportItems.stream()
+        Set<ReportItem> overdueRis = reportItems.stream()
                 .filter(ri -> ri.isOverdue())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         Set<ItemDto> overdueItemDtos = new HashSet<ItemDto>();
         for (ReportItem ri : overdueRis) {

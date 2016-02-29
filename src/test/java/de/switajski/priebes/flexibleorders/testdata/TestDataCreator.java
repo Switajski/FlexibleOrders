@@ -52,6 +52,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDto
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
+import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -160,7 +161,9 @@ public class TestDataCreator {
 
         OrderConfirmation ab11 = confirmingService.confirm(AB11);
         OrderConfirmation ab13 = confirmingService.confirm(AB13);
-        OrderConfirmation ab15 = confirmingService.confirm(AB15);
+        ConfirmParameter ab15Param = AB15;
+        ab15Param.setInvoiceAddress(AddressBuilder.buildWithGeneratedAttributes(87));
+        OrderConfirmation ab15 = confirmingService.confirm(ab15Param);
 
         ab11 = agreeingService.agree(ab11.getDocumentNumber(), "AU11");
         ab13 = agreeingService.agree(ab13.getDocumentNumber(), "AU13");

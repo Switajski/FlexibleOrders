@@ -40,7 +40,8 @@ public class InvoicingParameter {
      * @param created
      * @param shippingItemDtos
      */
-    public InvoicingParameter(String invoiceNumber,
+    public InvoicingParameter(
+            String invoiceNumber,
             LocalDate created,
             List<ItemDto> shippingItemDtos) {
         this.invoiceNumber = invoiceNumber;

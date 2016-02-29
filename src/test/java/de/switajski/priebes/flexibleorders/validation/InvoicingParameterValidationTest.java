@@ -1,4 +1,4 @@
-package de.switajski.priebes.flexibleorders.service.api;
+package de.switajski.priebes.flexibleorders.validation;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -7,27 +7,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-public class ValidationTest {
+import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 
-    static Validator validator;
+public class InvoicingParameterValidationTest extends ValidationStaticTestConfiguration {
+
     Set<ConstraintViolation<InvoicingParameter>> constraintViolations;
 
-    InvoicingParameter invoicingParameter;
-
-    @Before
-    public void setup() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-
-    }
+    InvoicingParameter invoicingParameter = new InvoicingParameter();
 
     @Test
     public void shouldNotAcceptParameterWithEmptyItems() {
@@ -43,11 +33,11 @@ public class ValidationTest {
         assertConstraintsMatches(cv -> StringUtils.contains(cv.getMessage(), "null"));
     }
 
-    private void assertConstraintsMatches(Predicate<ConstraintViolation<InvoicingParameter>> predicate) {
+    protected void assertConstraintsMatches(Predicate<ConstraintViolation<InvoicingParameter>> predicate) {
         assertThat(constraintViolations.stream().anyMatch(predicate), is(true));
     }
 
-    public void whenValidating() {
+    private void whenValidating() {
         constraintViolations = validator.validate(invoicingParameter);
     }
 

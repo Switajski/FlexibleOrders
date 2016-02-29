@@ -38,7 +38,7 @@ public class InvoicingService {
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
-        // TODO: custom constraint!
+        // TODO: custom constraint! #106 use UniqueDocumentNumber
         if (reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()) != null) {
             throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
         }

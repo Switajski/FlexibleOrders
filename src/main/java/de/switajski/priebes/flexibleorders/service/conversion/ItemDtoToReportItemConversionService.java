@@ -47,6 +47,7 @@ public class ItemDtoToReportItemConversionService {
         return item;
     }
 
+    // TODO: unclear and not reusable method. Rather append than map.
     @Transactional
     public void mapItemDtos(DeliveryNotes deliveryNotes, ItemDto itemDto) {
         if (itemDto.getProductType() != ProductType.SHIPPING) {

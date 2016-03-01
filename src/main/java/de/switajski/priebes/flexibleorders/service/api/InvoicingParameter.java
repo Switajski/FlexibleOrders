@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
+import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddress;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
@@ -25,6 +26,7 @@ public class InvoicingParameter {
     private LocalDate created;
     @Valid
     @NotEmpty
+    @ConsistentInvoicingAddress
     private List<ItemDto> items;
     private String billing;
     @JsonProperty("customerId")

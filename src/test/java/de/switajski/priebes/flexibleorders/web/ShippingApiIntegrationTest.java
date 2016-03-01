@@ -91,7 +91,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
     }
 
     @Test
-    public void shouldRejectContradictoryShippingAddresses() throws Exception {
+    public void shouldRejectContradictoryShippingAddressesAndClientShouldReceiveSpecialHandlingTag() throws Exception {
         deliverParameter.setDeliveryNotesNumber("TEST-L");
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos()));

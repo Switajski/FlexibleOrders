@@ -23,6 +23,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
+import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddress;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
@@ -39,13 +40,14 @@ public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfig
     private InvoicingParameter invoicingParameter = new InvoicingParameter();
 
     @Test
-    public void shouldBeRejectedByValidation() throws Exception {
+    public void shouldBeRejectedByValidationAndClientShouldReceiveSpecialHandlingTag() throws Exception {
         invoicingParameter.setInvoiceNumber("TEST-I");
         invoicingParameter.setItems(overdueItemsof("L13", "L15"));
 
         whenInvoicing()
                 .andExpect(content().string(containsString("errors")))
-                .andExpect(content().string(containsString("#CPA-IA")));
+                .andExpect(content().string(containsString(
+                        ConsistentInvoicingAddress.SPECIAL_HANDLING_TAG)));
     }
 
     private List<ItemDto> overdueItemsof(String... strings) {

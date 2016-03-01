@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
@@ -44,7 +45,7 @@ public class InvoicingService {
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);
-        invoice.setInvoiceAddress(retrieveInvoicingAddress(risWithQty.keySet()));
+        invoice.setInvoiceAddress(retrieveInvoicingAddressOrFail(risWithQty.keySet()));
 
         for (Entry<ReportItem, Integer> entry : risWithQty.entrySet()) {
             ReportItem shippingItem = entry.getKey();
@@ -73,19 +74,18 @@ public class InvoicingService {
         return reportRepo.save(invoice);
     }
 
-    private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
-        Set<Address> ias = purchaseAgreementService.invoiceAddressesWithoutDeviation(reportItems);
+    private Address retrieveInvoicingAddressOrFail(Set<ReportItem> reportItems) {
+        Set<Address> ias = purchaseAgreementService.invoiceAddresses(reportItems);
 
         if (ias.size() > 1) {
-            // FIXME: this is a workaround, until feature #106 works.
-            // throw new IllegalArgumentException("Verschiedene
-            // Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
-            // + BeanUtil.createStringOfDifferingAttributes(ias));
-            return ias.iterator().next();
+            throw new IllegalArgumentException(
+                    "Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
+                            + BeanUtil.createStringOfDifferingAttributes(ias));
         }
-        else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
-        Address invoicingAddress = ias.iterator().next();
-        return invoicingAddress;
+        else if (ias.size() == 0) {
+            throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
+        }
+        return ias.iterator().next();
     }
 
     private Invoice createInvoice(InvoicingParameter invoicingParameter) {

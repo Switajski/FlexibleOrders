@@ -51,15 +51,24 @@ public class PurchaseAgreementReadService {
 
     @Transactional(readOnly = true)
     public Set<Address> shippingAddresses(Collection<ReportItem> reportItems) {
-        Collection<PurchaseAgreement> actual = actual(reportItems);
+        Collection<PurchaseAgreement> actual = withDeviation(reportItems);
         return actual
                 .stream()
                 .map(s -> s.getShippingAddress())
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * PurchaseAgreements can be modified after they have been created: If the
+     * user wants to ship items from purchase agreements with deviating shipping
+     * addresses, he has the possibility to change the address using
+     * {@link PurchaseAgreementWriteService#changeShippingAddress}.
+     * 
+     * @param reportItems
+     * @return
+     */
     @Transactional(readOnly = true)
-    public Collection<PurchaseAgreement> actual(Collection<ReportItem> reportItems) {
+    public Collection<PurchaseAgreement> withDeviation(Collection<ReportItem> reportItems) {
         Set<ReportItem> withPredecessors = new HashSet<ReportItem>();
         for (ReportItem ri : reportItems) {
             withPredecessors.addAll(ri.predecessors());
@@ -79,6 +88,14 @@ public class PurchaseAgreementReadService {
     @Transactional(readOnly = true)
     public Set<Address> invoiceAddressesWithoutDeviation(Collection<ReportItem> reportItems) {
         return withoutDeviations(reportItems)
+                .stream()
+                .map(s -> s.getInvoiceAddress())
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Address> invoiceAddresses(Collection<ReportItem> reportItems) {
+        return withDeviation(reportItems)
                 .stream()
                 .map(s -> s.getInvoiceAddress())
                 .collect(Collectors.toSet());

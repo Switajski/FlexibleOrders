@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
+import de.switajski.priebes.flexibleorders.itextpdf.builder.HtmlTags;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 
 @CrossOrigin
@@ -43,13 +45,27 @@ public class ExceptionController {
     public @ResponseBody JsonObjectResponse handleValidationErrors(MethodArgumentNotValidException ex) {
         JsonObjectResponse response = new JsonObjectResponse();
         response.setSuccess(false);
-        response.setMessage("Validation error");
+
+        response.setMessage(createValidationErrorMessage(ex));
         Map<String, String> errors = new HashMap<String, String>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getCode());
         }
         response.setErrors(errors);
         return response;
+    }
+
+    private String createValidationErrorMessage(MethodArgumentNotValidException ex) {
+        StringBuilder message = new StringBuilder("Eingaben nicht valide: " + HtmlTags.LINE_BREAK);
+        Iterator<FieldError> iterator = ex.getBindingResult().getFieldErrors().iterator();
+        while (iterator.hasNext()) {
+            FieldError err = iterator.next();
+            message.append(err.getDefaultMessage());
+            if (iterator.hasNext()) {
+                message.append(HtmlTags.LINE_BREAK);
+            }
+        }
+        return message.toString();
     }
 
     @ExceptionHandler(NotFoundException.class)

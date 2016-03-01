@@ -37,7 +37,6 @@ import de.switajski.priebes.flexibleorders.service.process.parameter.BillingPara
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
-import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @CrossOrigin
@@ -69,18 +68,10 @@ public class TransitionsController extends ExceptionController {
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public @ResponseBody JsonObjectResponse order(@RequestBody @Valid JsonCreateReportRequest orderRequest)
+    public @ResponseBody JsonObjectResponse order(@RequestBody @Valid OrderParameter orderRequest)
             throws Exception {
 
-        OrderParameter orderParameter = new OrderParameter(
-                orderRequest.getCustomerId(),
-                orderRequest.getOrderNumber(),
-                orderRequest.getCreated(),
-                orderRequest.getItems());
-        orderParameter.setExpectedDelivery(orderRequest.getExpectedDelivery());
-
-        Order order = transistionsService.order(
-                orderParameter);
+        Order order = transistionsService.order(orderRequest);
 
         return ExtJsResponseCreator.createSuccessResponse(order);
     }

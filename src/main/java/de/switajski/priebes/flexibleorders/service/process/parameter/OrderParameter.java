@@ -11,10 +11,12 @@ import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
+import de.switajski.priebes.flexibleorders.validation.UniqueOrderNumber;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderParameter {
     private Long customerNumber;
+    @UniqueOrderNumber
     private String orderNumber;
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
@@ -22,18 +24,21 @@ public class OrderParameter {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate expectedDelivery;
-    private List<ItemDto> reportItems;
+    private List<ItemDto> items;
 
     public OrderParameter() {
         created = new Date();
     }
 
-    public OrderParameter(Long customerNumber, String orderNumber,
-            Date created, List<ItemDto> reportItems) {
+    public OrderParameter(
+            Long customerNumber,
+            String orderNumber,
+            Date created,
+            List<ItemDto> items) {
         this.customerNumber = customerNumber;
         this.orderNumber = orderNumber;
         this.created = created;
-        this.reportItems = reportItems;
+        this.items = items;
     }
 
     public Long getCustomerNumber() {
@@ -68,12 +73,12 @@ public class OrderParameter {
         this.expectedDelivery = expectedDelivery;
     }
 
-    public List<ItemDto> getReportItems() {
-        return reportItems;
+    public List<ItemDto> getItems() {
+        return items;
     }
 
-    public void setReportItems(List<ItemDto> reportItems) {
-        this.reportItems = reportItems;
+    public void setItems(List<ItemDto> reportItems) {
+        this.items = reportItems;
     }
 
 }

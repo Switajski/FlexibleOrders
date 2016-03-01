@@ -26,10 +26,10 @@ import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
+import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.ChangeShippingAddressParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
-import de.switajski.priebes.flexibleorders.web.dto.JsonCreateReportRequest;
 
 /**
  * Integration test to assure functionality of common shipping use cases,
@@ -58,8 +58,8 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
     @Test
     public void shouldBeRejectedByValidation() throws Exception {
-        JsonCreateReportRequest request = new JsonCreateReportRequest();
-        request.setCustomerId(45L);
+        OrderParameter request = new OrderParameter();
+        request.setCustomerNumber(45L);
 
         mvc.perform(post("/transitions/order")
                 .accept(MediaType.APPLICATION_JSON)

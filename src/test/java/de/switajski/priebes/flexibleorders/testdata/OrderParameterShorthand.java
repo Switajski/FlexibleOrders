@@ -14,7 +14,7 @@ public class OrderParameterShorthand {
         op.setCustomerNumber(customer.getCustomerNumber());
         op.setOrderNumber(orderNumber);
         op.setExpectedDelivery(expectedDelivery);
-        op.setReportItems(Arrays.asList(items));
+        op.setItems(Arrays.asList(items));
         return op;
     }
 

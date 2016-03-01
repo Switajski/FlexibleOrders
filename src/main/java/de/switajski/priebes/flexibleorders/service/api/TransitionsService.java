@@ -70,10 +70,6 @@ public class TransitionsService {
      */
     @Transactional
     public Order order(@Valid OrderParameter orderParameter) {
-        // TODO Custom validator!
-        if (orderRepo.findByOrderNumber(orderParameter.getOrderNumber()) != null) {
-            throw new IllegalArgumentException("Bestellnr existiert bereits");
-        }
         // TODO: Customer entity has nothing to do here!
         Customer customer = customerRepo.findByCustomerNumber(orderParameter.getCustomerNumber());
         if (customer == null) throw new IllegalArgumentException(
@@ -88,7 +84,7 @@ public class TransitionsService {
         purchaseAgreement.setCustomerNumber(customer.getCustomerNumber());
         purchaseAgreement.setExpectedDelivery(orderParameter.getExpectedDelivery());
 
-        for (ItemDto ri : orderParameter.getReportItems()) {
+        for (ItemDto ri : orderParameter.getItems()) {
             validate(ri);
             Product product = (ri.getProduct().equals("0")) ? createCustomProduct(ri) : createProductFromCatalog(ri);
             OrderItem oi = new OrderItem(

@@ -56,7 +56,7 @@ public class ExceptionController {
     }
 
     private String createValidationErrorMessage(MethodArgumentNotValidException ex) {
-        StringBuilder message = new StringBuilder("Eingaben nicht valide: " + HtmlTags.LINE_BREAK);
+        StringBuilder message = new StringBuilder();
         Iterator<FieldError> iterator = ex.getBindingResult().getFieldErrors().iterator();
         while (iterator.hasNext()) {
             FieldError err = iterator.next();

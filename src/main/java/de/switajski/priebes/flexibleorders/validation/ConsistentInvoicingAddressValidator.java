@@ -37,7 +37,7 @@ public class ConsistentInvoicingAddressValidator implements ConstraintValidator<
 
     @Override
     public boolean isValid(Collection<ItemDto> items, ConstraintValidatorContext context) {
-        if (items.isEmpty()) return true;
+        if (items == null || items.isEmpty()) return true;
 
         Map<ReportItem, Integer> ris = id2riConverter.mapItemDtosToReportItemsWithQty(items);
         Set<Address> invoiceAddresses = purchaseAgreementReadService.invoiceAddresses(ris.keySet());

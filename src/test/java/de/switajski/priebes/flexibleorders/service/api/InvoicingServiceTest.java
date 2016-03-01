@@ -105,7 +105,7 @@ public class InvoicingServiceTest {
         for (Integer i : integers)
             as.add(AddressBuilder.buildWithGeneratedAttributes(i));
 
-        when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(as);
+        when(purchaseAgreementService.invoiceAddresses(Matchers.anySetOf(ReportItem.class))).thenReturn(as);
     }
 
     private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {

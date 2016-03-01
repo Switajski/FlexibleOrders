@@ -54,13 +54,6 @@ public class InvoicingServiceTest {
     }
 
     @Test
-    public void shouldNotAcceptParameterWithEmptyItems() {
-        givenInvoicingAddresses(1);
-
-        whenValidatingAndInvoicing();
-    }
-
-    @Test
     public void shouldSaveInvoice() {
         givenDocumentNumberDoesNotExist();
         givenInvoicingAddresses(1);

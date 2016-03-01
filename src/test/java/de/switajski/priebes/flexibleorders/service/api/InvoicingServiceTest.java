@@ -80,15 +80,6 @@ public class InvoicingServiceTest {
         whenValidatingAndInvoicing();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldRejectInvoicingIfDifferentInvoicingAddressesExist() {
-        givenDocumentNumberDoesNotExist();
-        givenShippingItemsFromParameterExist();
-        givenInvoicingAddresses(1, 2);
-
-        whenValidatingAndInvoicing();
-    }
-
     @Test(expected = IllegalStateException.class)
     public void shouldRejectInvoicingIfNoInvoicingAddressesExist() {
         givenDocumentNumberDoesNotExist();

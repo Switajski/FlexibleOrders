@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
@@ -76,8 +75,14 @@ public class InvoicingService {
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) {
         Set<Address> ias = purchaseAgreementService.invoiceAddressesWithoutDeviation(reportItems);
-        if (ias.size() > 1) throw new IllegalArgumentException("Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
-                + BeanUtil.createStringOfDifferingAttributes(ias));
+
+        if (ias.size() > 1) {
+            // FIXME: this is a workaround, until feature #106 works.
+            // throw new IllegalArgumentException("Verschiedene
+            // Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
+            // + BeanUtil.createStringOfDifferingAttributes(ias));
+            return ias.iterator().next();
+        }
         else if (ias.size() == 0) throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
         Address invoicingAddress = ias.iterator().next();
         return invoicingAddress;

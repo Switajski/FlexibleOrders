@@ -62,7 +62,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse confirm(
             @RequestBody @Valid ConfirmParameter confirmRequest)
-            throws Exception {
+                    throws Exception {
         confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
         OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
         return ExtJsResponseCreator.createSuccessResponse(confirmationReport);
@@ -88,7 +88,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse invoice(
             @RequestBody @Valid InvoicingParameter invoicingRequest)
-            throws Exception {
+                    throws Exception {
 
         Invoice invoice = invoicingService.invoice(invoicingRequest);
         return ExtJsResponseCreator.createSuccessResponse(invoice);
@@ -98,7 +98,7 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody JsonObjectResponse deliver(
             @RequestBody @Valid DeliverParameter deliverParameter,
             HttpServletResponse response)
-            throws Exception {
+                    throws Exception {
 
         try {
             if (deliverParameter.isSingleDeliveryNotes()) {
@@ -111,8 +111,7 @@ public class TransitionsController extends ExceptionController {
             }
         }
         catch (ContradictoryPurchaseAgreementException e) {
-            // TODO: use custom validator:
-            // http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html#validation-beanvalidation-spring-constraints
+            // TODO: use custom validator #103
             JsonObjectResponse resp = new JsonObjectResponse();
             resp.setErrors(new HashMap<String, String>() {
                 {
@@ -145,7 +144,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/Report/{documentNumber}", method = RequestMethod.DELETE)
     public @ResponseBody JsonObjectResponse deleteReport(
             @PathVariable(value = "documentNumber") String documentNumber)
-            throws Exception {
+                    throws Exception {
         transistionsService.deleteReport(documentNumber);
         return ExtJsResponseCreator.createSuccessResponse(documentNumber);
     }
@@ -153,7 +152,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/cancelReport", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse cancelConfirmationReport(
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
-            throws Exception {
+                    throws Exception {
         CancelReport cr = transistionsService.cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createSuccessResponse(cr);
     }
@@ -161,7 +160,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse markPaid(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
-            throws Exception {
+                    throws Exception {
         Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createSuccessResponse(receipt);

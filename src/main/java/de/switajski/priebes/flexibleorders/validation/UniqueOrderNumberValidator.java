@@ -19,6 +19,7 @@ public class UniqueOrderNumberValidator implements ConstraintValidator<UniqueOrd
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) return true;
         return (null == reportRepository.findByOrderNumber(value));
     }
 

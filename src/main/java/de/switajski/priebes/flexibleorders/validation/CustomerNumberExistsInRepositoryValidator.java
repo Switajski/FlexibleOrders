@@ -19,6 +19,7 @@ public class CustomerNumberExistsInRepositoryValidator implements ConstraintVali
 
     @Override
     public boolean isValid(Long value, ConstraintValidatorContext context) {
+        if (value == null) return true;
         return (null != customerRepo.findByCustomerNumber(value));
     }
 

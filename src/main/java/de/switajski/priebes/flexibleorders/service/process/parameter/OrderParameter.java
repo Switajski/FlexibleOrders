@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -11,11 +15,15 @@ import de.switajski.priebes.flexibleorders.json.JsonDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.JsonDateSerializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
+import de.switajski.priebes.flexibleorders.validation.CustomerNumberExistsInRepository;
 import de.switajski.priebes.flexibleorders.validation.UniqueOrderNumber;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class OrderParameter {
+    @CustomerNumberExistsInRepository
+    @NotNull
     private Long customerNumber;
+    @NotNull
     @UniqueOrderNumber
     private String orderNumber;
     @JsonSerialize(using = JsonDateSerializer.class)
@@ -24,6 +32,7 @@ public class OrderParameter {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate expectedDelivery;
+    @NotEmpty
     private List<ItemDto> items;
 
     public OrderParameter() {

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
-import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
@@ -24,14 +23,10 @@ import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.OriginSystem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
-import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
-import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
-import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.CatalogProductServiceByMagento;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -45,19 +40,11 @@ public class TransitionsService {
     private static Logger log = Logger.getLogger(TransitionsService.class);
 
     @Autowired
-    private CatalogDeliveryMethodRepository deliveryMethodRepo;
-    @Autowired
     private ReportRepository reportRepo;
-    @Autowired
-    private OrderItemRepository orderItemRepo;
-    @Autowired
-    private ReportItemRepository reportItemRepo;
     @Autowired
     private CustomerRepository customerRepo;
     @Autowired
     private OrderRepository orderRepo;
-    @Autowired
-    private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
     private CatalogProductServiceByMagento cProductService;
 
@@ -70,18 +57,15 @@ public class TransitionsService {
      */
     @Transactional
     public Order order(@Valid OrderParameter orderParameter) {
-        // TODO: Customer entity has nothing to do here!
-        Customer customer = customerRepo.findByCustomerNumber(orderParameter.getCustomerNumber());
-        if (customer == null) throw new IllegalArgumentException(
-                "Keinen Kunden mit gegebener Kundennr. gefunden");
 
+        Long customerNumber = orderParameter.getCustomerNumber();
         Order order = new Order(
-                customer,
+                customerRepo.findByCustomerNumber(customerNumber),
                 OriginSystem.FLEXIBLE_ORDERS,
                 orderParameter.getOrderNumber());
         order.setCreated((orderParameter.getCreated() == null) ? new Date() : orderParameter.getCreated());
         PurchaseAgreement purchaseAgreement = new PurchaseAgreement();
-        purchaseAgreement.setCustomerNumber(customer.getCustomerNumber());
+        purchaseAgreement.setCustomerNumber(customerNumber);
         purchaseAgreement.setExpectedDelivery(orderParameter.getExpectedDelivery());
 
         for (ItemDto ri : orderParameter.getItems()) {

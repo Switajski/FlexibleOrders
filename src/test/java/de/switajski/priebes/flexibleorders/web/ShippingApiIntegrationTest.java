@@ -66,7 +66,8 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(createStringRequest(request)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("\"errors\":{\"items\":")))
+                .andExpect(content().string(containsString("\"errors\"")))
+                .andExpect(content().string(containsString("\"items\":")))
                 .andExpect(status().is4xxClientError());
     }
 

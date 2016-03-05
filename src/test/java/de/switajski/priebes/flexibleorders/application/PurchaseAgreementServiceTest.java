@@ -45,25 +45,6 @@ public class PurchaseAgreementServiceTest {
     }
 
     @Test
-    public void shouldLegalPurchaseAgreementsOnly() {
-        // GIVEN
-        List<ReportItem> agreementItems = Arrays.asList(
-                givenAgreementItemWith(givenPurchaseAgreement()),
-                givenAgreementItemWith(changeExpectedDeliveryDate(givenPurchaseAgreement())));
-
-        // WHEN
-        Set<PurchaseAgreement> purchaseAgreements = whenRetrievingLegalPurchaseAgreements(agreementItems);
-
-        // THEN
-        assertThat(purchaseAgreements.size(), is(0));
-    }
-
-    private Set<PurchaseAgreement> whenRetrievingLegalPurchaseAgreements(List<ReportItem> agreementItems) {
-        Set<PurchaseAgreement> purchaseAgreements = purchaseAgreementService.retrieveLegalWithoutDeviations(agreementItems);
-        return purchaseAgreements;
-    }
-
-    @Test
     public void shouldRetrieveTwoShippingAddress() {
         // GIVEN
         List<ReportItem> agreementItems = Arrays.asList(

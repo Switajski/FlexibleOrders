@@ -27,20 +27,6 @@ public class PurchaseAgreementReadService {
         return retrieveWithoutDeviations(reportItems, agreedOnly);
     }
 
-    /**
-     * retrieve only purchase agreements that are agreed by an order agreement
-     * 
-     * @param reportItems
-     *            works with confirmation items only.
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public Set<PurchaseAgreement> retrieveLegalWithoutDeviations(
-            Collection<ReportItem> reportItems) {
-        boolean agreedOnly = true;
-        return retrieveWithoutDeviations(reportItems, agreedOnly);
-    }
-
     @Transactional(readOnly = true)
     public Set<Address> shippingAddressesWithoutDeviations(Collection<ReportItem> reportItems) {
         return withoutDeviations(reportItems)

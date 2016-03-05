@@ -54,7 +54,7 @@ public class InvoicingServiceTest {
     }
 
     @Test
-    public void shouldSaveInvoice() {
+    public void shouldSaveInvoice() throws Exception {
         givenDocumentNumberDoesNotExist();
         givenInvoicingAddresses(1);
         givenItemsInParameter();
@@ -66,7 +66,7 @@ public class InvoicingServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldRejectInvoicingIfDocumentNumberAlreadyExists() {
+    public void shouldRejectInvoicingIfDocumentNumberAlreadyExists() throws Exception {
         when(reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()))
                 .thenReturn(new Invoice());
 
@@ -74,7 +74,7 @@ public class InvoicingServiceTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void shouldRejectInvoicingIfNoInvoicingAddressesExist() {
+    public void shouldRejectInvoicingIfNoInvoicingAddressesExist() throws Exception {
         givenDocumentNumberDoesNotExist();
         when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(java.util.Collections.emptySet());
 
@@ -123,7 +123,7 @@ public class InvoicingServiceTest {
                 .build();
     }
 
-    private void whenValidatingAndInvoicing() {
+    private void whenValidatingAndInvoicing() throws Exception {
         invoicingService.invoice(invoicingParameter);
     }
 

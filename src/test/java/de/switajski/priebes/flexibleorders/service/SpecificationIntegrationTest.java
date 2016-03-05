@@ -19,6 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
@@ -76,28 +77,33 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
     private static final int JUREK_QTY = 5; // All Jureks from B12
 
     private static final Product AMY = new CatalogProductBuilder()
-            .amy().build()
+            .amy()
+            .build()
             .toProduct();
 
     private static final Product PAUL = new CatalogProductBuilder()
-            .paul().build()
+            .paul()
+            .build()
             .toProduct();
 
     private static final Product MILADKA = new CatalogProductBuilder()
-            .miladka().build()
+            .miladka()
+            .build()
             .toProduct();
 
     private static final Product SALOME = new CatalogProductBuilder()
-            .salome().build()
+            .salome()
+            .build()
             .toProduct();
 
     private static final Product JUREK = new CatalogProductBuilder()
-            .jurek().build()
+            .jurek()
+            .build()
             .toProduct();
 
     @Transactional
     @Test
-    public void confirmationItemToBeAgreedSpecificationShouldReturnAgreedItemsOnly() {
+    public void confirmationItemToBeAgreedSpecificationShouldReturnAgreedItemsOnly() throws Exception {
         // GIVEN
         givenDefinedTestData();
 
@@ -111,8 +117,10 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
 
     /**
      * test data from Open Office calculation sheet "Test Data.ods"
+     * 
+     * @throws Exception
      */
-    private void givenDefinedTestData() {
+    private void givenDefinedTestData() throws Exception {
         if (orderRepo.findByOrderNumber("B11") != null) {
             OrderConfirmation agreement = givenOrderAgreement();
             givenDeliveryReports(agreement);
@@ -121,7 +129,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
 
     @Transactional
     @Test
-    public void agreedItemsToBeShippedSpecShouldReturnAgreedItemsOnly() {
+    public void agreedItemsToBeShippedSpecShouldReturnAgreedItemsOnly() throws Exception {
         givenDefinedTestData();
 
         // WHEN
@@ -169,8 +177,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      * </ul>
      *
      * @param orderAgreement
+     * @throws ContradictoryPurchaseAgreementException
      */
-    private void givenDeliveryReports(OrderConfirmation orderAgreement) {
+    private void givenDeliveryReports(OrderConfirmation orderAgreement) throws ContradictoryPurchaseAgreementException {
         DeliverParameter deliverParameterL11 = new DeliverParameter("L11", LocalDate.now(), Arrays.asList(
                 createItemDto(2, AMY, orderAgreement),
                 createItemDto(2, MILADKA, orderAgreement)));
@@ -201,7 +210,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
         deliverParameterL11.setShowPricesInDeliveryNotes(false);
     }
 
-    private ItemDto createItemDto(int qty, Product product,
+    private ItemDto createItemDto(
+            int qty,
+            Product product,
             OrderConfirmation agreement) {
         ItemDto item = ri2ItemDtoConversionService.createOverdue(
                 getFirstItemOf(
@@ -245,7 +256,8 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      * <li>5 Jurek</li>
      * </ul>
      *
-     * AU11: </br> same as AB11
+     * AU11: </br>
+     * same as AB11
      *
      * @return
      */

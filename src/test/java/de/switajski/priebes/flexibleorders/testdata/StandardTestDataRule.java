@@ -82,7 +82,12 @@ public class StandardTestDataRule extends ExternalResource {
                         agreeingService);
 
                 if (!tdc.isTestDataPersisted()) {
-                    tdc.createTestData();
+                    try {
+                        tdc.createTestData();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return null;
             }

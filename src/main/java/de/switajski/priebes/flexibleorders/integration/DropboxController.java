@@ -20,6 +20,7 @@ import com.dropbox.core.DbxWriteMode;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
@@ -72,7 +73,7 @@ public class DropboxController extends ExceptionController {
         return jsonObjectResponse;
     }
 
-    private ReportDto retrieveReportDtoOrFail(String documentNumber) {
+    private ReportDto retrieveReportDtoOrFail(String documentNumber) throws ContradictoryPurchaseAgreementException {
         ReportDto reportDto = null;
         Report report = reportRepo.findByDocumentNumber(documentNumber);
         if (report != null) {
@@ -127,7 +128,8 @@ public class DropboxController extends ExceptionController {
         List<DbxEntry.File> metadatas = client.getRevisions(fileToUpdate.path);
         DbxEntry.File metadata = metadatas.stream()
                 .sorted((DbxEntry.File o1, DbxEntry.File o2) -> o2.clientMtime.compareTo(o1.clientMtime))
-                .findFirst().get();
+                .findFirst()
+                .get();
         return metadata;
     }
 

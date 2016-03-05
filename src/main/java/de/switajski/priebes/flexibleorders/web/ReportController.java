@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -64,7 +65,7 @@ public class ReportController {
     CustomerRepository customerRepo;
 
     @RequestMapping(value = "/reports/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showReportPdf(@PathVariable("id") String id) {
+    public ModelAndView showReportPdf(@PathVariable("id") String id) throws ContradictoryPurchaseAgreementException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
@@ -135,8 +136,9 @@ public class ReportController {
      * 
      * @param report
      * @return
+     * @throws ContradictoryPurchaseAgreementException
      */
-    private ModelAndView createReportSpecificModelAndView(Report report) {
+    private ModelAndView createReportSpecificModelAndView(Report report) throws ContradictoryPurchaseAgreementException {
         String model = ReportDto.class.getSimpleName();
         ReportDto reportDto = report2DtoConversionService.convert(report);
 

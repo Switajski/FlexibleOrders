@@ -32,7 +32,8 @@ public class ExpectedDeliveryService {
     }
 
     public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
-        return purchaseAgreementService.withoutDeviations(items).stream()
+        return purchaseAgreementService.withoutDeviations(items)
+                .stream()
                 .filter(p -> p.getExpectedDelivery() != null)
                 .map(s -> DateUtils.weekOf(s.getExpectedDelivery()))
                 .collect(Collectors.toSet());
@@ -47,8 +48,9 @@ public class ExpectedDeliveryService {
      *             dates
      */
     @Transactional(readOnly = true)
-    public void validateExpectedDeliveryDates(Set<ReportItem> reportItems,
-            Date actualDeliveryDate) {
+    public void validateExpectedDeliveryDates(
+            Set<ReportItem> reportItems,
+            Date actualDeliveryDate) throws ContradictoryPurchaseAgreementException {
         Set<Integer> expectedDeliveryDates = retrieveWeekOfYear(reportItems);
         if (expectedDeliveryDates.size() > 1) {
             StringBuilder messageBuilder = new StringBuilder("Angegebene Positionen haben ABs mit widerspr" + Unicode.U_UML + "chlichen Lieferdaten: ");

@@ -1,6 +1,8 @@
 package de.switajski.priebes.flexibleorders.exceptions;
 
-public class ContradictoryPurchaseAgreementException extends IllegalArgumentException {
+public class ContradictoryPurchaseAgreementException extends Exception {
+
+    public static final String SPECIAL_INVOICE_ADDRESS_HANDLING_TAG = "#CPA-IA";
 
     private static final long serialVersionUID = 1L;
 

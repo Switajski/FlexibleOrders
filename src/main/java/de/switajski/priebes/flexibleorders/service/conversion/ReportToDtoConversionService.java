@@ -50,10 +50,11 @@ public class ReportToDtoConversionService {
      *
      * @param report
      * @return if no converter for given report is defined.
+     * @throws ContradictoryPurchaseAgreementException
      * 
      */
     @Transactional(readOnly = true)
-    public ReportDto convert(Report report) {
+    public ReportDto convert(Report report) throws ContradictoryPurchaseAgreementException {
 
         if (report instanceof DeliveryNotes) return toDto((DeliveryNotes) report);
         else if (report instanceof Invoice) return toDto((Invoice) report);
@@ -62,7 +63,7 @@ public class ReportToDtoConversionService {
         return null;
     }
 
-    private DeliveryNotesDto toDto(DeliveryNotes report) {
+    private DeliveryNotesDto toDto(DeliveryNotes report) throws ContradictoryPurchaseAgreementException {
         DeliveryNotesDto dto = new DeliveryNotesDto();
         amendCommonAttributes(report, dto);
         dto.address = retrieveActualShippingAddress(report);
@@ -76,7 +77,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private InvoiceDto toDto(Invoice invoice) {
+    private InvoiceDto toDto(Invoice invoice) throws ContradictoryPurchaseAgreementException {
         InvoiceDto dto = new InvoiceDto();
         amendCommonAttributes(invoice, dto);
         dto.address = retrieveInvoicingAddress(invoice);
@@ -92,7 +93,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) {
+    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) throws ContradictoryPurchaseAgreementException {
         OrderConfirmationDto dto = new OrderConfirmationDto();
         dto.address = retrieveInvoicingAddress(orderConfirmation);
         dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
@@ -124,7 +125,7 @@ public class ReportToDtoConversionService {
     }
 
     // TODO: mapShippingAddress is a dirty hack in order to not refactor yet
-    private void amendCommonAttributes(Report report, ReportDto dto) {
+    private void amendCommonAttributes(Report report, ReportDto dto) throws ContradictoryPurchaseAgreementException {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -161,7 +162,7 @@ public class ReportToDtoConversionService {
 
     }
 
-    private DeliveryMethod retrieveDeliveryMethod(Report report) {
+    private DeliveryMethod retrieveDeliveryMethod(Report report) throws ContradictoryPurchaseAgreementException {
         DeliveryMethod dm = null;
         Set<DeliveryMethod> deliveryMethods = deliveryMethodService.retrieve(report.getItems());
         if (deliveryMethods.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f" + Unicode.U_UML
@@ -202,7 +203,7 @@ public class ReportToDtoConversionService {
         }
     }
 
-    private Address retrieveShippingAddress(Report report) {
+    private Address retrieveShippingAddress(Report report) throws ContradictoryPurchaseAgreementException {
         Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(report.getItems());
         if (shippingAddresses.size() > 1) {
@@ -213,7 +214,7 @@ public class ReportToDtoConversionService {
         return shippingAddress;
     }
 
-    private Address retrieveActualShippingAddress(Report report) {
+    private Address retrieveActualShippingAddress(Report report) throws ContradictoryPurchaseAgreementException {
         Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(report.getItems());
         if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML

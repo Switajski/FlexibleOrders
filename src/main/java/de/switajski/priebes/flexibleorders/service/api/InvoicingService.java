@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.BeanUtil;
 import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -37,11 +37,11 @@ public class InvoicingService {
     private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional
-    public Invoice invoice(InvoicingParameter invoicingParameter) {
+    public Invoice invoice(InvoicingParameter invoicingParameter) throws ContradictoryPurchaseAgreementException {
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);
-        invoice.setInvoiceAddress(retrieveInvoicingAddressOrFail(risWithQty.keySet()));
+        invoice.setInvoiceAddress(retrieveInvoicingAddress(risWithQty.keySet()));
 
         for (Entry<ReportItem, Integer> entry : risWithQty.entrySet()) {
             ReportItem shippingItem = entry.getKey();
@@ -70,13 +70,13 @@ public class InvoicingService {
         return reportRepo.save(invoice);
     }
 
-    private Address retrieveInvoicingAddressOrFail(Set<ReportItem> reportItems) {
+    private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) throws ContradictoryPurchaseAgreementException {
         Set<Address> ias = purchaseAgreementService.invoiceAddresses(reportItems);
 
         if (ias.size() > 1) {
-            throw new IllegalArgumentException(
-                    "Verschiedene Rechnungsadressen in Auftr" + Unicode.A_UML + "gen gefunden: "
-                            + BeanUtil.createStringOfDifferingAttributes(ias));
+            throw new ContradictoryPurchaseAgreementException(
+                    "Widerspruechliche Rechnungsadressen gefunden " +
+                            ContradictoryPurchaseAgreementException.SPECIAL_INVOICE_ADDRESS_HANDLING_TAG);
         }
         else if (ias.size() == 0) {
             throw new IllegalStateException("Keine Rechnungsaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");

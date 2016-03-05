@@ -108,11 +108,11 @@ public class TestDataCreator {
 
     public TestDataCreator() {}
 
-    public void run() {
+    public void run() throws Exception {
         createTestData();
     }
 
-    public void createTestData() {
+    public void createTestData() throws Exception {
         createProducts();
         createCustomers();
         createDeliveryMethods();
@@ -152,7 +152,7 @@ public class TestDataCreator {
         return ab22;
     }
 
-    private void createYvonnesOrders() {
+    private void createYvonnesOrders() throws Exception {
 
         orderingService.order(B11);
         orderingService.order(B12);
@@ -181,7 +181,7 @@ public class TestDataCreator {
         createR11(convertToItemDtos(l11), convertToItemDtos(l12));
     }
 
-    private void createR11(List<ItemDto> l11, List<ItemDto> l12) {
+    private void createR11(List<ItemDto> l11, List<ItemDto> l12) throws Exception {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.setPriceNet(BigDecimal.valueOf(11d));
         shippingCosts.setProductType(ProductType.SHIPPING);
@@ -194,7 +194,7 @@ public class TestDataCreator {
         invoicingService.invoice(invoicingParameter);
     }
 
-    private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) {
+    private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L15",
                 LocalDate.now(),
@@ -208,7 +208,7 @@ public class TestDataCreator {
         shippingService.ship(deliverParameter);
     }
 
-    private void createL14(List<ItemDto> itemsFromAu11) {
+    private void createL14(List<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L14",
                 LocalDate.now(),
@@ -220,7 +220,7 @@ public class TestDataCreator {
         shippingService.ship(deliverParameter);
     }
 
-    private void createL13(List<ItemDto> itemsFromAu11) {
+    private void createL13(List<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L13",
                 LocalDate.now(),
@@ -234,7 +234,7 @@ public class TestDataCreator {
         shippingService.ship(deliverParameter);
     }
 
-    private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) {
+    private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L12",
                 LocalDate.now(),
@@ -249,7 +249,7 @@ public class TestDataCreator {
         return l12;
     }
 
-    private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) {
+    private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L11",
                 LocalDate.now(),

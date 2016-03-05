@@ -91,9 +91,10 @@ public class PurchaseAgreementReadService {
      * 
      * @param reportItems
      * @return
+     * @throws ContradictoryPurchaseAgreementException
      */
     @Transactional(readOnly = true)
-    public Address retrieveShippingAddressOrFail(Set<ReportItem> reportItems) {
+    public Address retrieveShippingAddressOrFail(Set<ReportItem> reportItems) throws ContradictoryPurchaseAgreementException {
         Set<Address> ias = shippingAddresses(reportItems);
         if (ias.size() > 1) {
             throw new ContradictoryPurchaseAgreementException(

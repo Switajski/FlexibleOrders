@@ -54,7 +54,7 @@ public class ShippingServiceTest {
     }
 
     @Test
-    public void shouldCreateShippingCosts() {
+    public void shouldCreateShippingCosts() throws Exception {
         givenDeliverParameter();
         deliverParameter.setShipment(SHIPPING_COSTS);
         deliverParameter.setDeliveryMethod(DELIVERY_METHOD);
@@ -77,7 +77,7 @@ public class ShippingServiceTest {
         return capturedDeliveryNotes.getValue();
     }
 
-    private void whenDelivering() {
+    private void whenDelivering() throws Exception {
         shippingService.ship(deliverParameter);
     }
 

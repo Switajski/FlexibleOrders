@@ -41,14 +41,14 @@ public class ExpectedDeliveryServiceTest {
     }
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
-    public void shouldFailIfIfDifferentExpectedDeliveryDatesExist() {
+    public void shouldFailIfIfDifferentExpectedDeliveryDatesExist() throws Exception {
         givenPurchaseAgreements(now, now.plusWeeks(1));
 
         whenValidatingExpectedDeliveryDates();
     }
 
     @Test
-    public void shouldPassIfActualDeliveryDateIsInSameWeekAsExpectedDeliveryDates() {
+    public void shouldPassIfActualDeliveryDateIsInSameWeekAsExpectedDeliveryDates() throws Exception {
         givenPurchaseAgreements(now, now);
         actualDeliveryDate = DateUtils.asDate(now);
 
@@ -56,7 +56,7 @@ public class ExpectedDeliveryServiceTest {
     }
 
     @Test(expected = ContradictoryPurchaseAgreementException.class)
-    public void shouldFailIfActualDeliveryDateIsNotExpectedDeliveryDates() {
+    public void shouldFailIfActualDeliveryDateIsNotExpectedDeliveryDates() throws Exception {
         givenPurchaseAgreements(now, now);
         actualDeliveryDate = DateUtils.asDate(now.plusWeeks(1));
 
@@ -64,13 +64,13 @@ public class ExpectedDeliveryServiceTest {
     }
 
     @Test
-    public void shouldPassIfNoExpectedDeliveryDatesAreSet() {
+    public void shouldPassIfNoExpectedDeliveryDatesAreSet() throws Exception {
         givenPurchaseAgreements(null, null);
 
         whenValidatingExpectedDeliveryDates();
     }
 
-    private void whenValidatingExpectedDeliveryDates() {
+    private void whenValidatingExpectedDeliveryDates() throws Exception {
         service.validateExpectedDeliveryDates(new HashSet<ReportItem>(), actualDeliveryDate);
     }
 

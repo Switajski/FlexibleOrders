@@ -19,11 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
-import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddresses;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
@@ -45,9 +45,8 @@ public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfig
         invoicingParameter.setItems(overdueItemsof("L13", "L15"));
 
         whenInvoicing()
-                .andExpect(content().string(containsString("errors")))
                 .andExpect(content().string(containsString(
-                        ConsistentInvoicingAddresses.SPECIAL_HANDLING_TAG)));
+                        ContradictoryPurchaseAgreementException.SPECIAL_INVOICE_ADDRESS_HANDLING_TAG)));
     }
 
     private List<ItemDto> overdueItemsof(String... strings) {

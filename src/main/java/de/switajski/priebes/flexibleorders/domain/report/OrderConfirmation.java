@@ -119,4 +119,11 @@ public class OrderConfirmation extends Report {
         addDeviation(pa);
     }
 
+    public void changeInvoicingAddress(Address address) {
+        PurchaseAgreement pa = new PurchaseAgreement(actualPurchaseAgreement());
+        pa.setInvoiceAddress(address);
+        addDeviation(pa);
+
+    }
+
 }

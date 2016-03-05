@@ -74,13 +74,15 @@ public class ConfirmingService {
         return reportRepo.save(cr);
     }
 
-    private void validateConfirm(String orderNumber, String confirmNumber,
-            List<ItemDto> orderItems, Address shippingAddress) {
+    private void validateConfirm(
+            String orderNumber,
+            String confirmNumber,
+            List<ItemDto> orderItems,
+            Address shippingAddress) {
         if (reportRepo.findByDocumentNumber(confirmNumber) != null) throw new IllegalArgumentException("Auftragsnr. " + confirmNumber
                 + " besteht bereits");
         if (orderItems.isEmpty()) throw new IllegalArgumentException("Keine Positionen angegeben");
         if (orderNumber == null) throw new IllegalArgumentException("Keine Bestellnr angegeben");
-        if (confirmNumber == null) throw new IllegalArgumentException("Keine AB-nr angegeben");
         if (shippingAddress == null) throw new IllegalArgumentException("Keine Lieferadresse angegeben");
     }
 
@@ -103,9 +105,15 @@ public class ConfirmingService {
                         added = true;
                     }
                     else {
-                        StringBuilder errMsgBuilder = new StringBuilder().append("Angegebene Menge zum best").append(Unicode.A_UML)
-                                .append("tigen ist ").append(qtyToBeConfirmed).append(". Dagegen m sind nur noch ").append(match.toBeConfirmed()).append(
-                                        Unicode.U_UML).append("brig");
+                        StringBuilder errMsgBuilder = new StringBuilder().append("Angegebene Menge zum best")
+                                .append(Unicode.A_UML)
+                                .append("tigen ist ")
+                                .append(qtyToBeConfirmed)
+                                .append(". Dagegen m sind nur noch ")
+                                .append(match.toBeConfirmed())
+                                .append(
+                                        Unicode.U_UML)
+                                .append("brig");
                         throw new IllegalArgumentException(errMsgBuilder.toString());
                     }
                 }

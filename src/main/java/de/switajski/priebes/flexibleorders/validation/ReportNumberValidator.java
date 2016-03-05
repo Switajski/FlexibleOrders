@@ -6,20 +6,26 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 
 @Component
-public class UniqueDocumentNumberValidator implements ConstraintValidator<UniqueDocumentNumber, String> {
+public class ReportNumberValidator implements ConstraintValidator<ReportNumber, String> {
 
     @Autowired
     private ReportRepository reportRepository;
+    private boolean shouldExist;
 
     @Override
-    public void initialize(UniqueDocumentNumber constraintAnnotation) {}
+    public void initialize(ReportNumber constraintAnnotation) {
+        shouldExist = constraintAnnotation.shouldExist();
+    }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (null == reportRepository.findByDocumentNumber(value));
+        Report report = reportRepository.findByDocumentNumber(value);
+        if (shouldExist) return (report != null);
+        else return (report == null);
     }
 
 }

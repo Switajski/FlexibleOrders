@@ -16,9 +16,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddress;
+import de.switajski.priebes.flexibleorders.validation.ReportNumber;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingParameter {
+    @ReportNumber(shouldExist = false)
     @NotNull
     private String invoiceNumber;
     @JsonSerialize(using = LocalDateSerializer.class)

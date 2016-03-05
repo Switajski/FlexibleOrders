@@ -14,9 +14,11 @@ import javax.validation.Payload;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = UniqueDocumentNumberValidator.class)
+@Constraint(validatedBy = ReportNumberValidator.class)
 @Documented
-public @interface UniqueDocumentNumber {
+public @interface ReportNumber {
+
+    boolean shouldExist();
 
     String message() default "Dokumentennr. schon vorhanden";
 

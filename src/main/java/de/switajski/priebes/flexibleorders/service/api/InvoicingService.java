@@ -38,10 +38,6 @@ public class InvoicingService {
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) {
-        // TODO: custom constraint! #103 use UniqueDocumentNumber
-        if (reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()) != null) {
-            throw new IllegalArgumentException("Rechnungsnr. existiert bereits");
-        }
 
         Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);

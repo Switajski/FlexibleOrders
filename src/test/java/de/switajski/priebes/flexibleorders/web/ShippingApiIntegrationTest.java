@@ -28,7 +28,7 @@ import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDt
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
-import de.switajski.priebes.flexibleorders.web.dto.ChangeShippingAddressParameter;
+import de.switajski.priebes.flexibleorders.web.dto.ChangeAddressParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
@@ -108,7 +108,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
         // Change shipping address of AB11, AB13 and AB15, because they are
         // deviating.
-        ChangeShippingAddressParameter param = givenChangeShippingAddressParameter();
+        ChangeAddressParameter param = givenChangeShippingAddressParameter();
         mvc.perform(post("/reports/shippingAddress")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -137,8 +137,8 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
     }
 
-    private ChangeShippingAddressParameter givenChangeShippingAddressParameter() {
-        ChangeShippingAddressParameter param = new ChangeShippingAddressParameter();
+    private ChangeAddressParameter givenChangeShippingAddressParameter() {
+        ChangeAddressParameter param = new ChangeAddressParameter();
         param.setCity("new city");
         param.setCountry(Country.AT);
         param.setName1("new Name1");

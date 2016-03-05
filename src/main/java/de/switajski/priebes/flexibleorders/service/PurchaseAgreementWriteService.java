@@ -18,12 +18,21 @@ public class PurchaseAgreementWriteService {
 
     @Transactional
     public void changeShippingAddress(String docNo, Address shippingAddress) {
-
         Report report = reportRepository.findByDocumentNumber(docNo);
         if (report == null) throw new NotFoundException("Konnte Dokument mit gegebener Nummer nicht finden");
         OrderConfirmation oc = (OrderConfirmation) report;
         oc.changeShippingAddress(shippingAddress);
         reportRepository.save(oc);
+    }
+
+    @Transactional
+    public void changeInvoicingAddress(String docNo, Address address) {
+        Report report = reportRepository.findByDocumentNumber(docNo);
+        if (report == null) throw new NotFoundException("Konnte Dokument mit gegebener Nummer nicht finden");
+        OrderConfirmation oc = (OrderConfirmation) report;
+        oc.changeInvoicingAddress(address);
+        reportRepository.save(oc);
+
     }
 
 }

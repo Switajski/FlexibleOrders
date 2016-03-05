@@ -23,8 +23,9 @@ import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementWriteService;
+import de.switajski.priebes.flexibleorders.validation.ReportNumberValidator;
 import de.switajski.priebes.flexibleorders.web.dto.AddressDto;
-import de.switajski.priebes.flexibleorders.web.dto.ChangeShippingAddressParameter;
+import de.switajski.priebes.flexibleorders.web.dto.ChangeAddressParameter;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @CrossOrigin
@@ -40,12 +41,26 @@ public class PurchaseAgreementController {
     @Autowired
     ReportRepository reportRepo;
 
+    @Autowired
+    ReportNumberValidator rnValidator;
+
     @RequestMapping(value = "/reports/shippingAddress", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse changeShippingAddress(
-            @RequestBody @Valid ChangeShippingAddressParameter parameter) {
+            @RequestBody @Valid ChangeAddressParameter parameter) {
 
         for (String docNo : parameter.getDocumentNumbers()) {
             paService.changeShippingAddress(docNo, parameter.getAddress());
+        }
+
+        return ExtJsResponseCreator.createSuccessResponse(null);
+    }
+
+    @RequestMapping(value = "/reports/invoicingAddress", method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse changeInvoicingAddress(
+            @RequestBody @Valid ChangeAddressParameter parameter) {
+
+        for (String docNo : parameter.getDocumentNumbers()) {
+            paService.changeInvoicingAddress(docNo, parameter.getAddress());
         }
 
         return ExtJsResponseCreator.createSuccessResponse(null);

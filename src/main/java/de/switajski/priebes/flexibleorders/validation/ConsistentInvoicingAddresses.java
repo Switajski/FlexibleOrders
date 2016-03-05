@@ -14,9 +14,9 @@ import javax.validation.Payload;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = ConsistentInvoicingAddressValidator.class)
+@Constraint(validatedBy = ConsistentInvoicingAddressesValidator.class)
 @Documented
-public @interface ConsistentInvoicingAddress {
+public @interface ConsistentInvoicingAddresses {
 
     public static final String SPECIAL_HANDLING_TAG = "#CPA-IA";
 

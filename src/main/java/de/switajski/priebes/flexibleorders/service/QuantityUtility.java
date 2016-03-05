@@ -4,7 +4,7 @@ import java.util.Set;
 
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.validation.UniqueDocumentNumber;
+import de.switajski.priebes.flexibleorders.validation.ReportNumber;
 
 public class QuantityUtility {
 
@@ -18,7 +18,7 @@ public class QuantityUtility {
 
     // TODO: move to validator see #103
     /**
-     * @deprecated use custom validator like @link {@link UniqueDocumentNumber}
+     * @deprecated use custom validator like @link {@link ReportNumber}
      * @param qty
      *            to bring in the next process step
      * @param reportItem

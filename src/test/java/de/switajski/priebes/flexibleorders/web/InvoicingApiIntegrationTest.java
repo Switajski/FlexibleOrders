@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
-import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddress;
+import de.switajski.priebes.flexibleorders.validation.ConsistentInvoicingAddresses;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
@@ -47,7 +47,7 @@ public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfig
         whenInvoicing()
                 .andExpect(content().string(containsString("errors")))
                 .andExpect(content().string(containsString(
-                        ConsistentInvoicingAddress.SPECIAL_HANDLING_TAG)));
+                        ConsistentInvoicingAddresses.SPECIAL_HANDLING_TAG)));
     }
 
     private List<ItemDto> overdueItemsof(String... strings) {

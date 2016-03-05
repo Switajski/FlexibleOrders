@@ -22,6 +22,7 @@ import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializ
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
 import de.switajski.priebes.flexibleorders.reference.Country;
+import de.switajski.priebes.flexibleorders.validation.ReportNumber;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @JsonAutoDetect
@@ -29,6 +30,7 @@ public class ConfirmParameter {
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private String orderNumber;
     @NotNull
+    @ReportNumber(shouldExist = false)
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     @JsonProperty("orderConfirmationNumber")
     private String confirmNumber;
@@ -38,8 +40,7 @@ public class ConfirmParameter {
     private Long deliveryMethodNo;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
-    private String
-            dname1,
+    private String dname1,
             dname2,
             dstreet,
             dcity;
@@ -118,9 +119,14 @@ public class ConfirmParameter {
         setVendorNumber(cd.getVendorNumber());
     }
 
-    public ConfirmParameter(String orderNumber, String confirmNumber,
-            LocalDate expectedDelivery, Long deliveryMethodNoNumber, Address shippingAddress,
-            Address invoiceAddress, List<ItemDto> items) {
+    public ConfirmParameter(
+            String orderNumber,
+            String confirmNumber,
+            LocalDate expectedDelivery,
+            Long deliveryMethodNoNumber,
+            Address shippingAddress,
+            Address invoiceAddress,
+            List<ItemDto> items) {
         this.orderNumber = orderNumber;
         this.confirmNumber = confirmNumber;
         this.expectedDelivery = expectedDelivery;

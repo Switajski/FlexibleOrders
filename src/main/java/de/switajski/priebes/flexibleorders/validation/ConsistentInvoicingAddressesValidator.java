@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
  *
  */
 @Component
-public class ConsistentInvoicingAddressValidator implements ConstraintValidator<ConsistentInvoicingAddress, Collection<ItemDto>> {
+public class ConsistentInvoicingAddressesValidator implements ConstraintValidator<ConsistentInvoicingAddresses, Collection<ItemDto>> {
 
     @Autowired
     PurchaseAgreementReadService purchaseAgreementReadService;
@@ -33,7 +33,7 @@ public class ConsistentInvoicingAddressValidator implements ConstraintValidator<
     ItemDtoToReportItemConversionService id2riConverter;
 
     @Override
-    public void initialize(ConsistentInvoicingAddress constraintAnnotation) {}
+    public void initialize(ConsistentInvoicingAddresses constraintAnnotation) {}
 
     @Override
     public boolean isValid(Collection<ItemDto> items, ConstraintValidatorContext context) {

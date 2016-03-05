@@ -9,7 +9,7 @@ import org.junit.Before;
 /**
  * Static, because the validator is initialized statically. FlexibleOrders also
  * uses validators with dependencies, that are injected by spring (e.g.
- * {@link UniqueDocumentNumberValidator}).
+ * {@link ReportNumberValidator}).
  * 
  * @author switajski
  *

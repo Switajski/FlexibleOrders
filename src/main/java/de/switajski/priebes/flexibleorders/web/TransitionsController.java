@@ -60,8 +60,7 @@ public class TransitionsController extends ExceptionController {
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse confirm(
-            @RequestBody @Valid ConfirmParameter confirmRequest)
-                    throws Exception {
+            @RequestBody @Valid ConfirmParameter confirmRequest) throws Exception {
         confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
         OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
         return ExtJsResponseCreator.createSuccessResponse(confirmationReport);

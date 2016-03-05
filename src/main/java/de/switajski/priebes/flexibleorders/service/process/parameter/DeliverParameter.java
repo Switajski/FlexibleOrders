@@ -18,13 +18,13 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateDeserializer;
 import de.switajski.priebes.flexibleorders.json.LocalDateSerializer;
-import de.switajski.priebes.flexibleorders.validation.UniqueDocumentNumber;
+import de.switajski.priebes.flexibleorders.validation.ReportNumber;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @JsonAutoDetect
 public class DeliverParameter {
 
-    @UniqueDocumentNumber
+    @ReportNumber(shouldExist = false)
     @NotNull
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
     private String deliveryNotesNumber;

@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,7 +17,7 @@ import de.switajski.priebes.flexibleorders.json.EmptyStringStripToNullDeserializ
 import de.switajski.priebes.flexibleorders.reference.Country;
 
 @JsonAutoDetect
-public class ChangeShippingAddressParameter {
+public class ChangeAddressParameter {
 
     @NotNull
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
@@ -29,7 +31,7 @@ public class ChangeShippingAddressParameter {
     private Integer postalCode;
     private String name2;
 
-    @NotNull
+    @NotEmpty
     private List<String> documentNumbers;
 
     public String getName1() {

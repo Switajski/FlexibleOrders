@@ -10,6 +10,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hibernate.validator.internal.util.ReflectionHelper;
+import org.junit.Before;
 
 /**
  * Static, because the validator is initialized statically. FlexibleOrders also
@@ -27,7 +28,8 @@ public abstract class ValidationStaticTestConfiguration {
 
     Map<Class<?>, ConstraintValidator<?, ?>> constraintValidators = new HashMap<>();
 
-    private void setup() {
+    @Before
+    public void setup() {
         Configuration<?> configuration = Validation.byDefaultProvider().configure();
         configuration.constraintValidatorFactory(new ConstraintValidatorDelegate(constraintValidators));
 

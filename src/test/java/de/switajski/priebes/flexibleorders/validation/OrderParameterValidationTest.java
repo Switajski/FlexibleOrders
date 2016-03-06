@@ -2,7 +2,7 @@ package de.switajski.priebes.flexibleorders.validation;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -23,9 +23,7 @@ public class OrderParameterValidationTest extends ValidationStaticTestConfigurat
     public void shouldRejectOrderParameterWithItemDtoWithoutProduct() {
         ItemDto item = new ItemDto();
         item.setQuantity(2);
-        ArrayList<ItemDto> ris = new ArrayList<ItemDto>();
-        ris.add(item);
-        orderParameter.setItems(ris);
+        orderParameter.setItems(Arrays.asList(item));
 
         whenValidating();
 

@@ -23,7 +23,7 @@ import org.hibernate.validator.internal.util.ReflectionHelper;
  */
 public abstract class ValidationStaticTestConfiguration {
 
-    Validator validator;
+    Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
 
     Map<Class<?>, ConstraintValidator<?, ?>> constraintValidators = new HashMap<>();
 

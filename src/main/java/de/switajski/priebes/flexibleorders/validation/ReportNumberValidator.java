@@ -14,6 +14,7 @@ public class ReportNumberValidator implements ConstraintValidator<ReportNumber, 
 
     @Autowired
     private ReportRepository reportRepository;
+
     private boolean shouldExist;
 
     @Override
@@ -26,6 +27,10 @@ public class ReportNumberValidator implements ConstraintValidator<ReportNumber, 
         Report report = reportRepository.findByDocumentNumber(value);
         if (shouldExist) return (report != null);
         else return (report == null);
+    }
+
+    public void setReportRepository(ReportRepository reportRepository) {
+        this.reportRepository = reportRepository;
     }
 
 }

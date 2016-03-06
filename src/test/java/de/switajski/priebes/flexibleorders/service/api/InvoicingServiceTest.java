@@ -4,10 +4,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -18,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -27,10 +24,6 @@ import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportIte
 import de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ConfirmationItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirmationBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
-import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class InvoicingServiceTest {
@@ -65,14 +58,6 @@ public class InvoicingServiceTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldRejectInvoicingIfDocumentNumberAlreadyExists() throws Exception {
-        when(reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber()))
-                .thenReturn(new Invoice());
-
-        whenValidatingAndInvoicing();
-    }
-
     @Test(expected = IllegalStateException.class)
     public void shouldRejectInvoicingIfNoInvoicingAddressesExist() throws Exception {
         givenDocumentNumberDoesNotExist();
@@ -89,13 +74,6 @@ public class InvoicingServiceTest {
         return items;
     }
 
-    private void givenShippingItemsFromParameterExist() {
-        Map<ReportItem, Integer> map = new HashMap<ReportItem, Integer>();
-        map.put(givenAgreementItemWith(null), 2);
-
-        when(itemDtoConverterService.mapItemDtosToReportItemsWithQty(Matchers.anyCollectionOf(ItemDto.class))).thenReturn(map);
-    }
-
     private void givenDocumentNumberDoesNotExist() {
         when(reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber())).thenReturn(null);
     }
@@ -106,21 +84,6 @@ public class InvoicingServiceTest {
             as.add(AddressBuilder.buildWithGeneratedAttributes(i));
 
         when(purchaseAgreementService.invoiceAddresses(Matchers.anySetOf(ReportItem.class))).thenReturn(as);
-    }
-
-    private ReportItem givenAgreementItemWith(PurchaseAgreement purchaseAgreement) {
-        return new ConfirmationItemBuilder()
-                .setItem(
-                        new OrderItemBuilder()
-                                .setProduct(new ProductBuilder().build())
-                                .setOrderedQuantity(12)
-                                .build())
-                .setQuantity(6)
-                .setReport(
-                        new OrderConfirmationBuilder()
-                                .setAgreementDetails(purchaseAgreement)
-                                .build())
-                .build();
     }
 
     private void whenValidatingAndInvoicing() throws Exception {

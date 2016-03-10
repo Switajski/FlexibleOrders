@@ -99,7 +99,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
 
         whenDelivering()
                 .andExpect(content().string(containsString("errors")))
-                .andExpect(content().string(containsString("#CPA-DA")));
+                .andExpect(content().string(containsString("#CAE")));
     }
 
     @Test

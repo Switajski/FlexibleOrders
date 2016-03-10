@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -65,7 +65,7 @@ public class ReportController {
     CustomerRepository customerRepo;
 
     @RequestMapping(value = "/reports/{id}.pdf", headers = "Accept=application/pdf")
-    public ModelAndView showReportPdf(@PathVariable("id") String id) throws ContradictoryPurchaseAgreementException {
+    public ModelAndView showReportPdf(@PathVariable("id") String id) throws ContradictoryAddressException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
         Report report = reportRepo.findByDocumentNumber(id);
@@ -136,9 +136,9 @@ public class ReportController {
      * 
      * @param report
      * @return
-     * @throws ContradictoryPurchaseAgreementException
+     * @throws ContradictoryAddressException
      */
-    private ModelAndView createReportSpecificModelAndView(Report report) throws ContradictoryPurchaseAgreementException {
+    private ModelAndView createReportSpecificModelAndView(Report report) throws ContradictoryAddressException {
         String model = ReportDto.class.getSimpleName();
         ReportDto reportDto = report2DtoConversionService.convert(report);
 

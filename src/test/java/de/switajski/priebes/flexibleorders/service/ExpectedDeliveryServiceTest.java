@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 import de.switajski.priebes.flexibleorders.application.DateUtils;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.PurchaseAgreementBuilder;
 
 public class ExpectedDeliveryServiceTest {
@@ -40,7 +40,7 @@ public class ExpectedDeliveryServiceTest {
         now = LocalDate.now();
     }
 
-    @Test(expected = ContradictoryPurchaseAgreementException.class)
+    @Test(expected = DeviatingExpectedDeliveryDatesException.class)
     public void shouldFailIfIfDifferentExpectedDeliveryDatesExist() throws Exception {
         givenPurchaseAgreements(now, now.plusWeeks(1));
 
@@ -55,7 +55,7 @@ public class ExpectedDeliveryServiceTest {
         whenValidatingExpectedDeliveryDates();
     }
 
-    @Test(expected = ContradictoryPurchaseAgreementException.class)
+    @Test(expected = DeviatingExpectedDeliveryDatesException.class)
     public void shouldFailIfActualDeliveryDateIsNotExpectedDeliveryDates() throws Exception {
         givenPurchaseAgreements(now, now);
         actualDeliveryDate = DateUtils.asDate(now.plusWeeks(1));
@@ -74,10 +74,11 @@ public class ExpectedDeliveryServiceTest {
         service.validateExpectedDeliveryDates(new HashSet<ReportItem>(), actualDeliveryDate);
     }
 
-    private void givenPurchaseAgreements(LocalDate firstDate, LocalDate secondDate) {
+    private void givenPurchaseAgreements(LocalDate... dates) {
         purchaseAgreements = new HashSet<PurchaseAgreement>();
-        purchaseAgreements.add(new PurchaseAgreementBuilder().setExpectedDelivery(firstDate).build());
-        purchaseAgreements.add(new PurchaseAgreementBuilder().setExpectedDelivery(secondDate).build());
-        when(purchaseAgreementService.withoutDeviations(anyCollectionOf(ReportItem.class))).thenReturn(purchaseAgreements);
+        for (LocalDate ld : dates) {
+            purchaseAgreements.add(new PurchaseAgreementBuilder().setExpectedDelivery(ld).build());
+        }
+        when(purchaseAgreementService.withDeviation(anyCollectionOf(ReportItem.class))).thenReturn(purchaseAgreements);
     }
 }

@@ -1,10 +1,13 @@
 package de.switajski.priebes.flexibleorders.service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,17 +17,39 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
+import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 
+/**
+ * A purchase agreement can also come from external services like SalesForce.
+ * Therefore this class should never return {@link OrderConfirmation}s!
+ * 
+ * @author switajski
+ *
+ */
 @Service
 public class PurchaseAgreementReadService {
+    @Autowired
+    ReportRepository reportRepository;
 
     @Transactional(readOnly = true)
     public Set<PurchaseAgreement> withoutDeviations(Collection<ReportItem> reportItems) {
         boolean agreedOnly = false;
-        return retrieveWithoutDeviations(reportItems, agreedOnly);
+        return retrieveWithoutDeviations(reportItems, agreedOnly).stream()
+                .map(p -> p.getPurchaseAgreement())
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, PurchaseAgreement> idToPurchaseAgreement(Collection<ReportItem> reportItems) {
+        boolean agreedOnly = false;
+        Map<String, PurchaseAgreement> idToPurchaseAgreement = new HashMap<>();
+        for (OrderConfirmation ri : retrieveWithoutDeviations(reportItems, agreedOnly)) {
+            idToPurchaseAgreement.put(ri.getDocumentNumber(), ri.getPurchaseAgreement());
+        }
+        return idToPurchaseAgreement;
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +79,7 @@ public class PurchaseAgreementReadService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Collection<PurchaseAgreement> withDeviation(Collection<ReportItem> reportItems) {
+    public Set<PurchaseAgreement> withDeviation(Collection<ReportItem> reportItems) {
         Set<ReportItem> withPredecessors = new HashSet<ReportItem>();
         for (ReportItem ri : reportItems) {
             withPredecessors.addAll(ri.predecessors());
@@ -91,14 +116,14 @@ public class PurchaseAgreementReadService {
      * 
      * @param reportItems
      * @return
-     * @throws ContradictoryPurchaseAgreementException
+     * @throws ContradictoryAddressException
      */
     @Transactional(readOnly = true)
-    public Address retrieveShippingAddressOrFail(Set<ReportItem> reportItems) throws ContradictoryPurchaseAgreementException {
+    public Address retrieveShippingAddressOrFail(Set<ReportItem> reportItems) throws ContradictoryAddressException {
         Set<Address> ias = shippingAddresses(reportItems);
         if (ias.size() > 1) {
-            throw new ContradictoryPurchaseAgreementException(
-                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden: #CPA-DA<br />"
+            throw new ContradictoryAddressException(
+                    "Verschiedene Lieferadressen in Auftr" + Unicode.A_UML + "gen gefunden:<br />"
                             + BeanUtil.createStringOfDifferingAttributes(ias));
         }
         else if (ias.size() == 0) throw new NotFoundException("Keine Lieferaddresse aus Kaufvertr" + Unicode.A_UML + "gen gefunden");
@@ -112,7 +137,7 @@ public class PurchaseAgreementReadService {
      * @param agreedOnly
      * @return
      */
-    private Set<PurchaseAgreement> retrieveWithoutDeviations(
+    private Set<OrderConfirmation> retrieveWithoutDeviations(
             Collection<ReportItem> reportItems,
             boolean agreedOnly) {
 
@@ -122,12 +147,12 @@ public class PurchaseAgreementReadService {
             allRis.addAll(reportItem.predecessors());
         }
 
-        Set<PurchaseAgreement> pas = new HashSet<PurchaseAgreement>();
+        Set<OrderConfirmation> pas = new HashSet<OrderConfirmation>();
         for (ReportItem reportItem : allRis) {
             if (reportItem instanceof ConfirmationItem) {
                 OrderConfirmation orderConfirmation = (OrderConfirmation) reportItem.getReport();
                 if (agreedOnly && !orderConfirmation.isAgreed()) continue;
-                pas.add(orderConfirmation.getPurchaseAgreement());
+                pas.add(orderConfirmation);
             }
         }
 

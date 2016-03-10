@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
+import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.HtmlTags;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -24,6 +26,7 @@ import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 @Controller
 public class ExceptionController {
 
+    public static final String HANDLE_CONTRADICTING_ADDRESS_TAG = "#CAE";
     private static Logger log = Logger.getLogger(ExceptionController.class);
 
     @ExceptionHandler(Exception.class)
@@ -45,7 +48,6 @@ public class ExceptionController {
     public @ResponseBody JsonObjectResponse handleValidationErrors(MethodArgumentNotValidException ex) {
         JsonObjectResponse response = new JsonObjectResponse();
         response.setSuccess(false);
-
         response.setMessage(createValidationErrorMessage(ex));
         Map<String, String> errors = new HashMap<String, String>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
@@ -66,6 +68,34 @@ public class ExceptionController {
             }
         }
         return message.toString();
+    }
+
+    @SuppressWarnings("serial")
+    @ExceptionHandler(DeviatingExpectedDeliveryDatesException.class)
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    public @ResponseBody JsonObjectResponse handleDeviatingExpectedDeliveryDatesException(
+            DeviatingExpectedDeliveryDatesException e) {
+        JsonObjectResponse resp = new JsonObjectResponse();
+        resp.setMessage(e.getMessage());
+        resp.setSuccess(false);
+        resp.setErrors(new HashMap<String, String>() {
+            {
+                put("ignoreContradictoryExpectedDeliveryDates", e.getMessage());
+            }
+        });
+        return resp;
+    }
+
+    @SuppressWarnings("serial")
+    @ExceptionHandler(ContradictoryAddressException.class)
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    public @ResponseBody JsonObjectResponse handleDeviatingAddressException(
+            ContradictoryAddressException e) {
+        JsonObjectResponse resp = new JsonObjectResponse();
+        resp.setMessage(e.getMessage().concat(" ").concat(HANDLE_CONTRADICTING_ADDRESS_TAG));
+        resp.setSuccess(false);
+        resp.setErrors(new HashMap<String, String>() {});
+        return resp;
     }
 
     @ExceptionHandler(NotFoundException.class)

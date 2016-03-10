@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.DateUtils;
-import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
+import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 
 @Service
@@ -24,18 +23,10 @@ public class ExpectedDeliveryService {
     PurchaseAgreementReadService purchaseAgreementService;
 
     public Set<LocalDate> retrieve(Set<ReportItem> items) {
-        Set<LocalDate> expectedDeliveryDates = new HashSet<LocalDate>();
-        for (PurchaseAgreement pa : purchaseAgreementService.withoutDeviations(items)) {
-            expectedDeliveryDates.add(pa.getExpectedDelivery());
-        }
-        return expectedDeliveryDates;
-    }
-
-    public Set<Integer> retrieveWeekOfYear(Set<ReportItem> items) {
-        return purchaseAgreementService.withoutDeviations(items)
+        return purchaseAgreementService.withDeviation(items)
                 .stream()
                 .filter(p -> p.getExpectedDelivery() != null)
-                .map(s -> DateUtils.weekOf(s.getExpectedDelivery()))
+                .map(s -> s.getExpectedDelivery())
                 .collect(Collectors.toSet());
     }
 
@@ -43,15 +34,19 @@ public class ExpectedDeliveryService {
      * 
      * @param reportItems
      * @param deliveryNotes
-     * @throws ContradictoryPurchaseAgreementException
+     * @throws ContradictoryAddressException
      *             if given reportItems have contradictory expected delivery
      *             dates
      */
     @Transactional(readOnly = true)
     public void validateExpectedDeliveryDates(
             Set<ReportItem> reportItems,
-            Date actualDeliveryDate) throws ContradictoryPurchaseAgreementException {
-        Set<Integer> expectedDeliveryDates = retrieveWeekOfYear(reportItems);
+            Date actualDeliveryDate) throws DeviatingExpectedDeliveryDatesException {
+        Set<Integer> expectedDeliveryDates = retrieve(reportItems)
+                .stream()
+                .map(s -> DateUtils.weekOf(s))
+                .collect(Collectors.toSet());
+
         if (expectedDeliveryDates.size() > 1) {
             StringBuilder messageBuilder = new StringBuilder("Angegebene Positionen haben ABs mit widerspr" + Unicode.U_UML + "chlichen Lieferdaten: ");
             Iterator<Integer> lItr = expectedDeliveryDates.iterator();
@@ -62,13 +57,13 @@ public class ExpectedDeliveryService {
                     messageBuilder.append(", ");
                 }
             }
-            throw new ContradictoryPurchaseAgreementException(messageBuilder.toString());
+            throw new DeviatingExpectedDeliveryDatesException(messageBuilder.toString());
         }
         else if (expectedDeliveryDates.size() == 1) {
             int expectedWeek = expectedDeliveryDates.iterator().next();
             int isWeek = DateUtils.weekOf(actualDeliveryDate);
             if (expectedWeek != isWeek) {
-                throw new ContradictoryPurchaseAgreementException("Widerr" + Unicode.U_UML + "chliche Liefertermine: KW aus AB ist " + expectedWeek
+                throw new DeviatingExpectedDeliveryDatesException("Widerr" + Unicode.U_UML + "chliche Liefertermine: KW aus AB ist " + expectedWeek
                         + ", Datum des Lieferscheins liegt aber in KW " + isWeek);
             }
         }

@@ -19,7 +19,7 @@ import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
@@ -177,9 +177,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      * </ul>
      *
      * @param orderAgreement
-     * @throws ContradictoryPurchaseAgreementException
+     * @throws ContradictoryAddressException
      */
-    private void givenDeliveryReports(OrderConfirmation orderAgreement) throws ContradictoryPurchaseAgreementException {
+    private void givenDeliveryReports(OrderConfirmation orderAgreement) throws Exception {
         DeliverParameter deliverParameterL11 = new DeliverParameter("L11", LocalDate.now(), Arrays.asList(
                 createItemDto(2, AMY, orderAgreement),
                 createItemDto(2, MILADKA, orderAgreement)));

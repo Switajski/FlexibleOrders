@@ -2,7 +2,9 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
+import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
@@ -68,6 +71,22 @@ public class PurchaseAgreementController {
 
     @RequestMapping(value = "/reports/shippingAddress", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse readShippingAddresses(HttpServletRequest request) {
+        return readAddresses(request, p -> p.getShippingAddress());
+    }
+
+    @RequestMapping(value = "/reports/invoicingAddress", method = RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse readInvoiceAddresses(HttpServletRequest request) {
+        return readAddresses(request, p -> p.getInvoiceAddress());
+    }
+
+    /**
+     * Retrieve all purchase agreements with their document numbers
+     * 
+     * @param request
+     * @param af
+     * @return
+     */
+    private JsonObjectResponse readAddresses(HttpServletRequest request, Function<PurchaseAgreement, Address> af) {
         Set<String> potentialParams = new HashSet<String>();
 
         for (Map.Entry<String, String[]> entry : ((Map<String, String[]>) request.getParameterMap()).entrySet()) {
@@ -76,16 +95,18 @@ public class PurchaseAgreementController {
             }
         }
 
-        Set<OrderConfirmation> reports = potentialParams.stream()
+        Set<ReportItem> reportItems = potentialParams.stream()
                 .map(p -> reportRepo.findByDocumentNumber(p))
-                .filter(r -> r instanceof OrderConfirmation)
-                .map(OrderConfirmation.class::cast)
+                .map(r -> r.getItems())
+                .flatMap(r -> r.stream())
                 .collect(Collectors.toSet());
 
+        Map<String, PurchaseAgreement> id2Pas = paReadService.idToPurchaseAgreement(reportItems);
+
         Set<AddressDto> addressDtos = new HashSet<AddressDto>();
-        for (OrderConfirmation oc : reports) {
-            Address address = oc.actualPurchaseAgreement().getShippingAddress();
-            addressDtos.add(new AddressDto(address, oc.getDocumentNumber()));
+        for (Entry<String, PurchaseAgreement> docNo2PaEntry : id2Pas.entrySet()) {
+            Address address = af.apply(docNo2PaEntry.getValue());
+            addressDtos.add(new AddressDto(address, docNo2PaEntry.getKey()));
         }
 
         JsonObjectResponse response = new JsonObjectResponse();
@@ -94,4 +115,5 @@ public class PurchaseAgreementController {
         response.setData(addressDtos);
         return response;
     }
+
 }

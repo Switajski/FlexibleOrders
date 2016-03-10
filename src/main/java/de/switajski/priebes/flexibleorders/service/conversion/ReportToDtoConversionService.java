@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.exceptions.ContradictoryPurchaseAgreementException;
+import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
@@ -50,11 +50,11 @@ public class ReportToDtoConversionService {
      *
      * @param report
      * @return if no converter for given report is defined.
-     * @throws ContradictoryPurchaseAgreementException
+     * @throws ContradictoryAddressException
      * 
      */
     @Transactional(readOnly = true)
-    public ReportDto convert(Report report) throws ContradictoryPurchaseAgreementException {
+    public ReportDto convert(Report report) throws ContradictoryAddressException {
 
         if (report instanceof DeliveryNotes) return toDto((DeliveryNotes) report);
         else if (report instanceof Invoice) return toDto((Invoice) report);
@@ -63,7 +63,7 @@ public class ReportToDtoConversionService {
         return null;
     }
 
-    private DeliveryNotesDto toDto(DeliveryNotes report) throws ContradictoryPurchaseAgreementException {
+    private DeliveryNotesDto toDto(DeliveryNotes report) throws ContradictoryAddressException {
         DeliveryNotesDto dto = new DeliveryNotesDto();
         amendCommonAttributes(report, dto);
         dto.address = retrieveActualShippingAddress(report);
@@ -77,7 +77,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private InvoiceDto toDto(Invoice invoice) throws ContradictoryPurchaseAgreementException {
+    private InvoiceDto toDto(Invoice invoice) throws ContradictoryAddressException {
         InvoiceDto dto = new InvoiceDto();
         amendCommonAttributes(invoice, dto);
         dto.address = retrieveInvoicingAddress(invoice);
@@ -93,7 +93,7 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) throws ContradictoryPurchaseAgreementException {
+    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) throws ContradictoryAddressException {
         OrderConfirmationDto dto = new OrderConfirmationDto();
         dto.address = retrieveInvoicingAddress(orderConfirmation);
         dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
@@ -125,7 +125,7 @@ public class ReportToDtoConversionService {
     }
 
     // TODO: mapShippingAddress is a dirty hack in order to not refactor yet
-    private void amendCommonAttributes(Report report, ReportDto dto) throws ContradictoryPurchaseAgreementException {
+    private void amendCommonAttributes(Report report, ReportDto dto) throws ContradictoryAddressException {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -162,10 +162,10 @@ public class ReportToDtoConversionService {
 
     }
 
-    private DeliveryMethod retrieveDeliveryMethod(Report report) throws ContradictoryPurchaseAgreementException {
+    private DeliveryMethod retrieveDeliveryMethod(Report report) throws ContradictoryAddressException {
         DeliveryMethod dm = null;
         Set<DeliveryMethod> deliveryMethods = deliveryMethodService.retrieve(report.getItems());
-        if (deliveryMethods.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Zustellungsart f" + Unicode.U_UML
+        if (deliveryMethods.size() > 1) throw new ContradictoryAddressException("Mehr als eine Zustellungsart f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
         else if (deliveryMethods.size() == 1) {
             dm = deliveryMethods.iterator().next();
@@ -203,21 +203,21 @@ public class ReportToDtoConversionService {
         }
     }
 
-    private Address retrieveShippingAddress(Report report) throws ContradictoryPurchaseAgreementException {
+    private Address retrieveShippingAddress(Report report) throws ContradictoryAddressException {
         Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddressesWithoutDeviations(report.getItems());
         if (shippingAddresses.size() > 1) {
-            throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
+            throw new ContradictoryAddressException("Mehr als eine Lieferadresse f" + Unicode.U_UML
                     + "r gegebene Positionen gefunden");
         }
         else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
         return shippingAddress;
     }
 
-    private Address retrieveActualShippingAddress(Report report) throws ContradictoryPurchaseAgreementException {
+    private Address retrieveActualShippingAddress(Report report) throws ContradictoryAddressException {
         Address shippingAddress = null;
         Set<Address> shippingAddresses = purchaseAgreementService.shippingAddresses(report.getItems());
-        if (shippingAddresses.size() > 1) throw new ContradictoryPurchaseAgreementException("Mehr als eine Lieferadresse f" + Unicode.U_UML
+        if (shippingAddresses.size() > 1) throw new ContradictoryAddressException("Mehr als eine Lieferadresse f" + Unicode.U_UML
                 + "r gegebene Positionen gefunden");
         else if (shippingAddresses.size() == 1) shippingAddress = shippingAddresses.iterator().next();
         return shippingAddress;

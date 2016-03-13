@@ -173,7 +173,7 @@ public class ReportToDtoConversionService {
 
     private Set<String> documentNumbersOf(Set<ReportItem> dh, Class<?> clazz) {
         return dh.stream()
-                .filter(ri -> ri.getClass().isInstance(clazz))
+                .filter(ri -> clazz.isInstance(ri))
                 .map(ci -> ci.getReport().getDocumentNumber())
                 .collect(Collectors.toSet());
     }

@@ -24,7 +24,7 @@ public class ReportItemToItemDtoConverterService {
     @Deprecated
     @Transactional(readOnly = true)
     public ItemDto createOverdue(ReportItem ri) {
-        int toBeProcessed = new QuantityToBeProcessedDeterminator(ri).overdueQuantity();
+        int toBeProcessed = ri.overdue();
         if (toBeProcessed == 0) {
             return null;
         }

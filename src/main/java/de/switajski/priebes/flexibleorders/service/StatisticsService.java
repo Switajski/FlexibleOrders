@@ -11,7 +11,6 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.service.conversion.QuantityToBeProcessedDeterminator;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
 
@@ -33,8 +32,9 @@ public class StatisticsService {
 
         for (ReportItem ri : ris) {
             if (calculated.add(ri.getOrderItem())) {
-                summed = summed.add(ri.getOrderItem().getNegotiatedPriceNet()
-                        .multiply(new QuantityToBeProcessedDeterminator(ri).overdueQuantity()));
+                summed = summed.add(ri.getOrderItem()
+                        .getNegotiatedPriceNet()
+                        .multiply(ri.overdue()));
             }
         }
         return summed;

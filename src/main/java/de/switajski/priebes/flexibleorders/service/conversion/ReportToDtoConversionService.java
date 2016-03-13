@@ -4,22 +4,26 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.switajski.priebes.flexibleorders.application.AmountCalculator;
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
+import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
+import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
@@ -130,13 +134,12 @@ public class ReportToDtoConversionService {
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
 
-        DeliveryHistory dh = DeliveryHistory.of(report);
-        dto.related_creditNoteNumbers = dh.relatedCreditNoteNumbers();
-        dto.related_deliveryNotesNumbers = dh.relatedDeliveryNotesNumbers();
-        dto.related_invoiceNumbers = dh.relatedInvoiceNumbers();
-        dto.related_orderAgreementNumbers = dh.relatedOrderAgreementNumbers();
-        dto.related_orderNumbers = dh.relatedOrderNumbers();
-        dto.related_orderConfirmationNumbers = dh.relatedOrderConfirmationNumbers();
+        Set<ReportItem> allRelated = report.allRelatedReportItems();
+        dto.related_creditNoteNumbers = documentNumbersOf(allRelated, CreditNoteItem.class);
+        dto.related_deliveryNotesNumbers = documentNumbersOf(allRelated, ShippingItem.class);
+        dto.related_invoiceNumbers = documentNumbersOf(allRelated, InvoiceItem.class);
+        dto.related_orderNumbers = orderNumbersOf(allRelated);
+        dto.related_orderConfirmationNumbers = documentNumbersOf(allRelated, ConfirmationItem.class);
 
         Collection<Customer> customers = report.getCustomers();
         if (report.getCustomers().size() > 1) {
@@ -160,6 +163,19 @@ public class ReportToDtoConversionService {
         dto.netGoods = AmountCalculator.sum(AmountCalculator
                 .getAmountsTimesQuantity(report.getItems()));
 
+    }
+
+    private Set<String> orderNumbersOf(Set<ReportItem> dh) {
+        return dh.stream()
+                .map(ri -> ri.getOrderItem().getOrder().getOrderNumber())
+                .collect(Collectors.toSet());
+    }
+
+    private Set<String> documentNumbersOf(Set<ReportItem> dh, Class<?> clazz) {
+        return dh.stream()
+                .filter(ri -> ri.getClass().isInstance(clazz))
+                .map(ci -> ci.getReport().getDocumentNumber())
+                .collect(Collectors.toSet());
     }
 
     private DeliveryMethod retrieveDeliveryMethod(Report report) throws ContradictoryAddressException {

@@ -11,12 +11,8 @@ import java.util.Set;
 import de.switajski.priebes.flexibleorders.application.process.WholesaleProcess;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.CreditNoteItem;
-import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 
 /**
  * Concept is to provide delivery histories without a call another service.
@@ -31,16 +27,6 @@ public class DeliveryHistory {
 
     public DeliveryHistory(Collection<ReportItem> reportItems) {
         this.reportItems = Collections.unmodifiableCollection(reportItems);
-    }
-
-    public static DeliveryHistory of(Report report) {
-        Set<ReportItem> ris = new HashSet<ReportItem>();
-        if (!report.getItems().isEmpty()) {
-            for (ReportItem ri : report.getItems()) {
-                ris.addAll(ri.getOrderItem().getReportItems());
-            }
-        }
-        return new DeliveryHistory(ris);
     }
 
     /**
@@ -100,44 +86,6 @@ public class DeliveryHistory {
 
     }
 
-    public Set<String> relatedOrderConfirmationNumbers() {
-        return relatedReportNumbers(ConfirmationItem.class);
-    }
-
-    public Set<String> relatedDeliveryNotesNumbers() {
-        return relatedReportNumbers(ShippingItem.class);
-    }
-
-    public Set<String> relatedInvoiceNumbers() {
-        return relatedReportNumbers(InvoiceItem.class);
-    }
-
-    public Set<String> relatedOrderAgreementNumbers() {
-        Set<String> nos = new HashSet<String>();
-        for (ReportItem ci : reportItems(ConfirmationItem.class)) {
-            OrderConfirmation oc = (OrderConfirmation) ci.getReport();
-            if (oc.isAgreed()) nos.add(oc.getOrderAgreementNumber());
-        }
-        return nos;
-    }
-
-    public Set<String> relatedCreditNoteNumbers() {
-        return relatedReportNumbers(CreditNoteItem.class);
-    }
-
-    public <T extends ReportItem> Set<String> relatedReportNumbers(Class<? extends ReportItem> clazz) {
-        Set<String> numbers = new HashSet<String>();
-        for (ReportItem ri : reportItems(clazz)) {
-            numbers.add(ri.getReport().getDocumentNumber());
-        }
-        return numbers;
-    }
-
-    public String provideStatus() {
-        String s = "TODO";
-        return s;
-    }
-
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -145,10 +93,14 @@ public class DeliveryHistory {
         new UniqueStringOfReportItemsCollectorTemplate() {
             @Override
             public String createString(ReportItem ri) {
-                return new StringBuilder().append(ri.getOrderItem().getOrder().getOrderNumber()).append(" ")
-                        .append(ri.getOrderItem().getOrderedQuantity()).append(" x ")
-                        .append(ri.getOrderItem().getProduct().getProductNumber()).append(" ")
-                        .append(ri.getOrderItem().getProduct().getName()).toString();
+                return new StringBuilder().append(ri.getOrderItem().getOrder().getOrderNumber())
+                        .append(" ")
+                        .append(ri.getOrderItem().getOrderedQuantity())
+                        .append(" x ")
+                        .append(ri.getOrderItem().getProduct().getProductNumber())
+                        .append(" ")
+                        .append(ri.getOrderItem().getProduct().getName())
+                        .toString();
             }
         }.run(reportItems, s);
         s.append("\n-------------------------------------");

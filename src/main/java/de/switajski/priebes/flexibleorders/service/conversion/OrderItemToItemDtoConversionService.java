@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -34,7 +33,6 @@ public class OrderItemToItemDtoConversionService {
         item.setProduct(orderItem.getProduct().getProductNumber());
         item.setProductName(orderItem.getProduct().getName());
         item.setProductType(orderItem.getProduct().getProductType());
-        item.setStatus(DeliveryHistory.of(orderItem).provideStatus());
         item.setQuantity(orderItem.getOrderedQuantity());
         item.setQuantityLeft(orderItem.toBeConfirmed());
         return item;

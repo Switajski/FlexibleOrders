@@ -67,8 +67,7 @@ public abstract class Report extends GenericEntity {
             public int compare(ReportItem r1, ReportItem r2) {
                 Product p1 = r1.getOrderItem().getProduct();
                 Product p2 = r2.getOrderItem().getProduct();
-                if (p1.hasProductNo() && p2.hasProductNo())
-                return p1.getProductNumber().compareTo(p2.getProductNumber());
+                if (p1.hasProductNo() && p2.hasProductNo()) return p1.getProductNumber().compareTo(p2.getProductNumber());
                 else if (!p1.hasProductNo() && !p2.hasProductNo()) {
                     return p1.getName().compareTo(p2.getName());
                 }
@@ -134,6 +133,17 @@ public abstract class Report extends GenericEntity {
             if (!ri.getSuccessors().isEmpty()) return true;
         }
         return false;
+    }
+
+    @JsonIgnore
+    public Set<ReportItem> allRelatedReportItems() {
+        Set<ReportItem> ris = new HashSet<ReportItem>();
+        if (!getItems().isEmpty()) {
+            for (ReportItem ri : getItems()) {
+                ris.addAll(ri.getOrderItem().getReportItems());
+            }
+        }
+        return Collections.unmodifiableSet(ris);
     }
 
 }

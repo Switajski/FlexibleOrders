@@ -2,11 +2,11 @@ package de.switajski.priebes.flexibleorders.service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.embeddable.CustomerDetails;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
@@ -18,8 +18,8 @@ public class CustomerDetailsService {
 
     private Set<CustomerDetails> retrieve(ReportItem reportItem) {
         Set<CustomerDetails> customerDetailss = new HashSet<CustomerDetails>();
-        DeliveryHistory dh = DeliveryHistory.of(reportItem.getOrderItem());
-        for (ConfirmationItem ai : dh.reportItems(ConfirmationItem.class)) {
+        Set<ConfirmationItem> reportItems = confirmationItems(reportItem);
+        for (ConfirmationItem ai : reportItems) {
             try {
                 CustomerDetails customerDetails = ((OrderConfirmation) ai.getReport()).getCustomerDetails();
                 customerDetailss.add(customerDetails);
@@ -29,6 +29,15 @@ public class CustomerDetailsService {
             }
         }
         return customerDetailss;
+    }
+
+    private Set<ConfirmationItem> confirmationItems(ReportItem reportItem) {
+        return reportItem.getOrderItem()
+                .getReportItems()
+                .stream()
+                .filter(p -> p instanceof ConfirmationItem)
+                .map(p -> (ConfirmationItem) p)
+                .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)

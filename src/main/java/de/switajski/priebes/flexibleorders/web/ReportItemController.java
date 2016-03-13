@@ -30,7 +30,7 @@ import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
@@ -112,7 +112,7 @@ public class ReportItemController extends ExceptionController {
         specs.add(filterDispatcher.dispatchStatus(state));
 
         if (containsFilter(filterMap, CUSTOMER_FILTER)) {
-            specs.add(new HasCustomerSpec(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
+            specs.add(new HasCustomerSpecification(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
         }
 
         Page<ItemDto> openItems = reportingService.retrieveOverdue(

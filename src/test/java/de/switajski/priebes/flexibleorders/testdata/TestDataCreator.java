@@ -119,6 +119,7 @@ public class TestDataCreator {
 
         createYvonnesOrders();
         createNaidasOrders();
+        createEdwardsOrders();
     }
 
     private void createDeliveryMethods() {
@@ -136,6 +137,26 @@ public class TestDataCreator {
 
         orderingService.cancelReport(ab22.getDocumentNumber());
 
+    }
+
+    private void createEdwardsOrders() {
+        Order b31 = orderingService.order(TestDataFixture.B31);
+        createAB31(LocalDate.now(), b31);
+    }
+
+    private OrderConfirmation createAB31(LocalDate now, Order b31) {
+        ConfirmParameter confirmParameter = new ConfirmParameter(
+                b31.getOrderNumber(),
+                "AB31",
+                now.plusDays(5),
+                null,
+                EDWARD.getShippingAddress(),
+                EDWARD.getInvoiceAddress(),
+                oi2ItemDtoConversionService.convert(b31));
+        confirmParameter.setPaymentConditions("5 % Skonto, wenn innerhalb 5 Tagen");
+        OrderConfirmation ab31 = confirmingService.confirm(confirmParameter);
+        agreeingService.agree(ab31.getDocumentNumber(), "AU31");
+        return ab31;
     }
 
     private OrderConfirmation createAB22(LocalDate dt, Order b22) {

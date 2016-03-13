@@ -2,10 +2,10 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.application.DeliveryHistory;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.InvoiceItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
@@ -17,11 +17,11 @@ import de.switajski.priebes.flexibleorders.service.QuantityUtility;
 public class QuantityToBeProcessedDeterminator {
 
     private ReportItem ri;
-    DeliveryHistory history;
+    private Set<ReportItem> history;
 
     public QuantityToBeProcessedDeterminator(ReportItem reportItem) {
         ri = reportItem;
-        history = DeliveryHistory.of(ri.getOrderItem());
+        history = ri.getOrderItem().getReportItems();
     }
 
     public int overdueQuantity() {
@@ -46,9 +46,8 @@ public class QuantityToBeProcessedDeterminator {
 
         if (matchingInvoiceItems.size() > 0) {
             if (concurringShippingItems.size() == 1) return 0;
-            ReportItem resolved =
-                    new ConcurringItemResolver(matchingInvoiceItems, concurringShippingItems)
-                            .resolve(ri);
+            ReportItem resolved = new ConcurringItemResolver(matchingInvoiceItems, concurringShippingItems)
+                    .resolve(ri);
             if (resolved == null) {
                 return quantity;
             }
@@ -58,16 +57,22 @@ public class QuantityToBeProcessedDeterminator {
 
         }
         else {
-            int difference = quantity - QuantityUtility.sumQty(history.reportItems(typeToBeCreated));
+            int difference = quantity - QuantityUtility.sumQty(filter(typeToBeCreated));
             if (difference > 0) return difference;
             else return quantity;
         }
 
     }
 
+    private Set<ReportItem> filter(Class<? extends ReportItem> typeToBeCreated) {
+        return history.stream()
+                .filter(p -> typeToBeCreated.isInstance(p))
+                .collect(Collectors.toSet());
+    }
+
     private Set<ReportItem> qtyMatches(Class<? extends ReportItem> typeToBeCreated, int quantity) {
         Set<ReportItem> matchingInvoiceItems = new HashSet<ReportItem>();
-        for (ReportItem item : history.reportItems(typeToBeCreated)) {
+        for (ReportItem item : filter(typeToBeCreated)) {
             if (item.getQuantity() == quantity) matchingInvoiceItems.add(item);
         }
         return matchingInvoiceItems;

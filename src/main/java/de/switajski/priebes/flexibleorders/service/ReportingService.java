@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
@@ -173,7 +173,7 @@ public class ReportingService {
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
                 .where(new AgreedItemsToBeShippedSpec());
-        if (customer != null) specs = specs.and(new HasCustomerSpec(customer));
+        if (customer != null) specs = specs.and(new HasCustomerSpecification(customer));
 
         List<ReportItem> reportItems = reportItemRepo.findAll(specs);
         for (ReportItem ri : reportItems) {

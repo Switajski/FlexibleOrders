@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMeth
 
 public class TestDataFixture {
 
-    private static final String B11_STR = "B11", B12_STR = "B12", B13_STR = "B13", B22_STR = "B22", B21_STR = "B21", B15_STR = "B15";
+    private static final String B11_STR = "B11", B12_STR = "B12", B13_STR = "B13", B22_STR = "B22", B21_STR = "B21", B15_STR = "B15", B31_STR = "B31";
 
     private static final String AB15_STR = "AB15", AB11_STR = "AB11", AB13_STR = "AB13";
 
@@ -91,6 +91,12 @@ public class TestDataFixture {
             NAIDA,
             NOW,
             item(JUREK, 13),
+            item(PAUL, 6));
+
+    public static OrderParameter B31 = orderParam(
+            B31_STR,
+            EDWARD,
+            NOW,
             item(PAUL, 6));
 
     public static ConfirmParameter AB11 = confirm(

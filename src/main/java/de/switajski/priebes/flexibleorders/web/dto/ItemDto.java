@@ -22,8 +22,8 @@ import de.switajski.priebes.flexibleorders.json.ProductTypeDeserializer;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 /**
- * Data Transfer Object for ExtJs GUI </br> Build on
- * <code>BestellpositionData</code>, which is written in JavaScript.
+ * Data Transfer Object for ExtJs GUI </br>
+ * Build on <code>BestellpositionData</code>, which is written in JavaScript.
  *
  * @author Marek Switajski
  *
@@ -38,8 +38,7 @@ public class ItemDto {
     private Date created;
     @NotNull
     private String product;
-    private Long
-            customer,
+    private Long customer,
             customerNumber;
 
     @JsonDeserialize(using = EmptyStringStripToNullDeserializer.class)
@@ -79,6 +78,17 @@ public class ItemDto {
     private boolean agreed = true;
 
     private boolean pending = false;
+
+    /**
+     * Indicates, that this item should be delivered off the record. Off the
+     * record means, that no purchase agreement for this items exists and the
+     * item should be delivered nevertheless.
+     */
+    private boolean offTheRecord = false;
+
+    public boolean isOffTheRecord() {
+        return offTheRecord;
+    }
 
     @Override
     public int hashCode() {
@@ -312,6 +322,10 @@ public class ItemDto {
 
     public void setPending(boolean pending) {
         this.pending = pending;
+    }
+
+    public void setOffTheRecord(boolean offTheRecord) {
+        this.offTheRecord = offTheRecord;
     }
 
 }

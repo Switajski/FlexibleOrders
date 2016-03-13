@@ -27,8 +27,6 @@ import de.switajski.priebes.flexibleorders.repository.specification.Confirmation
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
-import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
@@ -46,16 +44,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
     private CustomerServiceImpl customerService;
 
     @Autowired
-    private CatalogProductServiceByMagento productService;
-
-    @Autowired
-    private TransitionsService orderingService;
-
-    @Autowired
     private OrderRepository orderRepo;
-
-    @Autowired
-    private ItemDtoToReportItemConversionService itemDtoConverterService;
 
     @Autowired
     private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;

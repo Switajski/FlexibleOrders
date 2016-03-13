@@ -16,12 +16,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 public class ReportItemToItemDtoConverterService {
 
     /**
-     * @deprecated this method was used before successor / predecessor in
-     *             reporItem mapping. use {@link #convert(ReportItem, int)}
      * @param ri
      * @return
      */
-    @Deprecated
     @Transactional(readOnly = true)
     public ItemDto createOverdue(ReportItem ri) {
         int toBeProcessed = ri.overdue();

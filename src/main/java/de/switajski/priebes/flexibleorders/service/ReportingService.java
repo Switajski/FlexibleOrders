@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -124,16 +125,16 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemDto> retrieveOverdue(PageRequest pageRequest, Specification<ReportItem> spec) {
+    public Page<ItemDto> createMissing(PageRequest pageRequest, Specification<ReportItem> spec) {
         Page<ReportItem> openReportItems = reportItemRepo.findAll(spec, pageRequest);
-        return createOverdueReports(pageRequest, openReportItems);
+        return createMissingItems(pageRequest, openReportItems);
     }
 
     @Transactional(readOnly = true)
-    public PageImpl<ItemDto> createOverdueReports(
+    public PageImpl<ItemDto> createMissingItems(
             PageRequest pageable,
             Page<ReportItem> reportItems) {
-        List<ItemDto> overdueItemDtos = createOverdueItems(reportItems.getContent());
+        List<ItemDto> overdueItemDtos = createMissingItems(reportItems.getContent());
 
         PageImpl<ItemDto> reportItemPage = createPage(
                 reportItems.getTotalElements(),
@@ -142,14 +143,11 @@ public class ReportingService {
         return reportItemPage;
     }
 
-    public List<ItemDto> createOverdueItems(List<ReportItem> content) {
-        List<ItemDto> ris = new ArrayList<ItemDto>();
-        for (ReportItem ri : content) {
-            if (ri.overdue() > 0) {
-                ris.add(reportItemToItemDtoConversionService.convert(ri, ri.overdue()));
-            }
-        }
-        return ris;
+    public List<ItemDto> createMissingItems(List<ReportItem> content) {
+        return content.stream()
+                .filter(ri -> ri.overdue() > 0)
+                .map(ri -> reportItemToItemDtoConversionService.convert(ri, ri.overdue()))
+                .collect(Collectors.toList());
     }
 
     public PageImpl<ItemDto> createPage(

@@ -20,7 +20,7 @@ public class ReportItemToItemDtoConverterService {
      * @return
      */
     @Transactional(readOnly = true)
-    public ItemDto createOverdue(ReportItem ri) {
+    public ItemDto createMissing(ReportItem ri) {
         int toBeProcessed = ri.overdue();
         if (toBeProcessed == 0) {
             return null;

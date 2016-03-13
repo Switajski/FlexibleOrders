@@ -319,7 +319,7 @@ public class TestDataCreator {
     public List<ItemDto> convertToItemDtos(Report report) {
         List<ItemDto> ris = new ArrayList<ItemDto>();
         for (ReportItem ri : report.getItems()) {
-            ris.add(riToItemConversionService.createOverdue(ri));
+            ris.add(riToItemConversionService.createMissing(ri));
         }
         return ris;
     }

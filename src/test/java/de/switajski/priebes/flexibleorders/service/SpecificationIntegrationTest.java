@@ -203,7 +203,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
             int qty,
             Product product,
             OrderConfirmation agreement) {
-        ItemDto item = ri2ItemDtoConversionService.createOverdue(
+        ItemDto item = ri2ItemDtoConversionService.createMissing(
                 getFirstItemOf(
                         product,
                         agreement));

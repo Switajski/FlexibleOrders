@@ -115,7 +115,7 @@ public class ReportItemController extends ExceptionController {
             specs.add(new HasCustomerSpecification(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
         }
 
-        Page<ItemDto> openItems = reportingService.retrieveOverdue(
+        Page<ItemDto> openItems = reportingService.createMissing(
                 new PageRequest((page - 1), limit), combineSpecsToOne(specs));
 
         if (state == ProductionState.SHIPPED) {

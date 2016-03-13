@@ -8,7 +8,6 @@ import de.switajski.priebes.flexibleorders.exceptions.NotFoundException;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.IssuedItemSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ReceiptItemCompletedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.ShippingItemToBeInvoicedSpec;
 import de.switajski.priebes.flexibleorders.web.helper.ProductionState;
@@ -36,7 +35,7 @@ public class StatusFilterDispatcher {
                 return new ReceiptItemCompletedSpec();
 
             case ISSUED:
-                return new IssuedItemSpec();
+                return new InvoiceItemToBePaidSpec();
 
             case DELIVERED:
                 return new ShippingItemToBeInvoicedSpec();

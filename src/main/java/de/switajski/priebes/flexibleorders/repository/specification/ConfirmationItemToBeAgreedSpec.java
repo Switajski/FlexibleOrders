@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public class ConfirmationItemToBeAgreedSpec implements Specification<ReportItem> {
+public class ConfirmationItemToBeAgreedSpec implements Specification<ReportItem>, java.util.function.Predicate<ReportItem> {
 
     private CriteriaQuery<?> query;
 
@@ -28,6 +28,18 @@ public class ConfirmationItemToBeAgreedSpec implements Specification<ReportItem>
         Root<ConfirmationItem> ciRoot = subquery.from(ConfirmationItem.class);
         subquery.select(ciRoot);
         return subquery;
+    }
+
+    @Override
+    public boolean test(ReportItem ri) {
+        if (!(ri instanceof ConfirmationItem)) {
+            return false;
+        }
+        else {
+            ConfirmationItem ci = (ConfirmationItem) ri;
+            if (!ci.isAgreed()) return true;
+        }
+        return false;
     }
 
 }

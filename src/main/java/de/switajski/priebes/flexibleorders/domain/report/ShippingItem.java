@@ -13,14 +13,16 @@ public class ShippingItem extends ReportItem {
 
     public ShippingItem() {}
 
-    public ShippingItem(DeliveryNotes deliveryNotes,
-            OrderItem orderItemToBeDelivered, Integer quantityToDeliver,
+    public ShippingItem(
+            DeliveryNotes deliveryNotes,
+            OrderItem orderItemToBeDelivered,
+            Integer quantityToDeliver,
             Date date) {
-        super(orderItemToBeDelivered,
+        super(
+                orderItemToBeDelivered,
                 quantityToDeliver,
                 date);
-        report = deliveryNotes;
-        report.addItem(this);
+        if (report != null) report.addItem(this);
     }
 
     @Override

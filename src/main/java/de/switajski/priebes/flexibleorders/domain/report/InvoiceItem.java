@@ -11,10 +11,13 @@ public class InvoiceItem extends ReportItem {
 
     public InvoiceItem() {}
 
-    public InvoiceItem(Invoice invoice,
-            OrderItem orderItem, Integer quantityToDeliver, Date date) {
+    public InvoiceItem(
+            Invoice invoice,
+            OrderItem orderItem,
+            Integer quantityToDeliver,
+            Date date) {
         super(orderItem, quantityToDeliver, date);
-        report = invoice;
+        if (invoice != null) invoice.addItem(this);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class PendingItem extends ReportItem {
 
     public PendingItem(DeliveryNotes deliveryNotes, OrderItem orderItem, Integer quantityToDeliver, Date date) {
         super(orderItem, quantityToDeliver, date);
-        report = deliveryNotes;
+        if (deliveryNotes != null) deliveryNotes.addItem(this);
     }
 
     @Override

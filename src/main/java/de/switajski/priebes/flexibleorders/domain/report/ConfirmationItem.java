@@ -33,7 +33,7 @@ public class ConfirmationItem extends ReportItem {
 
     public ConfirmationItem(OrderConfirmation orderConfirmation, OrderItem oi, Integer quantityLeft) {
         super(oi, quantityLeft, new Date());
-        orderConfirmation.addItem(this);
+        if (orderConfirmation != null) orderConfirmation.addItem(this);
     }
 
     @Override

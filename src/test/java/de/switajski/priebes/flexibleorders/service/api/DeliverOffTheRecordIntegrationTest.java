@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,10 +21,15 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpecification;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
-import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
+import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class DeliverOffTheRecordIntegrationTest extends SpringMvcWithTestDataTestConfiguration {
+public class DeliverOffTheRecordIntegrationTest extends AbstractSpringContextTestConfiguration {
+
+    @Rule
+    @Autowired
+    public StandardTestDataRule rule;
 
     @Autowired
     ShippingService shippingService;

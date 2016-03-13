@@ -47,9 +47,8 @@ public class ItemDtoToReportItemConversionService {
         return item;
     }
 
-    // TODO: unclear and not reusable method. Rather append than map.
     @Transactional
-    public void mapItemDtos(DeliveryNotes deliveryNotes, ItemDto itemDto) {
+    public ReportItem createReportItem(ItemDto itemDto) {
         if (itemDto.getProductType() != ProductType.SHIPPING) {
             int qty = itemDto.getQuantityLeft();
             ReportItem itemToBeShipped = reportItemRepo.findOne(itemDto.getId());
@@ -61,23 +60,24 @@ public class ItemDtoToReportItemConversionService {
             QuantityUtility.validateQuantity(qty, itemToBeShipped);
             if (itemDto.isPending() == false) {
                 ShippingItem shippingItem = new ShippingItem(
-                        deliveryNotes,
+                        null,
                         orderItemToBeDelivered,
                         qty,
                         new Date());
                 shippingItem.setPredecessor(itemToBeShipped);
                 shippingItem.setPackageNumber(itemDto.getPackageNumber());
                 shippingItem.setTrackNumber(itemDto.getTrackNumber());
-                deliveryNotes.addItem(shippingItem);
+                return shippingItem;
             }
             else {
-                deliveryNotes.addItem(new PendingItem(
-                        deliveryNotes,
+                return new PendingItem(
+                        null,
                         orderItemToBeDelivered,
                         qty,
-                        new Date()));
+                        new Date());
             }
         }
+        return null;
     }
 
     @Transactional(readOnly = true)

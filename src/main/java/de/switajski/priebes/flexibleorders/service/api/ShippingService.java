@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.reference.Currency;
@@ -49,9 +50,10 @@ public class ShippingService {
     @Transactional
     public DeliveryNotes ship(DeliverParameter deliverParameter) throws ContradictoryAddressException, DeviatingExpectedDeliveryDatesException {
 
-        DeliveryNotes deliveryNotes = createDeliveryNotes(deliverParameter);
+        DeliveryNotes deliveryNotes = appendReportParameters(new DeliveryNotes(), deliverParameter);
         for (ItemDto itemDto : deliverParameter.getItems()) {
-            convService.mapItemDtos(deliveryNotes, itemDto);
+            ReportItem reportItem = convService.createReportItem(itemDto);
+            if (reportItem != null) deliveryNotes.addItem(reportItem);
         }
 
         if (!deliverParameter.isIgnoreContradictoryExpectedDeliveryDates()) {
@@ -90,8 +92,7 @@ public class ShippingService {
         return savedDeliveryNotes;
     }
 
-    private DeliveryNotes createDeliveryNotes(DeliverParameter deliverParameter) {
-        DeliveryNotes deliveryNotes = new DeliveryNotes();
+    private DeliveryNotes appendReportParameters(DeliveryNotes deliveryNotes, DeliverParameter deliverParameter) {
         deliveryNotes.setDocumentNumber(deliverParameter.getDeliveryNotesNumber());
         deliveryNotes.setCreated(deliverParameter.getCreated() == null ? new Date() : Date.from(deliverParameter.getCreated().atStartOfDay().atZone(
                 ZoneId.systemDefault()).toInstant()));

@@ -11,10 +11,13 @@ public class ReceiptItem extends ReportItem {
 
     public ReceiptItem() {}
 
-    public ReceiptItem(Receipt receipt,
-            OrderItem orderItem, int quantity, Date receivedPaymentDate) {
+    public ReceiptItem(
+            Receipt receipt,
+            OrderItem orderItem,
+            int quantity,
+            Date receivedPaymentDate) {
         super(orderItem, quantity, receivedPaymentDate);
-        report = receipt;
+        if (receipt != null) receipt.addItem(this);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -15,9 +15,9 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
+import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
@@ -31,25 +31,24 @@ public class ItemDtoConverterServiceTest {
     @InjectMocks
     ItemDtoToReportItemConversionService service = new ItemDtoToReportItemConversionService();
 
-    DeliveryNotes deliveryNotes;
-
-    ItemDto itemDto;
-
     ConfirmationItem confirmationItem;
+
+    ItemDto input;
+
+    ReportItem createdReportItem;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        deliveryNotes = new DeliveryNotes();
     }
 
     @Test
     public void shouldMapConfirmationItem() {
         givenTestData();
 
-        whenMappingItemDtoToDeliveryNotes();
+        whenCreatingReportItemOutOfItemDto();
 
-        assertThat(deliveryNotes.getItems(), hasItem(instanceOf(ShippingItem.class)));
+        assertThat(createdReportItem, is(instanceOf(ShippingItem.class)));
     }
 
     private void givenTestData() {
@@ -61,28 +60,28 @@ public class ItemDtoConverterServiceTest {
     @Test
     public void shouldMapPendingItem() {
         givenTestData();
-        itemDto.setPending(true);
+        input.setPending(true);
 
-        whenMappingItemDtoToDeliveryNotes();
+        whenCreatingReportItemOutOfItemDto();
 
-        assertThat(deliveryNotes.getItems(), hasItem(instanceOf(PendingItem.class)));
+        assertThat(createdReportItem, is(instanceOf(PendingItem.class)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWithTooMuchQty() {
         givenTestData();
-        itemDto.setQuantityLeft(2);
+        input.setQuantityLeft(2);
 
-        whenMappingItemDtoToDeliveryNotes();
+        whenCreatingReportItemOutOfItemDto();
 
-        assertThat(deliveryNotes.getItems(), hasItem(instanceOf(PendingItem.class)));
+        assertThat(createdReportItem, is(instanceOf(PendingItem.class)));
     }
 
     private void givenItemDtoForInput() {
-        itemDto = new ItemDto();
-        itemDto.setProductType(ProductType.PRODUCT);
-        itemDto.setId(1L);
-        itemDto.setQuantityLeft(1);
+        input = new ItemDto();
+        input.setProductType(ProductType.PRODUCT);
+        input.setId(1L);
+        input.setQuantityLeft(1);
     }
 
     private void givenMappedConfirmationItem() {
@@ -98,7 +97,7 @@ public class ItemDtoConverterServiceTest {
         confirmationItem.setOrderItem(orderItem);
     }
 
-    private void whenMappingItemDtoToDeliveryNotes() {
-        service.mapItemDtos(deliveryNotes, itemDto);
+    private void whenCreatingReportItemOutOfItemDto() {
+        createdReportItem = service.createReportItem(input);
     }
 }

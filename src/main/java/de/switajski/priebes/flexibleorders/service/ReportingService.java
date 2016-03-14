@@ -29,7 +29,6 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -45,8 +44,6 @@ public class ReportingService {
     private ReportRepository reportRepo;
     @Autowired
     private ReportItemRepository reportItemRepo;
-    @Autowired
-    private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
     private ReportItemToItemDtoConversionService ri2ItemDtoConversionService;
     @Autowired

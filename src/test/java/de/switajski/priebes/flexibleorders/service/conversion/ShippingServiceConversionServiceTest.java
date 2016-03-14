@@ -21,15 +21,16 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
+import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class ItemDtoConverterServiceTest {
+public class ShippingServiceConversionServiceTest {
 
     @Mock
-    ReportItemRepository repo;
+    ReportItemRepository repoItemRepo;
 
     @InjectMocks
-    ItemDtoToReportItemConversionService service = new ItemDtoToReportItemConversionService();
+    ShippingService service = new ShippingService();
 
     ConfirmationItem confirmationItem;
 
@@ -54,7 +55,7 @@ public class ItemDtoConverterServiceTest {
     private void givenTestData() {
         givenItemDtoForInput();
         givenMappedConfirmationItem();
-        when(repo.findOne(1L)).thenReturn(confirmationItem);
+        when(repoItemRepo.findOne(1L)).thenReturn(confirmationItem);
     }
 
     @Test

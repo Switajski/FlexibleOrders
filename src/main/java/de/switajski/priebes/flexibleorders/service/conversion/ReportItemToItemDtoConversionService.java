@@ -3,17 +3,20 @@ package de.switajski.priebes.flexibleorders.service.conversion;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.embeddable.PurchaseAgreement;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
-public class ReportItemToItemDtoConverterService {
+public class ReportItemToItemDtoConversionService {
 
     /**
      * @param ri
@@ -67,6 +70,26 @@ public class ReportItemToItemDtoConverterService {
         item.setProductType(ri.getOrderItem().getProduct().getProductType());
         item.setProductName(ri.getOrderItem().getProduct().getName());
         item.setStatus(ri.provideStatus());
+        return item;
+    }
+
+    public ItemDto createShippingCosts(final DeliveryNotes deliveryNotes) {
+        ItemDto item = new ItemDto();
+        item.setCreated(deliveryNotes.getCreated());
+        item.setDocumentNumber(deliveryNotes.getDocumentNumber());
+        item.setDeliveryNotesNumber(deliveryNotes.getDocumentNumber());
+        item.setPriceNet(deliveryNotes.getShippingCosts().getValue());
+        item.setQuantity(1);
+        item.setQuantityLeft(1);
+
+        DeliveryMethod deliveryMethod = deliveryNotes.getDeliveryMethod();
+        if (deliveryMethod != null && deliveryMethod.getName() != null) item.setProductName(deliveryMethod.getName());
+        else item.setProductName("Versandkosten");
+        Customer customer = deliveryNotes.getCustomerSafely();
+        item.setCustomerNumber(customer.getCustomerNumber());
+        item.setCustomerName(customer.getCompanyName());
+        item.setProductType(ProductType.SHIPPING);
+
         return item;
     }
 

@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 
 @Component
 public class StandardTestDataRule extends ExternalResource {
@@ -44,7 +44,7 @@ public class StandardTestDataRule extends ExternalResource {
     ConfirmingService confirmingService;
 
     @Autowired
-    ReportItemToItemDtoConverterService riToItemConversionService;
+    ReportItemToItemDtoConversionService riToItemConversionService;
 
     @Autowired
     ShippingService shippingService;

@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsT
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
 import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -40,7 +40,7 @@ public class ReportingService {
     @Autowired
     private OrderRepository orderRepo;
     @Autowired
-    private ReportItemToItemDtoConverterService reportItemToItemDtoConversionService;
+    private ReportItemToItemDtoConversionService reportItemToItemDtoConversionService;
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
@@ -48,7 +48,7 @@ public class ReportingService {
     @Autowired
     private ItemDtoToReportItemConversionService itemDtoConverterService;
     @Autowired
-    private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
+    private ReportItemToItemDtoConversionService ri2ItemDtoConversionService;
     @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
     @Autowired

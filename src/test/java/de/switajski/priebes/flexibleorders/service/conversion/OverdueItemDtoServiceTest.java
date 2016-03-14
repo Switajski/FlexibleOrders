@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItem
 public class OverdueItemDtoServiceTest {
 
     // SUT
-    ReportItemToItemDtoConverterService overdueItemDtoCreator;
+    ReportItemToItemDtoConversionService overdueItemDtoCreator;
 
     // Input use cases from "test data.ods"
     Order b11;
@@ -54,7 +54,7 @@ public class OverdueItemDtoServiceTest {
 
     @Before
     public void setup() {
-        overdueItemDtoCreator = new ReportItemToItemDtoConverterService();
+        overdueItemDtoCreator = new ReportItemToItemDtoConversionService();
     }
 
     /**

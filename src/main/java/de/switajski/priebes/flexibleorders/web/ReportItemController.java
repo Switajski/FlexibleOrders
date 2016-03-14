@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcher;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
@@ -61,7 +61,7 @@ public class ReportItemController extends ExceptionController {
     @Autowired
     private ReportRepository reportRepository;
     @Autowired
-    private ItemDtoToReportItemConversionService itemDto2ReportItemConverterService;
+    private ReportItemToItemDtoConversionService ri2DtoConversionService;
 
     @RequestMapping(value = "/ordered", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse listAllToBeConfirmed(
@@ -70,7 +70,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-            throws Exception {
+                    throws Exception {
 
         Customer customer = null;
         PageRequest pageable = new PageRequest((page - 1), limit);
@@ -101,7 +101,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = true) String filters)
-            throws Exception {
+                    throws Exception {
 
         PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
@@ -116,7 +116,8 @@ public class ReportItemController extends ExceptionController {
         }
 
         Page<ItemDto> openItems = reportingService.createMissing(
-                new PageRequest((page - 1), limit), combineSpecsToOne(specs));
+                new PageRequest((page - 1), limit),
+                combineSpecsToOne(specs));
 
         if (state == ProductionState.SHIPPED) {
             openItems = addShippingCosts(pageable, openItems);
@@ -130,7 +131,8 @@ public class ReportItemController extends ExceptionController {
 
     }
 
-    private Page<ItemDto> addShippingCosts(PageRequest pageable,
+    private Page<ItemDto> addShippingCosts(
+            PageRequest pageable,
             Page<ItemDto> openItems) {
         HashSet<String> documentNumbers = getDocumentNumbersOf(openItems);
         for (String documentNumber : documentNumbers) {
@@ -138,7 +140,7 @@ public class ReportItemController extends ExceptionController {
             DeliveryNotes dn = (DeliveryNotes) report;
             List<ItemDto> shippingCosts = new ArrayList<ItemDto>();
             if (dn.hasShippingCosts()) {
-                shippingCosts.add(itemDto2ReportItemConverterService.createShippingCosts(dn));
+                shippingCosts.add(ri2DtoConversionService.createShippingCosts(dn));
             }
             List<ItemDto> temp = shippingCosts;
             shippingCosts.addAll(openItems.getContent());
@@ -183,7 +185,7 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
             @RequestParam(value = "filter", required = false) String filters)
-            throws Exception {
+                    throws Exception {
 
         throw new RuntimeException("Not implemented yet");
     }

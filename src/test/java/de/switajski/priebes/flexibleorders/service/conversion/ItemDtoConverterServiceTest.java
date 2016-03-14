@@ -98,6 +98,6 @@ public class ItemDtoConverterServiceTest {
     }
 
     private void whenCreatingReportItemOutOfItemDto() {
-        createdReportItem = service.createReportItem(input);
+        createdReportItem = service.createReportItemByItemToBeShipped(input, confirmationItem);
     }
 }

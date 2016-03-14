@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -34,7 +34,7 @@ public class InvoicingApiIntegrationTest extends SpringMvcWithTestDataTestConfig
     private ReportRepository rRepo;
 
     @Autowired
-    private ReportItemToItemDtoConverterService ri2IdConverter;
+    private ReportItemToItemDtoConversionService ri2IdConverter;
 
     private InvoicingParameter invoicingParameter = new InvoicingParameter();
 

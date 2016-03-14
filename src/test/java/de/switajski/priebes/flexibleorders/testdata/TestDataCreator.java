@@ -49,7 +49,7 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
@@ -73,7 +73,7 @@ public class TestDataCreator {
 
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
 
-    private ReportItemToItemDtoConverterService riToItemConversionService;
+    private ReportItemToItemDtoConversionService riToItemConversionService;
 
     private ShippingService shippingService;
 
@@ -89,7 +89,7 @@ public class TestDataCreator {
             TransitionsService orderingService,
             ConfirmingService confirmingService,
             OrderItemToItemDtoConversionService oi2ItemDtoConversionService,
-            ReportItemToItemDtoConverterService riToItemConversionService,
+            ReportItemToItemDtoConversionService riToItemConversionService,
             ShippingService shippingService,
             InvoicingService invoicingService,
             CatalogDeliveryMethodRepository deliveryMethodRepo,

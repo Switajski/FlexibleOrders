@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.Country;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
@@ -52,7 +52,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
     private ReportRepository rRepo;
 
     @Autowired
-    private ReportItemToItemDtoConverterService ri2IdConverter;
+    private ReportItemToItemDtoConversionService ri2IdConverter;
 
     private DeliverParameter deliverParameter = new DeliverParameter();
 

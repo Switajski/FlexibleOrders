@@ -64,7 +64,7 @@ public class DeliverOffTheRecordIntegrationTest extends AbstractSpringContextTes
                                 .equals(salome)));
     }
 
-    private void whenDelivering() throws ContradictoryAddressException, DeviatingExpectedDeliveryDatesException {
+    private void whenDelivering() throws ContradictoryAddressException, DeviatingExpectedDeliveryDatesException, NoItemsToShipFoundException {
         shippingService.ship(deliverParameter);
     }
 

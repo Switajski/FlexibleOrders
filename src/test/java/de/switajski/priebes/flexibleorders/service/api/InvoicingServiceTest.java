@@ -18,9 +18,10 @@ import org.mockito.MockitoAnnotations;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
+import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
+import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.testdata.ItemDtoShorthand;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.AddressBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.CatalogProductBuilder;
@@ -33,9 +34,9 @@ public class InvoicingServiceTest {
     @Mock
     ReportRepository reportRepo;
     @Mock
-    ItemDtoToReportItemConversionService itemDtoConverterService;
-    @Mock
     PurchaseAgreementReadService purchaseAgreementService;
+    @Mock
+    ReportItemRepository reportItemRepo;
 
     InvoicingParameter invoicingParameter;
 
@@ -61,6 +62,8 @@ public class InvoicingServiceTest {
     @Test(expected = IllegalStateException.class)
     public void shouldRejectInvoicingIfNoInvoicingAddressesExist() throws Exception {
         givenDocumentNumberDoesNotExist();
+        givenItemsInParameter(1);
+        when(reportItemRepo.findOne(1L)).thenReturn(new ShippingItem());
         when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(java.util.Collections.emptySet());
 
         whenValidatingAndInvoicing();
@@ -68,8 +71,14 @@ public class InvoicingServiceTest {
 
     private List<ItemDto> givenItemsInParameter(Integer... integers) {
         List<ItemDto> items = new ArrayList<>();
-        for (Integer i : integers)
-            items.add(ItemDtoShorthand.item(CatalogProductBuilder.buildWithGeneratedAttributes(i), i, invoicingParameter.getInvoiceNumber()));
+        for (Integer i : integers) {
+            ItemDto item = ItemDtoShorthand.item(
+                    CatalogProductBuilder.buildWithGeneratedAttributes(i),
+                    i,
+                    invoicingParameter.getInvoiceNumber());
+            item.setId(Long.valueOf(i.toString()));
+            items.add(item);
+        }
         invoicingParameter.setItems(items);
         return items;
     }
@@ -79,7 +88,7 @@ public class InvoicingServiceTest {
     }
 
     private void givenInvoicingAddresses(Integer... integers) {
-        Set<Address> as = new HashSet<Address>();
+        Set<Address> as = new HashSet<>();
         for (Integer i : integers)
             as.add(AddressBuilder.buildWithGeneratedAttributes(i));
 

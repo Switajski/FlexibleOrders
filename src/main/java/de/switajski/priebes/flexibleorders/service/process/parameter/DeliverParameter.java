@@ -65,6 +65,10 @@ public class DeliverParameter {
 
     public DeliverParameter() {}
 
+    public void addItem(ItemDto item) {
+        items.add(item);
+    }
+
     public String getDeliveryNotesNumber() {
         return deliveryNotesNumber;
     }

@@ -28,7 +28,7 @@ import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConverterService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
@@ -47,7 +47,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
     private OrderRepository orderRepo;
 
     @Autowired
-    private ReportItemToItemDtoConverterService ri2ItemDtoConversionService;
+    private ReportItemToItemDtoConversionService ri2ItemDtoConversionService;
 
     @Autowired
     private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;

@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
-public class ShippingServiceConversionServiceTest {
+public class ShippingServiceConversionTest {
 
     @Mock
     ReportItemRepository repoItemRepo;

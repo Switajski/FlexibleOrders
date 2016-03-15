@@ -1,7 +1,9 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,10 +22,10 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressExcept
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
-import de.switajski.priebes.flexibleorders.service.conversion.ItemDtoToReportItemConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -32,14 +34,14 @@ public class InvoicingService {
     @Autowired
     private ReportRepository reportRepo;
     @Autowired
-    private ItemDtoToReportItemConversionService itemDtoConverterService;
+    private ReportItemRepository reportItemRepo;
     @Autowired
     private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional
     public Invoice invoice(InvoicingParameter invoicingParameter) throws ContradictoryAddressException {
 
-        Map<ReportItem, Integer> risWithQty = itemDtoConverterService.mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
+        Map<ReportItem, Integer> risWithQty = mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);
         invoice.setInvoiceAddress(retrieveInvoicingAddress(risWithQty.keySet()));
 
@@ -68,6 +70,21 @@ public class InvoicingService {
         invoice.setShippingCosts(shippingCosts);
 
         return reportRepo.save(invoice);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<ReportItem, Integer> mapItemDtosToReportItemsWithQty(Collection<ItemDto> itemDtos) {
+        Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
+        for (ItemDto itemDtoToBeProcessed : itemDtos) {
+            if (itemDtoToBeProcessed.getProductType() != ProductType.SHIPPING) {
+                ReportItem agreementItem = reportItemRepo.findOne(itemDtoToBeProcessed.getId());
+                if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+                risWithQty.put(
+                        agreementItem,
+                        itemDtoToBeProcessed.getQuantityLeft());
+            }
+        }
+        return risWithQty;
     }
 
     private Address retrieveInvoicingAddress(Set<ReportItem> reportItems) throws ContradictoryAddressException {

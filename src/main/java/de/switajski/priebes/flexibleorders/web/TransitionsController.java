@@ -30,6 +30,7 @@ import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.MarkingPaidService;
+import de.switajski.priebes.flexibleorders.service.api.NoItemsToShipFoundException;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
@@ -86,7 +87,10 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse deliver(
             @RequestBody @Valid DeliverParameter deliverParameter,
-            HttpServletResponse response) throws ContradictoryAddressException, DeviatingExpectedDeliveryDatesException {
+            HttpServletResponse response)
+                    throws ContradictoryAddressException,
+                    DeviatingExpectedDeliveryDatesException,
+                    NoItemsToShipFoundException {
 
         if (deliverParameter.isSingleDeliveryNotes()) {
             DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);

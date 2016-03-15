@@ -25,13 +25,13 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
  * <code>reportItemClassToRetrieve</code> should be a ShippingItem.class,
  * <code>reportItemClassToSubtract</code> should be a InvoiceItem.class <br/>
  * <br/>
- * <b>Concept of <a
- * href="http://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>
- * (with quantities): </b> Not the states (how much are delivered, invoiced,
- * ...) of an order item is saved in database, but the events e.g. how much has
- * been delivered. An event is called {@link ReportItem}. Thus the table of
- * report items joined with order items are a history - See following SQL after
- * having started TestDataCreator#createTestData:
+ * <b>Concept of
+ * <a href="http://martinfowler.com/eaaDev/EventSourcing.html">event
+ * sourcing</a> (with quantities): </b> Not the states (how much are delivered,
+ * invoiced, ...) of an order item is saved in database, but the events e.g. how
+ * much has been delivered. An event is called {@link ReportItem}. Thus the
+ * table of report items joined with order items are a history - See following
+ * SQL after having started TestDataCreator#createTestData:
  *
  * <pre>
  * select oi.id, oi.name, oi.ordered_quantity, ri.id, ri.dtype, ri.quantity
@@ -61,11 +61,11 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
  * )
  * </pre>
  *
- * @author Marek Switajski
- *
+ * @author Marek Switajski TODO: refactor queries to use predecessor logic (it's
+ *         much easier and consistent with java.util.Predicate)
  */
-public class AbstractOpenReportItemSpecification implements
-Specification<ReportItem> {
+public class AbstractOverdueItemSpecification implements
+        Specification<ReportItem> {
 
     private static final String QTY = "quantity";
     private static final String ORDER_ITEM = "orderItem";
@@ -80,7 +80,7 @@ Specification<ReportItem> {
      * @param reportItemClassToRetrieve
      * @param reportItemClassToSubtract
      */
-    public AbstractOpenReportItemSpecification(
+    public AbstractOverdueItemSpecification(
             Class<? extends ReportItem> reportItemClassToRetrieve,
             Class<? extends ReportItem> reportItemClassToSubtract) {
         this.reportItemClassToRetrieve = reportItemClassToRetrieve;
@@ -130,8 +130,10 @@ Specification<ReportItem> {
      * @see http://stackoverflow.com/questions/3997070/jpa-criteria-tutorial
      */
     @Override
-    public Predicate toPredicate(Root<ReportItem> root,
-            CriteriaQuery<?> query, CriteriaBuilder cb) {
+    public Predicate toPredicate(
+            Root<ReportItem> root,
+            CriteriaQuery<?> query,
+            CriteriaBuilder cb) {
         this.cb = cb;
         this.query = query;
         this.root = root;
@@ -142,8 +144,7 @@ Specification<ReportItem> {
                 cb.equal(root.<OrderItem> get(ORDER_ITEM), fromSubquery.get(ORDER_ITEM)),
                 cb.greaterThan(
                         createQtySum(reportItemClassToRetrieve),
-                        createQtySum(reportItemClassToSubtract)
-                        )));
+                        createQtySum(reportItemClassToSubtract))));
         subquery.select(fromSubquery);
 
         Predicate inCondition = cb.and(cb.exists(subquery), cb.equal(root.type(), reportItemClassToRetrieve));

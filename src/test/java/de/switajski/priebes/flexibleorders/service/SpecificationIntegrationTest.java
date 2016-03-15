@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -22,8 +23,9 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemsToBeShippedSpec;
-import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
+import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.IsConfirmationItemSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
@@ -98,7 +100,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
 
         // WHEN
         List<ReportItem> retrievedRis = reportItemRepository
-                .findAll(new ConfirmationItemToBeAgreedSpec());
+                .findAll(where(new IsConfirmationItemSpecification()).and(new OverdueItemSpecification()));
 
         // THEN
         assertAllItemsAreAgreed(retrievedRis);
@@ -123,7 +125,9 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
 
         // WHEN
         List<ReportItem> retrievedRis = reportItemRepository
-                .findAll(new AgreedItemsToBeShippedSpec());
+                .findAll(where(new IsConfirmationItemSpecification())
+                        .and(new OverdueItemSpecification())
+                        .and(new AgreedItemSpecification()));
 
         // THEN
         assertAllItemsAreAgreed(retrievedRis);

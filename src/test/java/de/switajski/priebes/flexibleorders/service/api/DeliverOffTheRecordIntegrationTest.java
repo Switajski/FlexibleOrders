@@ -19,7 +19,8 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressExcept
 import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
-import de.switajski.priebes.flexibleorders.repository.specification.InvoiceItemToBePaidSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.IsInvoiceItemSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
 import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
@@ -54,7 +55,8 @@ public class DeliverOffTheRecordIntegrationTest extends AbstractSpringContextTes
     private void overdueInvoicesExistsWith(String salome, Long edward) {
         List<ReportItem> overdueInvoicingItems = reportItemRepository.findAll(
                 where(new HasCustomerSpecification(edward.toString()))
-                        .and(new InvoiceItemToBePaidSpecification()));
+                        .and(new IsInvoiceItemSpecification())
+                        .and(new OverdueItemSpecification()));
 
         assertTrue(
                 overdueInvoicingItems.stream()

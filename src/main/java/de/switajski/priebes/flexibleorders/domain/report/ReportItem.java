@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.GenericEntity;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
+import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.web.helper.LanguageTranslator;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -197,7 +198,7 @@ public abstract class ReportItem extends GenericEntity implements
     }
 
     public boolean isOverdue() {
-        return 0 < overdue();
+        return new OverdueItemSpecification().test(this);
     }
 
 }

@@ -115,19 +115,19 @@ public class ReportItemController extends ExceptionController {
             specs.add(new HasCustomerSpecification(retrieveCustomerSafely(filterMap.get(CUSTOMER_FILTER))));
         }
 
-        Page<ItemDto> openItems = reportingService.createMissing(
+        Page<ItemDto> missingItems = reportingService.createMissing(
                 new PageRequest((page - 1), limit),
                 combineSpecsToOne(specs));
 
         if (state == ProductionState.SHIPPED) {
-            openItems = addShippingCosts(pageable, openItems);
+            missingItems = addShippingCosts(pageable, missingItems);
         }
 
         // TODO: replace this workaround with spec
         if (containsFilter(filterMap, "asdf")) {
-            removeAgreed(openItems);
+            removeAgreed(missingItems);
         }
-        return ExtJsResponseCreator.createResponse(openItems);
+        return ExtJsResponseCreator.createResponse(missingItems);
 
     }
 

@@ -31,8 +31,9 @@ import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.ConfirmationItemToBeAgreedSpec;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.IsConfirmationItemSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
@@ -150,7 +151,7 @@ public class ShippingService {
 
     private ReportItem resolveAccordingToCustomerAndOverdueItems(String customerNumber, ItemDto itemDto) {
         List<ReportItem> overdueConfirmationItemsToBeShipped = reportItemRepo
-                .findAll(where(new HasCustomerSpecification(customerNumber)).and(new ConfirmationItemToBeAgreedSpec()));
+                .findAll(where(new HasCustomerSpecification(customerNumber)).and(new IsConfirmationItemSpecification()).and(new OverdueItemSpecification()));
 
         List<ReportItem> matchingConfirmationItems = overdueConfirmationItemsToBeShipped.stream()
                 .filter(ri -> ri.getOrderItem().getProduct().getProductNumber().equals(itemDto.getProduct()))

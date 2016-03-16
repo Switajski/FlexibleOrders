@@ -62,6 +62,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
     @Autowired
     private AgreeingService agreeingService;
 
+    @Autowired
     private ConfirmingService confirmingService;
 
     private static final int JUREK_QTY = 5; // All Jureks from B12

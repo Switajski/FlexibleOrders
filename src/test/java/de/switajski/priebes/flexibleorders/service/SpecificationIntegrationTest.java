@@ -23,7 +23,6 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.IsConfirmationItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
@@ -125,9 +124,8 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
 
         // WHEN
         List<ReportItem> retrievedRis = reportItemRepository
-                .findAll(where(new IsConfirmationItemSpecification())
-                        .and(new OverdueItemSpecification())
-                        .and(new AgreedItemSpecification()));
+                .findAll(where(new OverdueItemSpecification())
+                        .and(new IsConfirmationItemSpecification()));
 
         // THEN
         assertAllItemsAreAgreed(retrievedRis);

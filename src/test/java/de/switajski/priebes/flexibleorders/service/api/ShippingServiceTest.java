@@ -2,10 +2,10 @@ package de.switajski.priebes.flexibleorders.service.api;
 
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.AMY;
 import static de.switajski.priebes.flexibleorders.testdata.TestDataFixture.EDWARD;
-import static de.switajski.priebes.flexibleorders.testutil.Assume.assumeThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -159,6 +160,7 @@ public class ShippingServiceTest {
                 .getCreated(), equalTo(toOldDateClass(now)));
     }
 
+    @Ignore("future functionality")
     @Test
     public void shouldCreateShippingItemOffTheRecord() throws Exception {
         long id = 123L;
@@ -171,7 +173,7 @@ public class ShippingServiceTest {
         whenDelivering();
 
         captureSavedDeliveryNotes();
-        assumeThat(capturedDeliveryNotes::getItems, ri -> ri instanceof ShippingItem);
+        assertTrue(capturedDeliveryNotes.getItems().stream().allMatch(ri -> ri instanceof ShippingItem));
         // assumeThat(capturedDeliveryNotes.getItems().iterator().next(), ri ->
         // ri instanceof ShippingItem);
     }

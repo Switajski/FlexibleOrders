@@ -6,6 +6,7 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,12 +15,13 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.IsConfirmationItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
+import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 
 public class OverdueItemSpecificationItegrationTest extends AbstractSpringContextTestConfiguration {
 
-    // @Rule
-    // @Autowired
-    // public StandardTestDataRule rule;
+    @Rule
+    @Autowired
+    public StandardTestDataRule rule;
 
     @Autowired
     ReportItemRepository reportItemRepo;

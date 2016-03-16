@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class DeliverOffTheRecordIntegrationTest extends AbstractSpringContextTes
 
     DeliverParameter deliverParameter = new DeliverParameter();
 
+    @Ignore("future functionality")
     @Test
     public void shouldDeliverAnItemOffTheRecord() throws Exception {
         String salome = SALOME.getProductNumber();

@@ -26,8 +26,8 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerDto;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
-import de.switajski.priebes.flexibleorders.repository.specification.AgreedItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
+import de.switajski.priebes.flexibleorders.repository.specification.IsConfirmationItemSpecification;
 import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
@@ -163,7 +163,7 @@ public class ReportingService {
     private ReportDto createToBeShippedDto(Customer customer, ReportDto report) {
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
-                .where(new AgreedItemSpecification())
+                .where(new IsConfirmationItemSpecification())
                 .and(new OverdueItemSpecification());
         if (customer != null) specs = specs.and(new HasCustomerSpecification(customer));
 

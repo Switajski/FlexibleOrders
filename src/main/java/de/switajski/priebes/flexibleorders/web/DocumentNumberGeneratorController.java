@@ -25,9 +25,18 @@ public class DocumentNumberGeneratorController extends ExceptionController {
     @RequestMapping(value = "/order/generateNumber", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse generate() {
         JsonObjectResponse response = new JsonObjectResponse();
-        response.setData(orderNumberGeneratorService.yymmggg(LocalDate.now()));
+        response.setData(orderNumberGeneratorService.byymmggg(LocalDate.now()));
         response.setSuccess(true);
         response.setMessage("Order number generated");
+        return response;
+    }
+
+    @RequestMapping(value = "/report/generateNumber", method = RequestMethod.GET)
+    public @ResponseBody JsonObjectResponse generateDocumentNumber() {
+        JsonObjectResponse response = new JsonObjectResponse();
+        response.setData(orderNumberGeneratorService.yymmggg(LocalDate.now()));
+        response.setSuccess(true);
+        response.setMessage("Document number generated");
         return response;
     }
 

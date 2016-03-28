@@ -110,7 +110,7 @@ public class ReportController {
         if (customer == null) {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
-        ReportDto report = reportingService.retrieveAllToBeShippedToCustomer(customer);
+        ReportDto report = reportingService.toBeShippedToCustomer(customer);
         return new ModelAndView(
                 PdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(),
@@ -122,7 +122,7 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
 
-        ReportDto report = reportingService.retrieveAllToBeShipped();
+        ReportDto report = reportingService.toBeShipped();
         return new ModelAndView(
                 PdfView.class.getSimpleName(),
                 ReportDto.class.getSimpleName(),
@@ -191,7 +191,7 @@ public class ReportController {
 
         if (orderNumber != null) {
             List<String> orderNumbers = reportingService
-                    .retrieveOrderNumbersLike(orderNumber);
+                    .orderNumbersLike(orderNumber);
             if (!orderNumbers.isEmpty()) {
                 response.setTotal(orderNumbers.size());
                 response.setData(formatOrderNumbers(orderNumbers));
@@ -204,7 +204,7 @@ public class ReportController {
             List<Customer> customers = customerService.findAll();
             ArrayList<String> list = new ArrayList<String>();
             for (Customer customer : customers)
-                list.addAll(reportingService.retrieveOrderNumbersByCustomer(
+                list.addAll(reportingService.orderNumbersByCustomer(
                         customer,
                         new PageRequest(0, 20)).getContent());
             response.setTotal(list.size());

@@ -84,12 +84,12 @@ public class ReportItemController extends ExceptionController {
                     .get(CUSTOMER_FILTER)));
             if (customer == null) throw new IllegalArgumentException(
                     "Kunde mit gegebener Id nicht gefunden");
-            ordered = reportingService.retrieveAllToBeConfirmedByCustomer(
+            ordered = reportingService.toBeConfirmedByCustomer(
                     customer,
                     pageable);
         }
         else {
-            ordered = reportingService.retrieveAllToBeConfirmed(pageable);
+            ordered = reportingService.toBeConfirmed(pageable);
         }
         return ExtJsResponseCreator.createResponse(ordered);
     }

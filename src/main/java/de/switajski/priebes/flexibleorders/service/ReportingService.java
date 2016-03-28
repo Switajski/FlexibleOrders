@@ -48,7 +48,7 @@ public class ReportingService {
     private PurchaseAgreementReadService purchaseAgreementService;
 
     @Transactional(readOnly = true)
-    public Page<ItemDto> retrieveAllToBeConfirmedByCustomer(
+    public Page<ItemDto> toBeConfirmedByCustomer(
             Customer customer,
             Pageable pageable) {
         Page<Order> toBeConfirmed = orderRepo.findAllToBeConfirmedByCustomer(
@@ -68,7 +68,7 @@ public class ReportingService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ItemDto> retrieveAllToBeConfirmed(PageRequest pageable) {
+    public Page<ItemDto> toBeConfirmed(PageRequest pageable) {
         Page<Order> toBeConfirmed = orderRepo.findAllToBeConfirmed(pageable);
         return createPage(
                 toBeConfirmed.getTotalElements(),
@@ -77,7 +77,7 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public List<String> retrieveOrderNumbersLike(String orderNumber) {
+    public List<String> orderNumbersLike(String orderNumber) {
         List<Order> orders = orderRepo.findByOrderNumberLike(orderNumber);
         return extractOrderNumbers(orders);
     }
@@ -91,7 +91,7 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public Page<String> retrieveOrderNumbersByCustomer(
+    public Page<String> orderNumbersByCustomer(
             Customer customer,
             PageRequest pageRequest) {
 
@@ -151,12 +151,12 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public ReportDto retrieveAllToBeShippedToCustomer(Customer customer) {
+    public ReportDto toBeShippedToCustomer(Customer customer) {
         return createToBeShippedDto(customer, new ToBeShippedToOneCustomerDto());
     }
 
     @Transactional(readOnly = true)
-    public ReportDto retrieveAllToBeShipped() {
+    public ReportDto toBeShipped() {
         return createToBeShippedDto(null, new ToBeShippedDto());
     }
 

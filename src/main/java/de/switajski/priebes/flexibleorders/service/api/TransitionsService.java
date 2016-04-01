@@ -78,6 +78,7 @@ public class TransitionsService {
             oi.setNegotiatedPriceNet(new Amount(
                     ri.getPriceNet(),
                     Currency.EUR));
+            oi.setAdditionalInfo(ri.getAdditionalInfo());
             order.addOrderItem(oi);
         }
 

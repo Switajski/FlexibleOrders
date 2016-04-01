@@ -114,7 +114,7 @@ public abstract class ReportItem extends GenericEntity implements
      */
     @JsonIgnore
     public Customer getCustomer() {
-        return this.getOrderItem().getCustomer();
+        return this.getOrderItem().getOrder().getCustomer();
     }
 
     @PrePersist

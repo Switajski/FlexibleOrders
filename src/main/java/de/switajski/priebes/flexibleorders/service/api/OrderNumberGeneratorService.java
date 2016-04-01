@@ -32,8 +32,20 @@ public class OrderNumberGeneratorService {
     @Autowired
     ReportRepository reportRepo;
 
-    public String yymmggg(LocalDate date) {
-        return generateNextYYMMGGGFor(date, true, true);
+    /**
+     * 
+     * @param date
+     * @param orderNumber
+     *            if given orderNumber is generated and valid returns this
+     *            parameter back again
+     * @return
+     */
+    public String yymmggg(LocalDate date, String orderNumber) {
+        boolean isGenerated = orderNumber.startsWith("B") && orderNumber.length() == 8;
+        if (isGenerated && reportRepo.findAll(new DocumentNumberContains(orderNumber)).isEmpty()) {
+            return orderNumber.replace("B", "");
+        }
+        return generateNextYYMMGGGFor(date, false, true);
     }
 
     public String generateNextYYMMGGGFor(LocalDate date, boolean inOrders, boolean inReports) {

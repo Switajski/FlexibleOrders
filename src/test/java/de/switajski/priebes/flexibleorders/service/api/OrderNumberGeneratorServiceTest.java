@@ -76,7 +76,7 @@ public class OrderNumberGeneratorServiceTest {
                         new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + lastSavedReport).build())));
 
         // WHEN
-        String orderNumber = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        String orderNumber = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), "123456");
 
         // THEN
         assertThat(orderNumber, is(equalTo(year + month + consecutiveNo)));

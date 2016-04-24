@@ -15,4 +15,10 @@ public abstract class ReportItemsPdfPTableCreator {
         return pNo == null || pNo.equals(0L) ? stringInsteadSku : pNo.toString();
     }
 
+    protected String articleNameWithAdditionalInfo(String additionalInfo, String productName) {
+        StringBuilder articleName = new StringBuilder().append(productName);
+        if (additionalInfo != null) articleName.append("\n").append(additionalInfo);
+        return articleName.toString();
+    }
+
 }

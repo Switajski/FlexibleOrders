@@ -24,9 +24,7 @@ public class TableForOrderCreator extends ReportItemsPdfPTableCreator {
                 Product product = oi.getProduct();
                 row.add(sku(product.getProductNumber()));
                 // Artikel
-                String articleName = product.getName();
-                if (oi.getAdditionalInfo() != null) articleName.concat("\n").concat(oi.getAdditionalInfo());
-                row.add(articleName);
+                row.add(articleNameWithAdditionalInfo(oi.getAdditionalInfo(), product.getName()));
                 // Anzahl
                 row.add(String.valueOf(oi.getOrderedQuantity()));
                 // EK per Stueck
@@ -42,9 +40,9 @@ public class TableForOrderCreator extends ReportItemsPdfPTableCreator {
     private String getPriceXquantity(OrderItem he) {
         if (he.getNegotiatedPriceNet() != null
                 && he.getNegotiatedPriceNet().getValue() != null) return he
-                        .getNegotiatedPriceNet()
-                        .multiply(he.getOrderedQuantity())
-                        .toString();
+                .getNegotiatedPriceNet()
+                .multiply(he.getOrderedQuantity())
+                .toString();
         else return "-";
     }
 

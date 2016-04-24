@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
@@ -23,22 +24,23 @@ public class TableWithPricesAndWithoutPackageNumberCreator extends ReportItemsPd
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());
         // Refactor - see #71
-        for (ReportItem he : report.getItemsByOrder()) {
+        for (ReportItem ri : report.getItemsByOrder()) {
             List<String> list = new ArrayList<String>();
             // Art.Nr.:
-            Product product = he.getOrderItem().getProduct();
+            OrderItem oi = ri.getOrderItem();
+            Product product = oi.getProduct();
             list.add(sku(product.getProductNumber()));
             // Artikel
-            list.add(product.getName());
+            list.add(articleNameWithAdditionalInfo(oi.getAdditionalInfo(), product.getName()));
             // Anzahl
-            list.add(String.valueOf(he.getQuantity()));
+            list.add(String.valueOf(ri.getQuantity()));
             // EK per Stueck
-            list.add(he.getOrderItem().getNegotiatedPriceNet().toString());
+            list.add(oi.getNegotiatedPriceNet().toString());
             // Bestellnr
-            list.add(he.getOrderItem().getOrder().getOrderNumber());
+            list.add(oi.getOrder().getOrderNumber());
             // gesamt
-            list.add(he.getOrderItem().getNegotiatedPriceNet()
-                    .multiply(he.getQuantity()).toString());
+            list.add(oi.getNegotiatedPriceNet()
+                    .multiply(ri.getQuantity()).toString());
 
             builder.addBodyRow(list);
         }

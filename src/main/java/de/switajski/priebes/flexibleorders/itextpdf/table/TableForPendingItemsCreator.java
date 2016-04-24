@@ -59,7 +59,7 @@ public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
         String pNo = ri.sku;
         row.add(sku(pNo));
         // Artikel
-        row.add(ri.productName);
+        row.add(articleNameWithAdditionalInfo(ri.additionalInfo, ri.productName));
         // Kundennr.
         row.add(ri.customerNumber);
         // Bestellnr

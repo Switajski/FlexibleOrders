@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
@@ -36,7 +35,11 @@ public class OrderNumberGeneratorServiceTest {
     @Mock
     ReportRepository reportRepo;
 
+    String ramdomNoFromOrderingCustomer = "123456";
+
     String year = "15", month = "01", randomDay = "12";
+
+    String generated;
 
     @Before
     public void setup() {
@@ -45,15 +48,12 @@ public class OrderNumberGeneratorServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldGenerateOrderNumberInGivenFormat() {
-        // GIVEN
+    public void shouldIterateOrderNumberInGivenFormat() {
         givenLastSavedOrder("065");
 
-        // WHEN
-        String orderNumber = whenGeneratingOrderNumber();
+        whenGeneratingOrderNumber();
 
-        // THEN
-        assertThat(orderNumber, is(equalTo("B" + year + month + "066")));
+        assertThat(generated, is(equalTo("B" + formattedDocumentNumber("066"))));
     }
 
     /**
@@ -61,20 +61,43 @@ public class OrderNumberGeneratorServiceTest {
      * Nevertheless the user of FlexibleOrders wants to have its own numbers.
      */
     @Test
-    public void shouldGenerateDocumentNumberIndependentlyFromOrderNumber() {
+    public void shouldGenerateOwnNumberIfOrderNumberIsFromCustomer() {
         givenLastSavedOrder("065");
-        givenLastSavedReport("064");
+        givenLastSavedReport("062");
 
-        // WHEN
-        String orderNumber = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), "123456");
+        whenGeneratingNumberFromOrderNumber(ramdomNoFromOrderingCustomer);
 
-        // THEN
-        assertThat(orderNumber, is(equalTo(year + month + "066")));
+        assertThat(generated, is(equalTo(formattedDocumentNumber("066"))));
+    }
+
+    @Test
+    public void shouldConsiderLastSavedDocumentNumberWhenGeneratingNextNumberAndOrderNumberIsFromCustomer() {
+        givenLastSavedOrder("065");
+        givenLastSavedReport("067");
+
+        whenGeneratingNumberFromOrderNumber(ramdomNoFromOrderingCustomer);
+
+        assertThat(generated, is(equalTo(formattedDocumentNumber("068"))));
+    }
+
+    @Test
+    public void shouldRecognizeNumbersFromFlexibleOrders() {
+        givenLastSavedOrder("065");
+        givenLastSavedReport("062");
+
+        String number = whenGeneratingNumberFromOrderNumber("B" + formattedDocumentNumber("066"));
+
+        assertThat(number, is(equalTo(formattedDocumentNumber("066"))));
+    }
+
+    private String whenGeneratingNumberFromOrderNumber(String oNo) {
+        generated = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), oNo);
+        return generated;
     }
 
     private String whenGeneratingOrderNumber() {
-        String orderNumber = orderNumberGeneratorService.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
-        return orderNumber;
+        generated = orderNumberGeneratorService.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        return generated;
     }
 
     private void givenLastSavedOrder(String sequence) {
@@ -84,8 +107,11 @@ public class OrderNumberGeneratorServiceTest {
     }
 
     private void givenLastSavedReport(String sequence) {
-        when(reportRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
-                new PageImpl<Report>(Arrays.asList(
-                        new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + sequence).build())));
+        when(reportRepo.findAll(any(Specification.class))).thenReturn(
+                Arrays.asList(new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + sequence).build()));
+    }
+
+    private String formattedDocumentNumber(String sequence) {
+        return year + month + sequence;
     }
 }

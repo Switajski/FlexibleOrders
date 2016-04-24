@@ -4,6 +4,9 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,6 +25,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.OrderCreatedBetweenSpecification;
+import de.switajski.priebes.flexibleorders.service.DocumentNumberInFormatComparator;
 
 @Service
 public class OrderNumberGeneratorService {
@@ -33,7 +37,7 @@ public class OrderNumberGeneratorService {
     ReportRepository reportRepo;
 
     /**
-     * Generates the next orderNumber regarding the last orders only
+     * Generates the next orderNumber regarding the last reports only
      * 
      * @param date
      * @param orderNumber
@@ -46,7 +50,7 @@ public class OrderNumberGeneratorService {
         if (isGenerated && reportRepo.findAll(new DocumentNumberContains(orderNumber)).isEmpty()) {
             return orderNumber.replace("B", "");
         }
-        boolean regardingOrders = false;
+        boolean regardingOrders = true;
         boolean regardingReports = true;
         return generateNextYYMMGGGFor(date, regardingOrders, regardingReports);
     }
@@ -58,7 +62,7 @@ public class OrderNumberGeneratorService {
      * @return
      */
     public String byymmggg(LocalDate date) {
-        return "B" + generateNextYYMMGGGFor(date, true, false);
+        return "B" + generateNextYYMMGGGFor(date, true, true);
     }
 
     private String generateNextYYMMGGGFor(LocalDate date, boolean regardingOrders, boolean regardingReports) {
@@ -76,9 +80,11 @@ public class OrderNumberGeneratorService {
             }
         }
         if (regardingReports) {
-            Page<Report> reports = reportRepo.findAll(new DocumentNumberContains(yymm(date)), new PageRequest(0, 1, Sort.Direction.DESC, "documentNumber"));
-            if (0 < reports.getContent().size()) {
-                int lastThreeNumbersParsed = parseLastThreeNumbers(reports.iterator().next().getDocumentNumber());
+            List<Report> reports = reportRepo.findAll(new DocumentNumberContains(yymm(date)));
+            List<String> docNos = reports.stream().map(r -> r.getDocumentNumber()).collect(Collectors.toList());
+            Collections.sort(docNos, new DocumentNumberInFormatComparator().reversed());
+            if (0 < docNos.size()) {
+                int lastThreeNumbersParsed = parseLastThreeNumbers(docNos.iterator().next());
                 if (lastThreeNumbersParsed > lastDocumentNumber) {
                     lastDocumentNumber = lastThreeNumbersParsed;
                 }

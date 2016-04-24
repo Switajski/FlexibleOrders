@@ -33,7 +33,7 @@ public class DocumentNumberGeneratorController extends ExceptionController {
 
     @RequestMapping(value = "/report/generateNumber", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse generateDocumentNumber(
-            @RequestParam(value = "orderNumber", required = false) String orderNumber) {
+            @RequestParam(value = "orderNumber", required = true) String orderNumber) {
         JsonObjectResponse response = new JsonObjectResponse();
         response.setData(orderNumberGeneratorService.yymmggg(LocalDate.now(), orderNumber));
         response.setSuccess(true);

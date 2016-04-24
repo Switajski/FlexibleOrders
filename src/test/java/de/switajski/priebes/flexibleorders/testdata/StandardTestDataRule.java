@@ -14,6 +14,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepository;
 import de.switajski.priebes.flexibleorders.repository.CatalogProductRepository;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
+import de.switajski.priebes.flexibleorders.repository.OrderRepository;
+import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.api.AgreeingService;
 import de.switajski.priebes.flexibleorders.service.api.ConfirmingService;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
@@ -27,6 +29,12 @@ public class StandardTestDataRule extends ExternalResource {
 
     @PersistenceUnit
     EntityManagerFactory emf;
+
+    @Autowired
+    ReportRepository rRepo;
+
+    @Autowired
+    OrderRepository oRepo;
 
     @Autowired
     CatalogProductRepository cpRepo;
@@ -94,5 +102,21 @@ public class StandardTestDataRule extends ExternalResource {
 
         });
 
+    }
+
+    @Override
+    protected void after() {
+        TransactionTemplate template = new TransactionTemplate(tm);
+        template.execute(new TransactionCallback<Object>() {
+
+            @Override
+            public Object doInTransaction(TransactionStatus status) {
+                rRepo.deleteAllInBatch();
+                oRepo.deleteAllInBatch();
+                cRepo.deleteAllInBatch();
+                return null;
+            }
+
+        });
     }
 }

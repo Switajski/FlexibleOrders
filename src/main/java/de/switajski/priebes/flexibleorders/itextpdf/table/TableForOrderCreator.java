@@ -24,7 +24,7 @@ public class TableForOrderCreator extends ReportItemsPdfPTableCreator {
                 Product product = oi.getProduct();
                 row.add(sku(product.getProductNumber()));
                 // Artikel
-                row.add(product.getName());
+                row.add(articleNameWithAdditionalInfo(oi.getAdditionalInfo(), product.getName()));
                 // Anzahl
                 row.add(String.valueOf(oi.getOrderedQuantity()));
                 // EK per Stueck

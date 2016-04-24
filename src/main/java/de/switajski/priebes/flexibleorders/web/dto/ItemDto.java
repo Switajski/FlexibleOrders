@@ -53,7 +53,16 @@ public class ItemDto {
             orderAgreementNumber,
             trackNumber,
             packageNumber,
-            paymentConditions;
+            paymentConditions,
+            additionalInfo;
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
 
     private Integer quantity;
     @Min(1)

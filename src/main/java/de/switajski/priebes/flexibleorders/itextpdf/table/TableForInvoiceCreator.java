@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
@@ -23,24 +24,25 @@ public class TableForInvoiceCreator extends ReportItemsPdfPTableCreator {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(createTableProperties());
         for (ReportItem ri : cReport.getItemsByOrder()) {
-            if (ri.getOrderItem().getProduct().getProductType() != ProductType.SHIPPING) {
+            OrderItem orderItem = ri.getOrderItem();
+            if (orderItem.getProduct().getProductType() != ProductType.SHIPPING) {
                 List<String> list = new ArrayList<String>();
                 // Art.Nr.:
-                String pNo = ri.getOrderItem().getProduct().getProductNumber();
+                String pNo = orderItem.getProduct().getProductNumber();
                 list.add(sku(pNo));
                 // Artikel
-                list.add(ri.getOrderItem().getProduct().getName());
+                list.add(articleNameWithAdditionalInfo(orderItem.getAdditionalInfo(), orderItem.getProduct().getName()));
                 // Anzahl
                 list.add(String.valueOf(ri.getQuantity()));
                 // EK per Stueck
-                list.add(ri.getOrderItem().getNegotiatedPriceNet().toString());
+                list.add(orderItem.getNegotiatedPriceNet().toString());
                 // Lieferscheinnr.
                 if (ri.getPredecessor() != null && ri.getPredecessor().getReport() != null) {
                     list.add(ri.getPredecessor().getReport().getDocumentNumber());
                 }
                 else list.add(" ");
                 // gesamt
-                list.add(ri.getOrderItem()
+                list.add(orderItem
                         .getNegotiatedPriceNet()
                         .multiply(ri.getQuantity())
                         .toString());

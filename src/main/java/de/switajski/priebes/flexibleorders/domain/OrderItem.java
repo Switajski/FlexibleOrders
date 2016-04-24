@@ -43,6 +43,8 @@ public class OrderItem extends GenericEntity {
 
     private String trackingNumber;
 
+    private String additionalInfo;
+
     @JsonIgnore
     @NotNull
     @ManyToOne()
@@ -71,7 +73,8 @@ public class OrderItem extends GenericEntity {
     public String toString() {
         return new StringBuilder("#")
                 .append(getId())
-                .append(" ").append(this.getClass().getSimpleName())
+                .append(" ")
+                .append(this.getClass().getSimpleName())
                 .append(": ")
                 .append(getOrderedQuantity())
                 .append(" x ")
@@ -195,14 +198,12 @@ public class OrderItem extends GenericEntity {
         return this.getProduct().getProductType().equals(ProductType.SHIPPING);
     }
 
-    /**
-     * convenience method
-     *
-     * @return
-     */
-    @JsonIgnore
-    public Customer getCustomer() {
-        return this.getOrder().getCustomer();
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
 }

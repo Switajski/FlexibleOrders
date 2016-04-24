@@ -6,6 +6,7 @@ import java.util.List;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
@@ -45,12 +46,13 @@ public class TableWithoutPricesAndWithoutPackageNumbersCreator extends ReportIte
         // Anzahl
         row.add(String.valueOf(ri.getQuantity()) + " x ");
         // Art.Nr.:
-        String pNo = ri.getOrderItem().getProduct().getProductNumber();
+        OrderItem oi = ri.getOrderItem();
+        String pNo = oi.getProduct().getProductNumber();
         row.add(sku(pNo));
         // Artikel
-        row.add(ri.getOrderItem().getProduct().getName());
+        row.add(articleNameWithAdditionalInfo(oi.getAdditionalInfo(), oi.getProduct().getName()));
         // Bestellnr
-        row.add(ri.getOrderItem().getOrder().getOrderNumber());
+        row.add(oi.getOrder().getOrderNumber());
         return row;
     }
 

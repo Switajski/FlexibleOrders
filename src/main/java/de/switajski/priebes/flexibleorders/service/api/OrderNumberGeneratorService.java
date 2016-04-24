@@ -33,6 +33,7 @@ public class OrderNumberGeneratorService {
     ReportRepository reportRepo;
 
     /**
+     * Generates the next orderNumber regarding the last orders only
      * 
      * @param date
      * @param orderNumber
@@ -45,16 +46,28 @@ public class OrderNumberGeneratorService {
         if (isGenerated && reportRepo.findAll(new DocumentNumberContains(orderNumber)).isEmpty()) {
             return orderNumber.replace("B", "");
         }
-        return generateNextYYMMGGGFor(date, false, true);
+        boolean regardingOrders = false;
+        boolean regardingReports = true;
+        return generateNextYYMMGGGFor(date, regardingOrders, regardingReports);
     }
 
-    public String generateNextYYMMGGGFor(LocalDate date, boolean inOrders, boolean inReports) {
+    /**
+     * Same as {@link #yymm(LocalDate)}, but with a "b" as prefix
+     * 
+     * @param date
+     * @return
+     */
+    public String byymmggg(LocalDate date) {
+        return "B" + generateNextYYMMGGGFor(date, true, false);
+    }
+
+    private String generateNextYYMMGGGFor(LocalDate date, boolean regardingOrders, boolean regardingReports) {
         Integer year = date.getYear();
         Integer month = date.getMonthValue();
         Specification<Order> spec = new OrderNumberStartsWith("B" + yymm(date));
 
         int lastDocumentNumber = 0;
-        if (inOrders) {
+        if (regardingOrders) {
             // Using Page, because it's the less effort for sort direction and
             // result size
             Page<Order> orders = orderRepo.findAll(spec, new PageRequest(0, 1, Sort.Direction.DESC, "orderNumber"));
@@ -62,7 +75,7 @@ public class OrderNumberGeneratorService {
                 lastDocumentNumber = parseLastThreeNumbers(orders.iterator().next().getOrderNumber());
             }
         }
-        if (inReports) {
+        if (regardingReports) {
             Page<Report> reports = reportRepo.findAll(new DocumentNumberContains(yymm(date)), new PageRequest(0, 1, Sort.Direction.DESC, "documentNumber"));
             if (0 < reports.getContent().size()) {
                 int lastThreeNumbersParsed = parseLastThreeNumbers(reports.iterator().next().getDocumentNumber());
@@ -88,10 +101,6 @@ public class OrderNumberGeneratorService {
         return parsedLastThreeNumbers;
     }
 
-    public String byymmggg(LocalDate date) {
-        return "B" + generateNextYYMMGGGFor(date, true, false);
-    }
-
     @SuppressWarnings("unused")
     private Specification<Order> inMonthAndStartsWithLetterB(LocalDate date) {
         return where(OrderCreatedBetweenSpecification.inMonth(date))
@@ -102,7 +111,7 @@ public class OrderNumberGeneratorService {
         return DateTimeFormatter.ofPattern("yyMM").format(localDate);
     }
 
-    public class OrderNumberStartsWith implements Specification<Order> {
+    private class OrderNumberStartsWith implements Specification<Order> {
 
         private String start;
 
@@ -117,7 +126,7 @@ public class OrderNumberGeneratorService {
 
     }
 
-    public class DocumentNumberContains implements Specification<Report> {
+    private class DocumentNumberContains implements Specification<Report> {
 
         private String pattern;
 
@@ -128,21 +137,6 @@ public class OrderNumberGeneratorService {
         @Override
         public Predicate toPredicate(Root<Report> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
             return cb.like(root.get("documentNumber"), "%" + pattern + "%");
-        }
-
-    }
-
-    public class OrderNumberContains implements Specification<Order> {
-
-        private String pattern;
-
-        public OrderNumberContains(String pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-            return cb.like(root.get("orderNumber"), "%" + pattern + "%");
         }
 
     }

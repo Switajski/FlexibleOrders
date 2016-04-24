@@ -37,9 +37,6 @@ public class OrderNumberGeneratorServiceTest {
     ReportRepository reportRepo;
 
     String year = "15", month = "01", randomDay = "12";
-    String lastSavedOrder = "065";
-    String lastSavedReport = "064";
-    String consecutiveNo = "066";
 
     @Before
     public void setup() {
@@ -50,15 +47,13 @@ public class OrderNumberGeneratorServiceTest {
     @SuppressWarnings("unchecked")
     public void shouldGenerateOrderNumberInGivenFormat() {
         // GIVEN
-        when(orderRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
-                new PageImpl<Order>(Arrays.asList(
-                        new OrderBuilder().setOrderNumber(lastSavedOrder).build())));
+        givenLastSavedOrder("065");
 
         // WHEN
-        String orderNumber = orderNumberGeneratorService.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        String orderNumber = whenGeneratingOrderNumber();
 
         // THEN
-        assertThat(orderNumber, is(equalTo("B" + year + month + consecutiveNo)));
+        assertThat(orderNumber, is(equalTo("B" + year + month + "066")));
     }
 
     /**
@@ -67,18 +62,30 @@ public class OrderNumberGeneratorServiceTest {
      */
     @Test
     public void shouldGenerateDocumentNumberIndependentlyFromOrderNumber() {
-        // GIVEN
-        when(orderRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
-                new PageImpl<Order>(Arrays.asList(
-                        new OrderBuilder().setOrderNumber(lastSavedOrder).build())));
-        when(reportRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
-                new PageImpl<Report>(Arrays.asList(
-                        new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + lastSavedReport).build())));
+        givenLastSavedOrder("065");
+        givenLastSavedReport("064");
 
         // WHEN
         String orderNumber = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), "123456");
 
         // THEN
-        assertThat(orderNumber, is(equalTo(year + month + consecutiveNo)));
+        assertThat(orderNumber, is(equalTo(year + month + "066")));
+    }
+
+    private String whenGeneratingOrderNumber() {
+        String orderNumber = orderNumberGeneratorService.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        return orderNumber;
+    }
+
+    private void givenLastSavedOrder(String sequence) {
+        when(orderRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
+                new PageImpl<Order>(Arrays.asList(
+                        new OrderBuilder().setOrderNumber(sequence).build())));
+    }
+
+    private void givenLastSavedReport(String sequence) {
+        when(reportRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
+                new PageImpl<Report>(Arrays.asList(
+                        new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + sequence).build())));
     }
 }

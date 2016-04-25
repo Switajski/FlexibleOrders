@@ -10,17 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.service.api.DeliveryNotesNumberGeneratorService;
-import de.switajski.priebes.flexibleorders.service.api.OrderNumberGeneratorService;
+import de.switajski.priebes.flexibleorders.service.api.DocumentNumberGeneratorService;
 
 @Controller
 public class DocumentNumberGeneratorController extends ExceptionController {
 
     @Autowired
-    OrderNumberGeneratorService orderNumberGeneratorService;
+    DocumentNumberGeneratorService orderNumberGeneratorService;
 
     @Autowired
-    DeliveryNotesNumberGeneratorService deliveryNotesGeneratorService;
+    DocumentNumberGeneratorService documentNumberGeneratorService;
 
     @RequestMapping(value = "/order/generateNumber", method = RequestMethod.GET)
     public @ResponseBody JsonObjectResponse generate() {
@@ -45,7 +44,7 @@ public class DocumentNumberGeneratorController extends ExceptionController {
     public @ResponseBody JsonObjectResponse generateDeliveryNotesNumber(
             @RequestParam(value = "orderConfirmationNumber", required = true) String orderConfirmationNumber) {
         JsonObjectResponse response = new JsonObjectResponse();
-        response.setData(deliveryNotesGeneratorService.byOrderConfrimationNumber(orderConfirmationNumber));
+        response.setData(documentNumberGeneratorService.byOrderConfrimationNumber(orderConfirmationNumber));
         response.setSuccess(true);
         response.setMessage("Delivery notes number generated");
         return response;

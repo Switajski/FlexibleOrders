@@ -28,13 +28,15 @@ import de.switajski.priebes.flexibleorders.repository.specification.OrderCreated
 import de.switajski.priebes.flexibleorders.service.DocumentNumberInFormatComparator;
 
 @Service
-public class OrderNumberGeneratorService {
+public class DocumentNumberGeneratorService {
+
+    public static final String PENDING_ITEMS_SUFFIX = "-AA";
 
     @Autowired
-    OrderRepository orderRepo;
+    OrderRepository orderRepository;
 
     @Autowired
-    ReportRepository reportRepo;
+    ReportRepository reportRepository;
 
     /**
      * Generates the next orderNumber regarding the last reports only
@@ -47,12 +49,10 @@ public class OrderNumberGeneratorService {
      */
     public String yymmggg(LocalDate date, String orderNumber) {
         boolean isGenerated = orderNumber.startsWith("B") && orderNumber.length() == 8;
-        if (isGenerated && reportRepo.findAll(new DocumentNumberContains(orderNumber)).isEmpty()) {
+        if (isGenerated && reportRepository.findAll(new DocumentNumberContains(orderNumber)).isEmpty()) {
             return orderNumber.replace("B", "");
         }
-        boolean regardingOrders = true;
-        boolean regardingReports = true;
-        return generateNextYYMMGGGFor(date, regardingOrders, regardingReports);
+        return generateNextYYMMGGGFor(date);
     }
 
     /**
@@ -62,10 +62,33 @@ public class OrderNumberGeneratorService {
      * @return
      */
     public String byymmggg(LocalDate date) {
-        return "B" + generateNextYYMMGGGFor(date, true, true);
+        return "B" + generateNextYYMMGGGFor(date);
     }
 
-    private String generateNextYYMMGGGFor(LocalDate date, boolean regardingOrders, boolean regardingReports) {
+    public String byOrderConfrimationNumber(String orderConfirmationNumber) {
+        String firstDeliveryNotesNo = orderConfirmationNumber.replace("AB", "L");
+        if (reportRepository.findByDocumentNumber(firstDeliveryNotesNo) == null) {
+            return firstDeliveryNotesNo;
+        }
+        else {
+            for (int i = 1; i < 10; i++) {
+                String pendingDNNo = generatePendingDeliveryNotesNo(firstDeliveryNotesNo, i);
+                if (reportRepository.findByDocumentNumber(pendingDNNo) == null) {
+                    return pendingDNNo;
+                }
+            }
+            return firstDeliveryNotesNo;
+        }
+    }
+
+    private String generatePendingDeliveryNotesNo(String firstDeliveryNotesNo, int i) {
+        return firstDeliveryNotesNo + PENDING_ITEMS_SUFFIX + i;
+    };
+
+    private String generateNextYYMMGGGFor(LocalDate date) {
+        boolean regardingOrders = true;
+        boolean regardingReports = true;
+
         Integer year = date.getYear();
         Integer month = date.getMonthValue();
         Specification<Order> spec = new OrderNumberStartsWith("B" + yymm(date));
@@ -74,13 +97,13 @@ public class OrderNumberGeneratorService {
         if (regardingOrders) {
             // Using Page, because it's the less effort for sort direction and
             // result size
-            Page<Order> orders = orderRepo.findAll(spec, new PageRequest(0, 1, Sort.Direction.DESC, "orderNumber"));
+            Page<Order> orders = orderRepository.findAll(spec, new PageRequest(0, 1, Sort.Direction.DESC, "orderNumber"));
             if (0 < orders.getContent().size()) {
                 lastDocumentNumber = parseLastThreeNumbers(orders.iterator().next().getOrderNumber());
             }
         }
         if (regardingReports) {
-            List<Report> reports = reportRepo.findAll(new DocumentNumberContains(yymm(date)));
+            List<Report> reports = reportRepository.findAll(new DocumentNumberContains(yymm(date)));
             List<String> docNos = reports.stream().map(r -> r.getDocumentNumber()).collect(Collectors.toList());
             Collections.sort(docNos, new DocumentNumberInFormatComparator().reversed());
             if (0 < docNos.size()) {

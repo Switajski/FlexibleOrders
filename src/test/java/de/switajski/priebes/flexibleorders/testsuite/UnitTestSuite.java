@@ -14,7 +14,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.OrderPdfFileTest;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryServiceTest;
 import de.switajski.priebes.flexibleorders.service.OrderingServiceTest;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingServiceTest;
-import de.switajski.priebes.flexibleorders.service.api.OrderNumberGeneratorServiceTest;
+import de.switajski.priebes.flexibleorders.service.api.DocumentNumberGeneratorServiceTest;
 import de.switajski.priebes.flexibleorders.service.api.ShippingServiceTest;
 import de.switajski.priebes.flexibleorders.service.helper.StatusFilterDispatcherTest;
 import de.switajski.priebes.flexibleorders.web.JacksonDeserializationTest;
@@ -31,7 +31,7 @@ import de.switajski.priebes.flexibleorders.web.helper.ProcessStepTest;
         ShippingServiceTest.class,
         ProcessStepTest.class,
         StatusFilterDispatcherTest.class,
-        OrderNumberGeneratorServiceTest.class,
+        DocumentNumberGeneratorServiceTest.class,
         DeliveryNotesPdfFileTest.class,
         InvoicePdfFileTest.class,
         OrderPdfFileTest.class,

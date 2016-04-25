@@ -1,8 +1,8 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
 import static java.lang.Integer.parseInt;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -20,31 +20,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
+import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryNotesBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 
-public class OrderNumberGeneratorServiceTest {
+public class DocumentNumberGeneratorServiceTest {
 
     @InjectMocks
-    OrderNumberGeneratorService orderNumberGeneratorService = new OrderNumberGeneratorService();
+    DocumentNumberGeneratorService service = new DocumentNumberGeneratorService();
 
     @Mock
-    OrderRepository orderRepo;
+    OrderRepository orderRepository;
     @Mock
-    ReportRepository reportRepo;
+    ReportRepository reportRepository;
 
     String ramdomNoFromOrderingCustomer = "123456";
-
+    String noFromFlexibleOrders = "1601001";
+    String orderConfirmationNumber = "AB" + noFromFlexibleOrders;
     String year = "15", month = "01", randomDay = "12";
 
+    /**
+     * result
+     */
     String generated;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -90,24 +90,64 @@ public class OrderNumberGeneratorServiceTest {
         assertThat(number, is(equalTo(formattedDocumentNumber("066"))));
     }
 
+    @Test
+    public void shouldGenerateByOrderConfirmationNumber() {
+        whenGeneratingNumber();
+
+        assertThat(generated, is(equalTo("L" + noFromFlexibleOrders)));
+    }
+
+    @Test
+    public void shouldAppendPrefixIfDeliveryNotesNumberALreadyExsists() {
+        givenDeliveryNotes("L" + noFromFlexibleOrders);
+
+        whenGeneratingNumber();
+
+        assertThat(generated, is(equalTo("L" + noFromFlexibleOrders + DocumentNumberGeneratorService.PENDING_ITEMS_SUFFIX + 1)));
+    }
+
+    @Test
+    public void shouldAppendPrefixIfDeliveryNotesNumberAndPendingNoAlreadyExsists() {
+        givenDeliveryNotes("L" + noFromFlexibleOrders);
+        givenDeliveryNotes("L" + noFromFlexibleOrders + DocumentNumberGeneratorService.PENDING_ITEMS_SUFFIX + 1);
+
+        whenGeneratingNumber();
+
+        assertThat(generated, is(equalTo("L" + noFromFlexibleOrders
+                + DocumentNumberGeneratorService.PENDING_ITEMS_SUFFIX + 2)));
+    }
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    private void givenDeliveryNotes(String string) {
+        when(reportRepository.findByDocumentNumber(string)).thenReturn(new OrderConfirmation());
+    }
+
+    private void whenGeneratingNumber() {
+        generated = service.byOrderConfrimationNumber(orderConfirmationNumber);
+    }
+
     private String whenGeneratingNumberFromOrderNumber(String oNo) {
-        generated = orderNumberGeneratorService.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), oNo);
+        generated = service.yymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)), oNo);
         return generated;
     }
 
     private String whenGeneratingOrderNumber() {
-        generated = orderNumberGeneratorService.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
+        generated = service.byymmggg(LocalDate.of(parseInt("20" + year), parseInt(month), parseInt(randomDay)));
         return generated;
     }
 
     private void givenLastSavedOrder(String sequence) {
-        when(orderRepo.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
+        when(orderRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(
                 new PageImpl<Order>(Arrays.asList(
                         new OrderBuilder().setOrderNumber(sequence).build())));
     }
 
     private void givenLastSavedReport(String sequence) {
-        when(reportRepo.findAll(any(Specification.class))).thenReturn(
+        when(reportRepository.findAll(any(Specification.class))).thenReturn(
                 Arrays.asList(new DeliveryNotesBuilder().setDocumentNumber("L" + year + month + sequence).build()));
     }
 

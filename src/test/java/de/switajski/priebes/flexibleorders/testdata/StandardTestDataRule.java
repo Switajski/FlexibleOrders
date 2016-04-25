@@ -104,19 +104,19 @@ public class StandardTestDataRule extends ExternalResource {
 
     }
 
-    // @Override
-    // protected void after() {
-    // TransactionTemplate template = new TransactionTemplate(tm);
-    // template.execute(new TransactionCallback<Object>() {
-    //
-    // @Override
-    // public Object doInTransaction(TransactionStatus status) {
-    // rRepo.deleteAllInBatch();
-    // oRepo.deleteAllInBatch();
-    // cRepo.deleteAllInBatch();
-    // return null;
-    // }
-    //
-    // });
-    // }
+    @Override
+    protected void after() {
+        TransactionTemplate template = new TransactionTemplate(tm);
+        template.execute(new TransactionCallback<Object>() {
+
+            @Override
+            public Object doInTransaction(TransactionStatus status) {
+                rRepo.delete(rRepo.findAll());
+                oRepo.delete(oRepo.findAll());
+                cRepo.delete(cRepo.findAll());
+                return null;
+            }
+
+        });
+    }
 }

@@ -201,8 +201,12 @@ public class ReportToDtoConversionService {
     private CustomerDetails retrieveCustomerDetails(Report report) {
         CustomerDetails customerDetails = null;
         Set<CustomerDetails> customerDetailss = customerDetailsService.retrieve(report.getItems());
-        if (customerDetailss.size() > 1) throw new IllegalStateException("Widerspr" + Unicode.U_UML + "chliche Kundenstammdaten f" + Unicode.U_UML
-                + "r gegebene Positionen gefunden");
+        if (customerDetailss.size() > 1) {
+            return customerDetailss.iterator().next();
+            // throw new IllegalStateException("Widerspr" + Unicode.U_UML +
+            // "chliche Kundenstammdaten f" + Unicode.U_UML
+            // + "r gegebene Positionen gefunden");
+        }
         else if (customerDetailss.size() == 1) {
             customerDetails = customerDetailss.iterator().next();
         }

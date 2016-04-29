@@ -32,8 +32,8 @@ import de.switajski.priebes.flexibleorders.web.dto.ChangeAddressParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 /**
- * Integration test to assure functionality of common shipping use cases,
- * e.g.: </br>
+ * Integration test to assure functionality of common shipping use cases, e.g.:
+ * </br>
  * <ul>
  * <li>deliver with deviating expected delivery dates</li>
  * <li>deliver with deviating shipping addresses</li>
@@ -82,9 +82,19 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
     }
 
     @Test
+    public void successfulResponseShouldContainCompletedAndNewCreatedEntity() throws Exception {
+        deliverParameter.setDeliveryNotesNumber("L13-2");
+
+        whenDelivering()
+                .andExpect(content().string(containsString("COMPLETED:")))
+                .andExpect(content().string(containsString("NEW:")))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
     public void shouldRejectContradictoryExpectedDeliveryDatesAddresses() throws Exception {
         deliverParameter.setDeliveryNotesNumber("TEST-L");
-        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
+        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos("AB11", "AB13", "AB15")));
 
         whenDelivering()
                 .andExpect(content().string(containsString("errors")))
@@ -95,7 +105,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
     public void shouldRejectContradictoryShippingAddressesAndClientShouldReceiveSpecialHandlingTag() throws Exception {
         deliverParameter.setDeliveryNotesNumber("TEST-L");
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
-        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
+        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos("AB11", "AB13", "AB15")));
 
         whenDelivering()
                 .andExpect(content().string(containsString("errors")))
@@ -122,7 +132,7 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         String docNo = "L_WITH_CHANGED_ADDRESSES";
         deliverParameter.setDeliveryNotesNumber(docNo);
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
-        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos()));
+        deliverParameter.setItems(new ArrayList<ItemDto>(overdueItemDtos("AB11", "AB13", "AB15")));
         whenDelivering().andExpect(status().is2xxSuccessful());
         em.flush();
 
@@ -148,10 +158,11 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         return param;
     }
 
-    private Set<ItemDto> overdueItemDtos() {
-        Set<ReportItem> reportItems = rRepo.findByDocumentNumber("AB11").getItems();
-        reportItems.addAll(rRepo.findByDocumentNumber("AB13").getItems());
-        reportItems.addAll(rRepo.findByDocumentNumber("AB15").getItems());
+    private Set<ItemDto> overdueItemDtos(String... strings) {
+        Set<ReportItem> reportItems = new HashSet<>();
+        for (String str : strings) {
+            reportItems.addAll(rRepo.findByDocumentNumber(str).getItems());
+        }
 
         Set<ReportItem> overdueRis = reportItems.stream()
                 .filter(ri -> ri.isOverdue())

@@ -32,7 +32,7 @@ import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ReportingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportToInPdfConversionService;
 
 /**
  * Controller for handling http requests on reports. E.g. PDFs
@@ -56,7 +56,7 @@ public class ReportController {
     @Autowired
     TransitionsService orderService;
     @Autowired
-    ReportToDtoConversionService report2DtoConversionService;
+    ReportToInPdfConversionService report2DtoConversionService;
     @Autowired
     OrderToDtoConversionService orderDtoConversionService;
     @Autowired

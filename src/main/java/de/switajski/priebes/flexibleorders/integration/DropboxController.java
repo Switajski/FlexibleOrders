@@ -28,7 +28,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdfToPdfFileWrit
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
-import de.switajski.priebes.flexibleorders.service.conversion.ReportToDtoConversionService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportToInPdfConversionService;
 import de.switajski.priebes.flexibleorders.web.ExceptionController;
 
 @CrossOrigin
@@ -43,7 +43,7 @@ public class DropboxController extends ExceptionController {
     OrderRepository orderRepo;
 
     @Autowired
-    ReportToDtoConversionService reportToDtoConversionService;
+    ReportToInPdfConversionService reportToDtoConversionService;
 
     @Autowired
     OrderToDtoConversionService orderToDtoConversionService;

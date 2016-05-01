@@ -37,7 +37,7 @@ import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 
 @Service
-public class ReportToDtoConversionService {
+public class ReportToInPdfConversionService {
 
     @Autowired
     ExpectedDeliveryService expectedDeliveryService;

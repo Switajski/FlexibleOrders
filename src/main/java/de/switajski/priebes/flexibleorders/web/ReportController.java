@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderConfirmationRepository;
@@ -79,7 +79,7 @@ public class ReportController {
             Order order = orderRepo.findByOrderNumber(id);
             if (order != null) return new ModelAndView(
                     PdfView.class.getSimpleName(),
-                    ReportDto.class.getSimpleName(),
+                    ReportInPdf.class.getSimpleName(),
                     orderDtoConversionService.toDto(order));
         }
         throw new IllegalArgumentException("Report or order with given id not found");
@@ -110,10 +110,10 @@ public class ReportController {
         if (customer == null) {
             throw new IllegalArgumentException("Kunden mit Kundennr.: " + customerNumber + " nicht gefunden");
         }
-        ReportDto report = reportingService.toBeShippedToCustomer(customer);
+        ReportInPdf report = reportingService.toBeShippedToCustomer(customer);
         return new ModelAndView(
                 PdfView.class.getSimpleName(),
-                ReportDto.class.getSimpleName(),
+                ReportInPdf.class.getSimpleName(),
                 report);
     }
 
@@ -122,10 +122,10 @@ public class ReportController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/pdf; charset=utf-8");
 
-        ReportDto report = reportingService.toBeShipped();
+        ReportInPdf report = reportingService.toBeShipped();
         return new ModelAndView(
                 PdfView.class.getSimpleName(),
-                ReportDto.class.getSimpleName(),
+                ReportInPdf.class.getSimpleName(),
                 report);
     }
 
@@ -139,8 +139,8 @@ public class ReportController {
      * @throws ContradictoryAddressException
      */
     private ModelAndView createReportSpecificModelAndView(Report report) throws ContradictoryAddressException {
-        String model = ReportDto.class.getSimpleName();
-        ReportDto reportDto = report2DtoConversionService.convert(report);
+        String model = ReportInPdf.class.getSimpleName();
+        ReportInPdf reportDto = report2DtoConversionService.convert(report);
 
         if (reportDto == null) throw new IllegalStateException(
                 "Could not find view handler for given Document");

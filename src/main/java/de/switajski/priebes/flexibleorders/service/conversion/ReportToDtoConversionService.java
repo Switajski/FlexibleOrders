@@ -27,10 +27,10 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.service.CustomerDetailsService;
 import de.switajski.priebes.flexibleorders.service.DeliveryMethodService;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
@@ -58,7 +58,7 @@ public class ReportToDtoConversionService {
      * 
      */
     @Transactional(readOnly = true)
-    public ReportDto convert(Report report) throws ContradictoryAddressException {
+    public ReportInPdf convert(Report report) throws ContradictoryAddressException {
 
         if (report instanceof DeliveryNotes) return toDto((DeliveryNotes) report);
         else if (report instanceof Invoice) return toDto((Invoice) report);
@@ -67,8 +67,8 @@ public class ReportToDtoConversionService {
         return null;
     }
 
-    private DeliveryNotesDto toDto(DeliveryNotes report) throws ContradictoryAddressException {
-        DeliveryNotesDto dto = new DeliveryNotesDto();
+    private DeliveryNotesInPdf toDto(DeliveryNotes report) throws ContradictoryAddressException {
+        DeliveryNotesInPdf dto = new DeliveryNotesInPdf();
         amendCommonAttributes(report, dto);
         dto.address = retrieveActualShippingAddress(report);
         dto.subject = "Lieferschein " + report.getDocumentNumber();
@@ -81,8 +81,8 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private InvoiceDto toDto(Invoice invoice) throws ContradictoryAddressException {
-        InvoiceDto dto = new InvoiceDto();
+    private InvoiceInPdf toDto(Invoice invoice) throws ContradictoryAddressException {
+        InvoiceInPdf dto = new InvoiceInPdf();
         amendCommonAttributes(invoice, dto);
         dto.address = retrieveInvoicingAddress(invoice);
         dto.shippingSpecific_shippingCosts = invoice.getShippingCosts();
@@ -97,8 +97,8 @@ public class ReportToDtoConversionService {
         return dto;
     }
 
-    private OrderConfirmationDto toDto(OrderConfirmation orderConfirmation) throws ContradictoryAddressException {
-        OrderConfirmationDto dto = new OrderConfirmationDto();
+    private OrderConfirmationInPdf toDto(OrderConfirmation orderConfirmation) throws ContradictoryAddressException {
+        OrderConfirmationInPdf dto = new OrderConfirmationInPdf();
         dto.address = retrieveInvoicingAddress(orderConfirmation);
         dto.shippingSpecific_shippingAddress = retrieveShippingAddress(orderConfirmation);
         amendCommonAttributes(orderConfirmation, dto);
@@ -129,7 +129,7 @@ public class ReportToDtoConversionService {
     }
 
     // TODO: mapShippingAddress is a dirty hack in order to not refactor yet
-    private void amendCommonAttributes(Report report, ReportDto dto) throws ContradictoryAddressException {
+    private void amendCommonAttributes(Report report, ReportInPdf dto) throws ContradictoryAddressException {
         dto.created = report.getCreated();
         dto.documentNumber = report.getDocumentNumber();
         dto.items = report.getItems();
@@ -213,7 +213,7 @@ public class ReportToDtoConversionService {
         return customerDetails;
     }
 
-    private void mapCustomerDetails(ReportDto dto, CustomerDetails det) {
+    private void mapCustomerDetails(ReportInPdf dto, CustomerDetails det) {
         if (det != null) {
             dto.customerSpecific_contactInformation = det.getContactInformation();
             dto.customerSpecific_mark = det.getMark();

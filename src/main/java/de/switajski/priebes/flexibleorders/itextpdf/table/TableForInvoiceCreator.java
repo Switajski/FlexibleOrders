@@ -12,14 +12,14 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 
 public class TableForInvoiceCreator extends ReportItemsPdfPTableCreator {
 
     @Override
-    public PdfPTable create(ReportDto cReport)
+    public PdfPTable create(ReportInPdf cReport)
             throws DocumentException {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(createTableProperties());

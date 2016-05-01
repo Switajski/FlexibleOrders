@@ -14,14 +14,14 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPCellBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PhraseBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 public class PdfUtils {
 
     public static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-    public boolean hasPackageNumbers(ReportDto cReport) {
+    public boolean hasPackageNumbers(ReportInPdf cReport) {
         boolean hasPackageNumbers = false;
         for (ReportItem ri : cReport.items) {
             if (ri instanceof ShippingItem) {

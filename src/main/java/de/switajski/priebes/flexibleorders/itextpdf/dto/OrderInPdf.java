@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.itextpdf.dto;
 
-
-public class DeliveryNotesDto extends ReportDto {
+public class OrderInPdf extends ReportInPdf {
 
 }

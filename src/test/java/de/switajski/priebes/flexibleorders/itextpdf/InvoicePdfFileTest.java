@@ -7,17 +7,17 @@ import java.util.HashSet;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.InvoiceInPdf;
 
 public class InvoicePdfFileTest {
 
-    private InvoiceDto reportDto;
+    private InvoiceInPdf reportDto;
 
     @Transactional(readOnly = true)
     @Test
     public void shouldGenerateInvoice() throws Exception {
 
-        reportDto = new InvoiceDto();
+        reportDto = new InvoiceInPdf();
 
         ReportDtoTestFixture.amendTestData(reportDto);
         reportDto.invoiceSpecific_discountRate = BigDecimal.ONE;

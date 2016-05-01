@@ -4,15 +4,15 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableForPendingItemsCreator;
 
 public class ToBeShippedToOneCustomerPdf implements PdfDocumentAppender {
 
-    private ReportDto report;
+    private ReportInPdf report;
 
-    public ToBeShippedToOneCustomerPdf(ReportDto reportDto) {
+    public ToBeShippedToOneCustomerPdf(ReportInPdf reportDto) {
         this.report = reportDto;
     }
 

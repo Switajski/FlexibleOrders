@@ -3,13 +3,13 @@ package de.switajski.priebes.flexibleorders.itextpdf.builder;
 import java.math.BigDecimal;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 public class InvoiceCalculation {
     private Amount netGoods, discountAmount, shipping, net, vat, gross;
     private String discountText;
 
-    public InvoiceCalculation(ReportDto report) {
+    public InvoiceCalculation(ReportInPdf report) {
         netGoods = report.netGoods;
 
         if (report.shippingSpecific_shippingCosts != null

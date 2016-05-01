@@ -2,11 +2,11 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import org.junit.Test;
 
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedInPdf;
 
 public class ToBeShippedPdfFileTest {
 
-    ToBeShippedDto reportDto;
+    ToBeShippedInPdf reportDto;
 
     @Test
     public void shouldGenerateDeliveryNotesWithPendingItems() throws Exception {
@@ -16,7 +16,7 @@ public class ToBeShippedPdfFileTest {
     }
 
     private void givenReportDtoModel() {
-        reportDto = new ToBeShippedDto();
+        reportDto = new ToBeShippedInPdf();
         ReportDtoTestFixture.amendTestData(reportDto);
         reportDto.shippingSpecific_packageNumber = "1";
     }

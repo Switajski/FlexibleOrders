@@ -12,7 +12,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.Unicode;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
 import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -32,7 +32,7 @@ public class ReportDtoTestFixture {
     private static final String O_NR = "3465897";
     private static final Customer customer = new CustomerBuilder().yvonne().build();
 
-    public static ReportDto amendTestData(ReportDto r) {
+    public static ReportInPdf amendTestData(ReportInPdf r) {
         DeliveryMethod deliveryMethod = new DeliveryMethod();
         deliveryMethod.setAddress(AddressBuilder.createDefault());
         deliveryMethod.setName("DEUTSCHE POST");

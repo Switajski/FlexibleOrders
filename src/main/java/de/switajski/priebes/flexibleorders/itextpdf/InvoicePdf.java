@@ -10,7 +10,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.InvoiceCalculation;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableForInvoiceCreator;
@@ -19,10 +19,10 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
 public class InvoicePdf implements PdfDocumentAppender {
 
     PdfUtils pdfUtils;
-    private ReportDto report;
+    private ReportInPdf report;
     private PdfWriter writer;
 
-    public InvoicePdf(ReportDto invoiceDto, PdfWriter writer) {
+    public InvoicePdf(ReportInPdf invoiceDto, PdfWriter writer) {
         this.report = invoiceDto;
         this.writer = writer;
         this.pdfUtils = new PdfUtils();

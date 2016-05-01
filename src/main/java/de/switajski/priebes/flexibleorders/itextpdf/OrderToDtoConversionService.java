@@ -7,15 +7,15 @@ import de.switajski.priebes.flexibleorders.application.AmountCalculator;
 import de.switajski.priebes.flexibleorders.application.BusinessConstants;
 import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 @Service
 public class OrderToDtoConversionService {
 
     @Transactional(readOnly = true)
-    public ReportDto toDto(Order order) {
-        OrderDto dto = new OrderDto();
+    public ReportInPdf toDto(Order order) {
+        OrderInPdf dto = new OrderInPdf();
         dto.created = order.getCreated();
         Customer customer = order.getCustomer();
         dto.customerNumber = customer.getCustomerNumber();

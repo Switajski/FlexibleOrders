@@ -4,7 +4,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ReportItemsPdfPTableCreator;
@@ -17,9 +17,9 @@ import de.switajski.priebes.flexibleorders.itextpdf.table.TableWithoutPricesAndW
 public class DeliveryNotesPdf implements PdfDocumentAppender {
 
     private PdfUtils pdfUtils;
-    private ReportDto report;
+    private ReportInPdf report;
 
-    public DeliveryNotesPdf(ReportDto report) {
+    public DeliveryNotesPdf(ReportInPdf report) {
         this.report = report;
         this.pdfUtils = new PdfUtils();
     }

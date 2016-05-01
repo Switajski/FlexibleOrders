@@ -10,7 +10,7 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.table.SimpleTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.TableForOrderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
@@ -23,10 +23,10 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
  */
 public class OrderPdf implements PdfDocumentAppender {
 
-    private ReportDto report;
+    private ReportInPdf report;
     private PdfWriter writer;
 
-    public OrderPdf(ReportDto report, PdfWriter writer) {
+    public OrderPdf(ReportInPdf report, PdfWriter writer) {
         this.report = report;
         this.writer = writer;
     }
@@ -63,11 +63,11 @@ public class OrderPdf implements PdfDocumentAppender {
 
     }
 
-    private boolean hasVat(ReportDto order) {
+    private boolean hasVat(ReportInPdf order) {
         return !(order.vatRate == null);
     }
 
-    private boolean hasRecommendedPrices(ReportDto order) {
+    private boolean hasRecommendedPrices(ReportInPdf order) {
         for (OrderItem oi : order.orderItems) {
             if (oi.getNegotiatedPriceNet() == null
                     || oi.getNegotiatedPriceNet().getValue() == null) return false;

@@ -23,7 +23,7 @@ import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDtoToPdfFileWriter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
@@ -60,7 +60,7 @@ public class DropboxController extends ExceptionController {
     @RequestMapping(value = "/sendReport/{documentNumber}", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse sendReport(@PathVariable("documentNumber") String documentNumber) throws Exception {
 
-        ReportDto reportDto = retrieveReportDtoOrFail(documentNumber);
+        ReportInPdf reportDto = retrieveReportDtoOrFail(documentNumber);
 
         String fileAndPathName = documentNumber + ".pdf";
         reportDtoToPdfFileWriter.writeFile(fileAndPathName, config.logo(), reportDto);
@@ -73,8 +73,8 @@ public class DropboxController extends ExceptionController {
         return jsonObjectResponse;
     }
 
-    private ReportDto retrieveReportDtoOrFail(String documentNumber) throws ContradictoryAddressException {
-        ReportDto reportDto = null;
+    private ReportInPdf retrieveReportDtoOrFail(String documentNumber) throws ContradictoryAddressException {
+        ReportInPdf reportDto = null;
         Report report = reportRepo.findByDocumentNumber(documentNumber);
         if (report != null) {
             reportDto = reportToDtoConversionService.convert(report);

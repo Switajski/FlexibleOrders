@@ -9,12 +9,12 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 public class TableForOrderCreator extends ReportItemsPdfPTableCreator {
 
     @Override
-    public PdfPTable create(ReportDto order) throws DocumentException {
+    public PdfPTable create(ReportInPdf order) throws DocumentException {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 PdfPTableBuilder.createPropertiesWithFiveCols());

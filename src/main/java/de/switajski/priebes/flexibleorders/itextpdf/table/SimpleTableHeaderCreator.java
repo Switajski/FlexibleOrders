@@ -5,13 +5,13 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 public class SimpleTableHeaderCreator {
 
     private String leftBottom, leftTop, rightBottom, rightTop;
 
-    public PdfPTable create(ReportDto report) throws DocumentException {
+    public PdfPTable create(ReportInPdf report) throws DocumentException {
         rightTop = replaceNull(report.customerFirstName) + " " + replaceNull(report.customerLastName);
         rightBottom = "Kundennummer: "
                 + report.customerNumber;

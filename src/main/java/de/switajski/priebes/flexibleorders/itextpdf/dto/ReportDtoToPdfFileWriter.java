@@ -17,7 +17,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTe
 @Component
 public class ReportDtoToPdfFileWriter {
 
-    public void writeFile(String pathAndFileName, Image logo, ReportDto reportDto) throws DocumentException, FileNotFoundException {
+    public void writeFile(String pathAndFileName, Image logo, ReportInPdf reportDto) throws DocumentException, FileNotFoundException {
         Document document = new PdfUtils().newDocument();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pathAndFileName));
         pdfWriter.setPageEvent(new BusinessLetterPdfTemplate(logo, reportDto.address, "Datum: 22.1.2016", "das Datum stimmt eigentlich nicht", "Betreff"));

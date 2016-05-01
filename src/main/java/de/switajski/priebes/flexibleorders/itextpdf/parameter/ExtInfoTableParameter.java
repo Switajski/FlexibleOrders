@@ -6,7 +6,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.itextpdf.ExpectedDeliveryStringCreator;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 public class ExtInfoTableParameter {
     public String saleRepresentative, mark;
@@ -36,7 +36,7 @@ public class ExtInfoTableParameter {
 
     public ExtInfoTableParameter() {}
 
-    public ExtInfoTableParameter(ReportDto report) {
+    public ExtInfoTableParameter(ReportInPdf report) {
         saleRepresentative = report.customerSpecific_saleRepresentative;
         mark = report.customerSpecific_mark;
         date = report.created.toString();

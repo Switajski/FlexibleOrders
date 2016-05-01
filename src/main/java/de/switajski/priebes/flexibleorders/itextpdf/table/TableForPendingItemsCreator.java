@@ -10,13 +10,13 @@ import com.itextpdf.text.pdf.PdfPTable;
 import de.switajski.priebes.flexibleorders.itextpdf.ReportViewHelper;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
 
 public class TableForPendingItemsCreator extends ReportItemsPdfPTableCreator {
 
     @Override
-    public PdfPTable create(ReportDto cReport)
+    public PdfPTable create(ReportInPdf cReport)
             throws DocumentException {
         PdfPTableBuilder builder = new PdfPTableBuilder(
                 tableProperties());

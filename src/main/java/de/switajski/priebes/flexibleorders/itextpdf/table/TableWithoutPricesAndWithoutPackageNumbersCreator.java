@@ -10,12 +10,12 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 public class TableWithoutPricesAndWithoutPackageNumbersCreator extends ReportItemsPdfPTableCreator {
 
     @Override
-    public PdfPTable create(ReportDto cReport)
+    public PdfPTable create(ReportInPdf cReport)
             throws DocumentException {
 
         PdfPTableBuilder builder = new PdfPTableBuilder(

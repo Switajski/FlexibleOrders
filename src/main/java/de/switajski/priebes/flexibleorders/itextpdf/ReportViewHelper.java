@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ColumnFormat;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.PdfPTableBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
 
 public class ReportViewHelper {
@@ -84,7 +84,7 @@ public class ReportViewHelper {
 
 
 
-    public static boolean hasManyCustomers(ReportDto report) {
+    public static boolean hasManyCustomers(ReportInPdf report) {
         Set<String> customerNumbers = new HashSet<String>();
         for (ReportItemInPdf item : report.itemDtos) {
             customerNumbers.add(item.customerNumber);

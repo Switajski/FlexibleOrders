@@ -20,7 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.embeddable.ContactInformation;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 
-public class ReportDto {
+public class ReportInPdf {
 
     public String documentNumber;
 

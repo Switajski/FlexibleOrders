@@ -8,7 +8,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.CustomPdfPTableBuilder;
 import de.switajski.priebes.flexibleorders.itextpdf.builder.ParagraphBuilder;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.parameter.ExtInfoTableParameter;
 import de.switajski.priebes.flexibleorders.itextpdf.table.ExtendedTableHeaderCreator;
 import de.switajski.priebes.flexibleorders.itextpdf.table.SimpleTableHeaderCreator;
@@ -20,10 +20,10 @@ public class OrderConfirmationPdf implements PdfDocumentAppender {
     // TODO: make VAT_RATE dependent from order
     public static final Double VAT_RATE = 0.19d;
     private PdfWriter writer;
-    private ReportDto report;
+    private ReportInPdf report;
     private PdfUtils pdfUtils;
 
-    public OrderConfirmationPdf(ReportDto report, PdfWriter writer) {
+    public OrderConfirmationPdf(ReportInPdf report, PdfWriter writer) {
         this.report = report;
         this.writer = writer;
         this.pdfUtils = new PdfUtils();

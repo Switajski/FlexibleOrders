@@ -9,15 +9,15 @@ import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.DeliveryNotesInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ProductBuilder;
 
 public class DeliveryNotesPdfFileTest {
 
     DeliveryNotesPdf deliveryNotesPdfFile;
-    ReportDto reportDto;
+    ReportInPdf reportDto;
     Map<String, Object> model;
 
     @Test
@@ -84,7 +84,7 @@ public class DeliveryNotesPdfFileTest {
     }
 
     private void givenReportDtoModel() {
-        reportDto = ReportDtoTestFixture.amendTestData(new DeliveryNotesDto());
+        reportDto = ReportDtoTestFixture.amendTestData(new DeliveryNotesInPdf());
         reportDto.shippingSpecific_packageNumber = "1";
 
         model = new HashMap<String, Object>();

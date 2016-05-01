@@ -2,16 +2,16 @@ package de.switajski.priebes.flexibleorders.itextpdf;
 
 import org.junit.Test;
 
-import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.OrderConfirmationInPdf;
 
 public class OrderConfirmationPdfFileTest {
 
-    private OrderConfirmationDto reportDto;
+    private OrderConfirmationInPdf reportDto;
 
     @Test
     public void shouldGenerateOrderConfirmation() throws Exception {
 
-        reportDto = new OrderConfirmationDto();
+        reportDto = new OrderConfirmationInPdf();
         ReportDtoTestFixture.amendTestData(reportDto);
 
         whenCreatingPdfFile("OrderConfirmationPdfFile.pdf");

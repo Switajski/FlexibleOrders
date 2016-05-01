@@ -20,10 +20,10 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportItemInPdf;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedDto;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedInPdf;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ToBeShippedToOneCustomerInPdf;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.specification.HasCustomerSpecification;
@@ -151,16 +151,16 @@ public class ReportingService {
     }
 
     @Transactional(readOnly = true)
-    public ReportDto toBeShippedToCustomer(Customer customer) {
-        return createToBeShippedDto(customer, new ToBeShippedToOneCustomerDto());
+    public ReportInPdf toBeShippedToCustomer(Customer customer) {
+        return createToBeShippedDto(customer, new ToBeShippedToOneCustomerInPdf());
     }
 
     @Transactional(readOnly = true)
-    public ReportDto toBeShipped() {
-        return createToBeShippedDto(null, new ToBeShippedDto());
+    public ReportInPdf toBeShipped() {
+        return createToBeShippedDto(null, new ToBeShippedInPdf());
     }
 
-    private ReportDto createToBeShippedDto(Customer customer, ReportDto report) {
+    private ReportInPdf createToBeShippedDto(Customer customer, ReportInPdf report) {
         report.items = new HashSet<ReportItem>();
         Specifications<ReportItem> specs = Specifications
                 .where(new IsConfirmationItemSpecification())

@@ -21,7 +21,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppender;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfDocumentAppenderFactory;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfTemplateFactory;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDto;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
 
 @Component
 public class PdfView extends AbstractView {
@@ -40,7 +40,7 @@ public class PdfView extends AbstractView {
             HttpServletResponse response)
                     throws Exception {
 
-        ReportDto report = (ReportDto) model.get(ReportDto.class.getSimpleName());
+        ReportInPdf report = (ReportInPdf) model.get(ReportInPdf.class.getSimpleName());
 
         // IE workaround: write into byte array first.
         ByteArrayOutputStream baos = createTemporaryOutputStream();
@@ -73,7 +73,7 @@ public class PdfView extends AbstractView {
     }
 
     protected void prepareWriter(
-            ReportDto report,
+            ReportInPdf report,
             PdfWriter writer,
             HttpServletRequest request) throws DocumentException, MalformedURLException, IOException {
         writer.setViewerPreferences(getViewerPreferences());

@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.web;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
@@ -37,6 +37,7 @@ import de.switajski.priebes.flexibleorders.service.process.parameter.BillingPara
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @CrossOrigin
@@ -78,7 +79,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse invoice(
             @RequestBody @Valid InvoicingParameter invoicingRequest)
-                    throws Exception {
+            throws Exception {
 
         Invoice invoice = invoicingService.invoice(invoicingRequest);
         return ExtJsResponseCreator.createSuccessResponse(invoice);
@@ -88,17 +89,20 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody JsonObjectResponse deliver(
             @RequestBody @Valid DeliverParameter deliverParameter,
             HttpServletResponse response)
-                    throws ContradictoryAddressException,
-                    DeviatingExpectedDeliveryDatesException,
-                    NoItemsToShipFoundException {
+            throws ContradictoryAddressException,
+            DeviatingExpectedDeliveryDatesException,
+            NoItemsToShipFoundException {
 
         if (deliverParameter.isSingleDeliveryNotes()) {
-            DeliveryNotes deliveryNotes = shippingService.ship(deliverParameter);
-            return ExtJsResponseCreator.createSuccessResponse(deliveryNotes);
+            Set<ItemDto> createdDeliveryNote = shippingService.ship(deliverParameter);
+            Set<ItemDto> completed = new HashSet<ItemDto>(deliverParameter.getItems());
+            return ExtJsResponseCreator.createSuccessfulTransitionResponse(
+                    createdDeliveryNote,
+                    completed);
         }
         else {
-            Set<DeliveryNotes> dns = shippingService.shipMany(deliverParameter);
-            return ExtJsResponseCreator.createSuccessResponse(dns);
+            Set<ItemDto> createdDeliveryNotes = shippingService.shipMany(deliverParameter);
+            return ExtJsResponseCreator.createSuccessfulTransitionResponse(createdDeliveryNotes, deliverParameter.getItems());
         }
 
     }
@@ -121,7 +125,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/Report/{documentNumber}", method = RequestMethod.DELETE)
     public @ResponseBody JsonObjectResponse deleteReport(
             @PathVariable(value = "documentNumber") String documentNumber)
-                    throws Exception {
+            throws Exception {
         transistionsService.deleteReport(documentNumber);
         return ExtJsResponseCreator.createSuccessResponse(documentNumber);
     }
@@ -129,7 +133,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/cancelReport", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse cancelConfirmationReport(
             @RequestParam(value = "confirmationNumber", required = true) String orderConfirmationNumber)
-                    throws Exception {
+            throws Exception {
         CancelReport cr = transistionsService.cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createSuccessResponse(cr);
     }
@@ -137,7 +141,7 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse markPaid(
             @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
-                    throws Exception {
+            throws Exception {
         Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
                 + invoiceNumber, new Date()));
         return ExtJsResponseCreator.createSuccessResponse(receipt);

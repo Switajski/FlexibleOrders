@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
@@ -37,9 +38,9 @@ import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemS
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Service
 public class ShippingService {
@@ -52,6 +53,8 @@ public class ShippingService {
     private PurchaseAgreementReadService purchaseAgreementService;
     @Autowired
     private ExpectedDeliveryService expectedDeliveryService;
+    @Autowired
+    private ReportItemToItemDtoConversionService reportItemToItemDtoConversionService;
 
     /**
      * 
@@ -63,7 +66,7 @@ public class ShippingService {
      * @throws NoItemsToShipFoundException
      */
     @Transactional
-    public DeliveryNotes ship(DeliverParameter deliverParameter)
+    public Set<ItemDto> ship(DeliverParameter deliverParameter)
             throws ContradictoryAddressException,
             DeviatingExpectedDeliveryDatesException,
             NoItemsToShipFoundException {
@@ -91,7 +94,12 @@ public class ShippingService {
         }
         Address shippingAddress = purchaseAgreementService.retrieveShippingAddressOrFail(deliveryNotes.getItems());
         deliveryNotes.setShippedAddress(shippingAddress);
-        return reportRepo.save(deliveryNotes);
+
+        DeliveryNotes dn = reportRepo.save(deliveryNotes);
+
+        return dn.getItems().stream()
+                .map(item -> reportItemToItemDtoConversionService.convert(item, item.getQuantity()))
+                .collect(Collectors.toSet());
     }
 
     private Order createOffTheRecordOrder(ItemDto itemDto) {
@@ -182,11 +190,11 @@ public class ShippingService {
     }
 
     @Transactional
-    public Set<DeliveryNotes> shipMany(DeliverParameter deliverParameter)
+    public Set<ItemDto> shipMany(DeliverParameter deliverParameter)
             throws ContradictoryAddressException,
             DeviatingExpectedDeliveryDatesException,
             NoItemsToShipFoundException {
-        Set<DeliveryNotes> savedDeliveryNotes = new HashSet<DeliveryNotes>();
+        Set<ItemDto> savedDeliveryNotes = new HashSet<>();
         String originalDeliveryNotesNumber = deliverParameter.getDeliveryNotesNumber();
         deliverParameter.setPackageNumber(null);
 
@@ -205,7 +213,7 @@ public class ShippingService {
             String suffix = packageNumber.equals("") ? "" : "-" + packageNumber;
             deliverParameter.setDeliveryNotesNumber(originalDeliveryNotesNumber.concat(suffix));
             deliverParameter.setPackageNumber(packageNumber);
-            savedDeliveryNotes.add(ship(deliverParameter));
+            savedDeliveryNotes.addAll(ship(deliverParameter));
         }
         return savedDeliveryNotes;
     }

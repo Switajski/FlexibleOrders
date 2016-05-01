@@ -1,6 +1,8 @@
 package de.switajski.priebes.flexibleorders.web.helper;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
@@ -42,6 +44,19 @@ public class ExtJsResponseCreator {
         response.setMessage("Report items successfully handled");
         response.setSuccess(true);
         response.setTotal(1);
+        return response;
+    }
+
+    public static JsonObjectResponse createSuccessfulTransitionResponse(Object created, Object completed) {
+        Map<String, Object> transition = new HashMap<>();
+        transition.put("CREATED", created);
+        transition.put("COMPLETED", completed);
+
+        JsonObjectResponse response = new JsonObjectResponse();
+        response.setData(transition);
+        response.setMessage("Report items successfully handled");
+        response.setSuccess(true);
+        response.setTotal(2);
         return response;
     }
 

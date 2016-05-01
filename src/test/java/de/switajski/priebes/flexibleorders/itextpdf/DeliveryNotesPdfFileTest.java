@@ -84,7 +84,7 @@ public class DeliveryNotesPdfFileTest {
     }
 
     private void givenReportDtoModel() {
-        reportDto = ReportDtoTestFixture.amendTestData(new DeliveryNotesInPdf());
+        reportDto = ReportInPdfTestFixture.amendTestData(new DeliveryNotesInPdf());
         reportDto.shippingSpecific_packageNumber = "1";
 
         model = new HashMap<String, Object>();

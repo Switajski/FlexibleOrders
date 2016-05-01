@@ -27,7 +27,7 @@ import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderConfirm
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.OrderItemBuilder;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.ShippingItemBuilder;
 
-public class ReportDtoTestFixture {
+public class ReportInPdfTestFixture {
 
     private static final String O_NR = "3465897";
     private static final Customer customer = new CustomerBuilder().yvonne().build();

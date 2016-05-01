@@ -12,7 +12,7 @@ public class OrderConfirmationPdfFileTest {
     public void shouldGenerateOrderConfirmation() throws Exception {
 
         reportDto = new OrderConfirmationInPdf();
-        ReportDtoTestFixture.amendTestData(reportDto);
+        ReportInPdfTestFixture.amendTestData(reportDto);
 
         whenCreatingPdfFile("OrderConfirmationPdfFile.pdf");
     }

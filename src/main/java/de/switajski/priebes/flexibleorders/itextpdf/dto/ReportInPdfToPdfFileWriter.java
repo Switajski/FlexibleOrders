@@ -15,7 +15,7 @@ import de.switajski.priebes.flexibleorders.itextpdf.PdfUtils;
 import de.switajski.priebes.flexibleorders.itextpdf.template.BusinessLetterPdfTemplate;
 
 @Component
-public class ReportDtoToPdfFileWriter {
+public class ReportInPdfToPdfFileWriter {
 
     public void writeFile(String pathAndFileName, Image logo, ReportInPdf reportDto) throws DocumentException, FileNotFoundException {
         Document document = new PdfUtils().newDocument();

@@ -24,7 +24,7 @@ import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressExcept
 import de.switajski.priebes.flexibleorders.itextpdf.OrderToDtoConversionService;
 import de.switajski.priebes.flexibleorders.itextpdf.PdfConfiguration;
 import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdf;
-import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportDtoToPdfFileWriter;
+import de.switajski.priebes.flexibleorders.itextpdf.dto.ReportInPdfToPdfFileWriter;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -49,7 +49,7 @@ public class DropboxController extends ExceptionController {
     OrderToDtoConversionService orderToDtoConversionService;
 
     @Autowired
-    ReportDtoToPdfFileWriter reportDtoToPdfFileWriter;
+    ReportInPdfToPdfFileWriter reportDtoToPdfFileWriter;
 
     @Autowired
     PdfConfiguration config;

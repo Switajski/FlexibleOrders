@@ -21,7 +21,7 @@ public class OrderPdfFileTest {
     @Test
     public void shouldGenerateOrder() throws Exception {
         reportDto = new OrderInPdf();
-        ReportDtoTestFixture.amendTestData(reportDto);
+        ReportInPdfTestFixture.amendTestData(reportDto);
         addOrderItems(reportDto);
 
         whenCreatingPdfFile("OrderPdfFileTest.pdf");

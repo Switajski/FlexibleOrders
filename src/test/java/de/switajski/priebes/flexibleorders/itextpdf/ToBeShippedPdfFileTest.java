@@ -17,7 +17,7 @@ public class ToBeShippedPdfFileTest {
 
     private void givenReportDtoModel() {
         reportDto = new ToBeShippedInPdf();
-        ReportDtoTestFixture.amendTestData(reportDto);
+        ReportInPdfTestFixture.amendTestData(reportDto);
         reportDto.shippingSpecific_packageNumber = "1";
     }
 

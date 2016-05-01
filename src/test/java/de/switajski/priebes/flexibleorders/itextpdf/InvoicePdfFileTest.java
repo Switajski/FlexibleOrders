@@ -19,7 +19,7 @@ public class InvoicePdfFileTest {
 
         reportDto = new InvoiceInPdf();
 
-        ReportDtoTestFixture.amendTestData(reportDto);
+        ReportInPdfTestFixture.amendTestData(reportDto);
         reportDto.invoiceSpecific_discountRate = BigDecimal.ONE;
         reportDto.invoiceSpecific_discountText = "Discount 0.5 + 0.5 %";
         reportDto.documentNumber = "R123456678";

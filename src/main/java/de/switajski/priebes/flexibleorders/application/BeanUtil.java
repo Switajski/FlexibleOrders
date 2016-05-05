@@ -56,6 +56,7 @@ public class BeanUtil {
 
     public static String createStringOfDifferingAttributes(Iterable<?> pas) {
         Object pa1 = pas.iterator().next();
+        if (pa1 == null) return "other one is null";
         Object pa2 = findDiffering(pas, pa1);
         try {
             List<String> differencesOfObjects = BeanUtil.getDifferencesOfObjects(pa1, pa2);
@@ -74,8 +75,9 @@ public class BeanUtil {
     }
 
     private static Object findDiffering(Iterable<?> pas, Object pa) {
-        for (Object pa2 : pas)
+        for (Object pa2 : pas) {
             if (!pa2.equals(pa)) return pa2;
+        }
         throw new IllegalArgumentException("No differing found");
     }
 

@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.report.Invoice;
@@ -49,9 +52,10 @@ public class InvoicingServiceTest {
 
     @Test
     public void shouldSaveInvoice() throws Exception {
-        givenDocumentNumberDoesNotExist();
+        givenRequestedDocumentNumberDoesNotExist();
         givenInvoicingAddresses(1);
         givenItemsInParameter();
+        givenRepoSaveReturnsInputParameter();
 
         whenValidatingAndInvoicing();
 
@@ -59,9 +63,20 @@ public class InvoicingServiceTest {
 
     }
 
+    private void givenRepoSaveReturnsInputParameter() {
+        when(reportRepo.save(any(Invoice.class))).thenAnswer(new Answer<Invoice>() {
+
+            @Override
+            public Invoice answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return (Invoice) args[0];
+            }
+        });
+    }
+
     @Test(expected = IllegalStateException.class)
     public void shouldRejectInvoicingIfNoInvoicingAddressesExist() throws Exception {
-        givenDocumentNumberDoesNotExist();
+        givenRequestedDocumentNumberDoesNotExist();
         givenItemsInParameter(1);
         when(reportItemRepo.findOne(1L)).thenReturn(new ShippingItem());
         when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(java.util.Collections.emptySet());
@@ -83,7 +98,7 @@ public class InvoicingServiceTest {
         return items;
     }
 
-    private void givenDocumentNumberDoesNotExist() {
+    private void givenRequestedDocumentNumberDoesNotExist() {
         when(reportRepo.findByDocumentNumber(invoicingParameter.getInvoiceNumber())).thenReturn(null);
     }
 

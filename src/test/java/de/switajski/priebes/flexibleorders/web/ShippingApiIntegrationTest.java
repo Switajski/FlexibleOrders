@@ -30,6 +30,7 @@ import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParame
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcWithTestDataTestConfiguration;
 import de.switajski.priebes.flexibleorders.web.dto.ChangeAddressParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
+import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 /**
  * Integration test to assure functionality of common shipping use cases, e.g.:
@@ -86,8 +87,8 @@ public class ShippingApiIntegrationTest extends SpringMvcWithTestDataTestConfigu
         deliverParameter.setDeliveryNotesNumber("L13-2");
 
         whenDelivering()
-                .andExpect(content().string(containsString("COMPLETED:")))
-                .andExpect(content().string(containsString("NEW:")))
+                .andExpect(content().string(containsString(ExtJsResponseCreator.COMPLETED)))
+                .andExpect(content().string(containsString(ExtJsResponseCreator.CREATED)))
                 .andExpect(status().is2xxSuccessful());
     }
 

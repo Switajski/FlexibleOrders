@@ -11,6 +11,9 @@ import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class ExtJsResponseCreator {
 
+    public static final String COMPLETED = "COMPLETED";
+    public static final String CREATED = "CREATED";
+
     public static JsonObjectResponse createResponse(Page<ItemDto> reportItems) throws Exception {
         JsonObjectResponse response = new JsonObjectResponse();
         response.setData(reportItems.getContent());
@@ -49,8 +52,8 @@ public class ExtJsResponseCreator {
 
     public static JsonObjectResponse createSuccessfulTransitionResponse(Object created, Object completed) {
         Map<String, Object> transition = new HashMap<>();
-        transition.put("CREATED", created);
-        transition.put("COMPLETED", completed);
+        transition.put(CREATED, created);
+        transition.put(COMPLETED, completed);
 
         JsonObjectResponse response = new JsonObjectResponse();
         response.setData(transition);

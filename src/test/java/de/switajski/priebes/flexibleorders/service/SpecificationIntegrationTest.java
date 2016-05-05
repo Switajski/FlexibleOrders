@@ -173,25 +173,25 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      */
     private void givenDeliveryReports(Set<ItemDto> orderAgreement) throws Exception {
         DeliverParameter deliverParameterL11 = new DeliverParameter("L11", LocalDate.now(), Arrays.asList(
-                createItemDto(2, AMY, orderAgreement),
-                createItemDto(2, MILADKA, orderAgreement)));
+                findItemDtoAndSetQty(2, AMY, orderAgreement),
+                findItemDtoAndSetQty(2, MILADKA, orderAgreement)));
         amendStandardValues(deliverParameterL11);
         shippingService.ship(deliverParameterL11);
 
         DeliverParameter deliverParameterL12 = new DeliverParameter("L12", LocalDate.now(), Arrays.asList(
-                createItemDto(3, AMY, orderAgreement),
-                createItemDto(3, MILADKA, orderAgreement)));
+                findItemDtoAndSetQty(3, AMY, orderAgreement),
+                findItemDtoAndSetQty(3, MILADKA, orderAgreement)));
         amendStandardValues(deliverParameterL12);
         shippingService.ship(deliverParameterL12);
 
         DeliverParameter deliverParameterL13 = new DeliverParameter("L13", LocalDate.now(), Arrays.asList(
-                createItemDto(1, SALOME, orderAgreement),
-                createItemDto(JUREK_QTY, JUREK, orderAgreement)));
+                findItemDtoAndSetQty(1, SALOME, orderAgreement),
+                findItemDtoAndSetQty(JUREK_QTY, JUREK, orderAgreement)));
         amendStandardValues(deliverParameterL13);
         shippingService.ship(deliverParameterL13);
 
         DeliverParameter deliverParameter14 = new DeliverParameter("L14", LocalDate.now(), Arrays.asList(
-                createItemDto(5, PAUL, orderAgreement)));
+                findItemDtoAndSetQty(5, PAUL, orderAgreement)));
         amendStandardValues(deliverParameter14);
         shippingService.ship(deliverParameter14);
     }
@@ -202,11 +202,11 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
         deliverParameterL11.setShowPricesInDeliveryNotes(false);
     }
 
-    private ItemDto createItemDto(
+    private ItemDto findItemDtoAndSetQty(
             int qty,
             Product product,
             Set<ItemDto> agreement) {
-        ItemDto item = getFirstItemOf(product, agreement);
+        ItemDto item = agreement.stream().filter(i -> i.getProduct().equals(product.getName())).findFirst().get();
         item.setQuantityLeft(qty);
         return item;
     }

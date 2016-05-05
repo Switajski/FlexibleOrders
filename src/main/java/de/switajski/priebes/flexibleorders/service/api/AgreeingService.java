@@ -20,6 +20,9 @@ public class AgreeingService {
         if (oc == null) {
             throw new IllegalArgumentException("Auftragsbest" + Unicode.A_UML + "tigung mit angegebener Nummer nicht gefunden");
         }
+        else if (oc.getOrderAgreementNumber() != null) {
+            throw new IllegalArgumentException("Auftragsbest" + Unicode.A_UML + "tigung schon best" + Unicode.A_UML + "tigt");
+        }
         oc.setOrderAgreementNumber(orderAgreementNo);
         return reportRepo.save(oc);
     }

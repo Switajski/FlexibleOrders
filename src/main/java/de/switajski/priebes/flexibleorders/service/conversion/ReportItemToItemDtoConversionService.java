@@ -1,5 +1,9 @@
 package de.switajski.priebes.flexibleorders.service.conversion;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,12 @@ public class ReportItemToItemDtoConversionService {
             return null;
         }
         return convert(ri, toBeProcessed);
+    }
+
+    public Set<ItemDto> convert(Collection<ReportItem> reportItems) {
+        return reportItems.stream()
+                .map(item -> convert(item, item.getQuantity()))
+                .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)

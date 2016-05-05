@@ -1,6 +1,7 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,20 +13,32 @@ import de.switajski.priebes.flexibleorders.domain.report.ReceiptItem;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.BillingParameter;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
 public class MarkingPaidService {
 
     @Autowired
     private ReportRepository reportRepo;
+    @Autowired
+    private ReportItemToItemDtoConversionService conversionService;
 
     @Transactional
-    public Receipt markAsPayed(BillingParameter billingParameter) {
-        if (reportRepo.findByDocumentNumber(billingParameter.receiptNumber) != null) billingParameter.receiptNumber = billingParameter.receiptNumber.concat("-2");
+    public Set<ItemDto> markAsPayed(BillingParameter billingParameter) {
+        if (billingParameter.getReceiptNumber() == null) {
+            billingParameter.setReceiptNumber("B" + billingParameter.getInvoiceNumber());
+        }
 
-        Invoice invoice = retrieveInvoiceSavely(billingParameter.invoiceNumber);
-        Receipt receipt = new Receipt(billingParameter.receiptNumber, billingParameter.date);
+        if (reportRepo.findByDocumentNumber(billingParameter.getReceiptNumber()) != null) {
+            billingParameter.setReceiptNumber(billingParameter.getReceiptNumber().concat("-2"));
+        }
+
+        Invoice invoice = retrieveInvoiceSavely(billingParameter.getInvoiceNumber());
+        Date date = billingParameter.getDate() == null ? new Date() : billingParameter.getDate();
+
+        Receipt receipt = new Receipt(billingParameter.getReceiptNumber(), date);
         ReportItem reportItem = null;
         for (ReportItem ri : invoice.getItems()) {
             ReceiptItem receiptItem = new ReceiptItem(receipt, ri.getOrderItem(), ri
@@ -35,7 +48,8 @@ public class MarkingPaidService {
                     receiptItem);
             if (reportItem == null) reportItem = ri;
         }
-        return reportRepo.save(receipt);
+        Receipt createdReceipt = reportRepo.save(receipt);
+        return conversionService.convert(createdReceipt.getItems());
     }
 
     private Invoice retrieveInvoiceSavely(String invoiceNumber) {

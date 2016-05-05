@@ -1,6 +1,5 @@
 package de.switajski.priebes.flexibleorders.web;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
-import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
 import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
@@ -77,9 +75,18 @@ public class TransitionsController extends ExceptionController {
     public @ResponseBody JsonObjectResponse invoice(
             @RequestBody @Valid InvoicingParameter invoicingRequest)
             throws Exception {
-        Set<ItemDto> items = invoicingService.invoice(invoicingRequest);
+        Set<ItemDto> created = invoicingService.invoice(invoicingRequest);
         List<ItemDto> completed = invoicingRequest.getItems();
-        return ExtJsResponseCreator.createSuccessfulTransitionResponse(items, completed);
+        return ExtJsResponseCreator.createSuccessfulTransitionResponse(created, completed);
+    }
+
+    @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
+    public @ResponseBody JsonObjectResponse markPaid(
+            @RequestBody @Valid BillingParameter billingParameter)
+            throws Exception {
+        Set<ItemDto> createdReceiptItems = markingPaidService.markAsPayed(billingParameter);
+        List<ItemDto> completed = billingParameter.getItems();
+        return ExtJsResponseCreator.createSuccessfulTransitionResponse(createdReceiptItems, completed);
     }
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)
@@ -133,15 +140,6 @@ public class TransitionsController extends ExceptionController {
             throws Exception {
         CancelReport cr = transistionsService.cancelReport(orderConfirmationNumber);
         return ExtJsResponseCreator.createSuccessResponse(cr);
-    }
-
-    @RequestMapping(value = "/markPaid", method = RequestMethod.POST)
-    public @ResponseBody JsonObjectResponse markPaid(
-            @RequestParam(value = "invoiceNumber", required = true) String invoiceNumber)
-            throws Exception {
-        Receipt receipt = markingPaidService.markAsPayed(new BillingParameter(invoiceNumber, "B"
-                + invoiceNumber, new Date()));
-        return ExtJsResponseCreator.createSuccessResponse(receipt);
     }
 
 }

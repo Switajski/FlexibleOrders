@@ -105,8 +105,10 @@ public class PurchaseAgreementController {
 
         Set<AddressDto> addressDtos = new HashSet<AddressDto>();
         for (Entry<String, PurchaseAgreement> docNo2PaEntry : id2Pas.entrySet()) {
-            Address address = af.apply(docNo2PaEntry.getValue());
-            addressDtos.add(new AddressDto(address, docNo2PaEntry.getKey()));
+            if (docNo2PaEntry != null) {
+                Address address = af.apply(docNo2PaEntry.getValue());
+                addressDtos.add(new AddressDto(address, docNo2PaEntry.getKey()));
+            }
         }
 
         JsonObjectResponse response = new JsonObjectResponse();

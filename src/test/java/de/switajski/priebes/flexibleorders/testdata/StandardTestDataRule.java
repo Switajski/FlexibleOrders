@@ -82,7 +82,6 @@ public class StandardTestDataRule extends ExternalResource {
                         cRepo,
                         orderingService,
                         confirmingService,
-                        oi2ItemDtoConversionService,
                         riToItemConversionService,
                         shippingService,
                         invoicingService,

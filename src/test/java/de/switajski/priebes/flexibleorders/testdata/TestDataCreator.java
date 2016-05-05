@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,9 +34,6 @@ import java.util.Set;
 import de.switajski.priebes.flexibleorders.domain.CatalogDeliveryMethod;
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
 import de.switajski.priebes.flexibleorders.domain.Customer;
-import de.switajski.priebes.flexibleorders.domain.Order;
-import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Report;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
@@ -48,7 +46,6 @@ import de.switajski.priebes.flexibleorders.service.api.InvoicingParameter;
 import de.switajski.priebes.flexibleorders.service.api.InvoicingService;
 import de.switajski.priebes.flexibleorders.service.api.ShippingService;
 import de.switajski.priebes.flexibleorders.service.api.TransitionsService;
-import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
@@ -71,8 +68,6 @@ public class TestDataCreator {
 
     private ConfirmingService confirmingService;
 
-    private OrderItemToItemDtoConversionService oi2ItemDtoConversionService;
-
     private ReportItemToItemDtoConversionService riToItemConversionService;
 
     private ShippingService shippingService;
@@ -88,7 +83,6 @@ public class TestDataCreator {
             CustomerRepository cRepo,
             TransitionsService orderingService,
             ConfirmingService confirmingService,
-            OrderItemToItemDtoConversionService oi2ItemDtoConversionService,
             ReportItemToItemDtoConversionService riToItemConversionService,
             ShippingService shippingService,
             InvoicingService invoicingService,
@@ -98,7 +92,6 @@ public class TestDataCreator {
         this.cRepo = cRepo;
         this.orderingService = orderingService;
         this.confirmingService = confirmingService;
-        this.oi2ItemDtoConversionService = oi2ItemDtoConversionService;
         this.riToItemConversionService = riToItemConversionService;
         this.shippingService = shippingService;
         this.invoicingService = invoicingService;
@@ -132,44 +125,44 @@ public class TestDataCreator {
         LocalDate dt = LocalDate.now();
 
         orderingService.order(B21);
-        Order b22 = orderingService.order(B22);
-        OrderConfirmation ab22 = createAB22(dt, b22);
+        Set<ItemDto> b22 = orderingService.order(B22);
+        Set<ItemDto> ab22 = createAB22(dt, b22);
 
-        orderingService.cancelReport(ab22.getDocumentNumber());
+        orderingService.cancelReport(ab22.iterator().next().getDocumentNumber());
 
     }
 
     private void createEdwardsOrders() {
-        Order b31 = orderingService.order(TestDataFixture.B31);
+        Set<ItemDto> b31 = orderingService.order(TestDataFixture.B31);
         createAB31(LocalDate.now(), b31);
     }
 
-    private OrderConfirmation createAB31(LocalDate now, Order b31) {
+    private Set<ItemDto> createAB31(LocalDate now, Set<ItemDto> b31) {
         ConfirmParameter confirmParameter = new ConfirmParameter(
-                b31.getOrderNumber(),
+                b31.iterator().next().getOrderNumber(),
                 "AB31",
                 now.plusDays(5),
                 null,
                 EDWARD.getShippingAddress(),
                 EDWARD.getInvoiceAddress(),
-                oi2ItemDtoConversionService.convert(b31));
+                new ArrayList<ItemDto>(b31));
         confirmParameter.setPaymentConditions("5 % Skonto, wenn innerhalb 5 Tagen");
-        OrderConfirmation ab31 = confirmingService.confirm(confirmParameter);
-        agreeingService.agree(ab31.getDocumentNumber(), "AU31");
+        Set<ItemDto> ab31 = confirmingService.confirm(confirmParameter);
+        agreeingService.agree(ab31.iterator().next().getDocumentNumber(), "AU31");
         return ab31;
     }
 
-    private OrderConfirmation createAB22(LocalDate dt, Order b22) {
+    private Set<ItemDto> createAB22(LocalDate dt, Set<ItemDto> b22) {
         ConfirmParameter confirmParameter = new ConfirmParameter(
-                b22.getOrderNumber(),
+                b22.iterator().next().getOrderNumber(),
                 "AB22",
                 dt.plusDays(5),
                 null,
                 YVONNE.getShippingAddress(),
                 YVONNE.getInvoiceAddress(),
-                oi2ItemDtoConversionService.convert(b22));
+                new ArrayList<ItemDto>(b22));
         confirmParameter.setPaymentConditions("5 % Skonto, wenn innerhalb 5 Tagen");
-        OrderConfirmation ab22 = confirmingService.confirm(confirmParameter);
+        Set<ItemDto> ab22 = confirmingService.confirm(confirmParameter);
         return ab22;
     }
 
@@ -180,29 +173,26 @@ public class TestDataCreator {
         orderingService.order(B13);
         orderingService.order(B15);
 
-        OrderConfirmation ab11 = confirmingService.confirm(AB11);
-        OrderConfirmation ab13 = confirmingService.confirm(AB13);
+        Set<ItemDto> ab11 = confirmingService.confirm(AB11);
+        Set<ItemDto> ab13 = confirmingService.confirm(AB13);
         ConfirmParameter ab15Param = AB15;
         ab15Param.setInvoiceAddress(AddressBuilder.buildWithGeneratedAttributes(87));
-        OrderConfirmation ab15 = confirmingService.confirm(ab15Param);
+        Set<ItemDto> ab15 = confirmingService.confirm(ab15Param);
 
-        ab11 = agreeingService.agree(ab11.getDocumentNumber(), "AU11");
-        ab13 = agreeingService.agree(ab13.getDocumentNumber(), "AU13");
-        ab15 = agreeingService.agree(ab15.getDocumentNumber(), "AU15");
+        agreeingService.agree(ab11.iterator().next().getDocumentNumber(), "AU11");
+        agreeingService.agree(ab13.iterator().next().getDocumentNumber(), "AU13");
+        agreeingService.agree(ab15.iterator().next().getDocumentNumber(), "AU15");
 
-        List<ItemDto> itemsFromAu11 = convertToItemDtos(ab11);
-        List<ItemDto> itemsFromAu15 = convertToItemDtos(ab15);
+        Set<ItemDto> l11 = createL11(ab11);
+        Set<ItemDto> l12 = createL12(ab11);
+        createL13(ab11);
+        createL14(ab11);
+        createL15(ab11, ab15);
 
-        DeliveryNotes l11 = createL11(itemsFromAu11);
-        DeliveryNotes l12 = createL12(itemsFromAu11);
-        createL13(itemsFromAu11);
-        createL14(itemsFromAu11);
-        createL15(itemsFromAu11, itemsFromAu15);
-
-        createR11(convertToItemDtos(l11), convertToItemDtos(l12));
+        createR11(l11, l12);
     }
 
-    private void createR11(List<ItemDto> l11, List<ItemDto> l12) throws Exception {
+    private void createR11(Collection<ItemDto> l11, Collection<ItemDto> l12) throws Exception {
         ItemDto shippingCosts = new ItemDto();
         shippingCosts.setPriceNet(BigDecimal.valueOf(11d));
         shippingCosts.setProductType(ProductType.SHIPPING);
@@ -215,7 +205,7 @@ public class TestDataCreator {
         invoicingService.invoice(invoicingParameter);
     }
 
-    private void createL15(List<ItemDto> itemsFromAu11, List<ItemDto> itemsFromAu15) throws Exception {
+    private void createL15(Collection<ItemDto> itemsFromAu11, Collection<ItemDto> itemsFromAu15) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L15",
                 LocalDate.now(),
@@ -229,7 +219,7 @@ public class TestDataCreator {
         shippingService.ship(deliverParameter);
     }
 
-    private void createL14(List<ItemDto> itemsFromAu11) throws Exception {
+    private void createL14(Collection<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L14",
                 LocalDate.now(),
@@ -241,7 +231,7 @@ public class TestDataCreator {
         shippingService.ship(deliverParameter);
     }
 
-    private void createL13(List<ItemDto> itemsFromAu11) throws Exception {
+    private Set<ItemDto> createL13(Collection<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L13",
                 LocalDate.now(),
@@ -252,10 +242,10 @@ public class TestDataCreator {
         deliverParameter.setPackageNumber("packageNumber13");
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
         deliverParameter.setShipment(BigDecimal.ONE);
-        shippingService.ship(deliverParameter);
+        return shippingService.ship(deliverParameter);
     }
 
-    private DeliveryNotes createL12(List<ItemDto> itemsFromAu11) throws Exception {
+    private Set<ItemDto> createL12(Collection<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L12",
                 LocalDate.now(),
@@ -266,11 +256,10 @@ public class TestDataCreator {
         deliverParameter.setPackageNumber("packageNumber12");
         deliverParameter.setShipment(BigDecimal.ONE);
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
-        DeliveryNotes l12 = shippingService.ship(deliverParameter);
-        return l12;
+        return shippingService.ship(deliverParameter);
     }
 
-    private DeliveryNotes createL11(List<ItemDto> itemsFromAu11) throws Exception {
+    private Set<ItemDto> createL11(Collection<ItemDto> itemsFromAu11) throws Exception {
         DeliverParameter deliverParameter = new DeliverParameter(
                 "L11",
                 LocalDate.now(),
@@ -281,11 +270,10 @@ public class TestDataCreator {
         deliverParameter.setPackageNumber("packageNumber");
         deliverParameter.setShipment(BigDecimal.TEN);
         deliverParameter.setIgnoreContradictoryExpectedDeliveryDates(true);
-        DeliveryNotes l11 = shippingService.ship(deliverParameter);
-        return l11;
+        return shippingService.ship(deliverParameter);
     }
 
-    private ItemDto extract(List<ItemDto> itemDtos, String productNumber, int i) {
+    private ItemDto extract(Collection<ItemDto> itemDtos, String productNumber, int i) {
         for (ItemDto item : itemDtos) {
             if (item.getProduct().equals(productNumber)) {
                 item.setQuantityLeft(i);

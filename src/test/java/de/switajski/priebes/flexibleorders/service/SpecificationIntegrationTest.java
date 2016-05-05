@@ -9,6 +9,7 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import de.switajski.priebes.flexibleorders.domain.Customer;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.Product;
 import de.switajski.priebes.flexibleorders.domain.report.ConfirmationItem;
-import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
@@ -113,7 +113,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      */
     private void givenDefinedTestData() throws Exception {
         if (orderRepo.findByOrderNumber("B11") != null) {
-            OrderConfirmation agreement = givenOrderAgreement();
+            Set<ItemDto> agreement = givenOrderAgreement();
             givenDeliveryReports(agreement);
         }
     }
@@ -171,7 +171,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      * @param orderAgreement
      * @throws ContradictoryAddressException
      */
-    private void givenDeliveryReports(OrderConfirmation orderAgreement) throws Exception {
+    private void givenDeliveryReports(Set<ItemDto> orderAgreement) throws Exception {
         DeliverParameter deliverParameterL11 = new DeliverParameter("L11", LocalDate.now(), Arrays.asList(
                 createItemDto(2, AMY, orderAgreement),
                 createItemDto(2, MILADKA, orderAgreement)));
@@ -205,19 +205,16 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
     private ItemDto createItemDto(
             int qty,
             Product product,
-            OrderConfirmation agreement) {
-        ItemDto item = ri2ItemDtoConversionService.createMissing(
-                getFirstItemOf(
-                        product,
-                        agreement));
+            Set<ItemDto> agreement) {
+        ItemDto item = getFirstItemOf(product, agreement);
         item.setQuantityLeft(qty);
         return item;
     }
 
-    private ReportItem getFirstItemOf(Product product, OrderConfirmation report) {
-        ReportItem specificReportItem = null;
-        for (ReportItem ri : report.getItems()) {
-            if (ri.getOrderItem().getProduct().equals(product)) {
+    private ItemDto getFirstItemOf(Product product, Set<ItemDto> report) {
+        ItemDto specificReportItem = null;
+        for (ItemDto ri : report) {
+            if (ri.getProduct().equals(product.getName())) {
                 specificReportItem = ri;
                 break;
             }
@@ -248,12 +245,11 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
      * <li>5 Jurek</li>
      * </ul>
      *
-     * AU11: </br>
-     * same as AB11
+     * AU11: </br> same as AB11
      *
      * @return
      */
-    private OrderConfirmation givenOrderAgreement() {
+    private Set<ItemDto> givenOrderAgreement() {
         Order b11 = OrderBuilder.B11();
         Customer yvonne = customerService.create(b11.getCustomer());
         orderRepo.save(b11);
@@ -265,7 +261,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
         List<ItemDto> b11AndB12 = oi2ItemDtoConversionService.convert(b11);
         b11AndB12.addAll(oi2ItemDtoConversionService.convert(b12));
 
-        OrderConfirmation confirmationReport = confirmingService.confirm(
+        Set<ItemDto> confirmationReport = confirmingService.confirm(
                 new ConfirmParameter(
                         b11.getOrderNumber(),
                         "AB11",
@@ -275,7 +271,7 @@ public class SpecificationIntegrationTest extends AbstractSpringContextTestConfi
                         AddressBuilder.createDefault(),
                         b11AndB12));
 
-        confirmationReport = agreeingService.agree(confirmationReport.getDocumentNumber(), "AU11");
+        agreeingService.agree(confirmationReport.iterator().next().getDocumentNumber(), "AU11");
         return confirmationReport;
     }
 }

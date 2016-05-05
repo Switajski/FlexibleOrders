@@ -1,6 +1,8 @@
 package de.switajski.priebes.flexibleorders.service.api;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -27,6 +29,7 @@ import de.switajski.priebes.flexibleorders.repository.CustomerRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.CatalogProductServiceByMagento;
+import de.switajski.priebes.flexibleorders.service.conversion.OrderItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.OrderParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -47,6 +50,8 @@ public class TransitionsService {
     private OrderRepository orderRepo;
     @Autowired
     private CatalogProductServiceByMagento cProductService;
+    @Autowired
+    private OrderItemToItemDtoConversionService orderItemToItemDtoConversionService;
 
     /**
      * Creates initially an order with its order items
@@ -56,7 +61,7 @@ public class TransitionsService {
      * @return created order, when successfully persisted
      */
     @Transactional
-    public Order order(@Valid OrderParameter orderParameter) {
+    public Set<ItemDto> order(@Valid OrderParameter orderParameter) {
 
         Long customerNumber = orderParameter.getCustomerNumber();
         Order order = new Order(
@@ -82,7 +87,10 @@ public class TransitionsService {
             order.addOrderItem(oi);
         }
 
-        return orderRepo.save(order);
+        Order createdOrder = orderRepo.save(order);
+        return createdOrder.getItems().stream()
+                .map(item -> orderItemToItemDtoConversionService.convert(item))
+                .collect(Collectors.toSet());
     }
 
     private void validate(ItemDto ri) {

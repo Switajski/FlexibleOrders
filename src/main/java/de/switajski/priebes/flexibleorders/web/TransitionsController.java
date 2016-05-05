@@ -2,6 +2,7 @@ package de.switajski.priebes.flexibleorders.web;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.report.CancelReport;
-import de.switajski.priebes.flexibleorders.domain.report.Invoice;
 import de.switajski.priebes.flexibleorders.domain.report.OrderConfirmation;
 import de.switajski.priebes.flexibleorders.domain.report.Receipt;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
@@ -42,7 +41,6 @@ import de.switajski.priebes.flexibleorders.web.helper.ExtJsResponseCreator;
 
 @CrossOrigin
 @Controller
-// TODO: distribute methods on business controllers
 @RequestMapping("/transitions")
 public class TransitionsController extends ExceptionController {
 
@@ -62,27 +60,26 @@ public class TransitionsController extends ExceptionController {
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse confirm(
             @RequestBody @Valid ConfirmParameter confirmRequest) throws Exception {
-        confirmRequest.setOrderNumber(confirmRequest.getItems().iterator().next().getOrderNumber());
-        OrderConfirmation confirmationReport = confirmService.confirm(confirmRequest);
-        return ExtJsResponseCreator.createSuccessResponse(confirmationReport);
+        List<ItemDto> completed = confirmRequest.getItems();
+        confirmRequest.setOrderNumber(completed.iterator().next().getOrderNumber());
+        Set<ItemDto> items = confirmService.confirm(confirmRequest);
+        return ExtJsResponseCreator.createSuccessfulTransitionResponse(items, completed);
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse order(@RequestBody @Valid OrderParameter orderRequest)
             throws Exception {
-
-        Order order = transistionsService.order(orderRequest);
-
-        return ExtJsResponseCreator.createSuccessResponse(order);
+        Set<ItemDto> order = transistionsService.order(orderRequest);
+        return ExtJsResponseCreator.createSuccessfulTransitionResponse(order, null);
     }
 
     @RequestMapping(value = "/invoice", method = RequestMethod.POST)
     public @ResponseBody JsonObjectResponse invoice(
             @RequestBody @Valid InvoicingParameter invoicingRequest)
             throws Exception {
-
-        Invoice invoice = invoicingService.invoice(invoicingRequest);
-        return ExtJsResponseCreator.createSuccessResponse(invoice);
+        Set<ItemDto> items = invoicingService.invoice(invoicingRequest);
+        List<ItemDto> completed = invoicingRequest.getItems();
+        return ExtJsResponseCreator.createSuccessfulTransitionResponse(items, completed);
     }
 
     @RequestMapping(value = "/deliver", method = RequestMethod.POST)

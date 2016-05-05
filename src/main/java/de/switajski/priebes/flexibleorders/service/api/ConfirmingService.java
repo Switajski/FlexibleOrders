@@ -3,6 +3,7 @@ package de.switajski.priebes.flexibleorders.service.api;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import de.switajski.priebes.flexibleorders.repository.CatalogDeliveryMethodRepos
 import de.switajski.priebes.flexibleorders.repository.OrderItemRepository;
 import de.switajski.priebes.flexibleorders.repository.OrderRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.ConfirmParameter;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
@@ -38,9 +40,11 @@ public class ConfirmingService {
     private ReportRepository reportRepo;
     @Autowired
     private OrderItemRepository orderItemRepo;
+    @Autowired
+    private ReportItemToItemDtoConversionService reportItemToItemDtoConversionService;
 
     @Transactional
-    public OrderConfirmation confirm(ConfirmParameter confirmParameter) {
+    public Set<ItemDto> confirm(ConfirmParameter confirmParameter) {
         Address invoiceAddress = confirmParameter.getInvoiceAddress();
         Address shippingAddress = confirmParameter.getShippingAddress();
         validateConfirm(confirmParameter.getOrderNumber(), confirmParameter.getConfirmNumber(), confirmParameter.getItems(), shippingAddress);
@@ -71,7 +75,10 @@ public class ConfirmingService {
 
         addConfirmationItemsSafely(confirmParameter.getItems(), cr);
 
-        return reportRepo.save(cr);
+        OrderConfirmation createdOrderConfirmation = reportRepo.save(cr);
+        return createdOrderConfirmation.getItems().stream()
+                .map(item -> reportItemToItemDtoConversionService.convert(item, item.getQuantity()))
+                .collect(Collectors.toSet());
     }
 
     private void validateConfirm(

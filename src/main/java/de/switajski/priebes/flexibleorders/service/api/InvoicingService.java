@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Service
@@ -37,9 +39,11 @@ public class InvoicingService {
     private ReportItemRepository reportItemRepo;
     @Autowired
     private PurchaseAgreementReadService purchaseAgreementService;
+    @Autowired
+    private ReportItemToItemDtoConversionService reportItemToItemDtoConversionService;
 
     @Transactional
-    public Invoice invoice(InvoicingParameter invoicingParameter) throws ContradictoryAddressException {
+    public Set<ItemDto> invoice(InvoicingParameter invoicingParameter) throws ContradictoryAddressException {
 
         Map<ReportItem, Integer> risWithQty = mapItemDtosToReportItemsWithQty(invoicingParameter.getItems());
         Invoice invoice = createInvoice(invoicingParameter);
@@ -69,7 +73,10 @@ public class InvoicingService {
         }
         invoice.setShippingCosts(shippingCosts);
 
-        return reportRepo.save(invoice);
+        Invoice createdInvoice = reportRepo.save(invoice);
+        return createdInvoice.getItems().stream()
+                .map(item -> reportItemToItemDtoConversionService.convert(item, item.getQuantity()))
+                .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)

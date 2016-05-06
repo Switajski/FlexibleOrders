@@ -25,6 +25,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.data.jpa.domain.Specification;
 
 import de.switajski.priebes.flexibleorders.domain.CatalogProduct;
@@ -39,6 +41,7 @@ import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
 import de.switajski.priebes.flexibleorders.service.ExpectedDeliveryService;
 import de.switajski.priebes.flexibleorders.service.PurchaseAgreementReadService;
+import de.switajski.priebes.flexibleorders.service.conversion.ReportItemToItemDtoConversionService;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testhelper.EntityBuilder.DeliveryMethodBuilder;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
@@ -59,6 +62,8 @@ public class ShippingServiceTest {
     ExpectedDeliveryService expectedDeliveryService;
     @Mock
     PurchaseAgreementReadService purchaseAgreementService;
+    @Mock
+    ReportItemToItemDtoConversionService reportItemToItemDtoConversionService;
 
     DeliverParameter deliverParameter;
 
@@ -67,6 +72,18 @@ public class ShippingServiceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        givenRepoSaveReturnsInputParameter();
+    }
+
+    private void givenRepoSaveReturnsInputParameter() {
+        when(reportRepo.save(any(DeliveryNotes.class))).thenAnswer(new Answer<DeliveryNotes>() {
+
+            @Override
+            public DeliveryNotes answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return (DeliveryNotes) args[0];
+            }
+        });
     }
 
     @Test

@@ -35,6 +35,7 @@ public class OrderItemToItemDtoConversionService {
         item.setProductType(orderItem.getProduct().getProductType());
         item.setQuantity(orderItem.getOrderedQuantity());
         item.setQuantityLeft(orderItem.toBeConfirmed());
+        item.setAdditionalInfo(orderItem.getAdditionalInfo());
         return item;
     }
 

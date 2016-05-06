@@ -20,6 +20,7 @@ import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.service.QuantityUtility;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Entity
 @JsonAutoDetect
@@ -67,6 +68,18 @@ public class OrderItem extends GenericEntity {
 
         // handle birectional relationship
         if (order != null && !order.getItems().contains(this)) order.getItems().add(this);
+    }
+
+    public void copyValuesFrom(ItemDto newItem) {
+        additionalInfo = newItem.getAdditionalInfo();
+        if (newItem.getCreated() != null) created = newItem.getCreated();
+        negotiatedPriceNet = new Amount(newItem.getPriceNet());
+        orderedQuantity = newItem.getQuantity();
+        product = new Product(newItem);
+    }
+
+    public OrderItem(ItemDto newItem) {
+        copyValuesFrom(newItem);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class Order extends GenericEntity {
     }
 
     public boolean remove(OrderItem orderItem) {
-        return this.items.remove(orderItem);
+        return items.remove(orderItem);
     }
 
     public void addOrderItem(OrderItem item) {

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import de.switajski.priebes.flexibleorders.reference.ProductType;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Embeddable
 public class Product {
@@ -20,6 +21,14 @@ public class Product {
 
     @NotNull
     private String name;
+
+    public Product() {}
+
+    public Product(ItemDto newItem) {
+        name = newItem.getProductName();
+        type = ProductType.PRODUCT;
+        no = newItem.getProduct();
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -4,9 +4,7 @@ import java.util.function.Predicate;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
 
 import org.springframework.data.jpa.domain.Specification;
 
@@ -39,14 +37,17 @@ public class OverdueItemSpecification implements Predicate<ReportItem>, Specific
             CriteriaQuery<?> query,
             CriteriaBuilder cb) {
 
-        Subquery<Integer> subquery = query.subquery(Integer.class);
-        Root<ReportItem> sumSuccessorsQuery = subquery.from(ReportItem.class);
-        Expression<Integer> select = cb.<Integer> sum(sumSuccessorsQuery.<Integer> get(QTY));
-        Expression<Integer> coalescted = cb.coalesce(select, new Integer(0));
-        subquery.select(coalescted);
-        subquery.where(cb.equal(sumSuccessorsQuery.get("predecessor"), root.get("id")));
+        // Subquery<Integer> subquery = query.subquery(Integer.class);
+        // Root<ReportItem> sumSuccessorsQuery =
+        // subquery.from(ReportItem.class);
+        // Expression<Integer> select = cb.<Integer>
+        // sum(sumSuccessorsQuery.<Integer> get(QTY));
+        // Expression<Integer> coalescted = cb.coalesce(select, new Integer(0));
+        // subquery.select(coalescted);
+        // subquery.where(cb.equal(sumSuccessorsQuery.get("predecessor"),
+        // root.get("id")));
 
-        return cb.greaterThan(root.get(QTY), subquery);
+        return cb.greaterThan(root.get(QTY), root.get("overdue"));
 
     }
 

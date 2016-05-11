@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,6 +31,19 @@ public abstract class ReportItem extends GenericEntity implements
 
     @OneToOne(optional = true)
     private ReportItem predecessor;
+
+    /**
+     * performance improvement by caching overdue in database
+     */
+    private Integer overdue;
+
+    public Integer getOverdue() {
+        return overdue;
+    }
+
+    public void setOverdue(Integer overdue) {
+        this.overdue = overdue;
+    }
 
     @OneToMany(mappedBy = "predecessor")
     private Set<ReportItem> successors;
@@ -117,8 +131,15 @@ public abstract class ReportItem extends GenericEntity implements
         return this.getOrderItem().getOrder().getCustomer();
     }
 
+    @PreUpdate
+    public void cacheOverdue() {
+        // performance improvement by caching overdue in database.
+        overdue = overdue();
+    }
+
     @PrePersist
     protected void validateQuantity() {
+
         if (quantity < 1) {
             throw new IllegalStateException("Quantity must be at least 1");
         }

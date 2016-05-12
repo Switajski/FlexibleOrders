@@ -134,12 +134,13 @@ public abstract class ReportItem extends GenericEntity implements
     @PreUpdate
     public void cacheOverdue() {
         // performance improvement by caching overdue in database.
+        for (ReportItem p : predecessors())
+            p.setOverdue(p.overdue());
         overdue = overdue();
     }
 
     @PrePersist
     protected void validateQuantity() {
-
         if (quantity < 1) {
             throw new IllegalStateException("Quantity must be at least 1");
         }
@@ -164,6 +165,7 @@ public abstract class ReportItem extends GenericEntity implements
             throw new IllegalStateException(
                     messageBuilder.append("<br>").toString());
         }
+        cacheOverdue();
 
     }
 

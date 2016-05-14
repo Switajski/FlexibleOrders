@@ -2,7 +2,6 @@ package de.switajski.priebes.flexibleorders.service.api;
 
 import static org.springframework.data.jpa.domain.Specifications.where;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +22,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.switajski.priebes.flexibleorders.domain.Order;
 import de.switajski.priebes.flexibleorders.domain.OrderItem;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
-import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.report.DeliveryNotes;
 import de.switajski.priebes.flexibleorders.domain.report.PendingItem;
 import de.switajski.priebes.flexibleorders.domain.report.ReportItem;
 import de.switajski.priebes.flexibleorders.domain.report.ShippingItem;
 import de.switajski.priebes.flexibleorders.exceptions.ContradictoryAddressException;
 import de.switajski.priebes.flexibleorders.exceptions.DeviatingExpectedDeliveryDatesException;
-import de.switajski.priebes.flexibleorders.reference.Currency;
 import de.switajski.priebes.flexibleorders.reference.ProductType;
 import de.switajski.priebes.flexibleorders.repository.ReportItemRepository;
 import de.switajski.priebes.flexibleorders.repository.ReportRepository;
@@ -66,12 +65,12 @@ public class ShippingService {
      * @throws NoItemsToShipFoundException
      */
     @Transactional
-    public Set<ItemDto> ship(DeliverParameter deliverParameter)
+    public Set<ItemDto> ship(@Valid DeliverParameter deliverParameter)
             throws ContradictoryAddressException,
             DeviatingExpectedDeliveryDatesException,
             NoItemsToShipFoundException {
 
-        DeliveryNotes deliveryNotes = appendReportParameters(new DeliveryNotes(), deliverParameter);
+        DeliveryNotes deliveryNotes = new DeliveryNotes(deliverParameter);
         Long customerNumber = deliverParameter.getCustomerId();
         for (ItemDto itemDto : deliverParameter.getItems()) {
             ReportItem newItem = null;
@@ -216,18 +215,6 @@ public class ShippingService {
             savedDeliveryNotes.addAll(ship(deliverParameter));
         }
         return savedDeliveryNotes;
-    }
-
-    private DeliveryNotes appendReportParameters(DeliveryNotes deliveryNotes, DeliverParameter deliverParameter) {
-        deliveryNotes.setDocumentNumber(deliverParameter.getDeliveryNotesNumber());
-        deliveryNotes.setCreated(deliverParameter.getCreated() == null ? new Date() : Date.from(deliverParameter.getCreated().atStartOfDay().atZone(
-                ZoneId.systemDefault()).toInstant()));
-        deliveryNotes.setShippingCosts(new Amount(deliverParameter.getShipment(), Currency.EUR));
-        deliveryNotes.setDeliveryMethod(deliverParameter.getDeliveryMethod());
-        deliveryNotes.setShowPrices(deliverParameter.isShowPricesInDeliveryNotes());
-        deliveryNotes.setPackageNumber(deliverParameter.getPackageNumber());
-        deliveryNotes.setTrackNumber(deliverParameter.getTrackNumber());
-        return deliveryNotes;
     }
 
 }

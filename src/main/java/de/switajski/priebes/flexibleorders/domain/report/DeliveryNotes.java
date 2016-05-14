@@ -1,5 +1,7 @@
 package de.switajski.priebes.flexibleorders.domain.report;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Address;
 import de.switajski.priebes.flexibleorders.domain.embeddable.Amount;
 import de.switajski.priebes.flexibleorders.domain.embeddable.DeliveryMethod;
+import de.switajski.priebes.flexibleorders.reference.Currency;
+import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 
 @Entity
 public class DeliveryNotes extends Report {
@@ -35,6 +39,19 @@ public class DeliveryNotes extends Report {
     private DeliveryMethod deliveryMethod;
 
     private Boolean showPrices;
+
+    public DeliveryNotes() {}
+
+    public DeliveryNotes(DeliverParameter deliverParameter) {
+        super(deliverParameter.getDeliveryNotesNumber());
+        setCreated(deliverParameter.getCreated() == null ? new Date() : Date.from(deliverParameter.getCreated().atStartOfDay().atZone(
+                ZoneId.systemDefault()).toInstant()));
+        setShippingCosts(new Amount(deliverParameter.getShipment(), Currency.EUR));
+        setDeliveryMethod(deliverParameter.getDeliveryMethod());
+        setShowPrices(deliverParameter.isShowPricesInDeliveryNotes());
+        setPackageNumber(deliverParameter.getPackageNumber());
+        setTrackNumber(deliverParameter.getTrackNumber());
+    }
 
     public Amount getNetAmount() {
         Amount summed = new Amount();

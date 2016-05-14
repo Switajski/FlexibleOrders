@@ -28,7 +28,7 @@ public class MigrateTest extends AbstractSpringContextTestConfiguration {
     @Transactional
     public void updateAllOverdues() {
         reportRepo.findAll().stream().forEach(ri -> {
-            ri.forceCacheUpdate();
+            ri.updateOverdue();
         });
     }
 

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
 
@@ -36,14 +37,6 @@ public abstract class ReportItem extends GenericEntity implements
      * performance improvement by caching overdue in database
      */
     private Integer overdue;
-
-    public Integer getOverdue() {
-        return overdue;
-    }
-
-    public void setOverdue(Integer overdue) {
-        this.overdue = overdue;
-    }
 
     @OneToMany(mappedBy = "predecessor")
     private Set<ReportItem> successors;
@@ -131,11 +124,12 @@ public abstract class ReportItem extends GenericEntity implements
         return this.getOrderItem().getOrder().getCustomer();
     }
 
+    @PreRemove
     @PreUpdate
-    public void cacheOverdue() {
+    public void updateOverdue() {
         // performance improvement by caching overdue in database.
         for (ReportItem p : predecessors())
-            p.setOverdue(p.overdue());
+            p.overdue = p.overdue();
         overdue = overdue();
     }
 
@@ -165,7 +159,7 @@ public abstract class ReportItem extends GenericEntity implements
             throw new IllegalStateException(
                     messageBuilder.append("<br>").toString());
         }
-        cacheOverdue();
+        updateOverdue();
 
     }
 
@@ -224,4 +218,24 @@ public abstract class ReportItem extends GenericEntity implements
         return new OverdueItemSpecification().test(this);
     }
 
+    /**
+     * This attribute is for performance improvements. Use {@link #overdue()}.
+     * The getter is for
+     * 
+     * @return
+     */
+    protected Integer getOverdue() {
+        return overdue;
+    }
+
+    /**
+     * Setter is only JPA's sake here.</br>
+     * 
+     * See {@link #overdue()} how to change overdue qty.
+     * 
+     * @param overdue
+     */
+    protected void setOverdue(Integer overdue) {
+        this.overdue = overdue;
+    }
 }

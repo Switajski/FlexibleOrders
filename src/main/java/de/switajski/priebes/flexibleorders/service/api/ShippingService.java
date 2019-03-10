@@ -180,12 +180,8 @@ public class ShippingService {
     }
 
     private ReportItem resolveAccordingToItemId(ItemDto itemDto) {
-        ReportItem itemToBeShipped;
-        itemToBeShipped = reportItemRepo.findOne(itemDto.getId());
-        if (itemToBeShipped == null) {
-            throw new IllegalArgumentException("Angegebene Id zur Position nicht gefunden");
-        }
-        return itemToBeShipped;
+        return reportItemRepo.findById(itemDto.getId())
+            .orElseThrow(() -> new IllegalArgumentException("Angegebene Id zur Position nicht gefunden"));
     }
 
     @Transactional

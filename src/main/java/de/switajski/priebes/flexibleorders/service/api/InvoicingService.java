@@ -84,8 +84,9 @@ public class InvoicingService {
         Map<ReportItem, Integer> risWithQty = new HashMap<ReportItem, Integer>();
         for (ItemDto itemDtoToBeProcessed : itemDtos) {
             if (itemDtoToBeProcessed.getProductType() != ProductType.SHIPPING) {
-                ReportItem agreementItem = reportItemRepo.findOne(itemDtoToBeProcessed.getId());
-                if (agreementItem == null) throw new IllegalArgumentException("Angegebene Position nicht gefunden");
+                ReportItem agreementItem = reportItemRepo
+                    .findById(itemDtoToBeProcessed.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Angegebene Position nicht gefunden"));
                 risWithQty.put(
                         agreementItem,
                         itemDtoToBeProcessed.getQuantityLeft());

@@ -1,5 +1,6 @@
 package de.switajski.priebes.flexibleorders.validation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import net.bytebuddy.pool.TypePool.Resolution.Illegal;
+import org.apache.commons.beanutils.ConstructorUtils;
 import org.hibernate.validator.internal.util.ReflectionHelper;
 
 /**
@@ -49,7 +52,18 @@ public abstract class ValidationStaticTestConfiguration {
 
         public final <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
             if (validators.containsKey(key)) return (T) validators.get(key);
-            return ReflectionHelper.newInstance(key, "ConstraintValidator");
+            try {
+                return (T) ConstructorUtils.invokeConstructor(key, "ConstraintValidator");
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+            throw new IllegalStateException("Constraint invocations are broken in test");
         }
 
     }

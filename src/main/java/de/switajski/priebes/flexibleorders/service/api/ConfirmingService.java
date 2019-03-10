@@ -64,7 +64,8 @@ public class ConfirmingService {
         pAgree.setCustomerNumber(confirmParameter.getCustomerNumber());
         pAgree.setPaymentConditions(confirmParameter.getPaymentConditions());
         if (confirmParameter.getDeliveryMethodNo() != null) {
-            CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findOne(confirmParameter.getDeliveryMethodNo());
+            CatalogDeliveryMethod catalogDeliveryMethod = deliveryMethodRepo.findById(confirmParameter
+                .getDeliveryMethodNo()).orElseThrow(() -> new IllegalStateException());
             pAgree.setDeliveryMethod(catalogDeliveryMethod.getDeliveryMethod());
         }
 
@@ -163,8 +164,8 @@ public class ConfirmingService {
     }
 
     protected ReportItem createConfirmationItemById(OrderConfirmation orderConfirmation, long orderItemId, int qty) {
-        OrderItem oi = orderItemRepo.findOne(orderItemId);
-        if (oi == null) throw new NotFoundException("Bestellposition mit gegebener ID nicht gefunden");
+        OrderItem oi = orderItemRepo.findById(orderItemId)
+            .orElseThrow(() -> new NotFoundException("Bestellposition mit gegebener ID nicht gefunden"));
         return new ConfirmationItem(orderConfirmation, oi, qty);
     }
 

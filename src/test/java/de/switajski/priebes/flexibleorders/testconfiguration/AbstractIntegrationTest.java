@@ -28,7 +28,7 @@ public abstract class AbstractIntegrationTest<T extends GenericEntity> extends
     public void shouldRead() {
         T savedEntity = persistEntity();
 
-        T retrievedEntity = getRepository().findOne(savedEntity.getId());
+        T retrievedEntity = getRepository().findById(savedEntity.getId()).orElse(null);
         assertNotNull(retrievedEntity);
     }
 
@@ -49,8 +49,8 @@ public abstract class AbstractIntegrationTest<T extends GenericEntity> extends
         T savedEntity = persistEntity();
         Long oldId = savedEntity.getId();
 
-        getRepository().delete(oldId);
-        assertNull(getRepository().findOne(oldId));
+        getRepository().deleteById(oldId);
+        assertNull(getRepository().findById(oldId));
     }
 
     private T persistEntity() {

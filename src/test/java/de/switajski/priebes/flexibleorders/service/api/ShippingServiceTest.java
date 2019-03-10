@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.junit.Before;
@@ -242,7 +243,7 @@ public class ShippingServiceTest {
         confirmationItemToBeShipped.setQuantity(1);
         OrderItem orderItem = new OrderItem(null, product, orderedQty);
         confirmationItemToBeShipped.setOrderItem(orderItem);
-        when(reportItemRepo.findOne(id)).thenReturn(confirmationItemToBeShipped);
+        when(reportItemRepo.findById(id)).thenReturn(Optional.of(confirmationItemToBeShipped));
     }
 
     private ItemDto createItemDto(Long id, int qtyLeft, CatalogProduct product) {

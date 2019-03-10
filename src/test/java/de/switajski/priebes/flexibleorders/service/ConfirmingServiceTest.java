@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import java.util.Optional;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
@@ -70,7 +71,8 @@ public class ConfirmingServiceTest {
         // GIVEN
         MockitoAnnotations.initMocks(this);
         when(customerRepo.findByCustomerNumber(YVONNE.getCustomerNumber())).thenReturn(YVONNE);
-        when(catalogDeliveryMethod.findOne(AB11.getDeliveryMethodNo())).thenReturn(new CatalogDeliveryMethod(DHL));
+        when(catalogDeliveryMethod.findById(AB11.getDeliveryMethodNo()))
+            .thenReturn(Optional.of(new CatalogDeliveryMethod(DHL)));
 
         Order b11 = new OrderBuilder().withB11().build();
         Order b12 = new OrderBuilder().withB12().build();
@@ -97,12 +99,12 @@ public class ConfirmingServiceTest {
         return new ProductNumbersMatcher(items);
     }
 
-    class ProductNumbersMatcher extends ArgumentMatcher<Report> {
+    class ProductNumbersMatcher implements ArgumentMatcher<Report> {
 
         private HashSet<String> productNumbersShouldBe;
 
         @Override
-        public boolean matches(Object argument) {
+        public boolean matches(Report argument) {
             if (!(argument instanceof OrderConfirmation)) return false;
 
             OrderConfirmation oc = (OrderConfirmation) argument;

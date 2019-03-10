@@ -290,7 +290,7 @@ public class TestDataCreator {
         products.add(MILADKA);
         products.add(PAUL);
         products.add(SALOME);
-        return cpRepo.save(products);
+        return cpRepo.saveAll(products);
     }
 
     private void createCustomers() {
@@ -300,7 +300,7 @@ public class TestDataCreator {
         customers.add(NAIDA);
         customers.add(WYOMING);
         customers.add(YVONNE);
-        cRepo.save(customers);
+        cRepo.saveAll(customers);
         cRepo.flush();
     }
 

@@ -16,10 +16,8 @@ public class DeliveryHistoryService {
 
     @Transactional(readOnly = true)
     public DeliveryHistoryDto retrieveByReportItemId(Long itemDtoId) {
-        ReportItem ri = riRepo.findOne(itemDtoId);
-        if (ri == null) {
-            throw new IllegalArgumentException("ReportItem with given id " + itemDtoId + " not found");
-        }
+        ReportItem ri = riRepo.findById(itemDtoId)
+            .orElseThrow(() -> new IllegalArgumentException("ReportItem with given id " + itemDtoId + " not found"));
         return new DeliveryHistoryDto(ri.getOrderItem().getReportItems());
     }
 

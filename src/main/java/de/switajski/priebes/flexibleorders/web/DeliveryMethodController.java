@@ -79,7 +79,8 @@ public class DeliveryMethodController extends ExceptionController {
             throws JsonParseException, JsonMappingException, IOException {
         CatalogDeliveryMethod c = deliveryMethodDtoConverterService.toDeliveryMethod(
                 cDto,
-                deliveryMethodRepo.findOne(cDto.getId()));
+                deliveryMethodRepo.findById(cDto.getId()).orElseThrow(() -> new IllegalArgumentException("Items not "
+                    + "found")));
         deliveryMethodRepo.save(c);
         return ExtJsResponseCreator.createSuccessResponse(c);
     }

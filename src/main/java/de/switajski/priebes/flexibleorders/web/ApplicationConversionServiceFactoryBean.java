@@ -52,7 +52,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, de.switajski.priebes.flexibleorders.domain.Customer>() {
             @Override
             public de.switajski.priebes.flexibleorders.domain.Customer convert(java.lang.Long id) {
-                return customerRepo.findOne(id);
+                return customerRepo.findById(id).orElse(null);
             }
         };
     }
@@ -80,7 +80,8 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, de.switajski.priebes.flexibleorders.domain.OrderItem>() {
             @Override
             public de.switajski.priebes.flexibleorders.domain.OrderItem convert(java.lang.Long id) {
-                return itemRepo.findOne(id);
+                return itemRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Order item with given "
+                    + "id not found"));
             }
         };
     }

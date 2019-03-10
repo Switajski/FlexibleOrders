@@ -4,6 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.switajski.priebes.flexibleorders</groupId>
 	<artifactId>FlexibleOrders</artifactId>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.3.RELEASE</version>
+	</parent>
 	<packaging>war</packaging>
 	<version>0.1.0.BUILD-SNAPSHOT</version>
 	<distributionManagement>
@@ -69,7 +74,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
-		<!-- dependency for webfronent - will be unpacked to a resources folder 
+		<!-- dependency for webfronent - will be unpacked to a resources folder
 			by maven -->
 		<dependency>
 			<groupId>de.switajski</groupId>
@@ -78,15 +83,21 @@
 		</dependency>
 		<!-- General dependencies for standard applications -->
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<version>${spring-security.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -145,29 +156,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
 		</dependency>
-		<!-- Spring dependencies -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.skyscreamer</groupId>
 			<artifactId>jsonassert</artifactId>
@@ -179,26 +173,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.8.4</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>spring-ws-core</artifactId>
-			<version>2.2.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>postgresql</groupId>
@@ -268,16 +242,6 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.5.6</version>
@@ -298,11 +262,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>1.5.2.RELEASE</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>${spring.version}</version>
@@ -316,16 +275,6 @@
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
@@ -354,166 +303,18 @@
 			<version>0.13.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring-security.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.dropbox.core</groupId>
 			<artifactId>dropbox-core-sdk</artifactId>
 			<version>1.8.2</version>
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>2.2</version>
-					<!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.5.1</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-						<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>aspectj-maven-plugin</artifactId>
-					<version>1.7</version> <!-- AspectJ weaver plugin 7 is for java 8 (version 1.6 is for java 7) -->
-					<configuration>
-						<complianceLevel>1.8</complianceLevel>
-						<source>1.8</source>
-						<target>1.8</target>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>compile</goal>
-								<goal>test-compile</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12</version>
-					<configuration>
-						<printSummary>false</printSummary>
-						<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.3</version>
-					<configuration>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
-					</configuration>
-				</plugin>
-				<!-- IDE -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.7</version>
-					<!-- Note 2.8 does not work with AspectJ aspect path -->
-					<configuration>
-						<downloadSources>true</downloadSources>
-						<downloadJavadocs>false</downloadJavadocs>
-						<wtpversion>2.0</wtpversion>
-						<additionalBuildcommands>
-							<buildCommand>
-								<name>org.eclipse.ajdt.core.ajbuilder</name>
-								<arguments>
-									<aspectPath>org.springframework.aspects</aspectPath>
-								</arguments>
-							</buildCommand>
-							<buildCommand>
-								<name>org.springframework.ide.eclipse.core.springbuilder</name>
-							</buildCommand>
-						</additionalBuildcommands>
-						<additionalProjectnatures>
-							<projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
-							<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-						</additionalProjectnatures>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-idea-plugin</artifactId>
-					<version>2.2</version>
-					<configuration>
-						<downloadSources>true</downloadSources>
-						<dependenciesAsLibraries>true</dependenciesAsLibraries>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
-					<version>2.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-maven-plugin</artifactId>
-					<version>9.3.6.v20151106</version>
-					<configuration>
-						<webApp>
-							<contextPath>/${project.name}</contextPath>
-						</webApp>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 	<reporting>
 		<plugins>

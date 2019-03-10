@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -55,7 +56,7 @@ public class ShippingServiceConversionTest {
     private void givenTestData() {
         givenItemDtoForInput();
         givenMappedConfirmationItem();
-        when(repoItemRepo.findOne(1L)).thenReturn(confirmationItem);
+        when(repoItemRepo.findById(1L)).thenReturn(Optional.of(confirmationItem));
     }
 
     @Test

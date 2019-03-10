@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class InvoicingServiceTest {
     public void shouldRejectInvoicingIfNoInvoicingAddressesExist() throws Exception {
         givenRequestedDocumentNumberDoesNotExist();
         givenItemsInParameter(1);
-        when(reportItemRepo.findOne(1L)).thenReturn(new ShippingItem());
+        when(reportItemRepo.findById(1L)).thenReturn(Optional.of(new ShippingItem()));
         when(purchaseAgreementService.invoiceAddressesWithoutDeviation(Matchers.anySetOf(ReportItem.class))).thenReturn(java.util.Collections.emptySet());
 
         whenValidatingAndInvoicing();

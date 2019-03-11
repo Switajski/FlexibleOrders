@@ -3,4 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/dukturala
     username: dukturala
     password: dukturala
-
+  jpa:
+    hibernate:
+      ddl-auto: create
+      show-sql: true

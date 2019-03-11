@@ -65,7 +65,12 @@ public abstract class ValidationStaticTestConfiguration {
             }
             throw new IllegalStateException("Constraint invocations are broken in test");
         }
-
+    
+        @Override
+        public void releaseInstance(ConstraintValidator<?, ?> instance) {
+        
+        }
+    
     }
 
 }

@@ -4,7 +4,7 @@ FlexibleOrders <a href="https://travis-ci.org/Switajski/FlexibleOrders">![Build 
 FlexibleOrders is a simple java web application for order fulfilment in B2B: creating and tracking orders, invoices, shipping info, etc.  
 Intention of this application is to ease work of young companies by a simple user interface and ability to integrate with e-commerce systems. FlexibleOrders has no product catalog and no CRM.
 
-###Limitations of existing B2B order fulfilment solutions, that I know are:
+### Limitations of existing B2B order fulfilment solutions, that I know are:
  - Order Fulfilment often part of whole ERP-System
  - Creation of delivery notes of partial delivery: The delivery notes need to be put into a package sent by parcel shipping.
  - Tracking of pending (partial) deliveries

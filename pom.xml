@@ -257,11 +257,6 @@
 			<artifactId>chemistry-opencmis-client-impl</artifactId>
 			<version>0.13.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.dropbox.core</groupId>
-			<artifactId>dropbox-core-sdk</artifactId>
-			<version>1.8.2</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

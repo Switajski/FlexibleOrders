@@ -1,37 +1,27 @@
 FlexibleOrders <a href="https://travis-ci.org/Switajski/FlexibleOrders">![Build Status](https://travis-ci.org/Switajski/FlexibleOrders.svg)</a> 
 ==============
 
-FlexibleOrders is a java web application for creating and tracking orders, invoices, shipping info, etc.  
-The intention of this application is to ease the work of start-up companies by a simple user interface and easy integration with e-commerce systems.  
-Used technologies are Spring, Hibernate and ExtJs in GUI. The domain model is depicted with POJOs.
+FlexibleOrders is a simple java web application for order fulfilment in B2B: creating and tracking orders, invoices, shipping info, etc.  
+Intention of this application is to ease work of young companies by a simple user interface and ability to integrate with e-commerce systems. FlexibleOrders has no product catalog and no CRM.
 
-Intention
----------
-FlexibleOrders does not have the claim to manage customers relationships or product information. No product catalog and no customer database is used. It's intention is get customers and products from already existing systems and fit into a distribution / e-commerce system landscape like a microservice. It's defined "bounded context" is strictly defined to the order process and document creation with a clear API.
+Limitations of existing order fulfilment solutions, that I know are:
+ - Order Fulfilment often part of whole ERP-System
+ - Creation of delivery notes, that reflect partial delivery.
+ - Tracking of pending (partial) deliveries
+
+Used technologies are Spring-boot and ExtJs in GUI.
 
 Getting started
 ---------------
-FlexibleOrders is developed with Eclipse. In order to get to the code stuff run from command line: 
+Run from command line: 
 
-`git clone git@github.com:Switajski/FlexibleOrders.git`
-
-`mvn eclipse:eclipse`
-
-and import the just created git repository as "existing project" to eclipse. The database can be created by modifying persistence.xml and changing the line:
-`<property name="hibernate.hbm2ddl.auto" value="update"/>`
-to 
-`<property name="hibernate.hbm2ddl.auto" value="create"/>`
-and start the application server with a running DB. PostgreSQL is preconfigured.
-
-Run application
----------------
-After having created a postgres database with valid connection settings in database.properties, just run:
-
-`mvn tomcat7:run`
+`git clone git@github.com:Switajski/FlexibleOrders.git
+ docker-compose up -d
+ mvn spring-boot:run`
 
 Contribute
 ----------
-Just send me an email: marek@switajski.de
+All pull requests welcome!
 
 License
 -------

@@ -10,4 +10,6 @@ services:
     environment:
       POSTGRES_PASSWORD: dukturala
       POSTGRES_USER: dukturala
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
 

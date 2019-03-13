@@ -100,9 +100,11 @@ public class ReportItemController extends ExceptionController {
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = true) Integer limit,
             @RequestParam(value = "sort", required = false) String sorts,
-            @RequestParam(value = "filter", required = true) String filters)
+            @RequestParam(value = "filter", required = false) String filtersP)
                     throws Exception {
 
+        String filters = filtersP == null ? "" : filtersP;
+        
         PageRequest pageable = new PageRequest((page - 1), limit);
         HashMap<String, String> filterMap = JsonSerializationHelper
                 .deserializeFiltersJson(filters);

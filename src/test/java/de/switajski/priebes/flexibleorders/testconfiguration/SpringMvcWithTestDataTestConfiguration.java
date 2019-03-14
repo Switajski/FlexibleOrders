@@ -3,21 +3,12 @@ package de.switajski.priebes.flexibleorders.testconfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import org.junit.Rule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class SpringMvcWithTestDataTestConfiguration extends SpringMvcTestConfiguration {
-
-    @Rule
-    @Autowired
-    public StandardTestDataRule rule;
 
     /**
      * Create json string out of an object.

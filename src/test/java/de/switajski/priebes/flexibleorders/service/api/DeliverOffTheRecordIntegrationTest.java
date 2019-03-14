@@ -24,14 +24,9 @@ import de.switajski.priebes.flexibleorders.repository.specification.IsInvoiceIte
 import de.switajski.priebes.flexibleorders.repository.specification.OverdueItemSpecification;
 import de.switajski.priebes.flexibleorders.service.process.parameter.DeliverParameter;
 import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
-import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
 import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 public class DeliverOffTheRecordIntegrationTest extends AbstractSpringContextTestConfiguration {
-
-    @Rule
-    @Autowired
-    public StandardTestDataRule rule;
 
     @Autowired
     ShippingService shippingService;

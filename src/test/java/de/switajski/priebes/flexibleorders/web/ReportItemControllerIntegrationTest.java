@@ -3,28 +3,20 @@ package de.switajski.priebes.flexibleorders.web;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
+import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
+import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import de.switajski.priebes.flexibleorders.json.JsonObjectResponse;
-import de.switajski.priebes.flexibleorders.testconfiguration.AbstractSpringContextTestConfiguration;
-import de.switajski.priebes.flexibleorders.testdata.StandardTestDataRule;
-import de.switajski.priebes.flexibleorders.web.dto.ItemDto;
 
 @Transactional
 public class ReportItemControllerIntegrationTest extends AbstractSpringContextTestConfiguration {
 
     @Autowired
     private ReportItemController riController;
-
-    @Rule
-    @Autowired
-    public StandardTestDataRule rule;
 
     String filters;
 

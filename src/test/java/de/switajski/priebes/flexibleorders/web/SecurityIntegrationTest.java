@@ -3,11 +3,13 @@ package de.switajski.priebes.flexibleorders.web;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import de.switajski.priebes.flexibleorders.testconfiguration.SpringMvcTestConfiguration;
 
+@Ignore("Security is disabled")
 public class SecurityIntegrationTest extends SpringMvcTestConfiguration {
 
     @Test
